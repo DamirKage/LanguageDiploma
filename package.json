@@ -1,0 +1,16 @@
+{
+  "name": "slog-platform",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Слог — персонализированная платформа для изучения иностранных языков",
+  "workspaces": ["shared", "server", "client"],
+  "scripts": {
+    "dev": "npm run dev --workspace server & npm run dev --workspace client",
+    "build": "npm run build --workspace server && npm run build --workspace client",
+    "test": "npm run test --workspace shared && npm run test --workspace server && npm run test --workspace client",
+    "typecheck": "npm run typecheck --workspaces",
+    "seed": "npm run seed --workspace server",
+    "evaluate": "npm run evaluate --workspace server"
+  },
+  "engines": { "node": ">=20" }
+}
