@@ -16,6 +16,7 @@ import { Topic } from '../../models/content';
 import { AnswerEvent, Attempt, DailyPlan, LessonProgress, RecommendationSnapshot, ReviewItem, ReviewLog } from '../../models/learning';
 import { Enrollment, User } from '../../models/user';
 import { loadCatalog } from '../catalog/catalog';
+import { DEFAULT_ENGINE_CONFIG } from './config';
 import { ENGINE_VERSION, nextPathLessons, recommend, type LearnerSnapshot, type TopicEvidence } from './engine';
 import { composePlan } from './plan';
 
@@ -31,7 +32,7 @@ export async function buildSnapshot(userId: string, language: string, now = new 
   const tz = user.timezone;
   const uid = new Types.ObjectId(userId);
 
-  const [catalog, progress, inProgress, testAttempts, topicDocs, topicAgg, sessionAgg, categoryAgg, recent, reviewItems, reviewLogs, snapshots] =
+  const [catalog, progress, inProgress, testAttempts, topicDocs, topicAgg, sessionAgg, recentAgg, categoryAgg, recent, reviewItems, reviewLogs, snapshots] =
     await Promise.all([
       loadCatalog(language),
       LessonProgress.find({ user: userId, language }).lean(),
@@ -61,6 +62,12 @@ export async function buildSnapshot(userId: string, language: string, now = new 
         },
         { $sort: { at: 1 } },
       ]),
+      AnswerEvent.aggregate<{ _id: string; verdicts: string[] }>([
+        { $match: { user: uid, language, isRetry: false, verdict: { $ne: 'skipped' } } },
+        { $sort: { at: -1 } },
+        { $group: { _id: '$topic', verdicts: { $push: '$verdict' } } },
+        { $project: { verdicts: { $slice: ['$verdicts', DEFAULT_ENGINE_CONFIG.thresholds.recentWindow] } } },
+      ]),
       AnswerEvent.aggregate<{ _id: { topic: string; category: ErrorCategory }; count: number }>([
         { $match: { user: uid, language, verdict: { $in: ['incorrect', 'almost'] }, at: { $gte: new Date(+now - 30 * 86400_000) } } },
         { $group: { _id: { topic: '$topic', category: '$category' }, count: { $sum: 1 } } },
@@ -74,6 +81,9 @@ export async function buildSnapshot(userId: string, language: string, now = new 
     ]);
 
   const topicKind = new Map(topicDocs.map((t) => [t.key, t.kind as TopicEvidence['kind']]));
+  const recentByTopic = new Map(
+    recentAgg.map((r) => [r._id, { answers: r.verdicts.length, correct: r.verdicts.reduce((s, v) => s + (v === 'correct' ? 1 : v === 'almost' ? 0.7 : 0), 0) }]),
+  );
   const sessionsByTopic = new Map<string, number[]>();
   for (const s of sessionAgg) {
     // Sessions with a single answer on a topic are too noisy to signal a trend.
@@ -169,6 +179,8 @@ export async function buildSnapshot(userId: string, language: string, now = new 
       kind: topicKind.get(t._id) ?? 'grammar',
       answers: t.answers,
       correct: t.correct,
+      recentAnswers: recentByTopic.get(t._id)?.answers,
+      recentCorrect: recentByTopic.get(t._id)?.correct,
       lastPracticedAt: t.last,
       sessionAccuracies: (sessionsByTopic.get(t._id) ?? []).slice(-5),
       topCategory: topCategory.get(t._id) ?? null,

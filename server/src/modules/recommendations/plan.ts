@@ -2,7 +2,8 @@ import type { Recommendation, RecommendationResult } from '@slog/shared';
 
 /** Activities that should open a session when present, in this order. */
 const LEADING_TYPES = ['placement', 'resume', 'review'] as const;
-const REMEDIAL_TYPES = new Set(['weak_topic', 'topic_refresh', 'retry_lesson']);
+/** How many activities of a remedial type fit in one day, leaving room for new material. */
+const REMEDIAL_LIMIT: Partial<Record<string, number>> = { weak_topic: 2, topic_refresh: 1, retry_lesson: 1 };
 
 /**
  * Composes a daily plan that fits the learner's time budget: unfinished work and
@@ -30,8 +31,8 @@ export function composePlan(result: RecommendationResult, budgetMinutes: number)
   for (const item of result.items) {
     if (plan.some((p) => p.key === item.key)) continue;
     if (item.type === 'level_up') continue;
-    // One remedial activity per type keeps room for new material in the same day.
-    if (REMEDIAL_TYPES.has(item.type) && plan.some((p) => p.type === item.type)) continue;
+    const limit = REMEDIAL_LIMIT[item.type];
+    if (limit !== undefined && plan.filter((p) => p.type === item.type).length >= limit) continue;
     const learningItems = plan.filter((p) => p.type !== 'review').length;
     if (used + item.estimatedMinutes <= budgetMinutes || learningItems === 0) take(item);
   }

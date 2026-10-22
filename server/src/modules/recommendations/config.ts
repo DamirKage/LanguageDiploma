@@ -20,6 +20,8 @@ export interface EngineConfig {
   thresholds: {
     /** Answers on a topic before its accuracy is trusted. */
     minEvidence: number;
+    /** Number of most recent answers that define a topic's current accuracy. */
+    recentWindow: number;
     /** Smoothed accuracy below which a topic is considered weak. */
     weakAccuracy: number;
     /** Prior accuracy and its pseudo-count for Bayesian smoothing. */
@@ -52,7 +54,8 @@ export const DEFAULT_ENGINE_CONFIG: EngineConfig = {
     level_up: 0.3,
   },
   thresholds: {
-    minEvidence: 6,
+    minEvidence: 4,
+    recentWindow: 12,
     weakAccuracy: 0.7,
     priorAccuracy: 0.75,
     priorStrength: 3,

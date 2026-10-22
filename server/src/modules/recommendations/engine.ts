@@ -12,7 +12,7 @@ import {
 } from '@slog/shared';
 import { DEFAULT_ENGINE_CONFIG, type EngineConfig } from './config';
 
-export const ENGINE_VERSION = 'rules-1.2';
+export const ENGINE_VERSION = 'rules-1.3';
 
 export interface CatalogLesson {
   id: string;
@@ -41,6 +41,9 @@ export interface TopicEvidence {
   /** First-attempt answers only; "almost" counts as 0.7 of a correct answer. */
   answers: number;
   correct: number;
+  /** The most recent first-attempt answers (up to the configured window). */
+  recentAnswers?: number;
+  recentCorrect?: number;
   lastPracticedAt: Date | null;
   /** Accuracy (0–100) per learning session on this topic, oldest first. */
   sessionAccuracies: number[];
@@ -87,6 +90,21 @@ const daysBetween = (a: Date, b: Date) => Math.max(0, Math.floor((+b - +a) / 86_
 export function smoothedAccuracy(t: Pick<TopicEvidence, 'answers' | 'correct'>, cfg: EngineConfig = DEFAULT_ENGINE_CONFIG): number {
   const { priorAccuracy, priorStrength } = cfg.thresholds;
   return (t.correct + priorAccuracy * priorStrength) / (t.answers + priorStrength);
+}
+
+/**
+ * Current accuracy estimate for a topic: the recent window when it holds enough
+ * answers (so improvement is noticed), otherwise all answers; both smoothed.
+ */
+export function currentAccuracy(t: TopicEvidence, cfg: EngineConfig = DEFAULT_ENGINE_CONFIG): { accuracy: number; answers: number; observed: number } {
+  if (t.recentAnswers !== undefined && t.recentCorrect !== undefined && t.recentAnswers >= cfg.thresholds.minEvidence) {
+    return {
+      accuracy: smoothedAccuracy({ answers: t.recentAnswers, correct: t.recentCorrect }, cfg),
+      answers: t.recentAnswers,
+      observed: t.recentCorrect / t.recentAnswers,
+    };
+  }
+  return { accuracy: smoothedAccuracy(t, cfg), answers: t.answers, observed: t.answers ? t.correct / t.answers : 0 };
 }
 
 export function targetDifficultyFor(accuracy: number | null, cfg: EngineConfig = DEFAULT_ENGINE_CONFIG): 1 | 2 | 3 {
@@ -242,7 +260,8 @@ export function recommend(s: LearnerSnapshot, cfg: EngineConfig = DEFAULT_ENGINE
 
   for (const topic of s.topics) {
     if (topic.answers < t.minEvidence) continue;
-    const acc = smoothedAccuracy(topic, cfg);
+    const current = currentAccuracy(topic, cfg);
+    const acc = current.accuracy;
     const goal = goalMatch(topic.topic, topic.kind, s.goals, cfg);
     const sessions = topic.sessionAccuracies;
     const last = sessions.at(-1);
@@ -253,7 +272,7 @@ export function recommend(s: LearnerSnapshot, cfg: EngineConfig = DEFAULT_ENGINE
     if (acc < t.weakAccuracy || declining) {
       const reasons: RecommendationReason[] = [];
       if (acc < t.weakAccuracy) {
-        reasons.push({ code: 'low_topic_accuracy', params: { topic: topic.topic, accuracy: pct(topic.correct / topic.answers), answers: topic.answers } });
+        reasons.push({ code: 'low_topic_accuracy', params: { topic: topic.topic, accuracy: pct(current.observed), answers: current.answers } });
       }
       if (declining) reasons.push({ code: 'declining_trend', params: { topic: topic.topic, from: Math.round(prevAvg!), to: Math.round(last!) } });
       if (topic.topCategory && topic.topCategory.count >= 3) {
@@ -288,7 +307,7 @@ export function recommend(s: LearnerSnapshot, cfg: EngineConfig = DEFAULT_ENGINE
     }
   }
 
-  const weakTopics = s.topics.filter((x) => x.answers >= t.minEvidence && smoothedAccuracy(x, cfg) < t.weakAccuracy).length;
+  const weakTopics = s.topics.filter((x) => x.answers >= t.minEvidence && currentAccuracy(x, cfg).accuracy < t.weakAccuracy).length;
   const resumeLessons = new Set(s.inProgress.map((a) => a.lessonId).filter(Boolean));
   const [next] = nextPathLessons(s, 1);
   if (next && !resumeLessons.has(next.id)) {
@@ -322,7 +341,7 @@ export function recommend(s: LearnerSnapshot, cfg: EngineConfig = DEFAULT_ENGINE
     candidates.push({
       key: `retry:${lesson.id}`,
       type: 'retry_lesson',
-      features: { need: clamp01((t.retryLessonBelow - best) / t.retryLessonBelow + 0.2) },
+      features: { need: clamp01((t.retryLessonBelow - best) / 50 + 0.2) },
       reasons: [{ code: 'low_lesson_score', params: { percent: best } }],
       estimatedMinutes: lesson.estimatedMinutes,
       target: { lessonId: lesson.id, lessonTitle: lesson.title, level: lesson.level },

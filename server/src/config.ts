@@ -1,5 +1,10 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import { z } from 'zod';
+
+dotenv.config({ quiet: true });
+
+// Validation messages are returned to the Russian-language interface.
+z.config(z.locales.ru());
 
 const bool = z
   .enum(['true', 'false', '1', '0'])
@@ -16,6 +21,7 @@ const schema = z.object({
   CLIENT_ORIGIN: z.string().default('http://localhost:5173'),
   PUBLIC_APP_URL: z.string().default('http://localhost:5173'),
   TRUST_PROXY: bool.default(false),
+  COOKIE_SECURE: bool.optional(),
   RATE_LIMIT_ENABLED: bool.default(true),
   EXPOSE_DEV_LINKS: bool.default(false),
   SMTP_URL: z.string().optional(),
@@ -57,6 +63,8 @@ export const config = {
   clientOrigins: env.CLIENT_ORIGIN.split(',').map((s) => s.trim()),
   publicAppUrl: env.PUBLIC_APP_URL.replace(/\/$/, ''),
   trustProxy: env.TRUST_PROXY,
+  /** Secure cookies require HTTPS; defaults to on in production. */
+  cookieSecure: env.COOKIE_SECURE ?? env.NODE_ENV === 'production',
   rateLimitEnabled: env.RATE_LIMIT_ENABLED,
   exposeDevLinks: env.EXPOSE_DEV_LINKS,
   smtpUrl: env.SMTP_URL,

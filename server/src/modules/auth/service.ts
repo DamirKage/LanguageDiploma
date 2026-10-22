@@ -10,6 +10,7 @@ import { signAccessToken } from './middleware';
 
 export const REFRESH_COOKIE = 'slog_rt';
 const RESET_TTL_MS = 60 * 60 * 1000;
+const REUSE_GRACE_MS = 10_000;
 
 const sha256 = (value: string) => crypto.createHash('sha256').update(value).digest('hex');
 const randomToken = () => crypto.randomBytes(48).toString('base64url');
@@ -59,7 +60,7 @@ async function issueRefreshToken(userId: string, family: string, userAgent?: str
 export function setRefreshCookie(res: Response, token: string) {
   res.cookie(REFRESH_COOKIE, token, {
     httpOnly: true,
-    secure: config.isProd,
+    secure: config.cookieSecure,
     sameSite: 'strict',
     path: '/api/auth',
     maxAge: config.refreshTokenTtlDays * 86400_000,
@@ -67,7 +68,7 @@ export function setRefreshCookie(res: Response, token: string) {
 }
 
 export function clearRefreshCookie(res: Response) {
-  res.clearCookie(REFRESH_COOKIE, { httpOnly: true, secure: config.isProd, sameSite: 'strict', path: '/api/auth' });
+  res.clearCookie(REFRESH_COOKIE, { httpOnly: true, secure: config.cookieSecure, sameSite: 'strict', path: '/api/auth' });
 }
 
 export async function startSession(user: UserDoc, res: Response, userAgent?: string) {
@@ -116,7 +117,10 @@ export async function rotateRefreshToken(token: string | undefined, res: Respons
     clearRefreshCookie(res);
     throw errors.unauthorized('token_expired');
   }
-  if (stored.usedAt) {
+  // Two tabs refreshing at the same moment present the same token; only a later
+  // reuse is treated as theft.
+  const concurrent = stored.usedAt && Date.now() - stored.usedAt.getTime() < REUSE_GRACE_MS;
+  if (stored.usedAt && !concurrent) {
     await RefreshToken.updateMany({ family: stored.family }, { $set: { revokedAt: new Date() } });
     clearRefreshCookie(res);
     throw errors.unauthorized('token_expired');
@@ -126,8 +130,10 @@ export async function rotateRefreshToken(token: string | undefined, res: Respons
     clearRefreshCookie(res);
     throw errors.unauthorized();
   }
-  const claimed = await RefreshToken.updateOne({ _id: stored._id, usedAt: null }, { $set: { usedAt: new Date() } });
-  if (claimed.modifiedCount !== 1) throw errors.unauthorized('token_expired');
+  if (!concurrent) {
+    const claimed = await RefreshToken.updateOne({ _id: stored._id, usedAt: null }, { $set: { usedAt: new Date() } });
+    if (claimed.modifiedCount !== 1) throw errors.unauthorized('token_expired');
+  }
   const next = await issueRefreshToken(String(user._id), stored.family, userAgent);
   setRefreshCookie(res, next);
   return {

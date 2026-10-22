@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { User } from '../../src/models/user';
+import { RefreshToken, User } from '../../src/models/user';
 import { app, registerUser, useTestDatabase } from '../helpers';
 
 useTestDatabase({ seed: false });
@@ -96,6 +96,8 @@ describe('refresh token rotation', () => {
     const second = refreshCookie(r1.headers['set-cookie']);
     expect(second).not.toBe(first);
 
+    // A replay within a few seconds is treated as a concurrent refresh from another tab.
+    await RefreshToken.updateMany({ usedAt: { $ne: null } }, { $set: { usedAt: new Date(Date.now() - 60_000) } });
     const replay = await request(app).post('/api/auth/refresh').set('Cookie', first).set('X-Requested-With', 'slog');
     expect(replay.status).toBe(401);
     const afterReplay = await request(app).post('/api/auth/refresh').set('Cookie', second).set('X-Requested-With', 'slog');

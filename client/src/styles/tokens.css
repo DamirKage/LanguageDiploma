@@ -1,0 +1,109 @@
+:root {
+  color-scheme: light;
+
+  /* Paper and ink */
+  --paper: #f5f1e8;
+  --paper-2: #ede7da;
+  --surface: #fffdf8;
+  --ink: #1c1b19;
+  --ink-2: #47443d;
+  --ink-3: #757064;
+  --line: #e0d9c9;
+  --line-strong: #c9c0ac;
+
+  /* One accent: ultramarine ink */
+  --accent: #3446d8;
+  --accent-ink: #2433a8;
+  --accent-soft: #e5e7fb;
+  --on-accent: #ffffff;
+
+  /* Feedback */
+  --ok: #1f7a55;
+  --ok-soft: #e0f1e8;
+  --bad: #b3311f;
+  --bad-soft: #f9e4df;
+  --warn: #9a6512;
+  --warn-soft: #f8edd5;
+
+  /* Language marks */
+  --lang-kk: #0f7c86;
+  --lang-en: #3446d8;
+  --lang-tr: #c0392b;
+  --lang-de: #8a6a12;
+  --lang-es: #c2541b;
+
+  /* Typography */
+  --font-ui: 'Onest Variable', 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Literata Variable', 'Literata', Georgia, 'Times New Roman', serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+  --text-4xl: 3rem;
+  --leading-tight: 1.2;
+  --leading: 1.55;
+
+  /* Space (4px grid) */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s8: 32px;
+  --s10: 40px;
+  --s12: 48px;
+  --s16: 64px;
+
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 0 rgba(28, 27, 25, 0.06);
+  --shadow: 0 1px 2px rgba(28, 27, 25, 0.06), 0 6px 20px -8px rgba(28, 27, 25, 0.18);
+  --focus: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 180ms;
+
+  --sidebar: 248px;
+  --content: 1040px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --paper: #16150f;
+    --paper-2: #1d1c16;
+    --surface: #211f19;
+    --ink: #f1ece0;
+    --ink-2: #cfc8b8;
+    --ink-3: #9a9384;
+    --line: #34312a;
+    --line-strong: #4a463c;
+    --accent: #8d9bff;
+    --accent-ink: #b3bcff;
+    --accent-soft: #262a52;
+    --on-accent: #10132e;
+    --ok: #5cc595;
+    --ok-soft: #173326;
+    --bad: #ff8a75;
+    --bad-soft: #3a1d17;
+    --warn: #e6b25a;
+    --warn-soft: #362a14;
+    --lang-kk: #46b8c2;
+    --lang-en: #8d9bff;
+    --lang-tr: #ff7f70;
+    --lang-de: #d8b65a;
+    --lang-es: #f39a63;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -10px rgba(0, 0, 0, 0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur: 0ms;
+  }
+}

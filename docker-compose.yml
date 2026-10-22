@@ -1,0 +1,65 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.runCommand({ ping: 1 }).ok']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      MONGODB_URI: mongodb://mongo:27017/slog
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Set JWT_ACCESS_SECRET in .env}
+      CLIENT_ORIGIN: ${PUBLIC_APP_URL:-http://localhost:8080}
+      PUBLIC_APP_URL: ${PUBLIC_APP_URL:-http://localhost:8080}
+      TRUST_PROXY: 'true'
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      SMTP_URL: ${SMTP_URL:-}
+      MAIL_FROM: ${MAIL_FROM:-Слог <no-reply@slog.local>}
+      UPLOAD_DIR: /app/server/uploads
+    volumes:
+      - uploads:/app/server/uploads
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - '${HTTP_PORT:-8080}:80'
+
+  # One-off: docker compose --profile seed run --rm seed
+  seed:
+    profiles: ['seed']
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongo:27017/slog
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Set JWT_ACCESS_SECRET in .env}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-SlogAdmin2026}
+      SEED_DEMO_PASSWORD: ${SEED_DEMO_PASSWORD:-SlogDemo2026}
+    command: ['node', 'dist/seed.js']
+
+volumes:
+  mongo-data:
+  uploads:
