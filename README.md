@@ -23,6 +23,13 @@
   - агрегированная статистика.
 - Документация REST API: Swagger UI на `/api/docs`, OpenAPI 3.1 на `/api/openapi.json`. Документ генерируется из тех же zod-схем, что валидируют запросы.
 
+## Самый простой запуск
+
+Нужен только Node.js 20+. База данных встроена и хранит данные в папке `demo-data`.
+
+- Windows: `start-windows.bat`; macOS: `start-mac.command`; или `npm install && npm run demo`.
+- Сайт открывается на http://localhost:8080. Подробная инструкция — в `START-HERE.txt`.
+
 ## Быстрый старт (локальная разработка)
 
 Требуется Node.js ≥ 20 (проверено на 22) и MongoDB 7. Проще всего запустить MongoDB в Docker: `docker run -d -p 27017:27017 mongo:7`.
@@ -77,6 +84,7 @@ docker compose --profile seed run --rm seed
 | `npm test` | Все автоматические тесты (shared, server, client) |
 | `npm run typecheck` | Проверка типов во всех пакетах |
 | `npm run build` | Сборка сервера (tsup) и клиента (Vite) |
+| `npm run demo` | Всё в одном процессе со встроенной MongoDB: http://localhost:8080 |
 | `npm run seed -- [--reset] [--no-demo]` | Загрузка учебного контента и аккаунтов |
 | `npm run evaluate` | Офлайн-оценка рекомендаций на синтетических учащихся |
 
