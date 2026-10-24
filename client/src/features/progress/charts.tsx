@@ -1,23 +1,21 @@
 import { useEffect, useState } from 'react';
 import { BarElement, CategoryScale, Chart as ChartJS, Filler, LinearScale, LineElement, PointElement, Tooltip } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
+import { onColorsChange } from '../../lib/theme';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Tooltip, Filler);
 
 function readTokens() {
   const css = getComputedStyle(document.documentElement);
   const v = (name: string) => css.getPropertyValue(name).trim();
-  return { ink: v('--ink'), ink3: v('--ink-3'), line: v('--line'), accent: v('--accent'), surface: v('--surface'), font: v('--font-ui') };
+  return { ink: v('--ink'), ink3: v('--ink-3'), line: v('--line'), accent: v('--accent'), strong: v('--strong'), surface: v('--surface'), font: v('--font-ui') };
 }
 
 /** Chart colors come from the CSS tokens so light and dark themes stay consistent. */
 function useTokens() {
   const [tokens, setTokens] = useState(readTokens);
   useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const update = () => setTokens(readTokens());
-    media.addEventListener('change', update);
-    return () => media.removeEventListener('change', update);
+    return onColorsChange(() => setTokens(readTokens()));
   }, []);
   return tokens;
 }
@@ -100,7 +98,7 @@ export function BarChart({ labels, values, label, suffix }: { labels: string[]; 
             {
               label,
               data: values,
-              backgroundColor: tokens.ink,
+              backgroundColor: tokens.strong,
               hoverBackgroundColor: tokens.accent,
               borderRadius: { topLeft: 4, topRight: 4 },
               borderSkipped: 'bottom',

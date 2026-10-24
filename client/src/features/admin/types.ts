@@ -1,4 +1,4 @@
-import type { CefrLevel, Exercise, LocalizedText } from '@slog/shared';
+import type { CefrLevel, Exercise, LocalizedText } from '@linguapath/shared';
 
 export interface AdminLanguage {
   id: string;

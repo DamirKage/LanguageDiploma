@@ -1,4 +1,4 @@
-import type { ReviewGrade, SrsState, Verdict } from '@slog/shared';
+import type { ReviewGrade, SrsState, Verdict } from '@linguapath/shared';
 import { addLocalDays, localDaysBetween } from '../../lib/time';
 
 export interface SrsSchedule {

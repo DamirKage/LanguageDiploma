@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import multer from 'multer';
 import { z } from 'zod';
-import { localize, type AdminStatsDTO, type AdminUserDTO, type LocalizedText, type Paginated } from '@slog/shared';
+import { localize, type AdminStatsDTO, type AdminUserDTO, type LocalizedText, type Paginated } from '@linguapath/shared';
 import { config } from '../../config';
 import { AppError, errors } from '../../lib/errors';
 import { createApiRouter, idParams, pagination } from '../../lib/http';

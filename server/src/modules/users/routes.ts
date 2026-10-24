@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CEFR_LEVELS, DAILY_MINUTES_OPTIONS, LEARNING_GOALS, UI_LOCALES, type EnrollmentDTO } from '@slog/shared';
+import { CEFR_LEVELS, DAILY_MINUTES_OPTIONS, LEARNING_GOALS, UI_LOCALES, type EnrollmentDTO } from '@linguapath/shared';
 import { errors } from '../../lib/errors';
 import { createApiRouter, languageCode } from '../../lib/http';
 import { isValidTimezone } from '../../lib/time';

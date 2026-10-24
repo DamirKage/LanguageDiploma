@@ -7,7 +7,7 @@ useTestDatabase({ seed: false });
 
 function refreshCookie(setCookie: string[] | string | undefined): string {
   const list = Array.isArray(setCookie) ? setCookie : setCookie ? [setCookie] : [];
-  const cookie = list.find((c) => c.startsWith('slog_rt='));
+  const cookie = list.find((c) => c.startsWith('lp_rt='));
   if (!cookie) throw new Error('no refresh cookie');
   return cookie.split(';')[0]!;
 }
@@ -19,7 +19,7 @@ describe('registration and login', () => {
     expect(res.body.user).toMatchObject({ email: 'aliya@example.com', name: 'Алия', role: 'user', onboarded: false });
     expect(res.body.accessToken).toBeTypeOf('string');
     expect(res.body.user).not.toHaveProperty('passwordHash');
-    const cookie = (res.headers['set-cookie'] as unknown as string[]).find((c) => c.startsWith('slog_rt='))!;
+    const cookie = (res.headers['set-cookie'] as unknown as string[]).find((c) => c.startsWith('lp_rt='))!;
     expect(cookie).toMatch(/HttpOnly/);
     expect(cookie).toMatch(/SameSite=Strict/);
     expect(cookie).toMatch(/Path=\/api\/auth/);
@@ -90,7 +90,7 @@ describe('refresh token rotation', () => {
   it('rotates the refresh token and revokes the family when an old token is replayed', async () => {
     const u = await registerUser();
     const first = refreshCookie(u.cookies);
-    const r1 = await request(app).post('/api/auth/refresh').set('Cookie', first).set('X-Requested-With', 'slog');
+    const r1 = await request(app).post('/api/auth/refresh').set('Cookie', first).set('X-Requested-With', 'linguapath');
     expect(r1.status).toBe(200);
     expect(r1.body.accessToken).toBeTypeOf('string');
     const second = refreshCookie(r1.headers['set-cookie']);
@@ -98,18 +98,18 @@ describe('refresh token rotation', () => {
 
     // A replay within a few seconds is treated as a concurrent refresh from another tab.
     await RefreshToken.updateMany({ usedAt: { $ne: null } }, { $set: { usedAt: new Date(Date.now() - 60_000) } });
-    const replay = await request(app).post('/api/auth/refresh').set('Cookie', first).set('X-Requested-With', 'slog');
+    const replay = await request(app).post('/api/auth/refresh').set('Cookie', first).set('X-Requested-With', 'linguapath');
     expect(replay.status).toBe(401);
-    const afterReplay = await request(app).post('/api/auth/refresh').set('Cookie', second).set('X-Requested-With', 'slog');
+    const afterReplay = await request(app).post('/api/auth/refresh').set('Cookie', second).set('X-Requested-With', 'linguapath');
     expect(afterReplay.status).toBe(401);
   });
 
   it('logs out by revoking the refresh token', async () => {
     const u = await registerUser();
     const cookie = refreshCookie(u.cookies);
-    const out = await request(app).post('/api/auth/logout').set('Cookie', cookie).set('X-Requested-With', 'slog');
+    const out = await request(app).post('/api/auth/logout').set('Cookie', cookie).set('X-Requested-With', 'linguapath');
     expect(out.status).toBe(204);
-    const res = await request(app).post('/api/auth/refresh').set('Cookie', cookie).set('X-Requested-With', 'slog');
+    const res = await request(app).post('/api/auth/refresh').set('Cookie', cookie).set('X-Requested-With', 'linguapath');
     expect(res.status).toBe(401);
   });
 });
@@ -130,7 +130,7 @@ describe('password recovery and change', () => {
     expect((await request(app).post('/api/auth/reset-password').send({ token, password: 'Another789' })).body.error.code).toBe('invalid_token');
     expect((await request(app).post('/api/auth/login').send({ email: u.email, password: u.password })).status).toBe(401);
     expect((await request(app).post('/api/auth/login').send({ email: u.email, password: 'NewSecret456' })).status).toBe(200);
-    const oldRefresh = await request(app).post('/api/auth/refresh').set('Cookie', refreshCookie(u.cookies)).set('X-Requested-With', 'slog');
+    const oldRefresh = await request(app).post('/api/auth/refresh').set('Cookie', refreshCookie(u.cookies)).set('X-Requested-With', 'linguapath');
     expect(oldRefresh.status).toBe(401);
   });
 

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CEFR_LEVELS, localize, type AttemptHistoryItemDTO, type LocalizedText, type Paginated } from '@slog/shared';
+import { CEFR_LEVELS, localize, type AttemptHistoryItemDTO, type LocalizedText, type Paginated } from '@linguapath/shared';
 import { createApiRouter, idParams, languageCode, pagination } from '../../lib/http';
 import { Attempt } from '../../models/learning';
 import { markRecommendationFollowed } from '../recommendations/service';

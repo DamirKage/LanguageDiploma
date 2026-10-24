@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import type { AuthResponse, UserDTO } from '@slog/shared';
+import type { AuthResponse, UserDTO } from '@linguapath/shared';
 import { onSessionChange, refreshSession, setAccessToken } from '../api/client';
 import { authApi } from '../api/endpoints';
 

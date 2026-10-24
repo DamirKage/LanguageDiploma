@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Brand } from '../../components/layout/AppShell';
+import { ThemeSwitch } from '../../components/theme/ThemePicker';
 import { buttonClass, LanguageMark, useTitle } from '../../components/ui';
 import { useI18n } from '../../i18n';
 import { useLanguages } from '../../lib/queries';
@@ -16,9 +17,12 @@ export function LandingPage() {
     <div className="public">
       <header className="public__head">
         <Brand />
-        <Link to="/login" className={buttonClass({ variant: 'ghost' })}>
-          {t('auth.toLogin')}
-        </Link>
+        <div className="row">
+          <ThemeSwitch />
+          <Link to="/login" className={buttonClass({ variant: 'ghost' })}>
+            {t('auth.toLogin')}
+          </Link>
+        </div>
       </header>
       <main className="public__main landing" id="main">
         <section className="landing__hero">

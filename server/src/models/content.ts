@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { CEFR_LEVELS } from '@slog/shared';
+import { CEFR_LEVELS } from '@linguapath/shared';
 
 const localized = { type: Schema.Types.Mixed, required: true };
 

@@ -1,4 +1,4 @@
-import type { Recommendation, RecommendationReason } from '@slog/shared';
+import type { Recommendation, RecommendationReason } from '@linguapath/shared';
 import type { Translator } from '../../i18n';
 
 type Helpers = { topicTitle: (key: string) => string; languageName?: (code: string) => string };

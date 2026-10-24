@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
-import { CEFR_LEVELS, type CefrLevel } from '@slog/shared';
+import { CEFR_LEVELS, type CefrLevel } from '@linguapath/shared';
 import { adminApi } from '../../api/endpoints';
 import { Alert, Button, buttonClass, Dialog, EmptyState, ErrorState, errorMessage, Field, PageLoader, Select, Textarea, TextInput, useTitle, useToast } from '../../components/ui';
 import { useI18n } from '../../i18n';

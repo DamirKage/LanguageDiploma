@@ -36,7 +36,7 @@
   transform: rotate(-0.6deg);
 }
 .landing__specimen-title {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-xl);
 }
 .landing__specimen-target {
@@ -97,7 +97,7 @@
   margin-bottom: 4px;
 }
 .landing__num {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-2xl);
   color: var(--accent);
   line-height: 1;
@@ -154,7 +154,7 @@
   margin-top: 2px;
 }
 .option[aria-pressed='true'] .onboarding__check {
-  background: var(--ink);
+  background: var(--strong);
   border-color: var(--ink);
   color: var(--paper);
 }
@@ -186,7 +186,7 @@
   align-items: start;
 }
 .plan-item__num {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-xl);
   color: var(--ink-3);
   line-height: 1.3;
@@ -197,7 +197,7 @@
   gap: 6px;
 }
 .plan-item__title {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-xl);
   font-weight: 520;
 }
@@ -224,12 +224,12 @@
   gap: 4px;
 }
 .plan-done__title {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-xl);
   color: var(--ok);
 }
 .today__stat {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-xl);
 }
 .rhythm {
@@ -245,7 +245,7 @@
   border: 1px solid var(--line);
 }
 .rhythm__cell[data-active] {
-  background: var(--ink);
+  background: var(--strong);
   border-color: var(--ink);
 }
 .upcoming {
@@ -294,7 +294,7 @@
   box-shadow: inset 0 0 0 1px var(--ink);
 }
 .level-tabs__code {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-xl);
   font-weight: 600;
 }
@@ -314,7 +314,7 @@
   border-bottom: 1px solid var(--ink);
 }
 .level__title {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-2xl);
   font-weight: 540;
 }
@@ -363,7 +363,7 @@
   color: var(--paper);
 }
 .route__stop[data-status='completed'] .route__marker {
-  background: var(--ink);
+  background: var(--strong);
   border-color: var(--ink);
 }
 .route__stop[data-status='in_progress'] .route__marker {
@@ -840,7 +840,7 @@ a.route__link:hover .route__title {
   border-bottom: 1px solid var(--line);
 }
 .summary__big {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: 4rem;
   line-height: 1;
   font-weight: 500;
@@ -875,7 +875,7 @@ a.route__link:hover .route__title {
   border: 1px solid var(--line);
 }
 .summary__next-title {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-xl);
 }
 .summary__review summary {
@@ -962,12 +962,12 @@ a.route__link:hover .route__title {
 }
 .review-card__prompt {
   font-size: var(--text-3xl);
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   line-height: 1.2;
 }
 .review-card__answer {
   font-size: var(--text-2xl);
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
 }
 .review-card__result {
   display: flex;
@@ -1045,7 +1045,7 @@ a.route__link:hover .route__title {
   margin: 0;
 }
 .stat__value {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-2xl);
   line-height: 1.15;
 }
@@ -1160,7 +1160,7 @@ a.route__link:hover .route__title {
   border-top: 1px solid var(--ink);
 }
 .admin-course__head h3 {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-xl);
   font-weight: 540;
 }
@@ -1171,7 +1171,7 @@ a.route__link:hover .route__title {
   height: 28px;
   padding: 0 6px;
   border-radius: 6px;
-  background: var(--ink);
+  background: var(--strong);
   color: var(--paper);
   font-weight: 700;
   font-size: var(--text-sm);

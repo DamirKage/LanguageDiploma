@@ -21,14 +21,14 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4000
-      MONGODB_URI: mongodb://mongo:27017/slog
+      MONGODB_URI: mongodb://mongo:27017/linguapath
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Set JWT_ACCESS_SECRET in .env}
       CLIENT_ORIGIN: ${PUBLIC_APP_URL:-http://localhost:8080}
       PUBLIC_APP_URL: ${PUBLIC_APP_URL:-http://localhost:8080}
       TRUST_PROXY: 'true'
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
       SMTP_URL: ${SMTP_URL:-}
-      MAIL_FROM: ${MAIL_FROM:-Слог <no-reply@slog.local>}
+      MAIL_FROM: ${MAIL_FROM:-LinguaPath <no-reply@linguapath.local>}
       UPLOAD_DIR: /app/server/uploads
     volumes:
       - uploads:/app/server/uploads
@@ -54,10 +54,10 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      MONGODB_URI: mongodb://mongo:27017/slog
+      MONGODB_URI: mongodb://mongo:27017/linguapath
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Set JWT_ACCESS_SECRET in .env}
-      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-SlogAdmin2026}
-      SEED_DEMO_PASSWORD: ${SEED_DEMO_PASSWORD:-SlogDemo2026}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-LinguaAdmin2026}
+      SEED_DEMO_PASSWORD: ${SEED_DEMO_PASSWORD:-LinguaDemo2026}
     command: ['node', 'dist/seed.js']
 
 volumes:

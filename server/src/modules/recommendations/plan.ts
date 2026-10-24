@@ -1,4 +1,4 @@
-import type { Recommendation, RecommendationResult } from '@slog/shared';
+import type { Recommendation, RecommendationResult } from '@linguapath/shared';
 
 /** Activities that should open a session when present, in this order. */
 const LEADING_TYPES = ['placement', 'resume', 'review'] as const;

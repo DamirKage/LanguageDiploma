@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { LanguageDTO } from '@slog/shared';
+import type { LanguageDTO } from '@linguapath/shared';
 import { catalogApi, meApi } from '../api/endpoints';
 import { useAuth } from '../auth/AuthContext';
 import { useI18n } from '../i18n';

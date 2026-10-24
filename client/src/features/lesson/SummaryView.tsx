@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Check, X as XIcon } from 'lucide-react';
-import type { AttemptSummaryDTO } from '@slog/shared';
+import type { AttemptSummaryDTO } from '@linguapath/shared';
 import { Button, buttonClass, Meter } from '../../components/ui';
 import { useI18n } from '../../i18n';
 import { useTopics } from '../../lib/queries';

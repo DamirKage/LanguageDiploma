@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import type { Role } from '@slog/shared';
+import type { Role } from '@linguapath/shared';
 import { config } from '../../config';
 import { AppError, errors } from '../../lib/errors';
 import { User } from '../../models/user';
@@ -23,7 +23,7 @@ export function signAccessToken(userId: string, role: Role): string {
     subject: userId,
     expiresIn: config.accessTokenTtlSec,
     algorithm: 'HS256',
-    issuer: 'slog',
+    issuer: 'linguapath',
   });
 }
 
@@ -46,7 +46,7 @@ export function authenticate(access: 'user' | 'admin' | 'optional') {
     }
     let payload: AccessPayload;
     try {
-      payload = jwt.verify(token, config.jwtSecret, { algorithms: ['HS256'], issuer: 'slog' }) as AccessPayload;
+      payload = jwt.verify(token, config.jwtSecret, { algorithms: ['HS256'], issuer: 'linguapath' }) as AccessPayload;
     } catch (err) {
       if (access === 'optional') return next();
       throw err instanceof jwt.TokenExpiredError ? new AppError(401, 'token_expired') : errors.unauthorized();
@@ -72,6 +72,6 @@ export function authenticate(access: 'user' | 'admin' | 'optional') {
  * preflight, which our CORS policy only allows for the configured origins.
  */
 export function requireCsrfHeader(req: Request, _res: Response, next: NextFunction) {
-  if (req.get('x-requested-with') !== 'slog') throw errors.forbidden('csrf_failed');
+  if (req.get('x-requested-with') !== 'linguapath') throw errors.forbidden('csrf_failed');
   next();
 }

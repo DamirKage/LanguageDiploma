@@ -6,7 +6,7 @@ import {
   type Exercise,
   type ExerciseAnswer,
   type Verdict,
-} from '@slog/shared';
+} from '@linguapath/shared';
 import { looseKey, matchText, similarity, strictKey } from '../../lib/text';
 
 export interface CheckResult {

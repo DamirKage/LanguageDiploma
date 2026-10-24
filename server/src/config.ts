@@ -13,7 +13,7 @@ const bool = z
 const schema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(4000),
-  MONGODB_URI: z.string().min(1).default('mongodb://127.0.0.1:27017/slog'),
+  MONGODB_URI: z.string().min(1).default('mongodb://127.0.0.1:27017/linguapath'),
   JWT_ACCESS_SECRET: z.string().min(32).optional(),
   ACCESS_TOKEN_TTL_SEC: z.coerce.number().int().positive().default(900),
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().positive().default(30),
@@ -25,7 +25,7 @@ const schema = z.object({
   RATE_LIMIT_ENABLED: bool.default(true),
   EXPOSE_DEV_LINKS: bool.default(false),
   SMTP_URL: z.string().optional(),
-  MAIL_FROM: z.string().default('Слог <no-reply@slog.local>'),
+  MAIL_FROM: z.string().default('LinguaPath <no-reply@linguapath.local>'),
   UPLOAD_DIR: z.string().default('uploads'),
   MAX_UPLOAD_MB: z.coerce.number().positive().default(5),
   DICTIONARY_API_URL: z.string().default('https://en.wiktionary.org/api/rest_v1/page/definition'),

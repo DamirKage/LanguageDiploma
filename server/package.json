@@ -1,5 +1,5 @@
 {
-  "name": "@slog/server",
+  "name": "@linguapath/server",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -13,7 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@slog/shared": "*",
+    "@linguapath/shared": "*",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",

@@ -14,6 +14,9 @@ import { ApiError } from './api/client';
 import { AuthProvider } from './auth/AuthContext';
 import { ToastProvider } from './components/ui';
 import { I18nProvider } from './i18n';
+import { applyTheme } from './lib/theme';
+
+applyTheme();
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -1,5 +1,5 @@
 import axios, { AxiosError, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios';
-import type { ApiErrorBody, AuthResponse } from '@slog/shared';
+import type { ApiErrorBody, AuthResponse } from '@linguapath/shared';
 
 export class ApiError extends Error {
   constructor(
@@ -38,7 +38,7 @@ http.interceptors.request.use((config) => {
 
 export function refreshSession(): Promise<AuthResponse> {
   refreshing ??= axios
-    .post<AuthResponse>('/api/auth/refresh', null, { withCredentials: true, headers: { 'X-Requested-With': 'slog' } })
+    .post<AuthResponse>('/api/auth/refresh', null, { withCredentials: true, headers: { 'X-Requested-With': 'linguapath' } })
     .then((res) => {
       setAccessToken(res.data.accessToken);
       sessionListeners.forEach((l) => l(res.data));

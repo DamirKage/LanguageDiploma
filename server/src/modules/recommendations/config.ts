@@ -1,4 +1,4 @@
-import type { LearningGoal, RecommendationType } from '@slog/shared';
+import type { LearningGoal, RecommendationType } from '@linguapath/shared';
 
 /**
  * Weights of the scoring model. Every candidate activity receives

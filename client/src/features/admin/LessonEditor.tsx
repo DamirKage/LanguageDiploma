@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Plus, Trash2, X } from 'lucide-react';
-import type { Paginated } from '@slog/shared';
+import type { Paginated } from '@linguapath/shared';
 import { ApiError } from '../../api/client';
 import { adminApi } from '../../api/endpoints';
 import { Alert, Button, ErrorState, errorMessage, Field, PageLoader, Section, Select, Textarea, TextInput, useTitle, useToast } from '../../components/ui';

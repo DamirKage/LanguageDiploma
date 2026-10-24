@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import type { CefrLevel, Recommendation } from '@slog/shared';
+import type { CefrLevel, Recommendation } from '@linguapath/shared';
 import { learningApi, meApi } from '../../api/endpoints';
 import { errorMessage, useToast } from '../../components/ui';
 import { useI18n } from '../../i18n';

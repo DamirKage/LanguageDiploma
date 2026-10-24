@@ -5,7 +5,7 @@ import type {
   ExerciseType,
   LocalizedText,
   Skill,
-} from '@slog/shared';
+} from '@linguapath/shared';
 
 /** Exercise metadata shorthand: topic, skill, error category, difficulty. */
 export interface Meta {

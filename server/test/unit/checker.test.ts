@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Exercise } from '@slog/shared';
+import type { Exercise } from '@linguapath/shared';
 import { checkAnswer } from '../../src/modules/learning/checker';
 import { toPublicExercise } from '../../src/modules/learning/presenter';
 

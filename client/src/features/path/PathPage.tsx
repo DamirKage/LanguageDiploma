@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Check, CircleDot, FileCheck2 } from 'lucide-react';
-import type { PathLessonDTO, PathModuleDTO } from '@slog/shared';
+import type { PathLessonDTO, PathModuleDTO } from '@linguapath/shared';
 import { catalogApi, learningApi, meApi } from '../../api/endpoints';
 import { Button, ErrorState, errorMessage, PageLoader, useTitle, useToast } from '../../components/ui';
 import { useI18n } from '../../i18n';

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 import { afterAll, beforeAll } from 'vitest';
-import type { AuthResponse } from '@slog/shared';
+import type { AuthResponse } from '@linguapath/shared';
 import { createApp } from '../src/app';
 import { User } from '../src/models/user';
 import { seedContent } from '../src/seed/content-seed';

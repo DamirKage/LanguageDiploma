@@ -1,7 +1,7 @@
 import { useDeferredValue, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { BookOpenText, ExternalLink } from 'lucide-react';
-import type { SrsState, VocabularyItemDTO } from '@slog/shared';
+import type { SrsState, VocabularyItemDTO } from '@linguapath/shared';
 import { catalogApi } from '../../api/endpoints';
 import { Alert, Button, EmptyState, ErrorState, errorMessage, PageLoader, Select, Spinner, TextInput, useTitle } from '../../components/ui';
 import { useI18n } from '../../i18n';

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { ExerciseAnswer, PublicExerciseView } from '@slog/shared';
+import type { ExerciseAnswer, PublicExerciseView } from '@linguapath/shared';
 import { I18nProvider } from '../i18n';
 import { ExerciseView, type LanguageInfo } from '../features/lesson/exercises/Exercise';
 

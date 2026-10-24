@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CEFR_LEVELS, ERROR_CATEGORIES, SKILLS } from '@slog/shared';
+import { CEFR_LEVELS, ERROR_CATEGORIES, SKILLS } from '@linguapath/shared';
 
 export const localizedText = z
   .object({ ru: z.string().trim().min(1, 'Заполните текст на русском языке').max(5000) })

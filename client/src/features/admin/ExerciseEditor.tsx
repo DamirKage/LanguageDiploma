@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react';
-import { CEFR_LEVELS, ERROR_CATEGORIES, EXERCISE_TYPES, SKILLS, type Exercise, type ExerciseType, type LocalizedText } from '@slog/shared';
+import { CEFR_LEVELS, ERROR_CATEGORIES, EXERCISE_TYPES, SKILLS, type Exercise, type ExerciseType, type LocalizedText } from '@linguapath/shared';
 import { Button, Field, Select, Textarea, TextInput } from '../../components/ui';
 import { useI18n, type MessageKey } from '../../i18n';
 import { useTopics } from '../../lib/queries';

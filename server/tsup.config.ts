@@ -8,5 +8,5 @@ export default defineConfig({
   outDir: 'dist',
   clean: true,
   sourcemap: true,
-  noExternal: ['@slog/shared'],
+  noExternal: ['@linguapath/shared'],
 });

@@ -1,14 +1,14 @@
 import crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import type { Response } from 'express';
-import type { UserDTO } from '@slog/shared';
+import type { UserDTO } from '@linguapath/shared';
 import { config } from '../../config';
 import { AppError, errors } from '../../lib/errors';
 import { PasswordResetToken, RefreshToken, User, type UserDoc } from '../../models/user';
 import { sendMail } from '../../integrations/mailer';
 import { signAccessToken } from './middleware';
 
-export const REFRESH_COOKIE = 'slog_rt';
+export const REFRESH_COOKIE = 'lp_rt';
 const RESET_TTL_MS = 60 * 60 * 1000;
 const REUSE_GRACE_MS = 10_000;
 
@@ -161,7 +161,7 @@ export async function requestPasswordReset(email: string): Promise<{ devResetUrl
   const url = `${config.publicAppUrl}/reset-password?token=${encodeURIComponent(token)}`;
   await sendMail({
     to: user.email,
-    subject: 'Восстановление пароля — Слог',
+    subject: 'Восстановление пароля — LinguaPath',
     text: `Здравствуйте, ${user.name}!\n\nЧтобы задать новый пароль, перейдите по ссылке (действует 1 час):\n${url}\n\nЕсли вы не запрашивали восстановление, просто проигнорируйте это письмо.`,
   });
   return config.exposeDevLinks ? { devResetUrl: url } : {};

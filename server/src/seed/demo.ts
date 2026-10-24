@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import type { Exercise, LearningGoal } from '@slog/shared';
+import type { Exercise, LearningGoal } from '@linguapath/shared';
 import { seededRandom } from '../lib/text';
 import { Lesson, Test } from '../models/content';
 import { Attempt } from '../models/learning';
@@ -126,7 +126,7 @@ export async function createDemoLearner(profile: Profile, password: string, now 
 
 export const DEMO_PROFILES: Profile[] = [
   {
-    email: 'demo@slog.local',
+    email: 'demo@linguapath.local',
     name: 'Алия Демо',
     goals: ['travel', 'conversation'],
     dailyMinutes: 20,
@@ -153,7 +153,7 @@ export const DEMO_PROFILES: Profile[] = [
     ],
   },
   {
-    email: 'arman@demo.slog.local',
+    email: 'arman@demo.linguapath.local',
     name: 'Арман Демо',
     goals: ['work'],
     dailyMinutes: 15,
@@ -173,7 +173,7 @@ export const DEMO_PROFILES: Profile[] = [
     ],
   },
   {
-    email: 'dana@demo.slog.local',
+    email: 'dana@demo.linguapath.local',
     name: 'Дана Демо',
     goals: ['culture', 'study'],
     dailyMinutes: 10,
@@ -189,7 +189,7 @@ export const DEMO_PROFILES: Profile[] = [
     ],
   },
   {
-    email: 'timur@demo.slog.local',
+    email: 'timur@demo.linguapath.local',
     name: 'Тимур Демо',
     goals: ['travel'],
     dailyMinutes: 15,

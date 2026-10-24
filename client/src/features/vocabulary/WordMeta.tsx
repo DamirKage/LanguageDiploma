@@ -1,4 +1,4 @@
-import type { WordDTO } from '@slog/shared';
+import type { WordDTO } from '@linguapath/shared';
 import { useI18n } from '../../i18n';
 
 export function WordMeta({ word }: { word: Pick<WordDTO, 'partOfSpeech' | 'gender'> }) {

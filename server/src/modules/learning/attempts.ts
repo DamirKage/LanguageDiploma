@@ -13,7 +13,7 @@ import {
   type Exercise,
   type ExerciseAnswer,
   type LocalizedText,
-} from '@slog/shared';
+} from '@linguapath/shared';
 import { AppError, errors } from '../../lib/errors';
 import { Lesson, Test, Topic } from '../../models/content';
 import { AnswerEvent, Attempt, LessonProgress, type AttemptDocument } from '../../models/learning';

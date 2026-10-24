@@ -7,13 +7,21 @@ import { useAuth } from '../../auth/AuthContext';
 import { useI18n } from '../../i18n';
 import { LEARNING_KEYS, qk, useActiveLanguage, useEnrollments, useLanguageName } from '../../lib/queries';
 import { LanguageMark } from '../ui';
+import { ThemeSwitch } from '../theme/ThemePicker';
 
-export function Brand() {
+export function Brand({ motto = false }: { motto?: boolean }) {
   const { t } = useI18n();
   return (
     <Link to="/" className="brand" aria-label={t('app.name')}>
-      <span className="brand__word">{t('app.name')}</span>
-      <span className="brand__dot" aria-hidden />
+      <span className="brand__word" aria-hidden>
+        <span className="brand__lead">{t('app.nameLead')}</span>
+        {t('app.nameTail')}
+      </span>
+      {motto ? (
+        <span className="brand__motto" aria-hidden>
+          {t('app.motto')}
+        </span>
+      ) : null}
     </Link>
   );
 }
@@ -115,7 +123,7 @@ export function AppShell() {
         {t('app.skipToContent')}
       </a>
       <aside className="sidebar">
-        <Brand />
+        <Brand motto />
         <LanguageSwitcher />
         <nav className="nav" aria-label={t('nav.main')}>
           {items.map(({ to, label, icon: Icon, badge }) => (
@@ -127,6 +135,7 @@ export function AppShell() {
           ))}
         </nav>
         <div className="sidebar__foot">
+          <ThemeSwitch />
           {user?.role === 'admin' ? (
             <NavLink to="/admin" className="nav__link">
               <LayoutDashboard size={18} aria-hidden />

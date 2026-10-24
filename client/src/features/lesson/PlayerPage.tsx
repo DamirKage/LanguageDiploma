@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle2, CircleAlert, CircleX, X } from 'lucide-react';
-import type { AnswerFeedback, AttemptStateDTO, AttemptSummaryDTO, ExerciseAnswer } from '@slog/shared';
+import type { AnswerFeedback, AttemptStateDTO, AttemptSummaryDTO, ExerciseAnswer } from '@linguapath/shared';
 import { learningApi } from '../../api/endpoints';
 import { Alert, Button, ErrorState, errorMessage, Meter, PageLoader, useTitle } from '../../components/ui';
 import { useI18n } from '../../i18n';

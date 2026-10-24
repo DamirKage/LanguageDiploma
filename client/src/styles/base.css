@@ -32,7 +32,7 @@ h4 {
 }
 
 h1 {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--text-3xl);
   font-weight: 560;
   letter-spacing: -0.02em;
@@ -113,7 +113,7 @@ svg {
 
 /* Target-language text is set in the serif to separate it from interface copy. */
 .target {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-weight: 450;
 }
 

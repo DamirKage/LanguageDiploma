@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowRight, X } from 'lucide-react';
-import type { ReviewAnswer, ReviewAnswerResultDTO, ReviewCardDTO, ReviewGrade } from '@slog/shared';
+import type { ReviewAnswer, ReviewAnswerResultDTO, ReviewCardDTO, ReviewGrade } from '@linguapath/shared';
 import { reviewApi } from '../../api/endpoints';
 import { Alert, Button, buttonClass, EmptyState, ErrorState, errorMessage, Meter, PageLoader, useTitle } from '../../components/ui';
 import { useI18n } from '../../i18n';
@@ -11,7 +11,7 @@ import { SpeakButton } from '../lesson/SpeakButton';
 import { SpecialChars } from '../lesson/exercises/SpecialChars';
 import { WordMeta } from '../vocabulary/WordMeta';
 
-const MODE_KEY = 'slog.reviewMode';
+const MODE_KEY = 'linguapath.reviewMode';
 
 function readMode(): 'auto' | 'flip' {
   try {

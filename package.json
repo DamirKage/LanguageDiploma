@@ -1,8 +1,8 @@
 {
-  "name": "slog-platform",
+  "name": "linguapath-platform",
   "private": true,
   "version": "1.0.0",
-  "description": "Слог — персонализированная платформа для изучения иностранных языков",
+  "description": "LinguaPath — персонализированная платформа для изучения иностранных языков",
   "workspaces": ["shared", "server", "client"],
   "scripts": {
     "dev": "npm run dev --workspace server & npm run dev --workspace client",

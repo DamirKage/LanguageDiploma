@@ -27,14 +27,14 @@ import type {
   TopicDTO,
   UserDTO,
   VocabularyItemDTO,
-} from '@slog/shared';
+} from '@linguapath/shared';
 import { api } from './client';
 
 export const authApi = {
   login: (data: { email: string; password: string }) => api<AuthResponse>({ method: 'POST', url: '/auth/login', data }),
   register: (data: { email: string; password: string; name: string; timezone?: string }) =>
     api<AuthResponse>({ method: 'POST', url: '/auth/register', data }),
-  logout: () => api<void>({ method: 'POST', url: '/auth/logout', headers: { 'X-Requested-With': 'slog' } }),
+  logout: () => api<void>({ method: 'POST', url: '/auth/logout', headers: { 'X-Requested-With': 'linguapath' } }),
   forgot: (email: string) => api<{ ok: true; devResetUrl?: string }>({ method: 'POST', url: '/auth/forgot-password', data: { email } }),
   reset: (token: string, password: string) => api<{ ok: true }>({ method: 'POST', url: '/auth/reset-password', data: { token, password } }),
 };

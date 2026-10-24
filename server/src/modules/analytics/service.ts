@@ -10,8 +10,8 @@ import type {
   SrsState,
   TimelinePointDTO,
   TopicAnalyticsDTO,
-} from '@slog/shared';
-import { localize, type LocalizedText } from '@slog/shared';
+} from '@linguapath/shared';
+import { localize, type LocalizedText } from '@linguapath/shared';
 import { endOfLocalDay, lastLocalDates, localDaysBetween, startOfLocalDay } from '../../lib/time';
 import { Word } from '../../models/content';
 import { AnswerEvent, Attempt, LessonProgress, ReviewItem, ReviewLog } from '../../models/learning';

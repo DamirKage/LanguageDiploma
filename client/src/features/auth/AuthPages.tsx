@@ -4,6 +4,7 @@ import { ApiError } from '../../api/client';
 import { authApi } from '../../api/endpoints';
 import { useAuth } from '../../auth/AuthContext';
 import { Brand } from '../../components/layout/AppShell';
+import { ThemeSwitch } from '../../components/theme/ThemePicker';
 import { Alert, Button, errorMessage, Field, PasswordInput, TextInput, useTitle } from '../../components/ui';
 import { useI18n } from '../../i18n';
 
@@ -12,6 +13,7 @@ function AuthLayout({ title, lead, children, footer }: { title: string; lead?: s
     <div className="public">
       <header className="public__head">
         <Brand />
+        <ThemeSwitch />
       </header>
       <main className="public__main" id="main">
         <div className="auth-card">

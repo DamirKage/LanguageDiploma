@@ -61,7 +61,7 @@ export async function lookupWord(language: string, term: string, fetchImpl: type
   let entries: DictionaryEntry[] = [];
   try {
     const response = await fetchImpl(`${config.dictionaryApiUrl}/${encodeURIComponent(term)}`, {
-      headers: { 'User-Agent': 'SlogLearningPlatform/1.0 (educational project)', Accept: 'application/json' },
+      headers: { 'User-Agent': 'LinguaPathLearningPlatform/1.0 (educational project)', Accept: 'application/json' },
       signal: AbortSignal.timeout(5000),
     });
     if (response.status === 404) entries = [];

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Check } from 'lucide-react';
-import { CEFR_LEVELS, DAILY_MINUTES_OPTIONS, LEARNING_GOALS, type CefrLevel, type LearningGoal } from '@slog/shared';
+import { CEFR_LEVELS, DAILY_MINUTES_OPTIONS, LEARNING_GOALS, type CefrLevel, type LearningGoal } from '@linguapath/shared';
 import { learningApi, meApi } from '../../api/endpoints';
 import { useAuth } from '../../auth/AuthContext';
 import { Brand } from '../../components/layout/AppShell';

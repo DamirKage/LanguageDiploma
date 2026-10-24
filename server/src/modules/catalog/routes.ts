@@ -9,7 +9,7 @@ import {
   type TopicDTO,
   type VocabularyItemDTO,
   type WordDTO,
-} from '@slog/shared';
+} from '@linguapath/shared';
 import { errors } from '../../lib/errors';
 import { createApiRouter, idParams, languageCode } from '../../lib/http';
 import { Course, Language, Lesson, Test, Topic, Word } from '../../models/content';

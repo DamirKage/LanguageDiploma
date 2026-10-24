@@ -1,5 +1,5 @@
 import { Schema, model, type HydratedDocument, type InferSchemaType } from 'mongoose';
-import { CEFR_LEVELS, ERROR_CATEGORIES, EXERCISE_TYPES, SKILLS } from '@slog/shared';
+import { CEFR_LEVELS, ERROR_CATEGORIES, EXERCISE_TYPES, SKILLS } from '@linguapath/shared';
 
 const verdicts = ['correct', 'almost', 'incorrect', 'skipped'];
 

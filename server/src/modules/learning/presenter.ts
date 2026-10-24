@@ -1,4 +1,4 @@
-import { localize, type Exercise, type PublicExerciseView } from '@slog/shared';
+import { localize, type Exercise, type PublicExerciseView } from '@linguapath/shared';
 import { shuffle } from '../../lib/text';
 
 /** Strips answers from an exercise and shuffles options deterministically by `seed`. */

@@ -25,7 +25,7 @@ describe('translator', () => {
   });
 
   it('contains no Latin-only interface strings in the Russian dictionary', () => {
-    const allowed = /^(?:[^A-Za-z]*|.*(?:CEFR|SM-2|Wiktionary|MP3|OGG|WAV|WebM|PNG|JPEG|WebP|ISO 639-1|A1|A2|B1|B2|demo@slog\.local|SlogDemo2026|de-a1-weather|Enter|mein|meine|Das ist).*)$/;
+    const allowed = /^(?:Lingua|Path|[^A-Za-z]*|.*(?:CEFR|SM-2|Wiktionary|MP3|OGG|WAV|WebM|PNG|JPEG|WebP|ISO 639-1|LinguaPath|A1|A2|B1|B2|demo@linguapath\.local|LinguaDemo2026|de-a1-weather|Enter|mein|meine|Das ist).*)$/;
     const offenders: string[] = [];
     const walk = (node: unknown, path: string) => {
       if (typeof node === 'string') {

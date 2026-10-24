@@ -9,7 +9,7 @@ client (React 19 + TypeScript + Vite)         server (Node.js 22 + Express 5)   
  ├─ Chart.js (react-chartjs-2)                 ├─ модули: auth, users, catalog, learning,
  ├─ Web Speech API: озвучка, распознавание    │    srs, recommendations, analytics, admin
  └─ i18n: словари интерфейса (ru)              └─ интеграции: Wiktionary REST, SMTP (nodemailer)
-                           shared (@slog/shared): типы DTO, константы, контракты упражнений
+                           shared (@linguapath/shared): типы DTO, константы, контракты упражнений
 ```
 
 Монорепозиторий на npm workspaces: `shared`, `server`, `client`. Общие типы подключаются как исходники TypeScript. Vite и tsx компилируют их сами, а tsup встраивает их в сборку сервера.
@@ -36,7 +36,7 @@ client (React 19 + TypeScript + Vite)         server (Node.js 22 + Express 5)   
 - Access-токен (JWT HS256, 15 минут) передаётся в заголовке `Authorization` и хранится только в памяти клиента — не в `localStorage`.
 - Refresh-токен — случайные 48 байт. В базе хранится только SHA-256 хеш. Cookie: `httpOnly`, `SameSite=Strict`, `Path=/api/auth`, `Secure` в продакшене.
 - Ротация refresh-токенов с обнаружением повторного использования. Если уже использованный токен предъявлен позже чем через 10 секунд, отзывается всё «семейство» токенов. Окно в 10 секунд допускает одновременное обновление из двух вкладок.
-- CSRF: эндпоинты, работающие по cookie (`/auth/refresh`, `/auth/logout`), требуют заголовок `X-Requested-With: slog`. Браузер не отправит его кросс-доменно без CORS preflight, а CORS разрешён только для `CLIENT_ORIGIN`. Остальные эндпоинты используют Bearer-токен и CSRF не подвержены.
+- CSRF: эндпоинты, работающие по cookie (`/auth/refresh`, `/auth/logout`), требуют заголовок `X-Requested-With: linguapath`. Браузер не отправит его кросс-доменно без CORS preflight, а CORS разрешён только для `CLIENT_ORIGIN`. Остальные эндпоинты используют Bearer-токен и CSRF не подвержены.
 - При каждом запросе пользователь перечитывается из базы, поэтому блокировка и смена роли действуют сразу.
 - Rate limiting: 30 запросов за 15 минут на эндпоинты аутентификации, 1500 — на API в целом.
 - `helmet` (CSP и другие заголовки), ограничение тела запроса 1 МБ, строгая типизация входа через zod. Это исключает внедрение операторов MongoDB: в фильтры попадают только строки и числа.

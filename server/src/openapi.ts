@@ -61,10 +61,10 @@ export function buildOpenApiDocument() {
   return {
     openapi: '3.1.0',
     info: {
-      title: 'Слог — REST API',
+      title: 'LinguaPath — REST API',
       version: '1.0.0',
       description:
-        'API персонализированной платформы для изучения языков. Access-токен передаётся в заголовке `Authorization: Bearer …`; refresh-токен хранится в httpOnly-cookie и обновляется через `POST /api/auth/refresh` с заголовком `X-Requested-With: slog`.',
+        'API персонализированной платформы для изучения языков. Access-токен передаётся в заголовке `Authorization: Bearer …`; refresh-токен хранится в httpOnly-cookie и обновляется через `POST /api/auth/refresh` с заголовком `X-Requested-With: linguapath`.',
     },
     servers: [{ url: '/' }],
     components: {

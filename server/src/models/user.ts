@@ -1,5 +1,5 @@
 import { Schema, model, type InferSchemaType, type HydratedDocument, Types } from 'mongoose';
-import { CEFR_LEVELS, LEARNING_GOALS, ROLES } from '@slog/shared';
+import { CEFR_LEVELS, LEARNING_GOALS, ROLES } from '@linguapath/shared';
 
 const userSchema = new Schema(
   {

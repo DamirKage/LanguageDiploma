@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CEFR_LEVELS } from '@slog/shared';
+import { CEFR_LEVELS } from '@linguapath/shared';
 import { AppError, errors } from '../../lib/errors';
 import { createApiRouter, idParams, languageCode, objectId, pagination } from '../../lib/http';
 import { Course, CourseModule, Language, Lesson, Test, Topic, Word } from '../../models/content';

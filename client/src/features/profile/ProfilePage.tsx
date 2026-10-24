@@ -1,10 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CEFR_LEVELS, DAILY_MINUTES_OPTIONS, LEARNING_GOALS, type CefrLevel, type LearningGoal } from '@slog/shared';
+import { CEFR_LEVELS, DAILY_MINUTES_OPTIONS, LEARNING_GOALS, type CefrLevel, type LearningGoal } from '@linguapath/shared';
 import { learningApi, meApi } from '../../api/endpoints';
 import { useAuth } from '../../auth/AuthContext';
 import { Alert, Button, buttonClass, Dialog, errorMessage, Field, LanguageMark, PasswordInput, Section, Select, TextInput, useTitle, useToast } from '../../components/ui';
+import { ThemePicker } from '../../components/theme/ThemePicker';
 import { useI18n } from '../../i18n';
 import { LEARNING_KEYS, useEnrollments, useLanguageName } from '../../lib/queries';
 
@@ -173,6 +174,11 @@ export default function ProfilePage() {
             </li>
           ))}
         </ul>
+      </Section>
+
+      <Section title={t('theme.label')}>
+        <p className="small muted">{t('theme.hint')}</p>
+        <ThemePicker />
       </Section>
 
       <Section title={t('profile.security')}>

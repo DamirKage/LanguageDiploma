@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Pencil, Plus, Trash2, Upload } from 'lucide-react';
-import { CEFR_LEVELS, type CefrLevel, type Paginated } from '@slog/shared';
+import { CEFR_LEVELS, type CefrLevel, type Paginated } from '@linguapath/shared';
 import { adminApi, catalogApi } from '../../api/endpoints';
 import { Alert, Button, Dialog, EmptyState, errorMessage, Field, PageLoader, Select, Spinner, TextInput, useTitle, useToast } from '../../components/ui';
 import { useI18n, type MessageKey } from '../../i18n';

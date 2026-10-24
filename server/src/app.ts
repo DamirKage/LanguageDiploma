@@ -82,7 +82,7 @@ export function createApp() {
   app.get('/api/openapi.json', (_req, res) => {
     res.json(openapi);
   });
-  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapi, { customSiteTitle: 'Слог — документация API' }));
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapi, { customSiteTitle: 'LinguaPath — документация API' }));
 
   app.use(
     '/uploads',

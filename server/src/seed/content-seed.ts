@@ -1,5 +1,5 @@
 import type { Types } from 'mongoose';
-import type { Exercise } from '@slog/shared';
+import type { Exercise } from '@linguapath/shared';
 import { Course, CourseModule, Language, Lesson, Test, Topic, Word } from '../models/content';
 import { exerciseSchema } from '../modules/content/schemas';
 import { finalizeExercise, ru, type LanguageSpec } from './builders';

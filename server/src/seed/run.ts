@@ -24,8 +24,8 @@ async function main() {
   await seedContent();
   console.log('Curriculum seeded: 5 languages, A1–B2');
 
-  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? 'admin@slog.local';
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? 'SlogAdmin2026';
+  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? 'admin@linguapath.local';
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? 'LinguaAdmin2026';
   if (!(await User.exists({ email: adminEmail }))) {
     await User.create({
       email: adminEmail,
@@ -39,7 +39,7 @@ async function main() {
   }
 
   if (!args.has('--no-demo')) {
-    const demoPassword = process.env.SEED_DEMO_PASSWORD ?? 'SlogDemo2026';
+    const demoPassword = process.env.SEED_DEMO_PASSWORD ?? 'LinguaDemo2026';
     for (const profile of DEMO_PROFILES) {
       const result = await createDemoLearner(profile, demoPassword);
       console.log(`${result.created ? 'Demo learner created' : 'Demo learner exists'}: ${profile.email}`);

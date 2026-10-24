@@ -18,25 +18,28 @@
 
 .brand {
   display: inline-flex;
-  align-items: baseline;
-  gap: var(--s2);
+  flex-direction: column;
+  gap: 6px;
   padding: 0 var(--s2);
   color: var(--ink);
   text-decoration: none;
 }
 .brand__word {
-  font-family: var(--font-serif);
-  font-size: 1.75rem;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1;
 }
-.brand__dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 2px;
-  background: var(--accent);
-  transform: translateY(-2px);
+.brand__lead {
+  color: var(--accent);
+}
+.brand__motto {
+  color: var(--ink-3);
+  font-size: 0.6875rem;
+  font-weight: 560;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .nav {
@@ -100,7 +103,7 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: var(--ink);
+  background: var(--strong);
   color: var(--paper);
   font-weight: 650;
   font-size: var(--text-xs);

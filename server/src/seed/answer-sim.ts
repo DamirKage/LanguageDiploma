@@ -1,4 +1,4 @@
-import { localize, type Exercise, type ExerciseAnswer } from '@slog/shared';
+import { localize, type Exercise, type ExerciseAnswer } from '@linguapath/shared';
 
 /**
  * Produces a correct or deliberately wrong answer for an exercise. Used to build

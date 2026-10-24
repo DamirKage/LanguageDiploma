@@ -1,4 +1,4 @@
-import type { CefrLevel, Recommendation } from '@slog/shared';
+import type { CefrLevel, Recommendation } from '@linguapath/shared';
 import { seededRandom } from '../../../lib/text';
 import { DEFAULT_ENGINE_CONFIG, type EngineConfig } from '../config';
 import { nextPathLessons, recommend, type CatalogLesson, type CatalogModule, type LearnerSnapshot, type TopicEvidence } from '../engine';

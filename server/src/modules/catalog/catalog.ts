@@ -1,4 +1,4 @@
-import { CEFR_LEVELS, type CefrLevel, type Exercise, type LocalizedText } from '@slog/shared';
+import { CEFR_LEVELS, type CefrLevel, type Exercise, type LocalizedText } from '@linguapath/shared';
 import { Course, CourseModule, Lesson, Test } from '../../models/content';
 
 export interface CatalogData {

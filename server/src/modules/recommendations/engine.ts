@@ -9,7 +9,7 @@ import {
   type RecommendationReason,
   type RecommendationResult,
   type RecommendationType,
-} from '@slog/shared';
+} from '@linguapath/shared';
 import { DEFAULT_ENGINE_CONFIG, type EngineConfig } from './config';
 
 export const ENGINE_VERSION = 'rules-1.3';

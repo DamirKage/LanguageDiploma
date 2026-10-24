@@ -75,7 +75,7 @@ post(
   '/refresh',
   {
     summary: 'Обновление access-токена по refresh-cookie (с ротацией)',
-    description: 'Требует заголовок `X-Requested-With: slog` для защиты от CSRF.',
+    description: 'Требует заголовок `X-Requested-With: linguapath` для защиты от CSRF.',
     tags: ['Аутентификация'],
     access: 'public',
     returns: 'AuthResponse',

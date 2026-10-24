@@ -1,4 +1,4 @@
-import type { LocalizedText } from '@slog/shared';
+import type { LocalizedText } from '@linguapath/shared';
 
 /** The few interface strings the server has to store in generated records (attempt titles). */
 const TEXTS = {

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowRight, Check, RefreshCw } from 'lucide-react';
-import type { Recommendation, RecommendationResult } from '@slog/shared';
+import type { Recommendation, RecommendationResult } from '@linguapath/shared';
 import { analyticsApi, personalApi } from '../../api/endpoints';
 import { useAuth } from '../../auth/AuthContext';
 import { Button, EmptyState, ErrorState, PageLoader, Section, useTitle } from '../../components/ui';

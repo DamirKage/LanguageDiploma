@@ -7,7 +7,7 @@ import {
   type ReviewMode,
   type ReviewQueueDTO,
   type Verdict,
-} from '@slog/shared';
+} from '@linguapath/shared';
 import { errors } from '../../lib/errors';
 import { matchText, shuffle, strictKey } from '../../lib/text';
 import { endOfLocalDay, startOfLocalDay } from '../../lib/time';

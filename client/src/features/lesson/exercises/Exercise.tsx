@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Mic, Square, Turtle, Volume2 } from 'lucide-react';
-import { localize, type AnswerFeedback, type ExerciseAnswer, type PublicExerciseView } from '@slog/shared';
+import { localize, type AnswerFeedback, type ExerciseAnswer, type PublicExerciseView } from '@linguapath/shared';
 import { Alert, Button } from '../../../components/ui';
 import { useI18n } from '../../../i18n';
 import { useRecognition, useSpeaker } from '../../../lib/speech';

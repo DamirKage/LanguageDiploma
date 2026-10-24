@@ -9,7 +9,7 @@ import {
   type Recommendation,
   type RecommendationResult,
   type StudyPlan,
-} from '@slog/shared';
+} from '@linguapath/shared';
 import { errors } from '../../lib/errors';
 import { endOfLocalDay, localDateKey, localDaysBetween, startOfLocalDay } from '../../lib/time';
 import { Topic } from '../../models/content';

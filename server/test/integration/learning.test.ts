@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import type { AttemptStateDTO, Exercise, LearningPathDTO } from '@slog/shared';
+import type { AttemptStateDTO, Exercise, LearningPathDTO } from '@linguapath/shared';
 import { Lesson, Test } from '../../src/models/content';
 import { AnswerEvent, Attempt, LessonProgress, ReviewItem } from '../../src/models/learning';
 import { simulateAnswer } from '../../src/seed/answer-sim';
