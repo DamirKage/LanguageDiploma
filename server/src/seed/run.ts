@@ -25,6 +25,7 @@ async function main() {
   console.log('Curriculum seeded: 5 languages, A1–B2');
 
   const adminEmail = process.env.SEED_ADMIN_EMAIL ?? 'admin@linguapath.local';
+  if (config.isProd && !process.env.SEED_ADMIN_PASSWORD) throw new Error('SEED_ADMIN_PASSWORD must be set in production');
   const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? 'LinguaAdmin2026';
   if (!(await User.exists({ email: adminEmail }))) {
     await User.create({

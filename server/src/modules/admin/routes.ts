@@ -6,13 +6,12 @@ import { z } from 'zod';
 import { localize, type AdminStatsDTO, type AdminUserDTO, type LocalizedText, type Paginated } from '@linguapath/shared';
 import { config } from '../../config';
 import { AppError, errors } from '../../lib/errors';
-import { createApiRouter, idParams, pagination } from '../../lib/http';
+import { createApiRouter, pagination } from '../../lib/http';
 import { Course, Language, Lesson, Test, Word } from '../../models/content';
 import { AnswerEvent, Attempt, LessonProgress, ReviewLog } from '../../models/learning';
 import { Enrollment, User } from '../../models/user';
-import { revokeAllSessions } from '../auth/service';
 
-const { router, get, patch, post, delete: del } = createApiRouter('/api/admin');
+const { router, get, post, delete: del } = createApiRouter('/api/admin');
 
 /* ---------- Users ---------- */
 
@@ -51,7 +50,6 @@ get(
         email: u.email,
         name: u.name,
         role: u.role,
-        isBlocked: u.isBlocked,
         createdAt: (u.createdAt as Date).toISOString(),
         lastActiveAt: u.lastActiveAt?.toISOString() ?? null,
         languages: enrollments.filter((e) => String(e.user) === String(u._id)).map((e) => e.language),
@@ -61,24 +59,6 @@ get(
       page: query.page,
       pageSize: query.pageSize,
     };
-  },
-);
-
-patch(
-  '/users/:id',
-  {
-    summary: 'Изменить роль или заблокировать пользователя',
-    tags: ['Администрирование: пользователи'],
-    access: 'admin',
-    params: idParams,
-    body: z.object({ role: z.enum(['user', 'admin']), isBlocked: z.boolean() }).partial(),
-  },
-  async ({ params, body, user }) => {
-    if (params.id === user.id) throw new AppError(403, 'forbidden', 'Нельзя изменить роль или заблокировать собственный аккаунт');
-    const doc = await User.findByIdAndUpdate(params.id, { $set: body }, { returnDocument: 'after' }).lean();
-    if (!doc) throw errors.notFound();
-    if (body.isBlocked) await revokeAllSessions(params.id);
-    return { id: String(doc._id), role: doc.role, isBlocked: doc.isBlocked };
   },
 );
 
@@ -252,6 +232,13 @@ get('/media', { summary: 'Загруженные файлы', tags: ['Админ
 });
 
 del('/media/:name', { summary: 'Удалить загруженный файл', tags: ['Администрирование: контент'], access: 'admin', params: z.object({ name: z.string().regex(/^[a-f0-9-]{36}\.[a-z0-9]{3,4}$/) }) }, async ({ params }) => {
+  const url = `/uploads/${params.name}`;
+  const inUse = await Promise.all([
+    Word.exists({ $or: [{ audioUrl: url }, { imageUrl: url }] }),
+    Lesson.exists({ 'exercises.audioUrl': url }),
+    Test.exists({ 'exercises.audioUrl': url }),
+  ]);
+  if (inUse.some(Boolean)) throw new AppError(409, 'conflict', 'Файл используется в словаре или заданиях. Сначала уберите ссылки на него.');
   try {
     await fs.unlink(path.join(config.uploadDir, params.name));
   } catch {

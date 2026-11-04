@@ -22,10 +22,9 @@ const answerSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('fill_blank'), text }),
   z.object({ type: z.literal('translate'), text }),
   z.object({ type: z.literal('order'), tokens: z.array(text).max(30) }),
-  z.object({ type: z.literal('match'), pairs: z.array(z.object({ left: text, right: text })).max(10) }),
   z.object({ type: z.literal('listen'), text, skipped: z.boolean().optional() }),
   z.object({ type: z.literal('dialogue'), option: text }),
-  z.object({ type: z.literal('speak'), transcript: text, skipped: z.boolean().optional() }),
+  z.object({ type: z.literal('speak'), transcript: text, skipped: z.boolean().optional(), typed: z.boolean().optional() }),
 ]);
 
 const startBody = z.object({ recommendationKey: z.string().max(120).optional() }).default({});

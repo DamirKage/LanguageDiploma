@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CEFR_LEVELS } from '@linguapath/shared';
+import { CEFR_LEVELS, TEST_PASS_PERCENT } from '@linguapath/shared';
 import { AppError, errors } from '../../lib/errors';
 import { createApiRouter, idParams, languageCode, objectId, pagination } from '../../lib/http';
 import { Course, CourseModule, Language, Lesson, Test, Topic, Word } from '../../models/content';
@@ -14,6 +14,25 @@ export function plain<T extends { _id: unknown }>(doc: T): Omit<T, '_id' | '__v'
   const { _id, __v, ...rest } = doc as T & { __v?: number };
   void __v;
   return { id: String(_id), ...rest };
+}
+
+async function ensureTopicsExist(topics: Array<string | undefined>) {
+  const keys = [...new Set(topics.filter((t): t is string => !!t && t !== 'placement'))];
+  if (keys.length === 0) return;
+  const found = await Topic.countDocuments({ key: { $in: keys } });
+  if (found !== keys.length) throw new AppError(400, 'validation_failed', 'Указана тема, которой нет в справочнике тем');
+}
+
+/** A test must point at a module and lesson of its own language, and the lesson must belong to the module. */
+async function ensureTestLinks(body: { language: string; module: string | null; lesson: string | null }) {
+  if (!(await Language.exists({ code: body.language }))) throw errors.notFound();
+  const mod = body.module ? await CourseModule.findById(body.module).lean() : null;
+  if (body.module && (!mod || mod.language !== body.language)) throw new AppError(400, 'validation_failed', 'Модуль не найден или относится к другому языку');
+  if (body.lesson) {
+    const lesson = await Lesson.findById(body.lesson).lean();
+    if (!lesson || lesson.language !== body.language) throw new AppError(400, 'validation_failed', 'Урок не найден или относится к другому языку');
+    if (mod && String(lesson.module) !== String(mod._id)) throw new AppError(400, 'validation_failed', 'Урок не относится к выбранному модулю');
+  }
 }
 
 async function ensureUniqueExerciseKeys(exercises: Array<{ key: string }>, ownLessonId?: string, ownTestId?: string) {
@@ -64,31 +83,6 @@ del(
     if (await Course.exists({ language: params.code })) throw new AppError(409, 'conflict', 'Сначала удалите курсы этого языка или скройте язык');
     const res = await Language.deleteOne({ code: params.code });
     if (res.deletedCount === 0) throw errors.notFound();
-  },
-);
-
-/* ---------- Topics ---------- */
-
-const topicBody = z.object({
-  key: z.string().trim().regex(/^[a-z][a-z0-9_]{1,40}$/, 'Ключ: латиница в нижнем регистре и «_»'),
-  title: localizedText,
-  kind: z.enum(['grammar', 'vocabulary', 'communication']),
-});
-
-get('/topics', { summary: 'Темы', tags, access: 'admin' }, async () => (await Topic.find().sort({ key: 1 }).lean()).map(plain));
-
-post('/topics', { summary: 'Добавить тему', tags, access: 'admin', status: 201, body: topicBody }, async ({ body }) => {
-  if (await Topic.exists({ key: body.key })) throw errors.conflict();
-  return plain((await Topic.create(body)).toObject());
-});
-
-patch(
-  '/topics/:key',
-  { summary: 'Изменить тему', tags, access: 'admin', params: z.object({ key: z.string().max(60) }), body: topicBody.omit({ key: true }).partial() },
-  async ({ params, body }) => {
-    const doc = await Topic.findOneAndUpdate({ key: params.key }, { $set: body }, { returnDocument: 'after' }).lean();
-    if (!doc) throw errors.notFound();
-    return plain(doc);
   },
 );
 
@@ -208,6 +202,7 @@ async function lessonPayload(body: z.infer<typeof lessonBody>, ownId?: string) {
   if (!mod) throw errors.notFound();
   if (await Lesson.exists({ key: body.key, ...(ownId ? { _id: { $ne: ownId } } : {}) })) throw new AppError(409, 'conflict', 'Урок с таким ключом уже существует');
   await ensureUniqueExerciseKeys(body.exercises, ownId);
+  await ensureTopicsExist([body.topic, ...body.exercises.map((e) => e.topic)]);
   const wordCount = await Word.countDocuments({ _id: { $in: body.words }, language: mod.language });
   if (wordCount !== new Set(body.words).size) throw new AppError(400, 'validation_failed', 'Некоторые слова не найдены или относятся к другому языку');
   return { ...body, course: mod.course, language: mod.language, level: mod.level };
@@ -283,10 +278,12 @@ get(
 
 post('/words', { summary: 'Добавить слово', tags, access: 'admin', status: 201, body: wordBody }, async ({ body }) => {
   if (await Word.exists({ language: body.language, term: body.term })) throw new AppError(409, 'conflict', 'Такое слово уже есть в словаре');
+  await ensureTopicsExist([body.topic]);
   return plain((await Word.create(body)).toObject());
 });
 
 patch('/words/:id', { summary: 'Изменить слово', tags, access: 'admin', params: idParams, body: wordBody.omit({ language: true }).partial() }, async ({ params, body }) => {
+  await ensureTopicsExist([body.topic]);
   const doc = await Word.findByIdAndUpdate(params.id, { $set: body }, { returnDocument: 'after' }).lean();
   if (!doc) throw errors.notFound();
   return plain(doc);
@@ -308,7 +305,7 @@ const testBody = z
     module: objectId.nullable().default(null),
     lesson: objectId.nullable().default(null),
     title: localizedText,
-    passPercent: z.number().int().min(1).max(100).default(70),
+    passPercent: z.number().int().min(1).max(100).default(TEST_PASS_PERCENT),
     exercises: z.array(exerciseSchema).min(1).max(60),
     isPublished: z.boolean().default(false),
   })
@@ -331,12 +328,16 @@ get('/tests/:id', { summary: 'Тест целиком', tags, access: 'admin', p
 });
 
 post('/tests', { summary: 'Создать тест', tags, access: 'admin', status: 201, body: testBody }, async ({ body }) => {
+  await ensureTestLinks(body);
+  await ensureTopicsExist(body.exercises.map((e) => e.topic));
   await ensureUniqueExerciseKeys(body.exercises);
   return plain((await Test.create(body)).toObject());
 });
 
 put('/tests/:id', { summary: 'Сохранить тест целиком', tags, access: 'admin', params: idParams, body: testBody }, async ({ params, body }) => {
   if (!(await Test.exists({ _id: params.id }))) throw errors.notFound();
+  await ensureTestLinks(body);
+  await ensureTopicsExist(body.exercises.map((e) => e.topic));
   await ensureUniqueExerciseKeys(body.exercises, undefined, params.id);
   return plain((await Test.findByIdAndUpdate(params.id, { $set: body }, { returnDocument: 'after' }).lean())!);
 });

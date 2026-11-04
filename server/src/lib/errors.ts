@@ -4,7 +4,6 @@ export type ErrorCode =
   | 'invalid_credentials'
   | 'token_expired'
   | 'forbidden'
-  | 'account_blocked'
   | 'not_found'
   | 'conflict'
   | 'email_taken'
@@ -32,7 +31,6 @@ const DEFAULT_MESSAGES: Record<ErrorCode, string> = {
   invalid_credentials: 'Неверный адрес электронной почты или пароль.',
   token_expired: 'Сессия истекла. Войдите снова.',
   forbidden: 'Недостаточно прав для этого действия.',
-  account_blocked: 'Аккаунт заблокирован. Обратитесь к администратору.',
   not_found: 'Запрошенный ресурс не найден.',
   conflict: 'Действие конфликтует с текущим состоянием данных.',
   email_taken: 'Аккаунт с таким адресом уже существует.',

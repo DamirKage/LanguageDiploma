@@ -1,4 +1,4 @@
-import { choice, choiceRu, dialogue, fill, listen, match, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
+import { choice, choiceRu, dialogue, fill, listen, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
 
 export const german: LanguageSpec = {
   code: 'de',
@@ -48,15 +48,7 @@ export const german: LanguageSpec = {
               ],
               exercises: [
                 choice('Как вежливо поздороваться с коллегой днём?', ['Guten Tag!', 'Gute Nacht!', 'Tschüss!'], 0, 'Guten Tag — нейтральное дневное приветствие. Gute Nacht говорят перед сном, Tschüss — «пока».'),
-                match(
-                  [
-                    ['Guten Morgen', 'доброе утро'],
-                    ['Guten Abend', 'добрый вечер'],
-                    ['Tschüss', 'пока'],
-                    ['danke', 'спасибо'],
-                  ],
-                  'Приветствия меняются в течение дня: Morgen — утро, Tag — день, Abend — вечер.',
-                ),
+                choiceRu('Что означает это приветствие?', 'Guten Morgen!', ['Доброе утро!', 'Добрый вечер!', 'Спокойной ночи!'], 0, 'Приветствия меняются в течение дня: Morgen — утро, Tag — день, Abend — вечер. «Спокойной ночи» — Gute Nacht.'),
                 fill('Ich ___ Daniyar.', ['heiße'], 'С местоимением ich глагол heißen получает окончание -e: ich heiße.', { s: 'grammar', t: 'present_tense' }, {
                   translation: 'Меня зовут Данияр.',
                   options: ['heiße', 'heißt', 'heißen'],
@@ -75,6 +67,24 @@ export const german: LanguageSpec = {
                 listen('Guten Abend!', 'Abend — «вечер». Ударение на первый слог: А́-бент.', {}, { options: ['Guten Abend!', 'Guten Morgen!', 'Gute Nacht!'], translation: 'Добрый вечер!' }),
                 translate('Привет, меня зовут Анна.', ['Hallo, ich heiße Anna.', 'Hallo, ich bin Anna.'], 'Представиться можно двумя способами: ich heiße … или ich bin …'),
                 speak('Guten Tag!', 'Добрый день!', 'Звук «g» в Guten твёрдый, как в слове «губы». В Tag звонкая «g» на конце звучит глухо: [та:к].'),
+              ],
+              test: [
+                choice('Что говорят вечером перед сном?', ['Gute Nacht!', 'Guten Morgen!', 'Guten Tag!'], 0, 'Gute Nacht — «спокойной ночи», это прощание перед сном. Guten Morgen — «доброе утро», Guten Tag — «добрый день».'),
+                fill('Wie ___ du?', ['heißt'], 'С du глагол heißen имеет форму heißt: основа уже оканчивается на ß, поэтому добавляется только -t.', { s: 'grammar', t: 'present_tense' }, {
+                  translation: 'Как тебя зовут?',
+                  options: ['heiße', 'heißt', 'heißen'],
+                }),
+                translate('До свидания, господин Вебер!', ['Auf Wiedersehen, Herr Weber!'], 'Auf Wiedersehen — нейтральное вежливое прощание; Herr — «господин», перед фамилией.'),
+                dialogue(
+                  [
+                    ['A', 'Hallo! Ich bin Tom. Und du?', 'Привет! Я Том. А ты?'],
+                    ['B', null],
+                  ],
+                  ['Ich bin Lena. Freut mich!', 'Tschüss, Tom!', 'Gute Nacht, Tom!'],
+                  0,
+                  'Том представился и спрашивает «А ты?» — нужно назвать своё имя: Ich bin … Freut mich — «очень приятно».',
+                ),
+                translateBack('Wie geht es Ihnen?', ['Как у Вас дела?', 'Как Ваши дела?', 'Как поживаете?', 'Как Вы поживаете?'], 'Ihnen — дательный падеж от вежливого Sie, поэтому это вежливый вопрос «Как у Вас дела?». Неформально: Wie geht es dir?', { d: 2 }),
               ],
             },
             {
@@ -110,21 +120,19 @@ export const german: LanguageSpec = {
                 fill('Ich ___ Student.', ['bin'], 'С ich глагол sein имеет форму bin.', {}, { translation: 'Я студент.', options: ['bin', 'bist', 'ist', 'sind'] }),
                 fill('Du ___ aus Almaty.', ['bist'], 'С du — bist: du bist.', {}, { translation: 'Ты из Алматы.', options: ['bin', 'bist', 'ist', 'seid'] }),
                 fill('Wir ___ in Astana.', ['sind', 'wohnen'], 'С wir: wir sind (мы находимся) или wir wohnen (мы живём).', { d: 2 }, { translation: 'Мы (живём) в Астане.' }),
-                match(
-                  [
-                    ['ich', 'bin'],
-                    ['er', 'ist'],
-                    ['ihr', 'seid'],
-                    ['sie (они)', 'sind'],
-                  ],
-                  'Формы sein неправильные: bin, bist, ist, sind, seid, sind.',
-                  { s: 'grammar' },
-                ),
+                choice('Какая форма sein подходит к местоимению ihr?', ['seid', 'sind', 'ist', 'bist'], 0, 'Формы sein неправильные: ich bin, du bist, er ist, wir sind, ihr seid, sie sind.', { s: 'grammar' }),
                 order(['Ich', 'komme', 'aus', 'Kasachstan'], 'Я из Казахстана.', 'В утвердительном предложении глагол стоит на втором месте.'),
                 choice('Как правильно сказать «Она врач»?', ['Sie ist Ärztin.', 'Sie ist eine die Ärztin.', 'Sie Ärztin.'], 0, 'Профессию называют без артикля, а глагол sein обязателен.', { s: 'grammar', d: 2 }),
                 translateBack('Wir wohnen in Berlin.', ['Мы живём в Берлине', 'Мы живем в Берлине'], 'wohnen — «жить, проживать», in Berlin — «в Берлине».'),
                 listen('Ich komme aus Kasachstan.', 'Kasachstan произносится с ударением на последний слог: ка-зах-ста́н.', {}, { translation: 'Я из Казахстана.' }),
                 speak('Ich bin Student.', 'Я студент.', 'В начале слова «st» произносится как «шт»: [ш-тудент].'),
+              ],
+              test: [
+                fill('Er ___ Arzt.', ['ist'], 'С er (он) глагол sein имеет форму ist.', {}, { translation: 'Он врач.', options: ['bin', 'ist', 'sind', 'seid'] }),
+                fill('Ihr ___ aus Deutschland.', ['seid', 'kommt'], 'С ihr: ihr seid aus … или ihr kommt aus … Не путайте seid (форма sein) и seit (предлог «с, начиная с»).', { d: 2 }, { translation: 'Вы (все) из Германии.' }),
+                choice('Как сказать «Она живёт в Астане»?', ['Sie wohnt in Astana.', 'Sie wohnen in Astana.', 'Sie wohnst in Astana.'], 0, 'С sie в значении «она» глагол получает окончание -t: sie wohnt. Sie wohnen — «они живут» или «Вы живёте».', { s: 'grammar', t: 'present_tense', d: 2 }),
+                order(['Woher', 'kommst', 'du'], 'Откуда ты?', 'В вопросе с вопросительным словом оно стоит первым, глагол — на втором месте, подлежащее — после него.', { s: 'grammar', t: 'questions' }),
+                translate('Мы студенты.', ['Wir sind Studenten.', 'Wir sind Studentinnen.'], 'Глагол sein обязателен, профессию или статус называют без артикля; множественное число от der Student — die Studenten.', { s: 'grammar', d: 2 }),
               ],
             },
             {
@@ -156,15 +164,7 @@ export const german: LanguageSpec = {
                 ['die Nummer', 'номер', 'noun', 'Wie ist deine Nummer?', 'Какой у тебя номер?', 'f'],
               ],
               exercises: [
-                match(
-                  [
-                    ['drei', '3'],
-                    ['sieben', '7'],
-                    ['zwölf', '12'],
-                    ['dreißig', '30'],
-                  ],
-                  'Обратите внимание: dreißig пишется через ß, а не через z, как zwanzig.',
-                ),
+                choice('Как по-немецки 30?', ['dreißig', 'dreizehn', 'dreizig'], 0, 'Обратите внимание: dreißig пишется через ß, а не через z, как zwanzig. dreizehn — это 13.'),
                 choice('Как будет 25?', ['fünfundzwanzig', 'zwanzigfünf', 'fünfzwanzig'], 0, 'Сначала единицы, потом десятки, между ними und: fünf-und-zwanzig.', { s: 'grammar', d: 2 }),
                 fill('Ich bin 30 Jahre ___.', ['alt'], 'Возраст: Ich bin … Jahre alt.', { s: 'grammar' }, { translation: 'Мне 30 лет.' }),
                 listen('siebenundvierzig', 'Слушайте конец слова: vierzig — сорок, значит, 47.', {}, { options: ['47', '74', '27'], answers: ['47'] }),
@@ -180,6 +180,21 @@ export const german: LanguageSpec = {
                 ),
                 choiceRu('Что означает это число?', 'dreiundsechzig', ['63', '36', '33'], 0, 'drei (3) + und + sechzig (60) = 63.', { d: 2 }),
                 speak('Ich bin zwanzig Jahre alt.', 'Мне двадцать лет.', 'z в начале слова звучит как «ц»: [ц-ванцих].'),
+              ],
+              test: [
+                choiceRu('Что означает это число?', 'vierundfünfzig', ['54', '45', '44'], 0, 'vier (4) + und + fünfzig (50) = 54. Сначала единицы, потом десятки.'),
+                choice('Как будет 16?', ['sechzehn', 'sechszehn', 'zehnsechs'], 0, 'В числе 16 у sechs выпадает конечная -s: sechzehn. Так же и 60 — sechzig.', { d: 2 }),
+                fill('Wie alt ___ Sie?', ['sind'], 'С вежливым Sie глагол sein имеет форму sind.', { s: 'grammar', t: 'to_be' }, { translation: 'Сколько Вам лет?', options: ['bist', 'sind', 'ist'] }),
+                translate('Мне девятнадцать лет.', ['Ich bin neunzehn Jahre alt.', 'Ich bin 19 Jahre alt.', 'Ich bin neunzehn.', 'Ich bin 19.'], 'Возраст выражают глаголом sein: Ich bin … Jahre alt. В отличие от русского «мне» здесь подлежащее ich.', { s: 'grammar' }),
+                dialogue(
+                  [
+                    ['A', 'Wie ist deine Telefonnummer?', 'Какой у тебя номер телефона?'],
+                    ['B', null],
+                  ],
+                  ['Null, sieben, eins, zwei, drei, vier.', 'Ich bin zwanzig Jahre alt.', 'Es ist zwölf Uhr.'],
+                  0,
+                  'Номер телефона в немецком обычно диктуют по одной цифре: null, sieben, eins …',
+                ),
               ],
             },
           ],
@@ -214,15 +229,7 @@ export const german: LanguageSpec = {
                 ['das Kind', 'ребёнок', 'noun', 'Sie haben zwei Kinder.', 'У них двое детей.', 'n'],
               ],
               exercises: [
-                match(
-                  [
-                    ['die Mutter', 'мать'],
-                    ['der Vater', 'отец'],
-                    ['der Bruder', 'брат'],
-                    ['die Schwester', 'сестра'],
-                  ],
-                  'Учите слова сразу с артиклем: der — мужской, die — женский, das — средний род.',
-                ),
+                translate('брат и сестра', ['der Bruder und die Schwester', 'Bruder und Schwester'], 'Учите слова сразу с артиклем: der — мужской, die — женский, das — средний род. der Bruder — брат, die Schwester — сестра.'),
                 fill('Das ist ___ Mutter.', ['meine'], 'Mutter — женского рода (die), поэтому meine.', { s: 'grammar', t: 'possessive' }, { options: ['mein', 'meine'] }),
                 fill('Das ist ___ Vater.', ['mein'], 'Vater — мужского рода (der), поэтому mein.', { s: 'grammar', t: 'possessive' }, { options: ['mein', 'meine'] }),
                 fill('Das sind ___ Eltern.', ['meine'], 'Во множественном числе — meine, независимо от рода.', { s: 'grammar', t: 'possessive', d: 2 }, { options: ['mein', 'meine', 'meinen'] }),
@@ -231,6 +238,13 @@ export const german: LanguageSpec = {
                 translateBack('Meine Eltern wohnen in Almaty.', ['Мои родители живут в Алматы'], 'Eltern — «родители», всегда во множественном числе.'),
                 order(['Mein', 'Bruder', 'ist', 'zwanzig', 'Jahre', 'alt'], 'Моему брату двадцать лет.', 'Глагол ist стоит на втором месте после подлежащего «Mein Bruder».'),
                 speak('Das ist meine Familie.', 'Это моя семья.', 'В Familie ударение на второй слог: фа-ми́-ли-е.'),
+              ],
+              test: [
+                fill('Das ist ___ Kind.', ['mein'], 'Kind — среднего рода (das), поэтому mein, как и в мужском роде.', { s: 'grammar', t: 'possessive' }, { options: ['mein', 'meine'] }),
+                choice('Какой артикль у слова Familie?', ['die', 'der', 'das'], 0, 'Familie — женского рода: die Familie. Большинство слов на -ie — женского рода.', { s: 'grammar', t: 'articles' }),
+                translate('Моя мама — врач.', ['Meine Mutter ist Ärztin.', 'Meine Mama ist Ärztin.'], 'Mutter — женского рода, поэтому meine. Профессию называют без артикля, в женской форме: Ärztin.', { s: 'grammar', t: 'possessive', d: 2 }),
+                order(['Das', 'sind', 'meine', 'Eltern'], 'Это мои родители.', 'Eltern — множественное число, поэтому sind и meine.', { s: 'grammar', t: 'possessive' }),
+                translateBack('Wir haben zwei Kinder.', ['У нас двое детей', 'У нас есть двое детей'], 'haben — «иметь»; русское «у нас есть» по-немецки звучит как «мы имеем». Kinder — мн. ч. от das Kind.'),
               ],
             },
             {
@@ -279,18 +293,27 @@ export const german: LanguageSpec = {
                   'Вы в кафе в Берлине.',
                 ),
                 translate('Сколько стоит кофе?', ['Was kostet der Kaffee?', 'Wie viel kostet der Kaffee?'], 'Вопрос о цене: Was kostet …? или Wie viel kostet …?', { t: 'questions', s: 'grammar' }),
-                match(
-                  [
-                    ['das Wasser', 'вода'],
-                    ['die Suppe', 'суп'],
-                    ['der Tee', 'чай'],
-                    ['das Brot', 'хлеб'],
-                  ],
-                  'Слова о еде лучше учить вместе с артиклем — он понадобится при заказе.',
-                ),
+                translate('хлеб и вода', ['das Brot und das Wasser', 'Brot und Wasser'], 'Слова о еде лучше учить вместе с артиклем — он понадобится при заказе: das Brot, das Wasser.'),
                 listen('Die Rechnung, bitte.', 'Rechnung: ch после e звучит мягко, как «хь».', {}, { translation: 'Счёт, пожалуйста.' }),
                 order(['Ich', 'möchte', 'ein', 'Wasser'], 'Я бы хотел воды.', 'Порядок: подлежащее — глагол — дополнение.', {}, { distractors: ['einen'] }),
                 speak('Einen Kaffee, bitte.', 'Кофе, пожалуйста.', 'В Kaffee ударение на первый слог в немецком варианте: ка́-фе.'),
+              ],
+              test: [
+                fill('Ich hätte gern ___ Wasser.', ['ein'], 'Wasser — среднего рода; в винительном падеже ein не меняется.', { s: 'grammar', t: 'cases', d: 2 }, { options: ['ein', 'einen', 'eine'] }),
+                choice('Как вежливо заказать чай?', ['Ich möchte einen Tee, bitte.', 'Ich will Tee!', 'Ich bin ein Tee.'], 0, 'Ich möchte … bitte — вежливая просьба. Ich will звучит как требование, а Ich bin ein Tee означает «Я чай».', { t: 'modal_verbs' }),
+                translate('Суп, пожалуйста.', ['Eine Suppe, bitte.', 'Die Suppe, bitte.', 'Suppe, bitte.'], 'Suppe — женского рода: eine Suppe. bitte — «пожалуйста».'),
+                dialogue(
+                  [
+                    ['A', 'Was kostet der Kuchen?', 'Сколько стоит пирог?'],
+                    ['B', null],
+                  ],
+                  ['Drei Euro fünfzig.', 'Ja, gern.', 'Ich heiße Kuchen.'],
+                  0,
+                  'На вопрос Was kostet …? отвечают ценой. 3,50 € читается drei Euro fünfzig.',
+                  { t: 'shopping' },
+                  'Вы покупаете пирог в кафе.',
+                ),
+                translateBack('Ich trinke gern Tee.', ['Я люблю пить чай', 'Я люблю чай', 'Я с удовольствием пью чай'], 'gern после глагола означает «с удовольствием, охотно»: trinke gern — «люблю пить».'),
               ],
             },
           ],
@@ -300,7 +323,7 @@ export const german: LanguageSpec = {
     {
       level: 'A2',
       title: 'Немецкий A2: события и поездки',
-      description: 'Прошедшее время Perfekt, модальные глаголы и ориентирование в городе.',
+      description: 'Прошедшее время Perfekt, модальные глаголы, ориентирование в городе, покупки, степени сравнения и распорядок дня.',
       modules: [
         {
           title: 'Истории и поездки',
@@ -353,6 +376,13 @@ export const german: LanguageSpec = {
                 listen('Wir sind nach Hause gefahren.', 'nach Hause — «домой» (направление).', {}, { translation: 'Мы поехали домой.' }),
                 translateBack('Sie hat ein Buch gelesen.', ['Она прочитала книгу', 'Она читала книгу'], 'hat gelesen — Perfekt от lesen.'),
               ],
+              test: [
+                fill('Er ___ einen Brief geschrieben.', ['hat'], 'schreiben образует Perfekt с haben; с er — hat.', { s: 'grammar', t: 'past_tense' }, { translation: 'Он написал письмо.', options: ['hat', 'ist', 'habe'] }),
+                fill('Ich bin gestern ins Kino ___.', ['gegangen'], 'gehen — сильный глагол движения: ich bin gegangen.', { s: 'grammar', t: 'past_tense', d: 2 }, { translation: 'Вчера я ходил в кино.', options: ['gegangen', 'gegeht', 'gehen'] }),
+                choice('Какое причастие у глагола machen?', ['gemacht', 'gemachen', 'machte'], 0, 'Слабые глаголы образуют Partizip II так: ge- + основа + -t → gemacht. machte — это Präteritum.', { s: 'grammar', t: 'past_tense' }),
+                order(['Wir', 'haben', 'am', 'Wochenende', 'Fußball', 'gespielt'], 'На выходных мы играли в футбол.', 'Вспомогательный глагол haben — на втором месте, причастие gespielt закрывает рамку в конце.', { s: 'grammar', t: 'word_order', d: 2 }),
+                translate('Вчера я работал.', ['Gestern habe ich gearbeitet.', 'Ich habe gestern gearbeitet.'], 'Если предложение начинается с gestern, вспомогательный глагол habe остаётся на втором месте, а подлежащее ich идёт после него.', { s: 'grammar', t: 'past_tense', d: 2 }),
+              ],
             },
             {
               key: 'de-a2-travel',
@@ -382,15 +412,7 @@ export const german: LanguageSpec = {
                 choice('Как спросить, где вокзал?', ['Wo ist der Bahnhof?', 'Wer ist der Bahnhof?', 'Wie ist der Bahnhof?'], 0, 'wo — «где», wer — «кто», wie — «как».', { t: 'questions', s: 'grammar' }),
                 fill('Sie ___ in Köln umsteigen.', ['müssen'], 'С Sie модальный глагол müssen имеет форму müssen.', { s: 'grammar', t: 'modal_verbs', d: 2 }, { options: ['muss', 'müssen', 'musst'] }),
                 order(['Können', 'Sie', 'mir', 'helfen'], 'Вы можете мне помочь?', 'В вопросе без вопросительного слова глагол стоит на первом месте, инфинитив — в конце.', { t: 'modal_verbs', d: 2 }),
-                match(
-                  [
-                    ['links', 'налево'],
-                    ['rechts', 'направо'],
-                    ['geradeaus', 'прямо'],
-                    ['die Fahrkarte', 'билет'],
-                  ],
-                  'Эти слова чаще всего встречаются в объяснении дороги.',
-                ),
+                choice('Как сказать «прямо»?', ['geradeaus', 'links', 'rechts'], 0, 'Эти слова чаще всего встречаются в объяснении дороги: geradeaus — прямо, links — налево, rechts — направо.'),
                 translate('Мне нужен билет до Мюнхена.', ['Ich brauche eine Fahrkarte nach München.', 'Ich brauche ein Ticket nach München.'], 'brauchen — «нуждаться»; nach + город — направление.', { d: 2 }),
                 dialogue(
                   [
@@ -404,6 +426,171 @@ export const german: LanguageSpec = {
                 listen('Der Zug fährt um acht Uhr ab.', 'abfahren — отправляться; приставка ab уходит в конец предложения.', {}, { translation: 'Поезд отправляется в восемь часов.', answers: ['Der Zug fährt um acht Uhr ab.', 'Der Zug fährt um 8 Uhr ab.'] }),
                 speak('Wo ist der Bahnhof?', 'Где вокзал?', 'В Bahnhof h после a не читается, а удлиняет гласную: [ба:нхоф].'),
               ],
+              test: [
+                fill('___ ich hier bezahlen?', ['Kann'], 'Вопрос о возможности: Kann ich …? Модальный глагол в вопросе без вопросительного слова стоит на первом месте, инфинитив — в конце.', { s: 'grammar', t: 'modal_verbs' }, { translation: 'Можно здесь оплатить?', options: ['Kann', 'Können', 'Kannst'] }),
+                choice('Как сказать «Мне нужно сделать пересадку в Кёльне»?', ['Ich muss in Köln umsteigen.', 'Ich muss umsteigen in Köln.', 'Ich umsteigen muss in Köln.'], 0, 'Модальный глагол muss — на втором месте, инфинитив umsteigen — в самом конце предложения.', { s: 'grammar', t: 'modal_verbs', d: 2 }),
+                translate('Вокзал справа.', ['Der Bahnhof ist rechts.', 'Rechts ist der Bahnhof.'], 'der Bahnhof — «вокзал», rechts — «справа, направо».'),
+                dialogue(
+                  [
+                    ['A', 'Eine Fahrkarte nach Hamburg, bitte.', 'Билет до Гамбурга, пожалуйста.'],
+                    ['B', null],
+                    ['A', 'Hin und zurück, bitte.', 'Туда и обратно, пожалуйста.'],
+                  ],
+                  ['Einfach oder hin und zurück?', 'Gehen Sie hier links.', 'Ich komme aus Hamburg.'],
+                  0,
+                  'Кассир уточняет тип билета: einfach — «в одну сторону», hin und zurück — «туда и обратно».',
+                  {},
+                  'Вы покупаете билет в кассе вокзала.',
+                ),
+                translateBack('Können Sie das bitte wiederholen?', ['Вы можете это повторить, пожалуйста?', 'Не могли бы Вы это повторить?', 'Повторите, пожалуйста', 'Можете повторить, пожалуйста?'], 'Können Sie … bitte …? — вежливая просьба; wiederholen — «повторять».', { d: 2 }),
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Покупки и будни',
+          description: 'Сравнение товаров в магазине и распорядок дня с возвратными глаголами.',
+          lessons: [
+            {
+              key: 'de-a2-shopping',
+              title: 'В магазине',
+              objective: 'Спросить о размере и цене и сравнить товары: billiger, teurer, am besten.',
+              topic: 'shopping',
+              minutes: 12,
+              theory: [
+                {
+                  title: 'Сравнительная степень: -er + als',
+                  body: 'Как в русском «дешевле, чем», в немецком к прилагательному добавляют -er, а «чем» передаётся словом als: billig → billiger als. Многие односложные прилагательные получают умлаут: alt → älter, groß → größer, warm → wärmer. У teuer в сравнительной степени выпадает e: teurer. Несколько форм неправильные: gut → besser, viel → mehr, gern → lieber. Конструкции вроде русского «более дешёвый» (mehr billig) в немецком нет.',
+                  examples: [
+                    ['Die Jacke ist billiger als der Mantel.', 'Куртка дешевле, чем пальто.'],
+                    ['Dieses Hemd ist besser.', 'Эта рубашка лучше.'],
+                    ['Ich trinke lieber Tee als Kaffee.', 'Я больше люблю чай, чем кофе.'],
+                  ],
+                },
+                {
+                  title: 'Превосходная степень: am …sten',
+                  body: 'Русскому «самый дешёвый» соответствует am billigsten (после глагола) или der / die / das billigste (перед существительным). После -t, -d, -s, -ß, -z вставляется -e-: am ältesten, am kürzesten. Неправильные формы: gut → am besten, viel → am meisten, gern → am liebsten.',
+                  examples: [
+                    ['Diese Schuhe sind am billigsten.', 'Эти туфли самые дешёвые.'],
+                    ['Das ist das beste Geschäft in der Stadt.', 'Это лучший магазин в городе.'],
+                  ],
+                },
+              ],
+              words: [
+                ['billig', 'дешёвый', 'adjective', 'Die Äpfel sind heute billig.', 'Яблоки сегодня дешёвые.'],
+                ['teuer', 'дорогой', 'adjective', 'Der Mantel ist zu teuer.', 'Пальто слишком дорогое.'],
+                ['die Größe', 'размер', 'noun', 'Haben Sie die Hose auch in Größe 38?', 'У Вас есть эти брюки 38-го размера?', 'f'],
+                ['anprobieren', 'примерять', 'verb', 'Ich probiere den Pullover an.', 'Я примеряю свитер.'],
+                ['die Jacke', 'куртка', 'noun', 'Die Jacke ist mir zu klein.', 'Куртка мне мала.', 'f'],
+                ['der Preis', 'цена', 'noun', 'Der Preis ist gut.', 'Цена хорошая.', 'm'],
+                ['das Geschäft', 'магазин', 'noun', 'Das Geschäft öffnet um neun Uhr.', 'Магазин открывается в девять часов.', 'n'],
+                ['besser', 'лучше', 'adjective', 'Diese Hose ist besser als die blaue.', 'Эти брюки лучше, чем синие.'],
+              ],
+              exercises: [
+                choice('Как сказать «Куртка дешевле, чем пальто»?', ['Die Jacke ist billiger als der Mantel.', 'Die Jacke ist billiger wie der Mantel.', 'Die Jacke ist mehr billig als der Mantel.'], 0, 'Сравнительная степень: billig + -er, а «чем» — als. В литературном языке wie после сравнительной степени не используют, а mehr billig невозможно.', { s: 'grammar', t: 'comparatives', d: 2 }),
+                fill('Mein Bruder ist ___ als ich.', ['älter'], 'alt — односложное прилагательное, в сравнительной степени получает умлаут: älter.', { s: 'grammar', t: 'comparatives', d: 2 }, { translation: 'Мой брат старше меня.', options: ['älter', 'alter', 'ältesten'] }),
+                fill('Dieses Handy ist gut, aber das andere ist ___.', ['besser'], 'gut — неправильное прилагательное: gut → besser → am besten.', { s: 'grammar', t: 'comparatives', d: 2 }, { translation: 'Этот телефон хороший, но другой лучше.', options: ['guter', 'besser', 'am besten'] }),
+                choiceRu('Что означает это слово?', 'anprobieren', ['примерять', 'покупать', 'обменивать'], 0, 'anprobieren — «примерять». Приставка an- отделяемая: Ich probiere die Jacke an.'),
+                translate('Сколько стоит эта куртка?', ['Was kostet diese Jacke?', 'Wie viel kostet diese Jacke?', 'Was kostet die Jacke?', 'Wie viel kostet die Jacke?'], 'Jacke — женского рода, поэтому diese Jacke. Вопрос о цене: Was kostet …? или Wie viel kostet …?', { d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'Guten Tag! Kann ich Ihnen helfen?', 'Добрый день! Вам помочь?'],
+                    ['B', null],
+                    ['A', 'Gern. Welche Farbe möchten Sie?', 'Хорошо. Какой цвет Вы хотите?'],
+                  ],
+                  ['Ja, ich suche eine Jacke.', 'Nein, ich bin eine Jacke.', 'Ja, die Jacke ist billiger als.'],
+                  0,
+                  'Продавец предлагает помощь — отвечаем, что ищем: Ich suche … («я ищу …»).',
+                  {},
+                  'Вы в магазине одежды.',
+                ),
+                order(['Diese', 'Schuhe', 'sind', 'am', 'billigsten'], 'Эти туфли самые дешёвые.', 'Превосходная степень после глагола: am + прилагательное + -sten. Глагол sind стоит на втором месте.', { s: 'grammar', t: 'comparatives', d: 2 }),
+                translateBack('Der Mantel ist teurer als die Jacke.', ['Пальто дороже, чем куртка', 'Пальто дороже куртки'], 'teuer → teurer: в сравнительной степени e перед r выпадает. als — «чем».', { t: 'comparatives', d: 2 }),
+                listen('Kann ich die Jacke anprobieren?', 'После модального глагола kann отделяемый глагол стоит целиком в конце: anprobieren.', {}, { translation: 'Можно примерить куртку?' }),
+                speak('Das ist zu teuer.', 'Это слишком дорого.', 'В teuer сочетание eu читается как «ой»: [тойер]. z в zu звучит как «ц».'),
+              ],
+              test: [
+                fill('Im Sommer ist es ___ als im Frühling.', ['wärmer'], 'warm — односложное прилагательное, в сравнительной степени получает умлаут: wärmer.', { s: 'grammar', t: 'comparatives', d: 2 }, { translation: 'Летом теплее, чем весной.', options: ['wärmer', 'warmer', 'am wärmsten'] }),
+                choice('Как сказать «Я больше люблю кофе, чем чай»?', ['Ich trinke lieber Kaffee als Tee.', 'Ich trinke gerner Kaffee als Tee.', 'Ich trinke mehr gern Kaffee wie Tee.'], 0, 'gern — неправильное наречие: gern → lieber → am liebsten. «Чем» — als.', { s: 'grammar', t: 'comparatives', d: 2 }),
+                translate('Этот магазин самый дешёвый.', ['Dieses Geschäft ist am billigsten.', 'Das Geschäft ist am billigsten.', 'Dieser Laden ist am billigsten.', 'Der Laden ist am billigsten.'], 'Geschäft — среднего рода (dieses Geschäft). Превосходная степень после глагола: am billigsten.', { s: 'grammar', t: 'comparatives', d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'Die Hose ist mir zu klein.', 'Эти брюки мне малы.'],
+                    ['B', null],
+                    ['A', 'Danke, die probiere ich an.', 'Спасибо, их я примерю.'],
+                  ],
+                  ['Hier ist eine größere.', 'Hier ist eine kleinere.', 'Die Hose ist am kleinsten.'],
+                  0,
+                  'Брюки малы — продавец предлагает побольше: größer — сравнительная степень от groß. Перед подразумеваемым существительным (Hose) прилагательное получает окончание: eine größere.',
+                  { t: 'comparatives', d: 3 },
+                  'Вы в примерочной.',
+                ),
+                translateBack('Welche Größe haben Sie?', ['Какой у Вас размер?', 'Какой размер Вы носите?', 'Какой Ваш размер?'], 'die Größe — «размер»; welche — «какой», согласуется с женским родом слова Größe.'),
+              ],
+            },
+            {
+              key: 'de-a2-routine',
+              title: 'Мой день',
+              objective: 'Описать свой распорядок дня с возвратными глаголами и глаголами с отделяемой приставкой.',
+              topic: 'daily_routine',
+              minutes: 12,
+              theory: [
+                {
+                  title: 'Возвратные глаголы: sich',
+                  body: 'Русскому «-ся» в немецком соответствует отдельное местоимение, которое меняется по лицам: ich wasche mich, du wäschst dich, er/sie wäscht sich, wir waschen uns, ihr wascht euch, sie/Sie waschen sich. Возвратность не всегда совпадает с русской: «торопиться» — sich beeilen, «отдыхать» — sich ausruhen, но «вставать» — aufstehen без sich.',
+                  examples: [
+                    ['Ich ziehe mich schnell an.', 'Я быстро одеваюсь.'],
+                    ['Wir treffen uns um sieben.', 'Мы встречаемся в семь.'],
+                    ['Beeil dich!', 'Поторопись!'],
+                  ],
+                },
+                {
+                  title: 'Отделяемые приставки и время',
+                  body: 'У глаголов aufstehen, anziehen, einkaufen приставка в настоящем времени отрывается и уходит в конец предложения: Ich stehe um sieben Uhr auf. Это та же «рамка», что и в Perfekt: глагол на втором месте, приставка — в конце. Время называют с предлогом um. Как и в русском, halb считают к следующему часу: halb acht — «половина восьмого», то есть 7:30.',
+                  examples: [
+                    ['Ich stehe um sechs Uhr auf.', 'Я встаю в шесть часов.'],
+                    ['Er kauft am Samstag ein.', 'Он ходит за покупками в субботу.'],
+                  ],
+                },
+              ],
+              words: [
+                ['aufstehen', 'вставать', 'verb', 'Ich stehe jeden Tag um sieben Uhr auf.', 'Я встаю каждый день в семь часов.'],
+                ['sich waschen', 'умываться', 'verb', 'Das Kind wäscht sich.', 'Ребёнок умывается.'],
+                ['sich anziehen', 'одеваться', 'verb', 'Im Winter ziehe ich mich warm an.', 'Зимой я тепло одеваюсь.'],
+                ['sich beeilen', 'торопиться', 'verb', 'Wir müssen uns beeilen.', 'Нам надо торопиться.'],
+                ['das Frühstück', 'завтрак', 'noun', 'Zum Frühstück esse ich Müsli.', 'На завтрак я ем мюсли.', 'n'],
+                ['früh', 'рано', 'adverb', 'Am Montag stehe ich früh auf.', 'В понедельник я рано встаю.'],
+                ['der Abend', 'вечер', 'noun', 'Am Abend lese ich ein Buch.', 'Вечером я читаю книгу.', 'm'],
+                ['sich ausruhen', 'отдыхать', 'verb', 'Am Sonntag ruhe ich mich aus.', 'В воскресенье я отдыхаю.'],
+              ],
+              exercises: [
+                fill('Ich wasche ___.', ['mich'], 'С ich возвратное местоимение — mich (как русское «себя» → «меня»).', { s: 'grammar', t: 'reflexive' }, { translation: 'Я умываюсь.', options: ['mich', 'sich', 'dich'] }),
+                fill('Ihr müsst ___ beeilen.', ['euch'], 'С ihr возвратное местоимение — euch. Модальный глагол müsst — на втором месте, инфинитив beeilen — в конце.', { s: 'grammar', t: 'reflexive', d: 2 }, { translation: 'Вам надо поторопиться.', options: ['euch', 'sich', 'uns'] }),
+                order(['Er', 'steht', 'um', 'halb', 'sieben', 'auf'], 'Он встаёт в половине седьмого.', 'Спрягаемая часть steht — на втором месте, приставка auf — в конце. halb sieben — это 6:30.', { s: 'grammar', t: 'word_order', d: 2 }),
+                choice('Как сказать «Она одевается»?', ['Sie zieht sich an.', 'Sie zieht an sich.', 'Sie anzieht sich.'], 0, 'Спрягаемая часть zieht стоит на втором месте, sich — сразу после неё, приставка an — в конце.', { s: 'grammar', t: 'reflexive', d: 2 }),
+                choiceRu('Который час?', 'Es ist halb acht.', ['7:30', '8:30', '8:00'], 0, 'halb acht — «половина восьмого», то есть 7:30. Немцы, как и русские, считают половину к следующему часу.', { t: 'numbers', d: 2 }),
+                translate('Я завтракаю в восемь часов.', ['Ich frühstücke um acht Uhr.', 'Ich frühstücke um acht.', 'Ich frühstücke um 8 Uhr.', 'Um acht Uhr frühstücke ich.'], 'frühstücken — «завтракать» (от das Frühstück), время — с предлогом um.', { d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'Wann stehst du am Wochenende auf?', 'Когда ты встаёшь на выходных?'],
+                    ['B', null],
+                  ],
+                  ['Ich stehe um zehn Uhr auf.', 'Ich aufstehe um zehn Uhr.', 'Ich bin um zehn Uhr aufstehen.'],
+                  0,
+                  'Приставка auf отделяется и уходит в конец предложения: Ich stehe … auf.',
+                  { s: 'grammar', d: 2 },
+                ),
+                translateBack('Nach der Arbeit ruhe ich mich aus.', ['После работы я отдыхаю'], 'sich ausruhen — «отдыхать»: глагол одновременно возвратный и с отделяемой приставкой aus.', { t: 'reflexive', d: 2 }),
+                listen('Beeil dich, der Bus kommt!', 'Повелительное наклонение для du: beeil dich — «поторопись». Возвратное местоимение dich стоит после глагола.', {}, { translation: 'Поторопись, автобус идёт!' }),
+                speak('Ich stehe früh auf.', 'Я рано встаю.', 'В früh буква h не читается, а ü произносится губами как «у», а языком как «и»: [фрю:].'),
+              ],
+              test: [
+                fill('Du ___ dich schnell an.', ['ziehst'], 'С du глагол получает окончание -st: du ziehst dich an.', { s: 'grammar', t: 'reflexive' }, { translation: 'Ты быстро одеваешься.', options: ['ziehst', 'zieht', 'ziehen'] }),
+                fill('Er wäscht ___.', ['sich'], 'В 3-м лице возвратное местоимение — sich. Er wäscht ihn означало бы «он моет его» (другого человека).', { s: 'grammar', t: 'reflexive', d: 2 }, { translation: 'Он умывается.', options: ['sich', 'ihn', 'mich'] }),
+                order(['Am', 'Abend', 'ruhe', 'ich', 'mich', 'aus'], 'Вечером я отдыхаю.', 'После обстоятельства am Abend глагол ruhe стоит на втором месте, подлежащее ich — после него, приставка aus — в конце.', { s: 'grammar', t: 'word_order', d: 3 }),
+                translate('Мы встаём рано.', ['Wir stehen früh auf.', 'Früh stehen wir auf.'], 'aufstehen — глагол с отделяемой приставкой: wir stehen … auf.', { s: 'grammar', d: 2 }),
+                choice('Какой из этих глаголов возвратный в немецком?', ['sich beeilen', 'aufstehen', 'frühstücken'], 0, '«Торопиться» — sich beeilen. aufstehen и frühstücken употребляются без sich.', { s: 'grammar', t: 'reflexive', d: 2 }),
+              ],
             },
           ],
         },
@@ -412,7 +599,7 @@ export const german: LanguageSpec = {
     {
       level: 'B1',
       title: 'Немецкий B1: мнения и аргументы',
-      description: 'Придаточные предложения с weil и dass, выражение мнения.',
+      description: 'Придаточные с weil и dass, относительные придаточные, будущее время и выражение цели; мнения, работа и планы.',
       modules: [
         {
           title: 'Своё мнение',
@@ -451,15 +638,7 @@ export const german: LanguageSpec = {
                 choice('Выберите правильный вариант.', ['Ich lerne Deutsch, weil ich in Wien arbeite.', 'Ich lerne Deutsch, weil ich arbeite in Wien.', 'Ich lerne Deutsch, weil arbeite ich in Wien.'], 0, 'В придаточном с weil глагол arbeite стоит последним.', { s: 'grammar', t: 'word_order', d: 2 }),
                 fill('Meiner Meinung nach ___ das eine gute Idee.', ['ist'], 'После вводного «Meiner Meinung nach» сразу идёт глагол (он на втором месте).', { s: 'grammar', t: 'word_order', d: 3 }, { options: ['ist', 'sind', 'bin'] }),
                 translate('Я думаю, что это важно.', ['Ich glaube, dass das wichtig ist.', 'Ich denke, dass das wichtig ist.', 'Ich finde, dass das wichtig ist.'], 'dass + глагол в конце: … dass das wichtig ist.', { s: 'grammar', t: 'word_order', d: 3 }),
-                match(
-                  [
-                    ['der Vorteil', 'преимущество'],
-                    ['der Nachteil', 'недостаток'],
-                    ['die Meinung', 'мнение'],
-                    ['wichtig', 'важный'],
-                  ],
-                  'Слова для аргументации: Vorteil и Nachteil образуют пару.',
-                ),
+                choiceRu('Что означает это слово?', 'der Nachteil', ['недостаток', 'преимущество', 'мнение'], 0, 'Слова для аргументации: der Vorteil — преимущество и der Nachteil — недостаток образуют пару.'),
                 dialogue(
                   [
                     ['A', 'Was denkst du über Online-Unterricht?', 'Что ты думаешь об онлайн-обучении?'],
@@ -472,6 +651,166 @@ export const german: LanguageSpec = {
                 ),
                 translateBack('Ein Nachteil ist, dass es teuer ist.', ['Один недостаток в том, что это дорого', 'Недостаток в том, что это дорого'], 'Nachteil — «недостаток», teuer — «дорогой».', { d: 2 }),
               ],
+              test: [
+                fill('Ich bleibe heute zu Hause, weil ich müde ___.', ['bin'], 'После weil спрягаемый глагол уходит в конец: … weil ich müde bin.', { s: 'grammar', t: 'word_order', d: 2 }, { translation: 'Сегодня я остаюсь дома, потому что устал.', options: ['bin', 'ist', 'sein'] }),
+                order(['Ich', 'finde', 'dass', 'das', 'Projekt', 'wichtig', 'ist'], 'Я считаю, что этот проект важен.', 'Главное предложение: глагол finde на втором месте. В придаточном с dass глагол ist — в конце.', { s: 'grammar', t: 'word_order', d: 2 }),
+                choice('Выберите правильный вариант.', ['Meiner Meinung nach ist das falsch.', 'Meiner Meinung nach das ist falsch.', 'Meiner Meinung nach falsch das ist.'], 0, 'Meiner Meinung nach занимает первое место, поэтому глагол ist идёт сразу за ним, а подлежащее das — после глагола.', { s: 'grammar', t: 'word_order', d: 3 }),
+                translate('Я против, потому что это дорого.', ['Ich bin dagegen, weil das teuer ist.', 'Ich bin dagegen, weil es teuer ist.'], 'dagegen — «против». После weil глагол ist уходит в конец придаточного.', { s: 'grammar', t: 'conjunctions', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Bist du für oder gegen ein Tempolimit auf der Autobahn?', 'Ты за или против ограничения скорости на автобане?'],
+                    ['B', null],
+                  ],
+                  ['Ich bin dafür, weil es sicherer ist.', 'Ich bin dafür, weil es ist sicherer.', 'Ich bin dafür, weil sicherer es ist.'],
+                  0,
+                  'dafür — «за». В придаточном с weil порядок: подлежащее — остальные члены — глагол в конце: weil es sicherer ist.',
+                  { t: 'word_order', d: 2 },
+                ),
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Работа и планы',
+          description: 'Профессиональная жизнь, относительные придаточные и планы на будущее.',
+          lessons: [
+            {
+              key: 'de-b1-work',
+              title: 'Работа мечты',
+              objective: 'Описать работу, фирму и коллег с помощью относительных придаточных с der, die, das.',
+              topic: 'work',
+              minutes: 13,
+              theory: [
+                {
+                  title: 'Относительные местоимения der, die, das',
+                  body: 'Русскому «который» соответствуют der / die / das и die во множественном числе. Род и число берутся от слова, к которому относится придаточное, а падеж — от его роли в самом придаточном. Спрягаемый глагол, как после dass и weil, уходит в конец, а придаточное отделяется запятыми.',
+                  examples: [
+                    ['Das ist die Firma, die Software entwickelt.', 'Это фирма, которая разрабатывает программное обеспечение.'],
+                    ['Ich suche eine Stelle, die gut bezahlt ist.', 'Я ищу работу, которая хорошо оплачивается.'],
+                  ],
+                },
+                {
+                  title: 'Падеж внутри придаточного',
+                  body: 'Как русское «который / которого / которому», местоимение меняется по падежам. В Akkusativ меняется только мужской род: der → den. В Dativ: dem (м. и ср. р.), der (ж. р.), denen (мн. ч.). Предлог, как и в русском, стоит перед местоимением: die Kollegin, mit der ich arbeite — «коллега, с которой я работаю».',
+                  examples: [
+                    ['Der Chef, den ich gestern getroffen habe, ist sehr nett.', 'Начальник, которого я вчера встретил, очень приятный.'],
+                    ['Die Kollegin, mit der ich arbeite, kommt aus Wien.', 'Коллега, с которой я работаю, из Вены.'],
+                    ['Die Kunden, denen wir helfen, sind zufrieden.', 'Клиенты, которым мы помогаем, довольны.'],
+                  ],
+                },
+              ],
+              words: [
+                ['die Stelle', 'место работы, должность', 'noun', 'Sie hat eine neue Stelle gefunden.', 'Она нашла новую работу.', 'f'],
+                ['der Kollege', 'коллега', 'noun', 'Mein Kollege hilft mir oft.', 'Мой коллега часто мне помогает.', 'm'],
+                ['die Bewerbung', 'заявление о приёме на работу', 'noun', 'Ich schreibe eine Bewerbung.', 'Я пишу заявление о приёме на работу.', 'f'],
+                ['das Gehalt', 'зарплата, оклад', 'noun', 'Das Gehalt ist nicht schlecht.', 'Зарплата неплохая.', 'n'],
+                ['der Arbeitgeber', 'работодатель', 'noun', 'Mein Arbeitgeber ist eine große Firma.', 'Мой работодатель — крупная фирма.', 'm'],
+                ['verdienen', 'зарабатывать', 'verb', 'Er verdient gut.', 'Он хорошо зарабатывает.'],
+                ['die Erfahrung', 'опыт', 'noun', 'Ich habe drei Jahre Erfahrung im Marketing.', 'У меня три года опыта в маркетинге.', 'f'],
+                ['sich bewerben', 'подавать заявку, претендовать (на должность)', 'verb', 'Ich bewerbe mich um die Stelle.', 'Я претендую на эту должность.'],
+              ],
+              exercises: [
+                fill('Ich habe einen Kollegen, ___ sehr hilfsbereit ist.', ['der'], 'Kollege — мужского рода; в придаточном «который» — подлежащее (Nominativ), поэтому der.', { s: 'grammar', t: 'relative_clauses', d: 2 }, { translation: 'У меня есть коллега, который очень отзывчив.', options: ['der', 'den', 'dem', 'die'] }),
+                fill('Der Bericht, ___ ich gestern geschrieben habe, ist fertig.', ['den'], 'Bericht — мужского рода; в придаточном это прямое дополнение (написал что? — Akkusativ): den.', { s: 'grammar', t: 'relative_clauses', d: 3 }, { translation: 'Отчёт, который я вчера написал, готов.', options: ['der', 'den', 'dem'] }),
+                fill('Die Kollegen, mit ___ ich arbeite, sind sehr nett.', ['denen'], 'mit требует Dativ; во множественном числе относительное местоимение в Dativ — denen (а не den, как у артикля).', { s: 'grammar', t: 'relative_clauses', d: 3 }, { translation: 'Коллеги, с которыми я работаю, очень милые.', options: ['denen', 'den', 'die'] }),
+                choice('Выберите правильный вариант.', ['Ich suche eine Firma, die flexible Arbeitszeiten anbietet.', 'Ich suche eine Firma, die anbietet flexible Arbeitszeiten.', 'Ich suche eine Firma, der flexible Arbeitszeiten anbietet.'], 0, 'Firma — женского рода, поэтому die. Глагол anbietet стоит в конце придаточного, и приставка an от него не отделяется.', { s: 'grammar', t: 'relative_clauses', d: 2 }),
+                choiceRu('Что означает это слово?', 'das Gehalt', ['зарплата', 'должность', 'опыт'], 0, 'das Gehalt — «зарплата, оклад». Должность — die Stelle, опыт — die Erfahrung.'),
+                translate('Это работодатель, который хорошо платит.', ['Das ist ein Arbeitgeber, der gut bezahlt.', 'Das ist ein Arbeitgeber, der gut zahlt.', 'Das ist der Arbeitgeber, der gut bezahlt.', 'Das ist der Arbeitgeber, der gut zahlt.'], 'Arbeitgeber — мужского рода, в придаточном он подлежащее: der. Глагол bezahlt — в конце.', { s: 'grammar', t: 'relative_clauses', d: 3 }),
+                order(['Die', 'Firma', 'für', 'die', 'ich', 'arbeite', 'ist', 'sehr', 'groß'], 'Фирма, на которую я работаю, очень большая.', 'Предлог für стоит перед относительным местоимением die, глагол arbeite — в конце придаточного. Затем главное предложение продолжается глаголом ist.', { s: 'grammar', t: 'relative_clauses', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Warum möchten Sie bei uns arbeiten?', 'Почему Вы хотите работать у нас?'],
+                    ['B', null],
+                  ],
+                  ['Weil Ihre Firma Produkte entwickelt, die mich interessieren.', 'Weil Ihre Firma Produkte entwickelt, die interessieren mich.', 'Weil entwickelt Ihre Firma Produkte, die mich interessieren.'],
+                  0,
+                  'И в придаточном с weil, и в относительном придаточном спрягаемый глагол стоит в конце: … entwickelt, die mich interessieren.',
+                  { s: 'grammar', t: 'relative_clauses', d: 3 },
+                  'Собеседование при приёме на работу.',
+                ),
+                translateBack('Ich habe mich um eine Stelle beworben, die gut zu mir passt.', ['Я подал заявку на должность, которая мне хорошо подходит', 'Я откликнулся на вакансию, которая мне хорошо подходит', 'Я подала заявку на должность, которая мне хорошо подходит', 'Я откликнулась на вакансию, которая мне хорошо подходит'], 'sich bewerben um — «претендовать на, подавать заявку на»; passen zu — «подходить кому-либо».', { d: 3 }),
+                listen('Wie viel Erfahrung haben Sie?', 'Erfahrung — ударение на второй слог: эр-фа́-рунг.', {}, { translation: 'Сколько у Вас опыта?' }),
+              ],
+              test: [
+                fill('Die Frau, ___ ich geholfen habe, ist meine Chefin.', ['der'], 'helfen требует Dativ; женский род в Dativ — der.', { s: 'grammar', t: 'relative_clauses', d: 3 }, { translation: 'Женщина, которой я помог, — моя начальница.', options: ['der', 'die', 'dem', 'denen'] }),
+                fill('Das Projekt, ___ wir gerade machen, ist sehr wichtig.', ['das'], 'Projekt — среднего рода; в Akkusativ средний род не меняется: das.', { s: 'grammar', t: 'relative_clauses', d: 2 }, { translation: 'Проект, который мы сейчас делаем, очень важный.', options: ['das', 'der', 'dem'] }),
+                choice('Выберите правильный вариант.', ['Der Mann, den du gestern gesehen hast, ist mein Chef.', 'Der Mann, der du gestern gesehen hast, ist mein Chef.', 'Der Mann, den du hast gestern gesehen, ist mein Chef.'], 0, 'Ты видел кого? — Akkusativ мужского рода: den. Спрягаемый глагол hast стоит в самом конце придаточного.', { s: 'grammar', t: 'relative_clauses', d: 3 }),
+                translate('У меня есть коллега, который говорит по-немецки.', ['Ich habe einen Kollegen, der Deutsch spricht.', 'Ich habe eine Kollegin, die Deutsch spricht.'], 'После haben — Akkusativ: einen Kollegen (это слабое существительное, оно получает -n). В придаточном «который» — подлежащее: der. Глагол spricht — в конце.', { s: 'grammar', t: 'relative_clauses', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Und, wie ist deine neue Stelle?', 'Ну как твоя новая работа?'],
+                    ['B', null],
+                  ],
+                  ['Super! Ich habe Kollegen, die mir viel helfen.', 'Super! Ich habe Kollegen, die helfen mir viel.', 'Super! Ich habe Kollegen, denen mir viel helfen.'],
+                  0,
+                  'Коллеги помогают — они подлежащее, поэтому die (Nominativ мн. ч.), глагол helfen — в конце придаточного.',
+                  { s: 'grammar', t: 'relative_clauses', d: 2 },
+                ),
+              ],
+            },
+            {
+              key: 'de-b1-future',
+              title: 'Планы на будущее',
+              objective: 'Рассказать о планах и целях с помощью Futur I и конструкций um … zu и damit.',
+              topic: 'future_plans',
+              minutes: 12,
+              theory: [
+                {
+                  title: 'Будущее время: werden + инфинитив',
+                  body: 'Futur I похоже на русское «буду делать»: спрягаемый werden стоит на втором месте, инфинитив — в конце. Формы: ich werde, du wirst, er/sie wird, wir werden, ihr werdet, sie/Sie werden. В разговоре о планах немцы часто обходятся настоящим временем с указанием времени, как и мы: «завтра я еду». Futur I подчёркивает намерение, обещание или предположение.',
+                  examples: [
+                    ['Ich werde nächstes Jahr in Berlin studieren.', 'В следующем году я буду учиться в Берлине.'],
+                    ['Morgen fahren wir nach Hamburg.', 'Завтра мы едем в Гамбург.'],
+                    ['Er wird wohl krank sein.', 'Он, наверное, болен.'],
+                  ],
+                },
+                {
+                  title: 'Цель: um … zu и damit',
+                  body: 'Русскому «чтобы» соответствуют две конструкции. Если субъект в обеих частях один и тот же, используют um … zu с инфинитивом в конце. Если субъекты разные — damit, и спрягаемый глагол уходит в конец. У глаголов с отделяемой приставкой zu ставится внутрь слова: um früh aufzustehen.',
+                  examples: [
+                    ['Ich spare Geld, um ein Auto zu kaufen.', 'Я коплю деньги, чтобы купить машину.'],
+                    ['Ich schreibe dir die Adresse auf, damit du sie nicht vergisst.', 'Я запишу тебе адрес, чтобы ты его не забыл.'],
+                  ],
+                },
+              ],
+              words: [
+                ['der Plan', 'план', 'noun', 'Was sind deine Pläne für die Zukunft?', 'Какие у тебя планы на будущее?', 'm'],
+                ['die Zukunft', 'будущее', 'noun', 'In Zukunft möchte ich im Ausland leben.', 'В будущем я хочу жить за границей.', 'f'],
+                ['werden', 'становиться; вспомогательный глагол будущего времени', 'verb', 'Sie wird Ärztin.', 'Она станет врачом.'],
+                ['das Ziel', 'цель', 'noun', 'Wir haben ein klares Ziel.', 'У нас есть чёткая цель.', 'n'],
+                ['vorhaben', 'планировать, собираться', 'verb', 'Was hast du am Wochenende vor?', 'Что ты планируешь на выходные?'],
+                ['nächstes Jahr', 'в следующем году', 'phrase', 'Nächstes Jahr mache ich ein Praktikum.', 'В следующем году я буду проходить стажировку.'],
+                ['das Ausland', 'заграница', 'noun', 'Sie möchte im Ausland studieren.', 'Она хочет учиться за границей.', 'n'],
+                ['damit', 'чтобы (союз)', 'conjunction', 'Ich erkläre es noch einmal, damit alle es verstehen.', 'Я объясню ещё раз, чтобы все поняли.'],
+              ],
+              exercises: [
+                fill('Nächstes Jahr ___ ich in Wien studieren.', ['werde'], 'С ich — werde; инфинитив studieren стоит в конце.', { s: 'grammar', t: 'future_tense', d: 2 }, { translation: 'В следующем году я буду учиться в Вене.', options: ['werde', 'wird', 'wirst'] }),
+                fill('___ du am Wochenende arbeiten?', ['Wirst'], 'С du — wirst (неправильная форма без -d-). В вопросе без вопросительного слова спрягаемый глагол стоит на первом месте.', { s: 'grammar', t: 'future_tense', d: 2 }, { translation: 'Ты будешь работать на выходных?', options: ['Wirst', 'Wird', 'Werdest'] }),
+                order(['Wir', 'werden', 'im', 'Sommer', 'ans', 'Meer', 'fahren'], 'Летом мы поедем на море.', 'werden — на втором месте, инфинитив fahren — в конце предложения.', { s: 'grammar', t: 'future_tense', d: 2 }),
+                choice('Как сказать «Я учу немецкий, чтобы работать в Германии»?', ['Ich lerne Deutsch, um in Deutschland zu arbeiten.', 'Ich lerne Deutsch, um in Deutschland arbeiten.', 'Ich lerne Deutsch, damit in Deutschland zu arbeiten.'], 0, 'Субъект один и тот же (я учу — я работаю), поэтому um … zu + инфинитив в конце. Без zu конструкция неполная, а damit не сочетается с zu.', { s: 'grammar', t: 'conjunctions', d: 2 }),
+                fill('Ich spreche langsam, ___ du mich verstehst.', ['damit'], 'Субъекты разные (я говорю — ты понимаешь), поэтому damit, а глагол verstehst — в конце.', { s: 'grammar', t: 'conjunctions', d: 3 }, { translation: 'Я говорю медленно, чтобы ты меня понимал.', options: ['damit', 'um', 'dass'] }),
+                choiceRu('Что означает это предложение?', 'Was hast du nach dem Studium vor?', ['Что ты собираешься делать после учёбы?', 'Что ты делал после учёбы?', 'Что ты изучаешь?'], 0, 'vorhaben — «планировать, собираться»; приставка vor уходит в конец: Was hast du … vor?', { d: 2 }),
+                translate('В будущем я стану врачом.', ['In Zukunft werde ich Arzt.', 'In Zukunft werde ich Ärztin.', 'In der Zukunft werde ich Arzt.', 'In der Zukunft werde ich Ärztin.', 'Ich werde in Zukunft Arzt.', 'Ich werde in Zukunft Ärztin.', 'In Zukunft werde ich Arzt werden.', 'In Zukunft werde ich Ärztin werden.'], 'werden как самостоятельный глагол значит «становиться»; профессия — без артикля. После In Zukunft глагол werde стоит на втором месте.', { s: 'grammar', t: 'future_tense', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Was machst du nach dem Schulabschluss?', 'Что ты будешь делать после окончания школы?'],
+                    ['B', null],
+                  ],
+                  ['Ich werde ein Jahr im Ausland arbeiten.', 'Ich werde ein Jahr im Ausland gearbeitet.', 'Ich wurde ein Jahr im Ausland arbeiten.'],
+                  0,
+                  'Futur I: werde + инфинитив (arbeiten). Причастие gearbeitet здесь не подходит, а wurde — это прошедшее время.',
+                  { s: 'grammar', t: 'future_tense', d: 2 },
+                ),
+                translateBack('Mein Ziel ist es, fließend Deutsch zu sprechen.', ['Моя цель — свободно говорить по-немецки', 'Моя цель — бегло говорить по-немецки', 'Моя цель в том, чтобы свободно говорить по-немецки'], 'das Ziel — «цель»; конструкция es … zu + инфинитив раскрывает, в чём она состоит. fließend — «свободно, бегло».', { d: 3 }),
+                speak('Ich werde in Deutschland studieren.', 'Я буду учиться в Германии.', 'В werde конечное r почти не слышно, а «st» в начале корня studieren читается как «шт».'),
+              ],
+              test: [
+                fill('Er ___ nächste Woche ein Praktikum machen.', ['wird'], 'С er — wird; инфинитив machen — в конце.', { s: 'grammar', t: 'future_tense' }, { translation: 'На следующей неделе он будет проходить практику.', options: ['wird', 'werdet', 'wirst'] }),
+                fill('Ich stehe früh auf, um den Zug nicht zu ___.', ['verpassen'], 'После um … zu в конце стоит инфинитив: zu verpassen.', { s: 'grammar', t: 'conjunctions', d: 2 }, { translation: 'Я встаю рано, чтобы не опоздать на поезд.', options: ['verpassen', 'verpasse', 'verpasst'] }),
+                choice('Как сказать «Я дам тебе свой номер, чтобы ты мог мне позвонить»?', ['Ich gebe dir meine Nummer, damit du mich anrufen kannst.', 'Ich gebe dir meine Nummer, um du mich anrufen kannst.', 'Ich gebe dir meine Nummer, damit du kannst mich anrufen.'], 0, 'Субъекты разные (я даю — ты звонишь), поэтому damit; модальный глагол kannst стоит в конце придаточного.', { s: 'grammar', t: 'conjunctions', d: 3 }),
+                translate('Завтра я буду работать дома.', ['Morgen werde ich zu Hause arbeiten.', 'Ich werde morgen zu Hause arbeiten.', 'Morgen arbeite ich zu Hause.', 'Ich arbeite morgen zu Hause.', 'Morgen werde ich von zu Hause arbeiten.', 'Morgen werde ich von zu Hause aus arbeiten.'], 'Futur I: werde … arbeiten. О планах можно сказать и в настоящем времени: Morgen arbeite ich zu Hause.', { s: 'grammar', t: 'future_tense', d: 2 }),
+                order(['Sie', 'wird', 'nächstes', 'Jahr', 'im', 'Ausland', 'studieren'], 'В следующем году она будет учиться за границей.', 'wird — на втором месте, инфинитив studieren — в конце.', { s: 'grammar', t: 'future_tense', d: 2 }),
+              ],
             },
           ],
         },
@@ -480,7 +819,7 @@ export const german: LanguageSpec = {
     {
       level: 'B2',
       title: 'Немецкий B2: гипотезы и вежливость',
-      description: 'Konjunktiv II: нереальные условия, пожелания и вежливые просьбы.',
+      description: 'Konjunktiv II, пассивный залог и косвенная речь: гипотезы, новости и экология.',
       modules: [
         {
           title: 'Если бы…',
@@ -516,6 +855,165 @@ export const german: LanguageSpec = {
                 choice('Какая фраза звучит вежливее всего?', ['Könnten Sie mir bitte helfen?', 'Helfen Sie mir!', 'Sie müssen mir helfen.'], 0, 'Konjunktiv II (könnten) смягчает просьбу.', { s: 'grammar', t: 'conditionals', d: 2 }),
                 translate('Это было бы здорово.', ['Das wäre schön.', 'Das wäre toll.', 'Das wäre super.'], 'wäre — Konjunktiv II от sein.', { s: 'grammar', t: 'conditionals', d: 3 }),
                 translateBack('Wenn ich mehr Zeit hätte, würde ich Gitarre lernen.', ['Если бы у меня было больше времени, я бы научился играть на гитаре', 'Если бы у меня было больше времени, я бы учился играть на гитаре'], 'hätte … würde lernen — нереальное условие.', { d: 3 }),
+              ],
+              test: [
+                fill('Wenn ich Zeit hätte, ___ ich dich besuchen.', ['würde'], 'В главной части нереального условия — würde + инфинитив. werde — будущее время, wurde — прошедшее.', { s: 'grammar', t: 'conditionals', d: 2 }, { translation: 'Если бы у меня было время, я бы тебя навестил.', options: ['würde', 'werde', 'wurde'] }),
+                choice('Какое предложение выражает нереальное условие?', ['Wenn ich mehr Geld hätte, würde ich ein Auto kaufen.', 'Wenn ich mehr Geld habe, kaufe ich ein Auto.', 'Wenn ich mehr Geld hatte, kaufte ich ein Auto.'], 0, 'Только первое предложение в Konjunktiv II: «если бы у меня было …». Второе — реальное условие («если будет — куплю»), третье — повторяющееся действие в прошлом.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                translate('На твоём месте я бы остался дома.', ['An deiner Stelle würde ich zu Hause bleiben.', 'Ich an deiner Stelle würde zu Hause bleiben.', 'An deiner Stelle bliebe ich zu Hause.', 'Wenn ich du wäre, würde ich zu Hause bleiben.', 'Wenn ich an deiner Stelle wäre, würde ich zu Hause bleiben.'], 'An deiner Stelle — «на твоём месте»; после него глагол würde на втором месте, инфинитив bleiben — в конце.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                order(['Das', 'wäre', 'eine', 'gute', 'Möglichkeit'], 'Это была бы хорошая возможность.', 'wäre — Konjunktiv II от sein — стоит на втором месте.', { s: 'grammar', t: 'conditionals', d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'Was würdest du machen, wenn du im Lotto gewinnen würdest?', 'Что бы ты сделал, если бы выиграл в лотерею?'],
+                    ['B', null],
+                  ],
+                  ['Ich würde um die Welt reisen.', 'Ich reiste gestern um die Welt.', 'Ich bin um die Welt gereist.'],
+                  0,
+                  'Вопрос о гипотетической ситуации — отвечаем тоже в Konjunktiv II: Ich würde … reisen.',
+                  { t: 'conditionals', d: 3 },
+                ),
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Медиа и общество',
+          description: 'Новости и экология: пассивный залог и косвенная речь.',
+          lessons: [
+            {
+              key: 'de-b2-media',
+              title: 'Новости и пассив',
+              objective: 'Понимать и пересказывать новости с помощью пассива в настоящем и прошедшем времени.',
+              topic: 'media',
+              minutes: 14,
+              theory: [
+                {
+                  title: 'Vorgangspassiv: werden + Partizip II',
+                  body: 'В русском пассив образуют с помощью «-ся» или краткого причастия: «мост строится», «мост был построен». В немецком используют werden + Partizip II в конце предложения: Die Brücke wird gebaut. В прошедшем времени — wurde: Die Brücke wurde 2020 gebaut. Исполнителя действия вводят предлогом von + Dativ — там, где в русском стоит творительный падеж.',
+                  examples: [
+                    ['Die Nachrichten werden jeden Abend gesendet.', 'Новости передают каждый вечер.'],
+                    ['Das Interview wurde gestern veröffentlicht.', 'Интервью было опубликовано вчера.'],
+                    ['Der Bericht wurde von einem Reporter geschrieben.', 'Репортаж был написан репортёром.'],
+                  ],
+                },
+                {
+                  title: 'Пассив с модальными глаголами и в Perfekt',
+                  body: 'С модальным глаголом в конце стоит пассивный инфинитив: Partizip II + werden — Die Daten müssen geschützt werden («Данные должны быть защищены»). В Perfekt пассива вспомогательный глагол — sein, а от werden используется краткая форма worden (не geworden): Die Sendung ist abgesetzt worden.',
+                  examples: [
+                    ['Die Frage muss geklärt werden.', 'Этот вопрос нужно прояснить.'],
+                    ['Der Film ist schon oft gezeigt worden.', 'Этот фильм показывали уже много раз.'],
+                  ],
+                },
+              ],
+              words: [
+                ['die Nachricht', 'новость, сообщение', 'noun', 'Hast du die Nachrichten gehört?', 'Ты слышал новости?', 'f'],
+                ['veröffentlichen', 'публиковать', 'verb', 'Die Studie wurde im Mai veröffentlicht.', 'Исследование было опубликовано в мае.'],
+                ['die Zeitung', 'газета', 'noun', 'Ich lese die Zeitung online.', 'Я читаю газету онлайн.', 'f'],
+                ['berichten', 'сообщать, рассказывать (о чём-либо)', 'verb', 'Das Fernsehen berichtet über die Wahl.', 'Телевидение рассказывает о выборах.'],
+                ['die Sendung', 'передача', 'noun', 'Die Sendung beginnt um acht.', 'Передача начинается в восемь.', 'f'],
+                ['die Quelle', 'источник', 'noun', 'Diese Quelle ist nicht zuverlässig.', 'Этот источник ненадёжен.', 'f'],
+                ['zuverlässig', 'надёжный', 'adjective', 'Wir brauchen zuverlässige Informationen.', 'Нам нужна надёжная информация.'],
+                ['die Schlagzeile', 'заголовок (в прессе)', 'noun', 'Die Schlagzeile klingt dramatisch.', 'Заголовок звучит драматично.', 'f'],
+              ],
+              exercises: [
+                fill('Die Zeitung ___ jeden Morgen geliefert.', ['wird'], 'Пассив настоящего времени: wird + Partizip II. Zeitung — единственное число, поэтому wird.', { s: 'grammar', t: 'passive', d: 2 }, { translation: 'Газету доставляют каждое утро.', options: ['wird', 'werden', 'hat'] }),
+                fill('Das Gesetz ___ im Jahr 2023 beschlossen.', ['wurde'], 'Речь о прошлом, поэтому пассив прошедшего времени: wurde + Partizip II.', { s: 'grammar', t: 'passive', d: 2 }, { translation: 'Закон был принят в 2023 году.', options: ['wurde', 'wird', 'hat'] }),
+                choice('Как сказать «Статья была написана журналистом»?', ['Der Artikel wurde von einem Journalisten geschrieben.', 'Der Artikel wurde durch einen Journalisten schreiben.', 'Der Artikel hat von einem Journalisten geschrieben.'], 0, 'Исполнитель вводится через von + Dativ (einem Journalisten — слабое существительное с -en), причастие geschrieben — в конце.', { s: 'grammar', t: 'passive', d: 3 }),
+                order(['Die', 'Daten', 'müssen', 'besser', 'geschützt', 'werden'], 'Данные нужно лучше защищать.', 'Пассив с модальным глаголом: müssen на втором месте, в конце — geschützt werden.', { s: 'grammar', t: 'passive', d: 3 }),
+                choiceRu('Что означает это слово?', 'die Schlagzeile', ['заголовок', 'реклама', 'опечатка'], 0, 'die Schlagzeile — «заголовок» в газете или на новостном сайте (буквально «ударная строка»).'),
+                translate('Новости передают каждый час.', ['Die Nachrichten werden jede Stunde gesendet.', 'Die Nachrichten werden stündlich gesendet.', 'Die Nachrichten werden jede Stunde ausgestrahlt.', 'Die Nachrichten werden stündlich ausgestrahlt.', 'Nachrichten werden jede Stunde gesendet.', 'Nachrichten werden stündlich gesendet.', 'Jede Stunde werden Nachrichten gesendet.', 'Jede Stunde werden die Nachrichten gesendet.'], 'Русское неопределённо-личное «передают» удобно перевести пассивом. Nachrichten — мн. ч., поэтому werden; senden → gesendet.', { s: 'grammar', t: 'passive', d: 3 }),
+                translateBack('Über den Skandal ist viel berichtet worden.', ['О скандале много сообщали', 'О скандале много писали', 'О скандале много рассказывали', 'О скандале было много сообщений'], 'Perfekt пассива: ist … berichtet worden. Безличный пассив без подлежащего по-русски передают неопределённо-личным предложением.', { t: 'passive', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Woher hast du diese Information?', 'Откуда у тебя эта информация?'],
+                    ['B', null],
+                  ],
+                  ['Sie wurde in einer zuverlässigen Zeitung veröffentlicht.', 'Sie wurde in einer zuverlässigen Zeitung veröffentlichen.', 'Sie hat in einer zuverlässigen Zeitung veröffentlicht.'],
+                  0,
+                  'Пассив прошедшего времени: wurde + Partizip II (veröffentlicht). Вариант с hat означал бы, что информация сама что-то опубликовала.',
+                  { s: 'grammar', t: 'passive', d: 3 },
+                ),
+                fill('Wann ___ die Ergebnisse bekannt gegeben?', ['werden', 'wurden'], 'Ergebnisse — мн. ч., поэтому werden (или wurden, если речь о прошлом). Partizip II bekannt gegeben стоит в конце.', { s: 'grammar', t: 'passive', d: 2 }, { translation: 'Когда объявят результаты?', options: ['werden', 'wird', 'sind'] }),
+                listen('Die Sendung wird live übertragen.', 'übertragen — «транслировать»; live произносится по-английски: [лайф].', {}, { translation: 'Передача транслируется в прямом эфире.' }),
+              ],
+              test: [
+                fill('Das Museum ___ im Jahr 1900 gebaut.', ['wurde'], 'Действие в прошлом — пассив с wurde + Partizip II.', { s: 'grammar', t: 'passive', d: 2 }, { translation: 'Музей был построен в 1900 году.', options: ['wurde', 'wird', 'hat'] }),
+                fill('Die Nachricht muss noch überprüft ___.', ['werden'], 'Пассив с модальным глаголом: в конце Partizip II + werden.', { s: 'grammar', t: 'passive', d: 3 }, { translation: 'Эту новость ещё нужно проверить.', options: ['werden', 'worden', 'wurde'] }),
+                choice('Выберите правильное предложение в Perfekt пассива.', ['Das Buch ist in viele Sprachen übersetzt worden.', 'Das Buch hat in viele Sprachen übersetzt worden.', 'Das Buch ist in viele Sprachen übersetzt geworden.'], 0, 'Perfekt пассива: sein + Partizip II + worden. Форма geworden используется только тогда, когда werden значит «становиться».', { s: 'grammar', t: 'passive', d: 3 }),
+                translate('Репортаж был показан вчера.', ['Die Reportage wurde gestern gezeigt.', 'Der Bericht wurde gestern gezeigt.', 'Die Reportage ist gestern gezeigt worden.', 'Der Bericht ist gestern gezeigt worden.', 'Die Reportage wurde gestern gesendet.', 'Der Bericht wurde gestern gesendet.', 'Gestern wurde die Reportage gezeigt.', 'Gestern wurde der Bericht gezeigt.'], 'Пассив прошедшего времени: wurde + Partizip II (gezeigt) в конце предложения.', { s: 'grammar', t: 'passive', d: 2 }),
+                translateBack('Die Studie wird von vielen Experten kritisiert.', ['Исследование критикуется многими экспертами', 'Многие эксперты критикуют исследование', 'Исследование критикуют многие эксперты'], 'wird kritisiert — пассив настоящего времени; von vielen Experten — исполнитель действия.', { t: 'passive', d: 2 }),
+              ],
+            },
+            {
+              key: 'de-b2-environment',
+              title: 'Экология и косвенная речь',
+              objective: 'Передавать чужие высказывания об экологии с помощью Konjunktiv I.',
+              topic: 'environment',
+              minutes: 14,
+              theory: [
+                {
+                  title: 'Konjunktiv I в косвенной речи',
+                  body: 'В русском косвенную речь передают союзом «что» без изменения формы глагола: «Министр сказал, что план готов». В немецких новостях и официальных текстах используют Konjunktiv I, чтобы показать: это чужие слова, а не позиция автора. Форма образуется от основы инфинитива + -e: er habe, sie komme, es gebe. Особенно частая форма — sei от sein. Союз dass можно опустить, тогда глагол стоит на втором месте.',
+                  examples: [
+                    ['Der Minister sagt, der Plan sei fertig.', 'Министр говорит, что план готов.'],
+                    ['Die Forscherin erklärt, es gebe keine schnelle Lösung.', 'Исследовательница объясняет, что быстрого решения нет.'],
+                    ['Er behauptet, dass er nichts davon wisse.', 'Он утверждает, что ничего об этом не знает.'],
+                  ],
+                },
+                {
+                  title: 'Когда нужен Konjunktiv II',
+                  body: 'Если форма Konjunktiv I совпадает с изъявительным наклонением (обычно во множественном числе: sie haben), её заменяют формой Konjunktiv II: Die Experten sagen, sie hätten zu wenig Daten. Вопрос без вопросительного слова передают через ob («ли»): Er fragt, ob der Plan realistisch sei. В разговорной речи немцы часто используют обычный индикатив: Er sagt, dass er kommt.',
+                  examples: [
+                    ['Die Bürger sagen, sie hätten keine Informationen bekommen.', 'Граждане говорят, что не получили никакой информации.'],
+                    ['Die Journalistin fragt, wann das Gesetz in Kraft trete.', 'Журналистка спрашивает, когда закон вступит в силу.'],
+                  ],
+                },
+              ],
+              words: [
+                ['die Umwelt', 'окружающая среда', 'noun', 'Plastik schadet der Umwelt.', 'Пластик вредит окружающей среде.', 'f'],
+                ['der Klimawandel', 'изменение климата', 'noun', 'Der Klimawandel betrifft alle Länder.', 'Изменение климата касается всех стран.', 'm'],
+                ['schützen', 'защищать', 'verb', 'Wälder schützen das Klima.', 'Леса защищают климат.'],
+                ['der Müll', 'мусор', 'noun', 'Wir trennen den Müll.', 'Мы сортируем мусор.', 'm'],
+                ['die Maßnahme', 'мера', 'noun', 'Die Regierung plant neue Maßnahmen.', 'Правительство планирует новые меры.', 'f'],
+                ['behaupten', 'утверждать', 'verb', 'Die Firma behauptet, ihre Produkte seien umweltfreundlich.', 'Фирма утверждает, что её продукты экологичны.'],
+                ['nachhaltig', 'устойчивый, экологичный', 'adjective', 'Wir brauchen nachhaltige Lösungen.', 'Нам нужны устойчивые решения.'],
+                ['die Energie', 'энергия', 'noun', 'Erneuerbare Energie wird immer wichtiger.', 'Возобновляемая энергия становится всё важнее.', 'f'],
+              ],
+              exercises: [
+                fill('Die Ministerin sagt, die Lage ___ ernst.', ['sei'], 'В официальной косвенной речи используют Konjunktiv I: от sein в 3-м лице ед. ч. — sei.', { s: 'grammar', t: 'reported_speech', d: 2 }, { translation: 'Министр говорит, что ситуация серьёзная.', options: ['sei', 'seien', 'sein'] }),
+                fill('Der Experte erklärt, es ___ genug Lösungen.', ['gebe'], 'es gibt в Konjunktiv I — es gebe: основа инфинитива geb- + -e.', { s: 'grammar', t: 'reported_speech', d: 3 }, { translation: 'Эксперт объясняет, что решений достаточно.', options: ['gebe', 'geben', 'gegeben'] }),
+                choiceRu('Почему в этом предложении hätten, а не haben?', 'Die Forscher sagen, sie hätten zu wenig Zeit.', ['Форма Konjunktiv I «haben» совпала бы с изъявительным наклонением', 'Это нереальное условие', 'Это прошедшее время'], 0, 'Konjunktiv I от haben во мн. ч. — haben, как в индикативе. Чтобы косвенная речь была заметна, используют Konjunktiv II: hätten.', { s: 'grammar', t: 'reported_speech', d: 3 }),
+                order(['Er', 'behauptet', 'der', 'Müll', 'werde', 'getrennt'], 'Он утверждает, что мусор сортируют.', 'Без dass глагол в косвенной речи стоит на втором месте: der Müll werde getrennt (пассив в Konjunktiv I).', { s: 'grammar', t: 'reported_speech', d: 3 }),
+                translate('Учёный говорит, что изменение климата опасно.', ['Der Wissenschaftler sagt, der Klimawandel sei gefährlich.', 'Der Wissenschaftler sagt, dass der Klimawandel gefährlich sei.', 'Der Wissenschaftler sagt, dass der Klimawandel gefährlich ist.', 'Der Forscher sagt, der Klimawandel sei gefährlich.', 'Der Forscher sagt, dass der Klimawandel gefährlich sei.', 'Der Forscher sagt, dass der Klimawandel gefährlich ist.', 'Die Wissenschaftlerin sagt, der Klimawandel sei gefährlich.', 'Die Wissenschaftlerin sagt, dass der Klimawandel gefährlich sei.'], 'Без dass: … der Klimawandel sei gefährlich (глагол на втором месте). С dass глагол уходит в конец: … dass der Klimawandel gefährlich sei.', { s: 'grammar', t: 'reported_speech', d: 3 }),
+                choiceRu('Что означает это слово?', 'nachhaltig', ['устойчивый, экологичный', 'временный', 'вредный'], 0, 'nachhaltig — «устойчивый» (о развитии, решениях), часто в значении «экологичный». Существительное — die Nachhaltigkeit.'),
+                dialogue(
+                  [
+                    ['A', 'Was hat der Bürgermeister im Interview gesagt?', 'Что мэр сказал в интервью?'],
+                    ['B', null],
+                  ],
+                  ['Er hat gesagt, die Stadt werde mehr Radwege bauen.', 'Er hat gesagt, die Stadt werde mehr Radwege gebaut.', 'Er hat gesagt, dass die Stadt werde mehr Radwege bauen.'],
+                  0,
+                  'Konjunktiv I от werden — werde, инфинитив bauen — в конце. После dass глагол должен стоять в конце придаточного: … dass die Stadt mehr Radwege bauen werde.',
+                  { s: 'grammar', t: 'reported_speech', d: 3 },
+                ),
+                fill('Die Journalistin fragt, ___ die Maßnahmen wirklich helfen.', ['ob'], 'Вопрос без вопросительного слова в косвенной речи вводится союзом ob — «ли».', { s: 'grammar', t: 'reported_speech', d: 2 }, { translation: 'Журналистка спрашивает, действительно ли эти меры помогают.', options: ['ob', 'dass', 'wenn'] }),
+                translateBack('Die Regierung behauptet, sie habe alles getan, um die Umwelt zu schützen.', ['Правительство утверждает, что сделало всё, чтобы защитить окружающую среду', 'Правительство утверждает, что оно сделало всё, чтобы защитить окружающую среду', 'Правительство утверждает, что сделало всё для защиты окружающей среды'], 'habe getan — прошедшее время в Konjunktiv I: автор лишь передаёт слова правительства, не подтверждая их.', { d: 3 }),
+                speak('Wir müssen die Umwelt schützen.', 'Мы должны защищать окружающую среду.', 'В schützen «sch» — это «ш», а ü произносится губами как «у», а языком как «и».'),
+              ],
+              test: [
+                fill('Er sagt, er ___ keine Zeit.', ['habe'], 'Konjunktiv I от haben в 3-м лице ед. ч. — habe.', { s: 'grammar', t: 'reported_speech', d: 2 }, { translation: 'Он говорит, что у него нет времени.', options: ['habe', 'hat', 'haben'] }),
+                fill('Sie erzählt, sie ___ gestern im Wald gewesen.', ['sei'], 'Perfekt от sein образуется с sein; в Konjunktiv I — sei gewesen.', { s: 'grammar', t: 'reported_speech', d: 3 }, { translation: 'Она рассказывает, что вчера была в лесу.', options: ['sei', 'habe', 'seid'] }),
+                choice('Как передать в косвенной речи вопрос «Ist das Projekt teuer?»', ['Sie fragt, ob das Projekt teuer sei.', 'Sie fragt, dass das Projekt teuer sei.', 'Sie fragt, ob sei das Projekt teuer.'], 0, 'Вопрос без вопросительного слова вводится союзом ob, глагол sei стоит в конце придаточного.', { s: 'grammar', t: 'reported_speech', d: 2 }),
+                translate('Она утверждает, что это невозможно.', ['Sie behauptet, das sei unmöglich.', 'Sie behauptet, dass das unmöglich sei.', 'Sie behauptet, es sei unmöglich.', 'Sie behauptet, dass es unmöglich sei.', 'Sie behauptet, dass das unmöglich ist.', 'Sie behauptet, dass es unmöglich ist.'], 'behaupten — «утверждать». В косвенной речи — Konjunktiv I: das sei unmöglich.', { s: 'grammar', t: 'reported_speech', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Was steht in dem Bericht?', 'Что написано в докладе?'],
+                    ['B', null],
+                  ],
+                  ['Dort steht, die Luftqualität habe sich verbessert.', 'Dort steht, die Luftqualität habe sich verbessern.', 'Dort steht, die Luftqualität hat verbessert sich.'],
+                  0,
+                  'Прошедшее время в Konjunktiv I: habe + Partizip II (verbessert); возвратное sich стоит сразу после спрягаемого глагола.',
+                  { s: 'grammar', t: 'reported_speech', d: 3 },
+                ),
               ],
             },
           ],

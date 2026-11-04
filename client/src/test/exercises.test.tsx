@@ -48,17 +48,6 @@ describe('exercise components', () => {
     expect(onAnswer).toHaveBeenLastCalledWith(null);
   });
 
-  it('pairs words in a matching exercise and reports only complete answers', async () => {
-    const onAnswer = vi.fn();
-    render(<Harness exercise={{ ...common, type: 'match', left: ['ich', 'du'], right: ['ты', 'я'] }} onAnswer={onAnswer} />);
-    await userEvent.click(screen.getByRole('button', { name: 'ich' }));
-    await userEvent.click(screen.getByRole('button', { name: 'я' }));
-    expect(onAnswer).toHaveBeenLastCalledWith(null);
-    await userEvent.click(screen.getByRole('button', { name: 'du' }));
-    await userEvent.click(screen.getByRole('button', { name: 'ты' }));
-    expect(onAnswer).toHaveBeenLastCalledWith({ type: 'match', pairs: [{ left: 'ich', right: 'я' }, { left: 'du', right: 'ты' }] });
-  });
-
   it('types into a gap and inserts special characters at the cursor', async () => {
     const onAnswer = vi.fn();
     render(<Harness exercise={{ ...common, type: 'fill_blank', sentence: 'Das ist ___.', translationText: 'Это …' }} onAnswer={onAnswer} />);

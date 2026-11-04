@@ -29,7 +29,6 @@ const fillWithOptions: Exercise = { ...fill, key: 'f2', options: ['bin', 'bist']
 const translateTo: Exercise = { ...base, key: 't1', type: 'translate', direction: 'to_target', source: { ru: 'Я студент.' }, answers: ['Ich bin Student.'] };
 const translateBack: Exercise = { ...base, key: 't2', type: 'translate', direction: 'to_ui', source: 'Wir wohnen in Berlin.', answersUi: { ru: ['Мы живём в Берлине'] } };
 const order: Exercise = { ...base, key: 'o1', type: 'order', tokens: ['Ich', 'komme', 'aus', 'Almaty'], translation: { ru: 'Я из Алматы.' }, alternatives: [['Aus', 'Almaty', 'komme', 'ich']] };
-const match: Exercise = { ...base, key: 'm1', type: 'match', pairs: [{ left: 'ich', right: { ru: 'я' } }, { left: 'du', right: { ru: 'ты' } }] };
 const speak: Exercise = { ...base, key: 's1', type: 'speak', errorCategory: 'pronunciation', text: 'Guten Tag', translation: { ru: 'Добрый день' } };
 const listen: Exercise = { ...base, key: 'l1', type: 'listen', audioText: 'Guten Abend', mode: 'type', answers: ['Guten Abend'] };
 const dialogue: Exercise = {
@@ -80,17 +79,17 @@ describe('checkAnswer', () => {
     expect(wrong.verdict).toBe('incorrect');
   });
 
-  it('requires all pairs to be matched correctly', () => {
-    expect(checkAnswer(match, { type: 'match', pairs: [{ left: 'ich', right: 'я' }, { left: 'du', right: 'ты' }] }, 'de').verdict).toBe('correct');
-    expect(checkAnswer(match, { type: 'match', pairs: [{ left: 'ich', right: 'ты' }, { left: 'du', right: 'я' }] }, 'de').verdict).toBe('incorrect');
-    expect(checkAnswer(match, { type: 'match', pairs: [{ left: 'ich', right: 'я' }] }, 'de').verdict).toBe('incorrect');
-  });
-
   it('grades speech by similarity and supports skipping', () => {
     expect(checkAnswer(speak, { type: 'speak', transcript: 'guten tag' }, 'de').verdict).toBe('correct');
     expect(checkAnswer(speak, { type: 'speak', transcript: 'guten tak' }, 'de').verdict).toBe('correct');
     expect(checkAnswer(speak, { type: 'speak', transcript: 'gute tak' }, 'de')).toMatchObject({ verdict: 'almost', category: 'pronunciation' });
     expect(checkAnswer(speak, { type: 'speak', transcript: '', skipped: true }, 'de')).toMatchObject({ verdict: 'skipped', points: 0 });
+  });
+
+  it('checks the written alternative of a speaking task strictly', () => {
+    expect(checkAnswer(speak, { type: 'speak', transcript: 'Guten Tag', typed: true }, 'de').verdict).toBe('correct');
+    expect(checkAnswer(speak, { type: 'speak', transcript: 'Gutten Tag', typed: true }, 'de').verdict).toBe('almost');
+    expect(checkAnswer(speak, { type: 'speak', transcript: 'Hallo', typed: true }, 'de').verdict).toBe('incorrect');
   });
 
   it('supports skipped listening when speech synthesis is unavailable', () => {
@@ -109,13 +108,12 @@ describe('checkAnswer', () => {
 
 describe('toPublicExercise', () => {
   it('never exposes the correct answer fields', () => {
-    for (const ex of [choice, fill, translateTo, translateBack, order, match, dialogue]) {
+    for (const ex of [choice, fill, translateTo, translateBack, order, dialogue, speak]) {
       const view = toPublicExercise(ex, 7) as unknown as Record<string, unknown>;
       expect(view).not.toHaveProperty('answers');
       expect(view).not.toHaveProperty('answersUi');
       expect(view).not.toHaveProperty('correctIndex');
       expect(view).not.toHaveProperty('tokens');
-      expect(view).not.toHaveProperty('pairs');
       expect(view).not.toHaveProperty('explanation');
     }
   });

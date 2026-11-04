@@ -1,5 +1,5 @@
 # Build context: repository root (npm workspaces share one lockfile).
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json tsconfig.base.json ./
 COPY shared/package.json shared/
@@ -10,7 +10,7 @@ COPY shared shared
 COPY server server
 RUN npm run build --workspace server
 
-FROM node:22-alpine
+FROM node:24-alpine
 ENV NODE_ENV=production
 WORKDIR /app
 COPY package.json package-lock.json ./

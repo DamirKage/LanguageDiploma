@@ -1,5 +1,5 @@
 # Build context: repository root.
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json tsconfig.base.json ./
 COPY shared/package.json shared/
@@ -10,7 +10,7 @@ COPY shared shared
 COPY client client
 RUN npm run build --workspace client
 
-FROM nginx:1.27-alpine
+FROM nginx:stable-alpine
 COPY client/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/client/dist /usr/share/nginx/html
 EXPOSE 80

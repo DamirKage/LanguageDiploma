@@ -1,4 +1,4 @@
-import type { CefrLevel, ErrorCategory, ExerciseType, LanguageCode, Skill } from './constants';
+import type { CefrLevel, ErrorCategory, ExerciseType, Skill } from './constants';
 import type { LocalizedText } from './localized';
 
 interface ExerciseBase {
@@ -57,11 +57,6 @@ export interface OrderExercise extends ExerciseBase {
   alternatives?: string[][];
 }
 
-export interface MatchExercise extends ExerciseBase {
-  type: 'match';
-  pairs: Array<{ left: string; right: LocalizedText }>;
-}
-
 export interface ListenExercise extends ExerciseBase {
   type: 'listen';
   audioText: string;
@@ -91,7 +86,6 @@ export type Exercise =
   | FillBlankExercise
   | TranslateExercise
   | OrderExercise
-  | MatchExercise
   | ListenExercise
   | DialogueExercise
   | SpeakExercise;
@@ -102,10 +96,9 @@ export type ExerciseAnswer =
   | { type: 'fill_blank'; text: string }
   | { type: 'translate'; text: string }
   | { type: 'order'; tokens: string[] }
-  | { type: 'match'; pairs: Array<{ left: string; right: string }> }
   | { type: 'listen'; text: string; skipped?: boolean }
   | { type: 'dialogue'; option: string }
-  | { type: 'speak'; transcript: string; skipped?: boolean };
+  | { type: 'speak'; transcript: string; skipped?: boolean; typed?: boolean };
 
 /** Exercise as delivered to the learner: no answers, options already shuffled. */
 export type PublicExercise =
@@ -113,7 +106,6 @@ export type PublicExercise =
   | (Pick<FillBlankExercise, 'type' | 'sentence' | 'translation'> & { options?: string[] })
   | (Pick<TranslateExercise, 'type' | 'direction'> & { source: string; tiles?: string[] })
   | (Pick<OrderExercise, 'type' | 'translation'> & { tiles: string[] })
-  | { type: 'match'; left: string[]; right: string[] }
   | (Pick<ListenExercise, 'type' | 'audioText' | 'audioUrl' | 'mode'> & { options?: string[] })
   | (Pick<DialogueExercise, 'type' | 'context'> & {
       lines: Array<{ speaker: 'A' | 'B'; text: string | null; translation?: string }>;
@@ -140,24 +132,3 @@ export interface AnswerFeedback {
   note?: { code: 'diacritics' | 'typo' | 'kazakh_letters' | 'alternative'; detail?: string };
 }
 
-export interface TheoryBlock {
-  title: LocalizedText;
-  body: LocalizedText;
-  examples?: Array<{ target: string; translation: LocalizedText }>;
-}
-
-export interface LessonCatalogItem {
-  id: string;
-  key: string;
-  title: string;
-  objective: string;
-  topic: string;
-  level: CefrLevel;
-  moduleId: string;
-  courseId: string;
-  language: LanguageCode;
-  order: number;
-  estimatedMinutes: number;
-  exerciseCount: number;
-  wordCount: number;
-}

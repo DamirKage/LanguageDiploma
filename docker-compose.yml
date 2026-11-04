@@ -1,6 +1,6 @@
 services:
   mongo:
-    image: mongo:7
+    image: mongo:8
     restart: unless-stopped
     volumes:
       - mongo-data:/data/db
@@ -56,7 +56,7 @@ services:
       NODE_ENV: production
       MONGODB_URI: mongodb://mongo:27017/linguapath
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Set JWT_ACCESS_SECRET in .env}
-      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-LinguaAdmin2026}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:?Set SEED_ADMIN_PASSWORD in .env}
       SEED_DEMO_PASSWORD: ${SEED_DEMO_PASSWORD:-LinguaDemo2026}
     command: ['node', 'dist/seed.js']
 

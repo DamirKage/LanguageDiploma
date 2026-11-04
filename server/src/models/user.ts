@@ -1,4 +1,4 @@
-import { Schema, model, type InferSchemaType, type HydratedDocument, Types } from 'mongoose';
+import { Schema, model, type InferSchemaType, type HydratedDocument } from 'mongoose';
 import { CEFR_LEVELS, LEARNING_GOALS, ROLES } from '@linguapath/shared';
 
 const userSchema = new Schema(
@@ -7,7 +7,6 @@ const userSchema = new Schema(
     passwordHash: { type: String, required: true, select: false },
     name: { type: String, required: true, trim: true, maxlength: 80 },
     role: { type: String, enum: ROLES, default: 'user', index: true },
-    isBlocked: { type: Boolean, default: false },
     /** Accounts created by the seed script for demonstrations. */
     isDemo: { type: Boolean, default: false },
     uiLocale: { type: String, default: 'ru' },
@@ -69,4 +68,3 @@ passwordResetSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export const PasswordResetToken = model('PasswordResetToken', passwordResetSchema);
 
-export type ObjectIdLike = Types.ObjectId | string;

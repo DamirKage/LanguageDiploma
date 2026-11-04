@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { TrendingDown, TrendingUp } from 'lucide-react';
-import { analyticsApi, meApi } from '../../api/endpoints';
-import { Button, ErrorState, Meter, PageLoader, Section, useTitle } from '../../components/ui';
+import { analyticsApi, meApi, personalApi } from '../../api/endpoints';
+import { Button, ErrorState, LanguageMark, Meter, PageLoader, Section, useTitle } from '../../components/ui';
 import { useI18n } from '../../i18n';
-import { qk, useActiveLanguage, useTopics } from '../../lib/queries';
+import { qk, useActiveLanguage, useEnrollments, useLanguageName, useTopics } from '../../lib/queries';
+import { recommendationTitle } from '../today/recommendationText';
 import { BarChart, LineChart } from './charts';
 
 const pct = (x: number | null | undefined) => (x === null || x === undefined ? null : Math.round(x * 100));
@@ -68,6 +69,51 @@ function History({ language }: { language: string }) {
   );
 }
 
+/** Languages, levels and the current plan: the personal-cabinet part of the page. */
+function Overview({ language }: { language: string }) {
+  const i18n = useI18n();
+  const { t, plural } = i18n;
+  const { topicTitle } = useTopics();
+  const languageName = useLanguageName();
+  const { data: enrollments } = useEnrollments();
+  const plan = useQuery({ queryKey: qk.plan(language), queryFn: () => personalApi.plan(language) });
+  const items = plan.data?.items ?? [];
+  const open = items.filter((i) => !i.done);
+  return (
+    <div className="cabinet">
+      <Section title={t('progress.languagesTitle')} aside={<Link to="/profile">{t('progress.manage')}</Link>}>
+        <ul className="cabinet__languages">
+          {(enrollments ?? []).map((e) => (
+            <li key={e.language}>
+              <LanguageMark code={e.language} />
+              <span>{languageName(e.language)}</span>
+              <span className="tag">{e.level}</span>
+              {e.language === language ? <span className="caption">{t('profile.active')}</span> : null}
+            </li>
+          ))}
+        </ul>
+      </Section>
+      <Section title={t('progress.planTitle')} aside={<Link to="/today">{t('progress.openPlan')}</Link>}>
+        {items.length === 0 ? (
+          <p className="small muted">{t('today.emptyPlan')}</p>
+        ) : (
+          <>
+            <p className="small">{t('progress.planSummary', { done: items.length - open.length, total: items.length, minutes: plural('common.minutes', plan.data!.plannedMinutes) })}</p>
+            <ol className="cabinet__plan">
+              {items.map((item) => (
+                <li key={item.key} data-done={item.done || undefined}>
+                  <span className="caption">{t(`recommendation.type.${item.type}`)}</span>
+                  <span>{recommendationTitle(item, i18n, { topicTitle })}</span>
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
+      </Section>
+    </div>
+  );
+}
+
 export default function ProgressPage() {
   const i18n = useI18n();
   const { t, plural } = i18n;
@@ -95,6 +141,8 @@ export default function ProgressPage() {
         <h1>{t('progress.title')}</h1>
         <p className="page-head__lead">{t('progress.lead')}</p>
       </header>
+
+      <Overview language={code} />
 
       <dl className="stats">
         <Stat label={t('progress.level')} value={o.level ?? '—'} sub={o.level ? t(`levels.${o.level}`) : undefined} />

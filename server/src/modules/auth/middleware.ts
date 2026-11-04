@@ -51,9 +51,8 @@ export function authenticate(access: 'user' | 'admin' | 'optional') {
       if (access === 'optional') return next();
       throw err instanceof jwt.TokenExpiredError ? new AppError(401, 'token_expired') : errors.unauthorized();
     }
-    const user = await User.findById(payload.sub).select('role email timezone activeLanguage isBlocked').lean();
+    const user = await User.findById(payload.sub).select('role email timezone activeLanguage').lean();
     if (!user) throw errors.unauthorized();
-    if (user.isBlocked) throw errors.forbidden('account_blocked');
     if (access === 'admin' && user.role !== 'admin') throw errors.forbidden();
     res.locals.user = {
       id: String(user._id),

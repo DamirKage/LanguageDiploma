@@ -33,8 +33,6 @@ export function expectedAnswer(ex: Exercise, locale = 'ru'): string {
       return ex.direction === 'to_target' ? ex.answers![0]! : (ex.answersUi![locale] ?? ex.answersUi!.ru)[0]!;
     case 'order':
       return ex.tokens.join(' ');
-    case 'match':
-      return ex.pairs.map((p) => `${p.left} — ${localize(p.right, locale)}`).join('; ');
     case 'listen':
       return ex.answers[0]!;
     case 'speak':
@@ -52,8 +50,6 @@ export function promptText(ex: Exercise, locale = 'ru'): string {
       return localize(ex.source, locale);
     case 'order':
       return localize(ex.translation, locale);
-    case 'match':
-      return ex.pairs.map((p) => p.left).join(', ');
     case 'listen':
       return ex.audioText;
     case 'dialogue':
@@ -75,8 +71,6 @@ function describeGiven(answer: ExerciseAnswer): string {
       return answer.text;
     case 'order':
       return answer.tokens.join(' ');
-    case 'match':
-      return answer.pairs.map((p) => `${p.left} — ${p.right}`).join('; ');
     case 'speak':
       return answer.skipped ? '' : answer.transcript;
   }
@@ -147,17 +141,17 @@ export function checkAnswer(ex: Exercise, answer: ExerciseAnswer, language: stri
       verdict = sequences.some((seq) => strictKey(seq.join(' '), language) === given) ? 'correct' : 'incorrect';
       break;
     }
-    case 'match': {
-      const pairs = (answer as { pairs: Array<{ left: string; right: string }> }).pairs;
-      const expectedPairs = new Map(ex.pairs.map((p) => [strictKey(p.left, language), strictKey(localize(p.right, locale), locale)]));
-      const correctCount = pairs.filter((p) => expectedPairs.get(strictKey(p.left, language)) === strictKey(p.right, locale)).length;
-      verdict = pairs.length === ex.pairs.length && correctCount === ex.pairs.length ? 'correct' : 'incorrect';
-      break;
-    }
     case 'speak': {
       const a = answer as Extract<ExerciseAnswer, { type: 'speak' }>;
       if (a.skipped) {
         verdict = 'skipped';
+        break;
+      }
+      if (a.typed) {
+        // Alternative task when speech recognition is unavailable: the learner writes the phrase from memory.
+        const m = matchText(a.transcript, [ex.text], language);
+        verdict = m.verdict;
+        if (m.verdict === 'almost') note = { code: m.reason, detail: m.matched };
         break;
       }
       const score = similarity(looseKey(a.transcript, language), looseKey(ex.text, language));

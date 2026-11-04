@@ -102,7 +102,6 @@ export async function login(email: string, password: string): Promise<UserDoc> {
   const user = await User.findOne({ email }).select('+passwordHash');
   const ok = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
   if (!user || !ok) throw new AppError(401, 'invalid_credentials');
-  if (user.isBlocked) throw errors.forbidden('account_blocked');
   return user;
 }
 
@@ -126,7 +125,7 @@ export async function rotateRefreshToken(token: string | undefined, res: Respons
     throw errors.unauthorized('token_expired');
   }
   const user = await User.findById(stored.user);
-  if (!user || user.isBlocked) {
+  if (!user) {
     clearRefreshCookie(res);
     throw errors.unauthorized();
   }
@@ -155,7 +154,7 @@ export async function revokeAllSessions(userId: string) {
 
 export async function requestPasswordReset(email: string): Promise<{ devResetUrl?: string }> {
   const user = await User.findOne({ email });
-  if (!user || user.isBlocked) return {};
+  if (!user) return {};
   const token = randomToken();
   await PasswordResetToken.create({ user: user._id, tokenHash: sha256(token), expiresAt: new Date(Date.now() + RESET_TTL_MS) });
   const url = `${config.publicAppUrl}/reset-password?token=${encodeURIComponent(token)}`;

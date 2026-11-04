@@ -21,8 +21,6 @@ export function exerciseTemplate(type: ExerciseType, key: string, topic: string)
       return { ...base, skill: 'vocabulary', errorCategory: 'vocabulary', type, direction: 'to_target', source: { ru: '' }, answers: [''] };
     case 'order':
       return { ...base, errorCategory: 'word_order', type, tokens: [], translation: { ru: '' } };
-    case 'match':
-      return { ...base, skill: 'vocabulary', errorCategory: 'vocabulary', type, pairs: [] };
     case 'listen':
       return { ...base, skill: 'listening', errorCategory: 'listening', type, audioText: '', mode: 'type', answers: [''] };
     case 'dialogue':
@@ -189,27 +187,6 @@ export function ExerciseEditor({
           </Field>
           {localized('translation')}
         </>
-      );
-      break;
-    case 'match':
-      specific = (
-        <Field label={label('pairs')}>
-          {(p) => (
-            <Textarea
-              {...p}
-              rows={4}
-              value={value.pairs.map((pair) => `${pair.left} | ${loc(pair.right)}`).join('\n')}
-              onChange={(e) =>
-                set({
-                  pairs: e.target.value.split('\n').map((line) => {
-                    const [left = '', right = ''] = line.split('|');
-                    return { left: left.trim(), right: { ru: right.trim() } };
-                  }),
-                })
-              }
-            />
-          )}
-        </Field>
       );
       break;
     case 'listen':

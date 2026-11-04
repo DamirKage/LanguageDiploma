@@ -75,12 +75,6 @@ const order = z.object({
   alternatives: z.array(z.array(nonEmpty)).max(5).optional(),
 });
 
-const match = z.object({
-  ...base,
-  type: z.literal('match'),
-  pairs: z.array(z.object({ left: nonEmpty, right: localizedText })).min(2).max(6),
-});
-
 const listen = z
   .object({
     ...base,
@@ -119,8 +113,7 @@ const speak = z.object({
   translation: localizedText,
 });
 
-export const exerciseSchema = z.union([choice, fillBlank, translate, order, match, listen, dialogue, speak]);
-export type ExerciseInput = z.infer<typeof exerciseSchema>;
+export const exerciseSchema = z.union([choice, fillBlank, translate, order, listen, dialogue, speak]);
 
 export const theoryBlockSchema = z.object({
   title: localizedText,

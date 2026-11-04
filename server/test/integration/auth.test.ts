@@ -52,14 +52,6 @@ describe('registration and login', () => {
     expect(unknown.status).toBe(401);
     expect(wrong.body).toEqual(unknown.body);
   });
-
-  it('blocks a login for a blocked account', async () => {
-    const u = await registerUser();
-    await User.updateOne({ email: u.email }, { $set: { isBlocked: true } });
-    const res = await request(app).post('/api/auth/login').send({ email: u.email, password: u.password });
-    expect(res.status).toBe(403);
-    expect(res.body.error.code).toBe('account_blocked');
-  });
 });
 
 describe('protected endpoints', () => {
@@ -70,12 +62,6 @@ describe('protected endpoints', () => {
     const me = await request(app).get('/api/me').set(u.auth);
     expect(me.status).toBe(200);
     expect(me.body.email).toBe(u.email);
-  });
-
-  it('stop accepting the token of a user who gets blocked', async () => {
-    const u = await registerUser();
-    await User.updateOne({ email: u.email }, { $set: { isBlocked: true } });
-    expect((await request(app).get('/api/me').set(u.auth)).status).toBe(403);
   });
 });
 

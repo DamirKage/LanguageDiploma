@@ -14,12 +14,6 @@ describe('admin access control', () => {
     expect((await request(app).get('/api/admin/stats').set(u.auth)).status).toBe(403);
     expect((await request(app).post('/api/admin/languages').set(u.auth).send({})).status).toBe(403);
   });
-
-  it('prevents an admin from demoting or blocking themselves', async () => {
-    const admin = await registerAdmin();
-    const res = await request(app).patch(`/api/admin/users/${admin.user.id}`).set(admin.auth).send({ isBlocked: true });
-    expect(res.status).toBe(403);
-  });
 });
 
 describe('content management', () => {
@@ -118,15 +112,12 @@ describe('content management', () => {
 });
 
 describe('users and statistics', () => {
-  it('lists users without sensitive fields and can block them', async () => {
+  it('lists users without sensitive fields', async () => {
     const admin = await registerAdmin();
     const learner = await registerUser();
     const list = await request(app).get(`/api/admin/users?q=${encodeURIComponent(learner.email)}`).set(admin.auth);
     expect(list.body.items).toHaveLength(1);
     expect(list.body.items[0]).not.toHaveProperty('passwordHash');
-    const block = await request(app).patch(`/api/admin/users/${learner.user.id}`).set(admin.auth).send({ isBlocked: true });
-    expect(block.body.isBlocked).toBe(true);
-    expect((await request(app).get('/api/me').set(learner.auth)).status).toBe(403);
   });
 
   it('returns aggregated statistics only', async () => {

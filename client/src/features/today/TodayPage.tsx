@@ -62,31 +62,66 @@ function PlanItem({
   );
 }
 
-function Rhythm({ language }: { language: string }) {
-  const { t } = useI18n();
-  const { data } = useQuery({ queryKey: qk.analytics(language, 'timeline-28'), queryFn: () => analyticsApi.timeline(language, 28) });
-  if (!data) return null;
-  const active = data.filter((d) => d.answers > 0 || d.reviews > 0).length;
-  return (
-    <Section title={t('today.rhythmTitle')}>
-      <div className="rhythm" role="img" aria-label={t('today.rhythmCaption', { days: active })}>
-        {data.map((d) => (
-          <span key={d.date} className="rhythm__cell" data-active={d.answers > 0 || d.reviews > 0 || undefined} title={d.date} />
-        ))}
-      </div>
-      <p className="small">{t('today.rhythmCaption', { days: active })}</p>
-      <p className="caption">{t('today.rhythmLegend')}</p>
-    </Section>
-  );
-}
-
-function Difficulty({ recs }: { recs: RecommendationResult }) {
+/** The signals the plan is built from, shown next to it so the recommendations can be checked against the data. */
+function Diagnosis({ language, recs }: { language: string; recs: RecommendationResult | undefined }) {
   const i18n = useI18n();
+  const { t, plural } = i18n;
   const { topicTitle } = useTopics();
+  const overview = useQuery({ queryKey: qk.analytics(language, 'overview'), queryFn: () => analyticsApi.overview(language) });
+  const topics = useQuery({ queryKey: qk.analytics(language, 'topics'), queryFn: () => analyticsApi.topics(language) });
+  if (!overview.data) return null;
+  const o = overview.data;
+  const weakest = (topics.data ?? [])
+    .filter((tp) => tp.enoughData)
+    .sort((a, b) => (a.recentAccuracy ?? a.accuracy) - (b.recentAccuracy ?? b.accuracy))[0];
+  const pct = (v: number | null) => (v === null ? t('today.diagnosis.noData') : `${Math.round(v * 100)}%`);
   return (
-    <Section title={i18n.t('today.difficultyTitle')}>
-      <p className="today__stat">{i18n.t(`today.difficulty.${recs.difficultyAdjustment}`)}</p>
-      {recs.difficultyReason ? <p className="small muted">{reasonText(recs.difficultyReason, i18n, { topicTitle })}</p> : null}
+    <Section title={t('today.diagnosis.title')}>
+      <dl className="facts facts--wide">
+        <div>
+          <dt>{t('today.diagnosis.accuracy')}</dt>
+          <dd>
+            {pct(o.accuracy.last7Days)}
+            <span className="caption"> · {t('today.diagnosis.accuracyAll', { value: pct(o.accuracy.overall), answers: plural('common.answers', o.accuracy.answers) })}</span>
+          </dd>
+        </div>
+        <div>
+          <dt>{t('today.diagnosis.weakTopic')}</dt>
+          <dd>
+            {weakest ? (
+              <>
+                {topicTitle(weakest.topic)}
+                <span className="caption"> · {pct(weakest.recentAccuracy ?? weakest.accuracy)}, {plural('common.answers', weakest.answers)}</span>
+              </>
+            ) : (
+              t('today.diagnosis.noData')
+            )}
+          </dd>
+        </div>
+        <div>
+          <dt>{t('today.diagnosis.review')}</dt>
+          <dd>{plural('today.diagnosis.words', o.words.dueToday)}</dd>
+        </div>
+        <div>
+          <dt>{t('today.diagnosis.regularity')}</dt>
+          <dd>
+            {t('today.diagnosis.days', { days: o.rhythm.activeDaysLast28 })}
+            <span className="caption"> · {t('today.diagnosis.minutes', { minutes: plural('common.minutes', o.rhythm.minutesLast7) })}</span>
+          </dd>
+        </div>
+        {recs ? (
+          <div>
+            <dt>{t('today.difficultyTitle')}</dt>
+            <dd>
+              {t(`today.difficulty.${recs.difficultyAdjustment}`)}
+              {recs.difficultyReason ? <span className="caption"> · {reasonText(recs.difficultyReason, i18n, { topicTitle })}</span> : null}
+            </dd>
+          </div>
+        ) : null}
+      </dl>
+      <p className="caption">
+        {t('today.diagnosis.note')} <Link to="/progress">{t('today.diagnosis.more')}</Link>
+      </p>
     </Section>
   );
 }
@@ -176,8 +211,7 @@ export default function TodayPage() {
         </div>
 
         <aside className="stack today__aside" style={{ '--gap': 'var(--s8)' } as React.CSSProperties}>
-          <Rhythm language={code} />
-          {recs.data ? <Difficulty recs={recs.data} /> : null}
+          <Diagnosis language={code} recs={recs.data} />
           {plan.data!.upcoming.length > 0 ? (
             <Section title={t('today.upcoming')}>
               <ol className="upcoming">

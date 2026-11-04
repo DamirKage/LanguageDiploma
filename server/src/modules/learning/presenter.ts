@@ -38,13 +38,6 @@ export function toPublicExercise(ex: Exercise, seed: number, locale = 'ru'): Pub
         translationText: localize(ex.translation, locale),
         tiles: shuffle([...ex.tokens, ...(ex.distractors ?? [])], seed),
       };
-    case 'match':
-      return {
-        ...common,
-        type: 'match',
-        left: shuffle(ex.pairs.map((p) => p.left), seed),
-        right: shuffle(ex.pairs.map((p) => localize(p.right, locale)), seed + 1),
-      };
     case 'listen':
       return {
         ...common,

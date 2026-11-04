@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { CEFR_LEVELS } from '@linguapath/shared';
+import { CEFR_LEVELS, TEST_PASS_PERCENT } from '@linguapath/shared';
 
 const localized = { type: Schema.Types.Mixed, required: true };
 
@@ -109,7 +109,7 @@ const testSchema = new Schema(
     module: { type: Schema.Types.ObjectId, ref: 'Module', default: null },
     lesson: { type: Schema.Types.ObjectId, ref: 'Lesson', default: null },
     title: localized,
-    passPercent: { type: Number, default: 70, min: 1, max: 100 },
+    passPercent: { type: Number, default: TEST_PASS_PERCENT, min: 1, max: 100 },
     /** Placement exercises additionally carry a `level` field. */
     exercises: { type: [Schema.Types.Mixed], default: [] },
     isPublished: { type: Boolean, default: true },

@@ -26,7 +26,6 @@ const DEFAULT_SKILL: Record<ExerciseType, Skill> = {
   fill_blank: 'grammar',
   translate: 'vocabulary',
   order: 'grammar',
-  match: 'vocabulary',
   listen: 'listening',
   dialogue: 'reading',
   speak: 'speaking',
@@ -71,10 +70,6 @@ export function translateBack(source: string, answersRu: string[], explanation: 
 
 export function order(tokens: string[], translation: string, explanation: string, meta: Meta = {}, extra: { distractors?: string[]; alternatives?: string[][] } = {}): Draft {
   return { type: 'order', tokens, translation: ru(translation), explanation: ru(explanation), meta: { c: 'word_order', ...meta }, ...extra };
-}
-
-export function match(pairs: Array<[string, string]>, explanation: string, meta: Meta = {}): Draft {
-  return { type: 'match', pairs: pairs.map(([left, right]) => ({ left, right: ru(right) })), explanation: ru(explanation), meta };
 }
 
 export function listen(text: string, explanation: string, meta: Meta = {}, extra: { options?: string[]; answers?: string[]; translation?: string } = {}): Draft {
@@ -124,6 +119,8 @@ export interface LessonSpec {
   theory: Array<{ title: string; body: string; examples?: Array<[string, string]> }>;
   words: WordSpec[];
   exercises: Draft[];
+  /** Questions for the lesson test; they are not shown during the lesson itself. */
+  test: Draft[];
 }
 
 export interface ModuleSpec {

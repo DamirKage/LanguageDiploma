@@ -13,7 +13,7 @@ export default defineConfig({
       '/uploads': { target: apiTarget, changeOrigin: false },
     },
   },
-  build: { outDir: 'dist', sourcemap: true, chunkSizeWarningLimit: 900 },
+  build: { outDir: 'dist', sourcemap: false, chunkSizeWarningLimit: 900 },
   test: {
     environment: 'jsdom',
     setupFiles: ['src/test/setup.ts'],

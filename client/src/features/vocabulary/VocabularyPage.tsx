@@ -51,7 +51,9 @@ function WordRow({ word, ttsLocale }: { word: VocabularyItemDTO; ttsLocale: stri
   const [open, setOpen] = useState(false);
   return (
     <li className="word-row">
-      <SpeakButton text={word.term} audioUrl={word.audioUrl} locale={ttsLocale} size="sm" />
+      <span className="word-row__audio">
+        <SpeakButton text={word.term} audioUrl={word.audioUrl} locale={ttsLocale} size="sm" />
+      </span>
       <div className="word-row__main">
         <span className="target word-row__term">{word.term}</span>
         <WordMeta word={word} />

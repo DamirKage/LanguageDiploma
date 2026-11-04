@@ -254,73 +254,6 @@ function OrderExercise({ exercise, answer, onAnswer, locked }: ExerciseProps<'or
   );
 }
 
-function MatchExercise({ exercise, onAnswer, locked }: ExerciseProps<'match'>) {
-  const { t } = useI18n();
-  const [pairs, setPairs] = useState<Record<string, string>>({});
-  const [activeLeft, setActiveLeft] = useState<string | null>(null);
-  useEffect(() => {
-    setPairs({});
-    setActiveLeft(null);
-  }, [exercise.key]);
-  const usedRight = new Set(Object.values(pairs));
-  const commit = (next: Record<string, string>) => {
-    setPairs(next);
-    onAnswer(Object.keys(next).length === exercise.left.length ? { type: 'match', pairs: Object.entries(next).map(([left, right]) => ({ left, right })) } : null);
-  };
-  const pairIndex = (left: string) => Object.keys(pairs).indexOf(left);
-  return (
-    <div className="exercise match">
-      <div className="match__col" aria-label={t('player.matchLeft')}>
-        {exercise.left.map((left) => (
-          <button
-            key={left}
-            type="button"
-            className="tile tile--wide target"
-            disabled={locked}
-            aria-pressed={activeLeft === left}
-            data-paired={left in pairs ? pairIndex(left) % 4 : undefined}
-            onClick={() => {
-              if (left in pairs) {
-                const { [left]: _removed, ...rest } = pairs;
-                commit(rest);
-                setActiveLeft(left);
-              } else setActiveLeft(left);
-            }}
-          >
-            {left}
-          </button>
-        ))}
-      </div>
-      <div className="match__col" aria-label={t('player.matchRight')}>
-        {exercise.right.map((right) => {
-          const owner = Object.keys(pairs).find((l) => pairs[l] === right);
-          return (
-            <button
-              key={right}
-              type="button"
-              className="tile tile--wide"
-              disabled={locked || (!activeLeft && !owner)}
-              data-paired={owner ? pairIndex(owner) % 4 : undefined}
-              onClick={() => {
-                if (owner) {
-                  const { [owner]: _removed, ...rest } = pairs;
-                  commit(rest);
-                  return;
-                }
-                if (!activeLeft || usedRight.has(right)) return;
-                commit({ ...pairs, [activeLeft]: right });
-                setActiveLeft(null);
-              }}
-            >
-              {right}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 function ListenExercise({ exercise, language, answer, onAnswer, onSubmit, locked, feedback }: ExerciseProps<'listen'>) {
   const { t } = useI18n();
   const { speak, available, speaking } = useSpeaker(language.ttsLocale);
@@ -411,7 +344,7 @@ function DialogueExercise({ exercise, language, answer, onAnswer, locked, feedba
   );
 }
 
-function SpeakExercise({ exercise, language, answer, onAnswer, locked }: ExerciseProps<'speak'>) {
+function SpeakExercise({ exercise, language, answer, onAnswer, onSubmit, locked }: ExerciseProps<'speak'>) {
   const { t } = useI18n();
   const recognition = useRecognition(language.ttsLocale);
   useEffect(() => {
@@ -419,6 +352,32 @@ function SpeakExercise({ exercise, language, answer, onAnswer, locked }: Exercis
   }, [recognition.status, recognition.transcript, onAnswer]);
   const unavailable = recognition.status === 'unsupported' || recognition.status === 'denied';
   const skipped = answer?.type === 'speak' && answer.skipped;
+  if (unavailable) {
+    const typed = answer?.type === 'speak' && answer.typed ? answer.transcript : '';
+    return (
+      <div className="exercise">
+        <Alert tone="warn">{recognition.status === 'denied' ? t('player.speakDenied') : t('player.speakUnsupported')}</Alert>
+        <p className="exercise__source">
+          <SpeakButton text={exercise.text} locale={language.ttsLocale} size="sm" />
+          {exercise.translationText}
+        </p>
+        <TextAnswer
+          value={typed}
+          onChange={(v) => onAnswer(v.trim() ? { type: 'speak', transcript: v, typed: true } : null)}
+          onSubmit={onSubmit}
+          locked={locked}
+          language={language}
+          placeholder={t('player.typeHereTarget')}
+          useTarget
+        />
+        <div>
+          <Button variant="ghost" size="sm" disabled={locked} aria-pressed={!!skipped} onClick={() => onAnswer({ type: 'speak', transcript: '', skipped: true })}>
+            {t('player.skipNoPenalty')}
+          </Button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="exercise">
       <p className="exercise__target exercise__target--large target">
@@ -426,32 +385,28 @@ function SpeakExercise({ exercise, language, answer, onAnswer, locked }: Exercis
         {exercise.text}
       </p>
       <p className="exercise__translation">{exercise.translationText}</p>
-      {unavailable ? (
-        <Alert tone="warn">{recognition.status === 'denied' ? t('player.speakDenied') : t('player.speakUnsupported')}</Alert>
-      ) : (
-        <div className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
-          <div className="row">
-            {recognition.status === 'listening' ? (
-              <Button variant="accent" onClick={recognition.stop}>
-                <Square size={16} aria-hidden />
-                {t('player.speakStop')}
-              </Button>
-            ) : (
-              <Button variant="accent" onClick={recognition.start} disabled={locked}>
-                <Mic size={16} aria-hidden />
-                {t('player.speakStart')}
-              </Button>
-            )}
-            {recognition.status === 'listening' ? <span className="small muted" aria-live="polite">{t('player.speakListening')}</span> : null}
-          </div>
-          {recognition.transcript ? (
-            <p className="small" aria-live="polite">
-              {t('player.speakHeard', { text: recognition.transcript })}
-            </p>
-          ) : null}
-          <p className="caption">{t('player.speakExperimental')}</p>
+      <div className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
+        <div className="row">
+          {recognition.status === 'listening' ? (
+            <Button variant="accent" onClick={recognition.stop}>
+              <Square size={16} aria-hidden />
+              {t('player.speakStop')}
+            </Button>
+          ) : (
+            <Button variant="accent" onClick={recognition.start} disabled={locked}>
+              <Mic size={16} aria-hidden />
+              {t('player.speakStart')}
+            </Button>
+          )}
+          {recognition.status === 'listening' ? <span className="small muted" aria-live="polite">{t('player.speakListening')}</span> : null}
         </div>
-      )}
+        {recognition.transcript ? (
+          <p className="small" aria-live="polite">
+            {t('player.speakHeard', { text: recognition.transcript })}
+          </p>
+        ) : null}
+        <p className="caption">{t('player.speakExperimental')}</p>
+      </div>
       <div>
         <Button variant="ghost" size="sm" disabled={locked} aria-pressed={!!skipped} onClick={() => onAnswer({ type: 'speak', transcript: '', skipped: true })}>
           {t('player.skipNoPenalty')}
@@ -472,8 +427,6 @@ export function ExerciseView(props: ExerciseProps) {
       return <TranslateExercise {...(props as ExerciseProps<'translate'>)} />;
     case 'order':
       return <OrderExercise {...(props as ExerciseProps<'order'>)} />;
-    case 'match':
-      return <MatchExercise {...(props as ExerciseProps<'match'>)} />;
     case 'listen':
       return <ListenExercise {...(props as ExerciseProps<'listen'>)} />;
     case 'dialogue':

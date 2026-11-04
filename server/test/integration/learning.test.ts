@@ -66,7 +66,7 @@ describe('lesson attempt', () => {
     expect(res.body.error.code).toBe('not_enrolled');
   });
 
-  it('runs a lesson end-to-end: feedback, retry of mistakes, score, progress and new review words', async () => {
+  it('runs a lesson end-to-end: feedback, score, progress and new review words', async () => {
     const u = await registerUser();
     await enroll(u.auth, 'de');
     const lesson = await Lesson.findOne({ key: 'de-a1-greetings' }).lean();
@@ -85,15 +85,13 @@ describe('lesson attempt', () => {
     expect(wrong.body.feedback.expected).toBeTruthy();
     expect(wrong.body.feedback.explanation).toBeTruthy();
     state = wrong.body.state;
-    expect(state.total).toBe(total + 1);
+    expect(state.total).toBe(total);
 
     const mismatch = await request(app).post(`/api/attempts/${state.id}/answers`).set(u.auth).send({ itemIndex: 0, answer: { type: 'choice', option: 'x' } });
     expect(mismatch.status).toBe(409);
 
     state = await playThrough(u.auth, state, () => true);
     expect(state.current).toBeNull();
-    const retry = await Attempt.findById(state.id).lean();
-    expect(retry!.items.at(-1)!.isRetry).toBe(true);
 
     const summary = await request(app).post(`/api/attempts/${state.id}/complete`).set(u.auth);
     expect(summary.status).toBe(200);
@@ -109,7 +107,7 @@ describe('lesson attempt', () => {
     const progress = await LessonProgress.findOne({ user: u.user.id, lesson: lesson!._id }).lean();
     expect(progress).toMatchObject({ status: 'completed', bestPercent: summary.body.percent, attempts: 1 });
     expect(await ReviewItem.countDocuments({ user: u.user.id })).toBe(lesson!.words.length);
-    expect(await AnswerEvent.countDocuments({ user: u.user.id, isRetry: false })).toBe(total);
+    expect(await AnswerEvent.countDocuments({ user: u.user.id })).toBe(total);
 
     const path = await request(app).get('/api/languages/de/path').set(u.auth);
     expect(path.body.levels[0].modules[0].lessons[0].status).toBe('completed');

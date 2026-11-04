@@ -27,7 +27,6 @@ import { serverText } from './texts';
 type AttemptDoc = AttemptDocument;
 type Item = AttemptDoc['items'][number];
 
-const MAX_RETRIES_PER_ATTEMPT = 4;
 const MAX_ITEM_TIME_MS = 120_000;
 const PRACTICE_SIZE = 8;
 /** Placement: a level block counts as passed at this share of correct answers. */
@@ -68,7 +67,7 @@ export function toState(attempt: AttemptDoc, locale = 'ru'): AttemptStateDTO {
     total: items.length,
     answered: items.filter((i) => i.verdict).length,
     current: current
-      ? { ...toPublicExercise(current.exercise as Exercise, current.seed, locale), itemIndex: attempt.position, isRetry: current.isRetry }
+      ? { ...toPublicExercise(current.exercise as Exercise, current.seed, locale), itemIndex: attempt.position }
       : null,
     lessonId: attempt.lesson ? String(attempt.lesson) : null,
   };
@@ -286,16 +285,6 @@ export async function submitAnswer(
     timeMs,
     at: now,
   });
-
-  const retries = attempt.items.filter((i) => i.isRetry).length;
-  if (
-    attempt.feedbackMode === 'immediate' &&
-    result.verdict === 'incorrect' &&
-    !item.isRetry &&
-    retries < MAX_RETRIES_PER_ATTEMPT
-  ) {
-    attempt.items.push(makeItem(exercise, { sourceLesson: item.sourceLesson ?? null, isRetry: true }));
-  }
 
   attempt.position += 1;
   if (attempt.kind === 'placement' && attempt.position >= attempt.items.length) await advancePlacement(attempt);

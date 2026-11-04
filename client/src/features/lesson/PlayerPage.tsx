@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle2, CircleAlert, CircleX, X } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, CircleAlert, CircleX } from 'lucide-react';
 import type { AnswerFeedback, AttemptStateDTO, AttemptSummaryDTO, ExerciseAnswer } from '@linguapath/shared';
 import { learningApi } from '../../api/endpoints';
-import { Alert, Button, ErrorState, errorMessage, Meter, PageLoader, useTitle } from '../../components/ui';
+import { Alert, Button, ErrorState, errorMessage, PageLoader, useTitle } from '../../components/ui';
 import { useI18n } from '../../i18n';
-import { LEARNING_KEYS, useLanguageName, useLanguages } from '../../lib/queries';
+import { LEARNING_KEYS, useLanguageName, useLanguages, useTopics } from '../../lib/queries';
 import { ExerciseView, useInstruction, type LanguageInfo } from './exercises/Exercise';
 import { SummaryView } from './SummaryView';
 
@@ -31,11 +31,43 @@ function FeedbackPanel({ feedback, onNext, last }: { feedback: AnswerFeedback; o
           {feedback.note ? <p>{t(`player.note.${feedback.note.code}`, { detail: feedback.note.detail ?? '' })}</p> : null}
           {feedback.explanation ? <p className="feedback__explanation">{feedback.explanation}</p> : null}
         </div>
-        <Button ref={ref} variant="primary" size="lg" onClick={onNext}>
+        <Button ref={ref} variant="primary" onClick={onNext}>
           {last ? t('player.finish') : t('player.next')}
         </Button>
       </div>
     </div>
+  );
+}
+
+/** What the current task trains and how the answer is used: the attempt is part of the learner's analytics. */
+function TaskContext({ state }: { state: AttemptStateDTO }) {
+  const { t } = useI18n();
+  const { topicTitle } = useTopics();
+  const current = state.current!;
+  return (
+    <aside className="workspace__context" aria-label={t('player.contextTitle')}>
+      <dl className="facts">
+        <div>
+          <dt>{t('player.topic')}</dt>
+          <dd>{topicTitle(current.topic)}</dd>
+        </div>
+        <div>
+          <dt>{t('player.skill')}</dt>
+          <dd>{t(`skills.${current.skill}`)}</dd>
+        </div>
+      </dl>
+      <p className="caption">{state.feedbackMode === 'deferred' ? t('player.deferredHint') : t('player.analyticsNote')}</p>
+    </aside>
+  );
+}
+
+function Steps({ done, total }: { done: number; total: number }) {
+  return (
+    <span className="steps" aria-hidden>
+      {Array.from({ length: total }, (_, i) => (
+        <span key={i} className="steps__item" data-done={i < done || undefined} data-current={i === done || undefined} />
+      ))}
+    </span>
   );
 }
 
@@ -87,29 +119,26 @@ function ExerciseStage({
 
   const isSkip = (answer?.type === 'speak' || answer?.type === 'listen') && answer.skipped;
   return (
-    <>
-      <div className="focus__body" key={`${state.id}-${current.itemIndex}`}>
-        <div className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
-          {current.isRetry ? <span className="tag tag--warn" style={{ alignSelf: 'flex-start' }}>{t('player.retryBadge')}</span> : null}
-          <h1 className="exercise__instruction">{instruction}</h1>
-        </div>
+    <div className="workspace" key={`${state.id}-${current.itemIndex}`}>
+      <section className="workspace__task" aria-labelledby="task-instruction">
+        <h1 className="exercise__instruction" id="task-instruction">
+          {instruction}
+        </h1>
         <ExerciseView exercise={current} language={language} answer={answer} onAnswer={onAnswer} onSubmit={check} locked={!!feedback || submit.isPending} feedback={feedback} />
         {submit.error ? <Alert tone="bad">{errorMessage(submit.error, i18n)}</Alert> : null}
-        {state.feedbackMode === 'deferred' ? <p className="caption">{t('player.deferredHint')}</p> : null}
-      </div>
-      {feedback ? (
-        <FeedbackPanel feedback={feedback} onNext={proceed} last={!nextState?.current} />
-      ) : (
-        <div className="action-bar">
-          <div className="action-bar__inner">
-            <span className="caption action-bar__hint">{t('player.keyboardHint')}</span>
-            <Button variant="primary" size="lg" disabled={!answer} loading={submit.isPending} onClick={check}>
+        {feedback ? (
+          <FeedbackPanel feedback={feedback} onNext={proceed} last={!nextState?.current} />
+        ) : (
+          <div className="task-actions">
+            <span className="caption task-actions__hint">{t('player.keyboardHint')}</span>
+            <Button variant="primary" disabled={!answer} loading={submit.isPending} onClick={check}>
               {isSkip ? t('player.skip') : t('player.check')}
             </Button>
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </section>
+      <TaskContext state={state} />
+    </div>
   );
 }
 
@@ -172,13 +201,20 @@ function Player({ attemptId }: { attemptId: string }) {
   return (
     <div className="focus">
       <header className="focus__head">
-        <Button variant="ghost" icon onClick={() => navigate(-1)} aria-label={t('player.close')} title={t('player.closeConfirm')}>
-          <X size={20} />
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} title={t('player.closeConfirm')}>
+          <ArrowLeft size={16} aria-hidden />
+          {t('player.close')}
         </Button>
-        <Meter value={summary ? state.total : answered} max={state.total} tone="accent" label={t('player.progress', { current: Math.min(answered + 1, state.total), total: state.total })} />
-        <span className="small muted" aria-hidden>
-          {Math.min(answered + (summary ? 0 : 1), state.total)}/{state.total}
-        </span>
+        <div className="focus__title">
+          <span className="eyebrow">{t(`player.kind.${state.kind}`)}</span>
+          <span className="focus__name">{state.title}</span>
+        </div>
+        {summary ? null : (
+          <div className="focus__progress">
+            <span className="small muted">{t('player.progress', { current: Math.min(answered + 1, state.total), total: state.total })}</span>
+            <Steps done={answered} total={state.total} />
+          </div>
+        )}
       </header>
       {summary ? (
         <SummaryView summary={summary} />

@@ -60,49 +60,47 @@ export function SummaryView({ summary }: { summary: AttemptSummaryDTO }) {
         </section>
       )}
 
-      {!summary.placement ? (
-        <div className="summary__grid">
-          <section className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
-            <h2 className="summary__h">{t('summary.strengths')}</h2>
-            {summary.strengths.length ? (
-              <ul className="chip-list">
-                {summary.strengths.map((topic) => (
-                  <li key={topic} className="tag tag--ok">
-                    {topicTitle(topic)}
-                  </li>
+      {!summary.placement && summary.byTopic.length ? (
+        <section className="stack" style={{ '--gap': 'var(--s3)' } as React.CSSProperties}>
+          <h2 className="summary__h">{t('summary.byTopic')}</h2>
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>{t('path.col.topic')}</th>
+                  <th>{t('summary.colAnswers')}</th>
+                  <th>{t('summary.colResult')}</th>
+                  <th>{t('summary.colConclusion')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {summary.byTopic.map((row) => (
+                  <tr key={row.topic}>
+                    <td>{topicTitle(row.topic)}</td>
+                    <td className="small">{t('summary.correctOf', { correct: row.correct, total: row.total })}</td>
+                    <td className="small">{row.percent}%</td>
+                    <td className="small">
+                      {summary.weaknesses.includes(row.topic) ? (
+                        <span className="text-warn">{t('summary.weaknesses')}</span>
+                      ) : summary.strengths.includes(row.topic) ? (
+                        <span className="text-ok">{t('summary.strengths')}</span>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
+                  </tr>
                 ))}
-              </ul>
-            ) : (
-              <p className="small muted">—</p>
-            )}
-          </section>
-          <section className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
-            <h2 className="summary__h">{t('summary.weaknesses')}</h2>
-            {summary.weaknesses.length ? (
-              <ul className="chip-list">
-                {summary.weaknesses.map((topic) => (
-                  <li key={topic} className="tag tag--warn">
-                    {topicTitle(topic)}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="small muted">{t('summary.noWeaknesses')}</p>
-            )}
-          </section>
+              </tbody>
+            </table>
+          </div>
           {summary.byCategory.length ? (
-            <section className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
-              <h2 className="summary__h">{t('summary.errorsByCategory')}</h2>
-              <ul className="plain-list small">
-                {summary.byCategory.map((c) => (
-                  <li key={c.category}>
-                    {t(`errorCategories.${c.category}`)} — {c.count}
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <p className="small">
+              <span className="muted">{t('summary.errorsByCategory')}:</span>{' '}
+              {summary.byCategory.map((c) => `${t(`errorCategories.${c.category}`)} — ${c.count}`).join(', ')}
+            </p>
           ) : null}
-        </div>
+          <p className="caption">{t('summary.analyticsNote')}</p>
+        </section>
       ) : null}
 
       {summary.wordsAdded > 0 ? <p className="summary__note">{t('summary.wordsAdded', { words: plural('common.words', summary.wordsAdded) })}</p> : null}

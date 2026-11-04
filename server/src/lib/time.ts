@@ -39,4 +39,3 @@ export function lastLocalDates(now: Date, count: number, tz: string): string[] {
   return Array.from({ length: count }, (_, i) => end.minus({ days: count - 1 - i }).toISODate()!);
 }
 
-export const DAY_MS = 86_400_000;

@@ -1,6 +1,3 @@
-export const LANGUAGE_CODES = ['kk', 'en', 'tr', 'de', 'es'] as const;
-export type LanguageCode = string;
-
 export const CEFR_LEVELS = ['A1', 'A2', 'B1', 'B2'] as const;
 export type CefrLevel = (typeof CEFR_LEVELS)[number];
 
@@ -20,7 +17,6 @@ export const EXERCISE_TYPES = [
   'fill_blank',
   'translate',
   'order',
-  'match',
   'listen',
   'dialogue',
   'speak',

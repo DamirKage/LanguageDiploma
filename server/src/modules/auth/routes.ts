@@ -28,7 +28,7 @@ const authLimiter = rateLimit({
   },
 });
 
-const email = z.string().trim().toLowerCase().email('Некорректный адрес электронной почты').max(254);
+const email = z.string().trim().toLowerCase().pipe(z.email('Некорректный адрес электронной почты').max(254));
 const password = z.string().min(1).max(128);
 
 const { router, post } = createApiRouter('/api/auth');

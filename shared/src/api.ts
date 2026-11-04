@@ -164,7 +164,7 @@ export interface AttemptStateDTO {
   position: number;
   total: number;
   answered: number;
-  current: (PublicExerciseView & { itemIndex: number; isRetry: boolean }) | null;
+  current: (PublicExerciseView & { itemIndex: number }) | null;
   lessonId: string | null;
 }
 
@@ -331,16 +331,6 @@ export interface SrsAnalyticsDTO {
   leeches: Array<{ wordId: string; term: string; translation: string; lapses: number }>;
 }
 
-export interface ActivityItemDTO {
-  id: string;
-  type: string;
-  at: string;
-  language: string;
-  title: string;
-  percent: number | null;
-  durationSec: number;
-}
-
 export interface Paginated<T> {
   items: T[];
   total: number;
@@ -363,7 +353,6 @@ export interface AdminUserDTO {
   email: string;
   name: string;
   role: Role;
-  isBlocked: boolean;
   createdAt: string;
   lastActiveAt: string | null;
   languages: string[];

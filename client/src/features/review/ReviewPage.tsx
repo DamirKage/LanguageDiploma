@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowRight, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import type { ReviewAnswer, ReviewAnswerResultDTO, ReviewCardDTO, ReviewGrade } from '@linguapath/shared';
 import { reviewApi } from '../../api/endpoints';
 import { Alert, Button, buttonClass, EmptyState, ErrorState, errorMessage, Meter, PageLoader, useTitle } from '../../components/ui';
@@ -217,15 +217,21 @@ function Session() {
   return (
     <div className="focus">
       <header className="focus__head">
-        <Button variant="ghost" icon onClick={() => navigate('/review')} aria-label={t('player.close')}>
-          <X size={20} />
+        <Button variant="ghost" size="sm" onClick={() => navigate('/review')}>
+          <ArrowLeft size={16} aria-hidden />
+          {t('player.close')}
         </Button>
-        <Meter value={Math.min(index, cards.length)} max={Math.max(cards.length, 1)} tone="accent" label={t('review.title')} />
-        <span className="small muted">
-          {Math.min(index + 1, cards.length)}/{cards.length}
-        </span>
+        <div className="focus__title">
+          <span className="focus__name">{t('review.title')}</span>
+        </div>
+        {cards.length ? (
+          <div className="focus__progress">
+            <span className="small muted">{t('review.progress', { current: Math.min(index + 1, cards.length), total: cards.length })}</span>
+            <Meter value={Math.min(index, cards.length)} max={cards.length} tone="accent" label={t('review.title')} />
+          </div>
+        ) : null}
       </header>
-      <div className="focus__body">
+      <div className="focus__body focus__body--narrow">
         {queue.error ? (
           <ErrorState error={queue.error} onRetry={() => queue.refetch()} />
         ) : cards.length === 0 ? (

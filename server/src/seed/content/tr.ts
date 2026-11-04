@@ -1,4 +1,4 @@
-import { choice, choiceRu, dialogue, fill, listen, match, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
+import { choice, choiceRu, dialogue, fill, listen, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
 
 export const turkish: LanguageSpec = {
   code: 'tr',
@@ -48,14 +48,12 @@ export const turkish: LanguageSpec = {
               ],
               exercises: [
                 choice('Как ответить на «Nasılsın?»', ['İyiyim, teşekkürler.', 'Benim adım Ali.', 'Güle güle!'], 0, 'Nasılsın? — «Как дела?». Ответ: İyiyim — «я в порядке».'),
-                match(
-                  [
-                    ['merhaba', 'здравствуйте'],
-                    ['günaydın', 'доброе утро'],
-                    ['teşekkürler', 'спасибо'],
-                    ['görüşürüz', 'увидимся'],
-                  ],
-                  'Базовые слова первого разговора.',
+                choiceRu(
+                  'Что означает эта фраза?',
+                  'Günaydın! Teşekkürler, görüşürüz.',
+                  ['Доброе утро! Спасибо, увидимся.', 'Добрый вечер! Пожалуйста, до свидания.', 'Здравствуйте! Спасибо, очень приятно.'],
+                  0,
+                  'günaydın — «доброе утро», teşekkürler — «спасибо», görüşürüz — «увидимся». Простое приветствие в любое время дня — merhaba.',
                 ),
                 fill('Benim ___ Daniyar.', ['adım'], 'Benim adım … — «Меня зовут …», дословно «моё имя».', { s: 'grammar', t: 'possessive' }, { translation: 'Меня зовут Данияр.', options: ['adım', 'adın', 'ad'] }),
                 dialogue(
@@ -71,6 +69,22 @@ export const turkish: LanguageSpec = {
                 listen('İyi akşamlar!', 'akşam — «вечер».', {}, { options: ['İyi akşamlar!', 'İyi geceler!', 'Günaydın!'], translation: 'Добрый вечер!' }),
                 translate('Привет, как дела?', ['Merhaba, nasılsın?', 'Selam, nasılsın?'], 'nasılsın — «как ты?»'),
                 speak('Memnun oldum.', 'Очень приятно.', 'Ударение в турецком обычно на последний слог: мемну́н олду́м.'),
+              ],
+              test: [
+                choice('Как сказать «Доброе утро»?', ['Günaydın!', 'İyi geceler!', 'Görüşürüz!'], 0, 'günaydın — «доброе утро», iyi geceler — «спокойной ночи», görüşürüz — «увидимся».'),
+                fill('Senin ___ ne?', ['adın'], 'adın — «твоё имя» (окончание -ın — «твой»). Сравните: adım — «моё имя».', { s: 'grammar', t: 'possessive', d: 2 }, { translation: 'Как тебя зовут?', options: ['adın', 'adım', 'ad'] }),
+                choiceRu('Что означает эта фраза?', 'Memnun oldum.', ['Очень приятно.', 'Увидимся.', 'Спокойной ночи.'], 0, 'Memnun oldum — «очень приятно (познакомиться)», дословно «я стал доволен».'),
+                translateBack('Teşekkürler, iyiyim.', ['Спасибо, я в порядке', 'Спасибо, хорошо', 'Спасибо, у меня всё хорошо', 'Спасибо, нормально', 'Спасибо, я хорошо'], 'teşekkürler — «спасибо», iyiyim — «я в порядке» (iyi + -yim).'),
+                dialogue(
+                  [
+                    ['A', 'Ben gidiyorum, hoşça kal!', 'Я ухожу, счастливо оставаться!'],
+                    ['B', null],
+                  ],
+                  ['Güle güle!', 'Hoşça kal!', 'Günaydın!'],
+                  0,
+                  'Уходит собеседник, значит, вы остаётесь и отвечаете Güle güle.',
+                  { s: 'reading', c: 'comprehension', d: 2 },
+                ),
               ],
             },
             {
@@ -105,14 +119,11 @@ export const turkish: LanguageSpec = {
                 fill('Ben öğrenci___.', ['yim'], 'После гласной i — соединительная -y- и окончание -im: öğrenciyim.', { s: 'grammar', t: 'vowel_harmony', d: 2 }, { options: ['yim', 'im', 'sın'] }),
                 fill('Ben doktor___.', ['um'], 'Последняя гласная o → окончание -um: doktorum.', { s: 'grammar', t: 'vowel_harmony', d: 2 }, { options: ['um', 'im', 'ım'] }),
                 fill('Sen öğretmen___.', ['sin'], '«Ты» — окончание -sin (после e): öğretmensin.', { s: 'grammar', t: 'vowel_harmony', d: 2 }, { options: ['sin', 'sın', 'im'] }),
-                match(
-                  [
-                    ['ben', 'я'],
-                    ['sen', 'ты'],
-                    ['o', 'он / она'],
-                    ['biz', 'мы'],
-                  ],
-                  'В турецком нет рода: o — и «он», и «она», и «оно».',
+                choice(
+                  'Какое местоимение подходит: «___ öğrenciyiz» (мы студенты)?',
+                  ['Biz', 'Ben', 'Sen', 'O'],
+                  0,
+                  'Окончание -yiz соответствует местоимению biz — «мы». ben — «я», sen — «ты», o — и «он», и «она», и «оно»: рода в турецком нет.',
                   { s: 'grammar', t: 'pronouns' },
                 ),
                 choice('Как сказать «Мы из Казахстана»?', ['Biz Kazakistanlıyız.', 'Biz Kazakistanlıyım.', 'Biz Kazakistan biz.'], 0, 'biz → окончание -(y)ız после ı: Kazakistanlıyız.', { s: 'grammar', t: 'vowel_harmony', d: 3 }),
@@ -120,6 +131,22 @@ export const turkish: LanguageSpec = {
                 translateBack('Sen nerelisin?', ['Откуда ты', 'Ты откуда'], 'nereli — «откуда родом», -sin — «ты».'),
                 listen('Ben Kazakistanlıyım.', 'Kazakistanlı — «казахстанец», -yım — «я».', {}, { translation: 'Я из Казахстана.' }),
                 speak('Ben öğrenciyim.', 'Я студент.', 'ğ почти не произносится, лишь удлиняет предыдущую гласную: [ө:ренджийим].'),
+              ],
+              test: [
+                fill('Biz öğretmen___.', ['iz'], '«Мы» после согласной с последней гласной e — окончание -iz: öğretmeniz.', { s: 'grammar', t: 'vowel_harmony', d: 2 }, { translation: 'Мы учителя.', options: ['iz', 'yiz', 'ız', 'im'] }),
+                fill('Sen doktor___.', ['sun'], '«Ты» — окончание -sIn; последняя гласная o → -sun: doktorsun.', { s: 'grammar', t: 'vowel_harmony', d: 2 }, { translation: 'Ты врач.', options: ['sun', 'sin', 'sın', 'um'] }),
+                choice('Как сказать «Я из Алматы»?', ['Ben Almatılıyım.', 'Ben Almatılıyız.', 'Ben Almatıyım.'], 0, 'Almatılı — «житель Алматы» (-lı — «из»), + -yım — «я». Almatıyım значило бы «я — Алматы».', { s: 'grammar', t: 'vowel_harmony', d: 3 }),
+                translate('Ты студент.', ['Sen öğrencisin.', 'Öğrencisin.'], 'öğrenci + -sin. Местоимение sen можно опустить: окончание уже показывает лицо.', { s: 'grammar', t: 'to_be' }),
+                dialogue(
+                  [
+                    ['A', 'Merhaba! Nerelisin?', 'Привет! Откуда ты?'],
+                    ['B', null],
+                  ],
+                  ['Kazakistanlıyım.', 'Öğrenciyim.', 'Yirmi yaşındayım.'],
+                  0,
+                  'nereli — «откуда родом», поэтому отвечают названием места с -lı: Kazakistanlıyım.',
+                  { s: 'reading', c: 'comprehension', d: 2 },
+                ),
               ],
             },
             {
@@ -148,15 +175,7 @@ export const turkish: LanguageSpec = {
                 ['yaş', 'возраст', 'noun', 'Yaşın kaç?', 'Сколько тебе лет?'],
               ],
               exercises: [
-                match(
-                  [
-                    ['üç', '3'],
-                    ['yedi', '7'],
-                    ['on', '10'],
-                    ['elli', '50'],
-                  ],
-                  'Основные числа.',
-                ),
+                translate('пятьдесят', ['elli'], 'elli — 50. Запомните и другие опорные числа: üç — 3, yedi — 7, on — 10.'),
                 choice('Как будет 25?', ['yirmi beş', 'beş yirmi', 'yirmi ve beş'], 0, 'Десятки, затем единицы, без союза.', { s: 'grammar', d: 2 }),
                 listen('kırk iki', 'kırk — 40, iki — 2.', {}, { options: ['42', '24', '52'], answers: ['42'] }),
                 fill('Kaç ___?', ['yaşındasın'], 'Kaç yaşındasın? — «Сколько тебе лет?»', { s: 'grammar', t: 'questions', d: 2 }, { options: ['yaşındasın', 'yaşındayım', 'yaş'] }),
@@ -172,6 +191,13 @@ export const turkish: LanguageSpec = {
                   'Ответ о возрасте: … yaşındayım.',
                 ),
                 speak('Yirmi yaşındayım.', 'Мне двадцать лет.', 'ı в yaşında — звук, похожий на «ы».'),
+              ],
+              test: [
+                choice('Как будет 37?', ['otuz yedi', 'yedi otuz', 'otuz ve yedi'], 0, 'Сначала десятки (otuz — 30), затем единицы (yedi — 7), без союза.', { s: 'grammar', d: 2 }),
+                choiceRu('Какое это число?', 'altmış dört', ['64', '46', '74'], 0, 'altmış — 60, dört — 4.'),
+                fill('Ben on sekiz ___.', ['yaşındayım'], '«Мне … лет» — … yaşındayım (yaşında + -yım — «я»).', { s: 'grammar', d: 2 }, { translation: 'Мне восемнадцать лет.', options: ['yaşındayım', 'yaşındasın', 'yaş'] }),
+                translate('три чая', ['üç çay'], 'После числа существительное остаётся в единственном числе: üç çay, а не üç çaylar.', { s: 'grammar', t: 'plural', d: 2 }),
+                translateBack('Annem kırk beş yaşında.', ['Моей маме сорок пять лет', 'Маме сорок пять лет', 'Моей маме 45 лет', 'Маме 45 лет'], 'kırk beş — 45, yaşında — «в возрасте», annem — «моя мама».'),
               ],
             },
           ],
@@ -210,14 +236,12 @@ export const turkish: LanguageSpec = {
                 ['var', 'есть, имеется', 'adverb', 'Bir kız kardeşim var.', 'У меня есть младшая сестра.'],
               ],
               exercises: [
-                match(
-                  [
-                    ['anne', 'мама'],
-                    ['baba', 'папа'],
-                    ['abla', 'старшая сестра'],
-                    ['aile', 'семья'],
-                  ],
-                  'В турецком, как и в казахском, есть отдельные слова для старших брата и сестры.',
+                choiceRu(
+                  'Что означает это слово?',
+                  'abla',
+                  ['старшая сестра', 'мама', 'семья', 'папа'],
+                  0,
+                  'abla — «старшая сестра». В турецком, как и в казахском, есть отдельные слова для старших брата и сестры. anne — «мама», baba — «папа», aile — «семья».',
                 ),
                 fill('Anne___ öğretmen.', ['m'], 'После гласной притяжательное окончание — -m: annem.', { s: 'grammar', t: 'possessive' }, { options: ['m', 'im', 'ım'] }),
                 fill('Kardeş___ var.', ['im'], 'После согласной с последней гласной e — -im: kardeşim.', { s: 'grammar', t: 'possessive', d: 2 }, { options: ['m', 'im', 'ım', 'um'] }),
@@ -226,6 +250,13 @@ export const turkish: LanguageSpec = {
                 translateBack('Ailem çok büyük.', ['Моя семья очень большая', 'У меня очень большая семья'], 'aile + m — «моя семья».'),
                 order(['Benim', 'iki', 'kardeşim', 'var'], 'У меня двое братьев (сестёр).', 'Конструкция: (Benim) … -im var.'),
                 speak('Bu benim ailem.', 'Это моя семья.', 'ai в aile читается раздельно: а-и-ле.'),
+              ],
+              test: [
+                fill('Baba___ mühendis.', ['m'], 'baba оканчивается на гласную — притяжательное окончание -m: babam.', { s: 'grammar', t: 'possessive' }, { translation: 'Мой папа — инженер.', options: ['m', 'im', 'ım'] }),
+                fill('Ağabey___ Ankara’da yaşıyor.', ['im'], 'ağabey оканчивается на согласную, последняя гласная e → -im: ağabeyim.', { s: 'grammar', t: 'possessive', d: 2 }, { translation: 'Мой старший брат живёт в Анкаре.', options: ['im', 'm', 'ım', 'um'] }),
+                choice('Как сказать «У меня нет младшей сестры»?', ['Kız kardeşim yok.', 'Kız kardeşim var.', 'Ben kız kardeş yok.'], 0, 'Отсутствие — yok; «моя младшая сестра» — kız kardeşim.', { s: 'grammar', t: 'possessive', d: 2 }),
+                choiceRu('Что означает это слово?', 'ağabey', ['старший брат', 'старшая сестра', 'папа'], 0, 'ağabey — «старший брат» (в речи часто abi), abla — «старшая сестра».'),
+                order(['Benim', 'bir', 'ablam', 'var'], 'У меня есть старшая сестра.', 'Конструкция «у меня есть»: (Benim) + существительное с -m + var.', { s: 'grammar', t: 'possessive' }),
               ],
             },
             {
@@ -259,15 +290,7 @@ export const turkish: LanguageSpec = {
               exercises: [
                 choice('Как попросить счёт?', ['Hesap lütfen.', 'Menü lütfen.', 'Hesap var.'], 0, 'hesap — «счёт», menü — «меню».'),
                 fill('Çay var ___?', ['mı'], 'Последняя гласная a → частица mı.', { s: 'grammar', t: 'questions', d: 2 }, { options: ['mı', 'mi', 'mu', 'mü'] }),
-                match(
-                  [
-                    ['çay', 'чай'],
-                    ['kahve', 'кофе'],
-                    ['su', 'вода'],
-                    ['hesap', 'счёт'],
-                  ],
-                  'Основные слова для кафе.',
-                ),
+                translate('Кофе и воду, пожалуйста.', ['Kahve ve su lütfen.', 'Bir kahve ve bir su lütfen.', 'Bir kahve ve su lütfen.'], 'kahve — «кофе», su — «вода», ve — «и». Винительный падеж здесь не нужен: в заказе обычно называют неопределённый объект.'),
                 dialogue(
                   [
                     ['A', 'Ne içmek istersiniz?', 'Что желаете выпить?'],
@@ -285,6 +308,23 @@ export const turkish: LanguageSpec = {
                 order(['Bir', 'çay', 've', 'bir', 'su', 'lütfen'], 'Один чай и одну воду, пожалуйста.', 've — «и».'),
                 speak('Hesap lütfen.', 'Счёт, пожалуйста.', 'ü в lütfen — как «ю» без «й»: [лютфен].'),
               ],
+              test: [
+                fill('Bu kahve ___?', ['mi'], 'Частица mi следует гармонии: последняя гласная слова kahve — e, поэтому mi.', { s: 'grammar', t: 'questions', d: 2 }, { translation: 'Это кофе?', options: ['mi', 'mı', 'mu', 'mü'] }),
+                choice('Как вежливо попросить воды?', ['Su alabilir miyim?', 'Su var.', 'Su ne kadar?'], 0, '…alabilir miyim? — «можно мне …?»: вежливая просьба. Su var — «вода есть», su ne kadar — «сколько стоит вода».', { s: 'grammar', t: 'modal_verbs', d: 2 }),
+                choiceRu('Что означает эта фраза?', 'Bu ne kadar?', ['Сколько это стоит?', 'Что это?', 'Где это?'], 0, 'ne kadar — «сколько»; в магазине и кафе так спрашивают цену.'),
+                translate('Один турецкий кофе, пожалуйста.', ['Bir Türk kahvesi lütfen.', 'Türk kahvesi lütfen.'], 'Türk kahvesi — «турецкий кофе»: второе слово сочетания получает окончание -si.', { d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'Başka bir şey ister misiniz?', 'Желаете что-нибудь ещё?'],
+                    ['B', null],
+                  ],
+                  ['Hayır, teşekkürler. Hesap lütfen.', 'Evet, görüşürüz.', 'Ben su.'],
+                  0,
+                  'Вежливый отказ — Hayır, teşekkürler, и можно сразу попросить счёт.',
+                  { s: 'reading', c: 'comprehension' },
+                  'Вы заканчиваете обед в кафе.',
+                ),
+              ],
             },
           ],
         },
@@ -293,7 +333,7 @@ export const turkish: LanguageSpec = {
     {
       level: 'A2',
       title: 'Турецкий A2: события и поездки',
-      description: 'Прошедшее время на -dı, падежи направления и места.',
+      description: 'Прошедшее время на -dı, падежи, покупки и планы на будущее с -acak.',
       modules: [
         {
           title: 'Истории и поездки',
@@ -327,20 +367,34 @@ export const turkish: LanguageSpec = {
                 fill('Dün sinemaya git___.', ['tim'], 'git- оканчивается на глухой t, поэтому -tim: gittim.', { s: 'grammar', t: 'past_tense', d: 2 }, { options: ['tim', 'dim', 'tım'] }),
                 fill('Bir kitap oku___.', ['dum'], 'Последняя гласная u → -dum: okudum.', { s: 'grammar', t: 'past_tense', d: 2 }, { options: ['dum', 'dim', 'tum'] }),
                 choice('Как спросить «Что ты делал на выходных?»', ['Hafta sonu ne yaptın?', 'Hafta sonu ne yapıyorsun?', 'Hafta sonu ne yapacaksın?'], 0, 'yaptın — прошедшее время, 2-е лицо.', { s: 'grammar', t: 'past_tense', d: 2 }),
-                match(
-                  [
-                    ['geldim', 'я пришёл'],
-                    ['gittim', 'я ушёл'],
-                    ['gördüm', 'я увидел'],
-                    ['içtim', 'я выпил'],
-                  ],
-                  'Формы 1-го лица в прошедшем времени.',
+                choiceRu(
+                  'Что означает эта форма?',
+                  'gördüm',
+                  ['я увидел', 'я пришёл', 'я ушёл', 'я выпил'],
+                  0,
+                  'gör- + -dü + -m — «я увидел». Сравните: geldim — «я пришёл», gittim — «я ушёл», içtim — «я выпил».',
                   { s: 'grammar', t: 'past_tense' },
                 ),
                 translate('Вчера я посмотрел фильм.', ['Dün bir film izledim.', 'Dün film izledim.', 'Dün bir film gördüm.', 'Dün film gördüm.'], 'film izlemek / film görmek — «смотреть фильм».', { s: 'grammar', t: 'past_tense', d: 3 }),
                 listen('Hafta sonu ne yaptın?', 'ne yaptın — «что ты сделал».', {}, { translation: 'Что ты делал на выходных?' }),
                 order(['Dün', 'arkadaşımla', 'kahve', 'içtim'], 'Вчера я пил кофе с другом.', 'Сказуемое в турецком стоит в конце предложения.', { s: 'grammar', t: 'word_order', d: 2 }),
                 translateBack('Dün çok çalıştım.', ['Вчера я много работал', 'Вчера я много занимался'], 'çalışmak — «работать; заниматься».'),
+              ],
+              test: [
+                fill('Dün çok kahve iç___.', ['tim'], 'iç- оканчивается на глухой ç, поэтому d переходит в t: içtim.', { s: 'grammar', t: 'past_tense', d: 2 }, { translation: 'Вчера я выпил много кофе.', options: ['tim', 'dim', 'tım', 'dum'] }),
+                fill('Geçen hafta Ankara’ya gel___.', ['dik'], 'gel- + -di + -k («мы»): geldik.', { s: 'grammar', t: 'past_tense', d: 2 }, { translation: 'На прошлой неделе мы приехали в Анкару.', options: ['dik', 'tik', 'dık', 'dim'] }),
+                choice('Как спросить «Ты видел этот фильм?»', ['Bu filmi gördün mü?', 'Bu filmi görüyor musun?', 'Bu filmi gördüm mü?'], 0, 'gör- + -dü + -n («ты»), частица mü — по гармонии с ü.', { s: 'grammar', t: 'past_tense', d: 2 }),
+                translate('На выходных я читал книгу.', ['Hafta sonu kitap okudum.', 'Hafta sonu bir kitap okudum.'], 'oku- + -du + -m: okudum.', { s: 'grammar', t: 'past_tense', d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'Dün ne yaptın?', 'Что ты делал вчера?'],
+                    ['B', null],
+                  ],
+                  ['Arkadaşlarımla futbol oynadım.', 'Arkadaşlarımla futbol oynayacağım.', 'Arkadaşlarımla futbol oynuyorum.'],
+                  0,
+                  'Вопрос о вчерашнем дне — ответ в прошедшем времени: oynadım.',
+                  { s: 'grammar', t: 'past_tense', d: 2 },
+                ),
               ],
             },
             {
@@ -371,15 +425,7 @@ export const turkish: LanguageSpec = {
                 fill('Ankara’___ bir bilet lütfen.', ['ya'], 'Направление — дательный падеж; после гласной a — -ya.', { s: 'grammar', t: 'cases', d: 2 }, { options: ['ya', 'da', 'ye'] }),
                 fill('Otel merkez___.', ['de'], 'Местоположение — -de (последняя гласная e).', { s: 'grammar', t: 'cases', d: 2 }, { options: ['de', 'da', 'e'] }),
                 choice('Как спросить, где вокзал?', ['İstasyon nerede?', 'İstasyon ne kadar?', 'İstasyon kim?'], 0, 'nerede — «где», ne kadar — «сколько», kim — «кто».', { t: 'questions', s: 'grammar' }),
-                match(
-                  [
-                    ['sağa', 'направо'],
-                    ['sola', 'налево'],
-                    ['düz', 'прямо'],
-                    ['bilet', 'билет'],
-                  ],
-                  'Слова для объяснения дороги.',
-                ),
+                translate('Поверните налево, потом идите прямо.', ['Sola dönün, sonra düz gidin.', 'Sola dön, sonra düz git.', 'Sola dönün ve düz gidin.'], 'sola — «налево», düz — «прямо», sonra — «потом». Окончание -ün/-in делает просьбу вежливой (на «вы»).', { d: 2 }),
                 dialogue(
                   [
                     ['A', 'Affedersiniz, müze nerede?', 'Простите, где музей?'],
@@ -393,6 +439,176 @@ export const turkish: LanguageSpec = {
                 listen('Tren saat sekizde kalkıyor.', 'kalkmak — «отправляться» (о транспорте).', {}, { translation: 'Поезд отправляется в восемь часов.' }),
                 speak('Yardım edebilir misiniz?', 'Вы можете помочь?', 'Частица misiniz пишется отдельно, но произносится слитно с глаголом.'),
               ],
+              test: [
+                fill('Otobüs İzmir’___ gidiyor.', ['e'], 'Направление — дательный падеж; İzmir оканчивается на согласную, последняя гласная i → -e.', { s: 'grammar', t: 'cases', d: 2 }, { translation: 'Автобус идёт в Измир.', options: ['e', 'a', 'de', 'ye'] }),
+                fill('Arkadaşım park___ bekliyor.', ['ta'], 'Местоположение -da; после глухой k d переходит в t: parkta.', { s: 'grammar', t: 'cases', d: 3 }, { translation: 'Мой друг ждёт в парке.', options: ['ta', 'da', 'a', 'te'] }),
+                choice('Как сказать «Поверните направо»?', ['Sağa dönün.', 'Sola dönün.', 'Düz gidin.'], 0, 'sağa — «направо», sola — «налево», düz — «прямо».'),
+                translate('Я еду в Анкару.', ['Ankara’ya gidiyorum.', 'Ben Ankara’ya gidiyorum.'], 'Направление: Ankara’ya — после гласной a соединительная -y- и -a.', { s: 'grammar', t: 'cases', d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'İyi günler, Antalya’ya bir bilet lütfen.', 'Добрый день, один билет до Антальи, пожалуйста.'],
+                    ['B', null],
+                  ],
+                  ['Tabii. Tek yön mü, gidiş-dönüş mü?', 'Ben Antalya’dayım.', 'Güle güle!'],
+                  0,
+                  'Кассир уточняет: tek yön — «в одну сторону», gidiş-dönüş — «туда и обратно».',
+                  { s: 'reading', c: 'comprehension', d: 2 },
+                  'Вы покупаете билет на автовокзале.',
+                ),
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Повседневная жизнь',
+          description: 'Покупки, цены и планы на будущее.',
+          lessons: [
+            {
+              key: 'tr-a2-shopping',
+              title: 'На рынке и в магазине',
+              objective: 'Купить товар, узнать цену и указать, что именно вы берёте, с помощью винительного падежа.',
+              topic: 'shopping',
+              minutes: 12,
+              theory: [
+                {
+                  title: 'Винительный падеж — только для определённого объекта',
+                  body: 'В русском винительный падеж ставится всегда: «покупаю хлеб», «беру это платье». В турецком окончание -(y)ı/-(y)i/-(y)u/-(y)ü получает только определённый, уже известный объект: Bu elbiseyi alıyorum — «Я беру это платье». Неопределённый объект остаётся без окончания: Elbise alıyorum — «Я покупаю (какое-нибудь) платье». После гласной вставляется -y-: elma → elmayı, а конечная k между гласными переходит в ğ: ekmek → ekmeği.',
+                  examples: [
+                    ['Bu ayakkabıyı deneyebilir miyim?', 'Можно примерить эти туфли?'],
+                    ['Ekmek aldım.', 'Я купил хлеба.'],
+                    ['Ekmeği masaya koydum.', 'Я положил хлеб на стол.'],
+                  ],
+                },
+                {
+                  title: 'Цена и количество',
+                  body: 'Цену спрашивают Ne kadar? или Kaç lira? Мера, как в русском «кило яблок», ставится перед существительным, но без родительного падежа и без множественного числа: bir kilo elma — «килограмм яблок», iki şişe su — «две бутылки воды». «Дорогой» — pahalı, «дешёвый» — ucuz.',
+                  examples: [
+                    ['Domatesin kilosu kaç lira?', 'Почём килограмм помидоров?'],
+                    ['İki kilo elma istiyorum.', 'Я хочу два килограмма яблок.'],
+                  ],
+                },
+              ],
+              words: [
+                ['pazar', 'рынок; воскресенье', 'noun', 'Pazardan meyve aldım.', 'Я купил фрукты на рынке.'],
+                ['elma', 'яблоко', 'noun', 'Bir kilo elma lütfen.', 'Килограмм яблок, пожалуйста.'],
+                ['ekmek', 'хлеб', 'noun', 'Ekmeği unuttum.', 'Я забыл хлеб.'],
+                ['pahalı', 'дорогой', 'adjective', 'Bu ceket çok pahalı.', 'Эта куртка очень дорогая.'],
+                ['ucuz', 'дешёвый', 'adjective', 'Pazarda sebze ucuz.', 'На рынке овощи дешёвые.'],
+                ['almak', 'брать; покупать', 'verb', 'Bu gömleği alıyorum.', 'Я беру эту рубашку.'],
+                ['denemek', 'пробовать; примерять', 'verb', 'Bu elbiseyi deneyebilir miyim?', 'Можно примерить это платье?'],
+                ['indirim', 'скидка', 'noun', 'Bugün yüzde yirmi indirim var.', 'Сегодня скидка двадцать процентов.'],
+              ],
+              exercises: [
+                fill('Bu elbise___ alıyorum.', ['yi'], 'Объект определённый («это платье») — нужен винительный падеж. После гласной e — соединительная -y- и -i: elbiseyi.', { s: 'grammar', t: 'cases', d: 2 }, { translation: 'Я беру это платье.', options: ['yi', 'ı', 'de', 'ye'] }),
+                fill('Ekme___ masaya koydum.', ['ği'], 'ekmek + -i: конечная k между гласными переходит в ğ — ekmeği.', { s: 'grammar', t: 'cases', d: 3 }, { translation: 'Я положил хлеб на стол.', options: ['ği', 'ki', 'kı', 'ğı'] }),
+                choice('Как сказать «Я покупаю яблоки» (какие-нибудь, без уточнения)?', ['Elma alıyorum.', 'Elmayı alıyorum.', 'Elmada alıyorum.'], 0, 'Неопределённый объект стоит без окончания и обычно в единственном числе: elma alıyorum. Elmayı alıyorum — «я беру (это) яблоко».', { s: 'grammar', t: 'cases', d: 2 }),
+                choiceRu('Что означает это слово?', 'indirim', ['скидка', 'цена', 'сдача'], 0, 'indirim — «скидка»: yüzde elli indirim — «скидка 50 %». Цена — fiyat, сдача — para üstü.'),
+                translate('Сколько стоит килограмм яблок?', ['Elmanın kilosu ne kadar?', 'Elmanın kilosu kaç lira?', 'Bir kilo elma ne kadar?', 'Bir kilo elma kaç lira?'], 'Цену спрашивают ne kadar или kaç lira. Elmanın kilosu — дословно «килограмм яблока».', { d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'Buyurun, ne istersiniz?', 'Пожалуйста, что желаете?'],
+                    ['B', null],
+                    ['A', 'Tabii, başka bir şey?', 'Конечно, что-нибудь ещё?'],
+                  ],
+                  ['İki kilo domates lütfen.', 'Domatesi iki kilo musunuz?', 'Ben domatesim.'],
+                  0,
+                  'Продавец спрашивает, что вы хотите: называем количество и товар — iki kilo domates.',
+                  { s: 'reading', c: 'comprehension' },
+                  'Вы покупаете овощи на рынке.',
+                ),
+                order(['Bu', 'ayakkabıyı', 'deneyebilir', 'miyim'], 'Можно примерить эти туфли?', 'Определённый объект с -yı стоит перед глаголом, вопросительная частица miyim — в самом конце.', { s: 'grammar', t: 'questions', d: 2 }),
+                translateBack('Bu ceket güzel ama çok pahalı.', ['Эта куртка красивая, но очень дорогая', 'Этот пиджак красивый, но очень дорогой', 'Этот жакет красивый, но очень дорогой'], 'güzel — «красивый», ama — «но», pahalı — «дорогой».'),
+                listen('Pazarda sebze çok ucuz.', 'pazarda — «на рынке» (местный падеж), sebze — «овощи», ucuz — «дешёвый».', {}, { translation: 'На рынке овощи очень дешёвые.' }),
+                speak('Bunu alıyorum.', 'Я беру это.', 'bunu — винительный падеж от bu («это»): bu + n + u. Ударение в alıyorum — на -yo-: [алы-йо́-рум].'),
+              ],
+              test: [
+                fill('Şu gömle___ deneyebilir miyim?', ['ği'], 'gömlek + -i: k между гласными переходит в ğ — gömleği.', { s: 'grammar', t: 'cases', d: 3 }, { translation: 'Можно примерить ту рубашку?', options: ['ği', 'ki', 'yi', 'ğı'] }),
+                choice('Как сказать «Я ищу сумку» (какую-нибудь)?', ['Çanta arıyorum.', 'Çantayı arıyorum.', 'Çantada arıyorum.'], 0, 'Объект неопределённый — без окончания: çanta arıyorum. Çantayı arıyorum — «я ищу (ту самую) сумку».', { s: 'grammar', t: 'cases', d: 2 }),
+                choiceRu('Что означает это слово?', 'ucuz', ['дешёвый', 'дорогой', 'новый'], 0, 'ucuz — «дешёвый», противоположность — pahalı («дорогой»).'),
+                translate('Три бутылки воды, пожалуйста.', ['Üç şişe su lütfen.', 'Üç şişe su istiyorum.'], 'После числа и меры — единственное число без падежа: üç şişe su.', { d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'Bu çanta ne kadar?', 'Сколько стоит эта сумка?'],
+                    ['B', null],
+                  ],
+                  ['Yedi yüz lira.', 'Evet, çanta.', 'Çantayı aldım.'],
+                  0,
+                  'На вопрос о цене называют сумму: yedi yüz lira — «семьсот лир».',
+                  { s: 'reading', c: 'comprehension' },
+                ),
+              ],
+            },
+            {
+              key: 'tr-a2-future',
+              title: 'Планы на завтра',
+              objective: 'Рассказать о своих планах в будущем времени на -(y)ecek/-(y)acak и спросить о планах собеседника.',
+              topic: 'future_tense',
+              minutes: 12,
+              theory: [
+                {
+                  title: 'Будущее время: -ecek / -acak',
+                  body: 'В русском будущее образуется по-разному: «сделаю» или «буду делать». В турецком всегда один суффикс -(y)AcAk плюс личное окончание: yap-acak-sın — «ты сделаешь», o gel-ecek — «он придёт». Гласная выбирается по гармонии: после e, i, ö, ü — -ecek, после a, ı, o, u — -acak. После гласной основы вставляется -y-: oku-y-acak, bekle-y-ecek.',
+                  examples: [
+                    ['Yarın sana yazacağım.', 'Завтра я тебе напишу.'],
+                    ['Hafta sonu ne yapacaksın?', 'Что ты будешь делать на выходных?'],
+                    ['Bu yaz Antalya’ya gidecekler.', 'Этим летом они поедут в Анталью.'],
+                  ],
+                },
+                {
+                  title: 'Чередование k → ğ и отрицание',
+                  body: 'Перед окончанием, которое начинается с гласной, k суффикса переходит в ğ: gideceğim, yapacağız, но gideceksin, yapacaklar. Глагол git- перед гласной тоже меняется: gid-eceğim. Отрицание -mA- ставится перед суффиксом будущего с соединительной -y-: gelmeyeceğim — «я не приду», yapmayacak — «он не сделает». Сравните с русским: «не приду» — частица, в турецком — суффикс внутри слова.',
+                  examples: [
+                    ['Bu akşam dışarı çıkmayacağım.', 'Сегодня вечером я никуда не пойду.'],
+                    ['Yarın erken kalkacağız.', 'Завтра мы встанем рано.'],
+                  ],
+                },
+              ],
+              words: [
+                ['yarın', 'завтра', 'adverb', 'Yarın görüşeceğiz.', 'Завтра увидимся.'],
+                ['gelecek', 'будущий, следующий; будущее', 'adjective', 'Gelecek hafta İzmir’e gideceğim.', 'На следующей неделе я поеду в Измир.'],
+                ['plan', 'план', 'noun', 'Hafta sonu için planın var mı?', 'У тебя есть планы на выходные?'],
+                ['tatil', 'отпуск, каникулы', 'noun', 'Tatilde denize gideceğiz.', 'В отпуске мы поедем на море.'],
+                ['kalkmak', 'вставать; отправляться', 'verb', 'Yarın erken kalkacağım.', 'Завтра я встану рано.'],
+                ['buluşmak', 'встречаться', 'verb', 'Akşam arkadaşlarla buluşacağım.', 'Вечером я встречусь с друзьями.'],
+                ['belki', 'может быть', 'adverb', 'Belki sinemaya gideriz.', 'Может быть, сходим в кино.'],
+              ],
+              exercises: [
+                fill('Yarın sana yaz___.', ['acağım'], 'Последняя гласная основы a → -acak; перед окончанием -ım k переходит в ğ: yazacağım.', { s: 'grammar', d: 2 }, { translation: 'Завтра я тебе напишу.', options: ['acağım', 'eceğim', 'acakım', 'dım'] }),
+                fill('Gelecek hafta İzmir’e gid___.', ['eceğiz'], 'git- перед гласной → gid-; гласная i → -ecek; «мы» — -iz, k → ğ: gideceğiz.', { s: 'grammar', d: 3 }, { translation: 'На следующей неделе мы поедем в Измир.', options: ['eceğiz', 'acağız', 'eceksiniz', 'ecekiz'] }),
+                choice('Выберите правильную форму: «Он не придёт».', ['O gelmeyecek.', 'O gelmeyacak.', 'O gelecek değil.'], 0, 'Отрицание -me- + соединительная -y- + -ecek: gelmeyecek. После e возможен только вариант -ecek.', { s: 'grammar', d: 2 }),
+                choiceRu('Что означает это слово?', 'belki', ['может быть', 'обязательно', 'никогда'], 0, 'belki — «может быть, возможно». Обязательно — kesinlikle, никогда — asla.'),
+                translate('Завтра я встану рано.', ['Yarın erken kalkacağım.', 'Ben yarın erken kalkacağım.', 'Yarın ben erken kalkacağım.'], 'kalk- + -acak + -ım, k → ğ: kalkacağım.', { s: 'grammar', d: 2 }),
+                order(['Bu', 'akşam', 'arkadaşlarımla', 'buluşacağım'], 'Сегодня вечером я встречусь с друзьями.', 'Обстоятельство времени — в начале, сказуемое buluşacağım — в конце предложения.', { s: 'grammar', t: 'word_order', d: 2 }, { alternatives: [['Arkadaşlarımla', 'bu', 'akşam', 'buluşacağım']] }),
+                dialogue(
+                  [
+                    ['A', 'Tatilde ne yapacaksınız?', 'Что вы будете делать в отпуске?'],
+                    ['B', null],
+                  ],
+                  ['Denize gideceğiz.', 'Denize gittik.', 'Deniz güzeldi.'],
+                  0,
+                  'Вопрос о будущем — и ответ в будущем времени: gideceğiz.',
+                  { t: 'future_plans', d: 2 },
+                ),
+                translateBack('Yarın yağmur yağacak.', ['Завтра пойдёт дождь', 'Завтра будет дождь'], 'yağmur yağmak — «идти (о дожде)», yağacak — будущее время.', { d: 2 }),
+                listen('Gelecek yıl Türkçe öğreneceğim.', 'öğren- + -ecek + -im, k → ğ: öğreneceğim.', {}, { translation: 'В следующем году я буду учить турецкий.' }),
+                speak('Yarın görüşeceğiz.', 'Завтра увидимся.', 'ğ между гласными не произносится, а лишь растягивает звук: [гёрюшеджеи́з].'),
+              ],
+              test: [
+                fill('Seni havalimanında bekle___.', ['yeceğim'], 'Основа bekle- оканчивается на гласную — нужна соединительная -y-: bekle-y-eceğim.', { s: 'grammar', d: 3 }, { translation: 'Я буду ждать тебя в аэропорту.', options: ['yeceğim', 'eceğim', 'yacağım', 'yeceğiz'] }),
+                choice('Как сказать «Мы не опоздаем»?', ['Geç kalmayacağız.', 'Geç kalmayeceğiz.', 'Geç kalacak değiliz.'], 0, 'kal- (гласная a): -ma- + -y- + -acak + -ız, k → ğ: kalmayacağız.', { s: 'grammar', d: 3 }),
+                choice('Выберите правильную форму: «Они купят дом».', ['Onlar ev alacaklar.', 'Onlar ev alacağlar.', 'Onlar ev alecekler.'], 0, 'Перед согласной l чередования k → ğ нет: alacaklar. Гласная основы a → -acak.', { s: 'grammar', d: 2 }),
+                translate('Вечером я посмотрю фильм.', ['Akşam film izleyeceğim.', 'Akşam bir film izleyeceğim.', 'Bu akşam film izleyeceğim.', 'Bu akşam bir film izleyeceğim.'], 'izle- + -y- + -ecek + -im: izleyeceğim.', { s: 'grammar', d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'Yarın bize gelecek misin?', 'Ты придёшь к нам завтра?'],
+                    ['B', null],
+                  ],
+                  ['Evet, akşam geleceğim.', 'Evet, dün geldim.', 'Evet, geliyordum.'],
+                  0,
+                  'Вопрос задан в будущем времени, поэтому отвечаем geleceğim.',
+                  { t: 'future_plans', d: 2 },
+                ),
+              ],
             },
           ],
         },
@@ -401,7 +617,7 @@ export const turkish: LanguageSpec = {
     {
       level: 'B1',
       title: 'Турецкий B1: мнения',
-      description: 'Bence, çünkü, katılıyorum: выражение и обоснование мнения.',
+      description: 'Bence, çünkü, katılıyorum: выражение мнения, степени сравнения и причастия.',
       modules: [
         {
           title: 'Своё мнение',
@@ -435,14 +651,12 @@ export const turkish: LanguageSpec = {
                 choice('Как сказать «Я с тобой согласен»?', ['Sana katılıyorum.', 'Seni katılıyorum.', 'Sen katılıyorum.'], 0, 'katılmak требует дательного падежа: sana — «тебе».', { s: 'grammar', t: 'cases', d: 3 }),
                 fill('___ bu çok önemli bir konu.', ['Bence'], 'Bence — «по-моему».', {}, { options: ['Bence', 'Sence', 'Çünkü'] }),
                 fill('Evde kaldım ___ hastaydım.', ['çünkü'], 'Причина — çünkü.', { s: 'grammar', t: 'conjunctions', d: 2 }, { options: ['çünkü', 'ama', 'bence'] }),
-                match(
-                  [
-                    ['bence', 'по-моему'],
-                    ['çünkü', 'потому что'],
-                    ['ama', 'но'],
-                    ['önemli', 'важный'],
-                  ],
-                  'Слова для аргументации.',
+                choiceRu(
+                  'Что означает это слово?',
+                  'önemli',
+                  ['важный', 'удобный', 'потому что', 'по-моему'],
+                  0,
+                  'önemli — «важный» (от önem — «важность»). Другие слова аргументации: bence — «по-моему», çünkü — «потому что», ama — «но».',
                 ),
                 translate('По-моему, это хорошая идея.', ['Bence bu iyi bir fikir.', 'Bence iyi bir fikir.'], 'Bence + утверждение.', { d: 2 }),
                 dialogue(
@@ -457,6 +671,153 @@ export const turkish: LanguageSpec = {
                 ),
                 translateBack('Pahalı ama çok kullanışlı.', ['Дорого, но очень удобно', 'Дорогой, но очень удобный'], 'ama — «но», kullanışlı — «удобный».', { d: 2 }),
               ],
+              test: [
+                fill('___ bu film nasıl?', ['Sence'], 'Sence — «по-твоему»: так спрашивают мнение собеседника.', { d: 2 }, { translation: 'Как тебе этот фильм?', options: ['Sence', 'Bence', 'Çünkü'] }),
+                fill('Bu plana ___.', ['katılmıyorum'], 'Несогласие — katılmıyorum (отрицание -mı-). Глагол управляет дательным падежом: plana.', { s: 'grammar', d: 2 }, { translation: 'Я не согласен с этим планом.', options: ['katılmıyorum', 'katılıyor', 'bence'] }),
+                choice('Как сказать «Это дорого, но полезно»?', ['Pahalı ama faydalı.', 'Pahalı çünkü faydalı.', 'Pahalı bence faydalı.'], 0, 'Противопоставление — ama («но»); çünkü — «потому что».', { s: 'grammar', t: 'conjunctions', d: 2 }),
+                translate('Я согласен с тобой, потому что это важно.', ['Sana katılıyorum çünkü bu önemli.', 'Seninle aynı fikirdeyim çünkü bu önemli.', 'Sana katılıyorum çünkü bu çok önemli.'], 'katılmak + дательный падеж (sana), причина — çünkü.', { t: 'conjunctions', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Bence Türkçe çok zor bir dil.', 'По-моему, турецкий — очень трудный язык.'],
+                    ['B', null],
+                  ],
+                  ['Katılmıyorum, çünkü kuralları çok düzenli.', 'Katılmıyorum, ama ben öğrenciyim.', 'Güle güle.'],
+                  0,
+                  'Несогласие нужно обосновать: katılmıyorum, çünkü … («потому что правила очень последовательные»).',
+                  { t: 'conjunctions', d: 2 },
+                ),
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Сравнения и описания',
+          description: 'Степени сравнения и причастия вместо придаточных с «который».',
+          lessons: [
+            {
+              key: 'tr-b1-comparatives',
+              title: 'Больше, лучше, самый…',
+              objective: 'Сравнивать людей, места и вещи с помощью -dan daha, kadar и выделять лучшее словом en.',
+              topic: 'comparatives',
+              minutes: 12,
+              theory: [
+                {
+                  title: 'Сравнительная степень: -dan daha',
+                  body: 'В русском тот, с кем сравнивают, стоит в родительном падеже («выше брата») или после «чем». В турецком он стоит в исходном падеже -dan/-den (после глухих согласных -tan/-ten), а само прилагательное не меняется — перед ним ставится daha («более»): Ankara İstanbul’dan daha küçük — «Анкара меньше Стамбула». «Менее» — daha az, а равенство («такой же, как») выражается послелогом kadar: Ali Ayşe kadar uzun — «Али такой же высокий, как Айше».',
+                  examples: [
+                    ['Kardeşim benden daha uzun.', 'Мой брат выше меня.'],
+                    ['Tren otobüsten daha hızlı.', 'Поезд быстрее автобуса.'],
+                    ['Bugün dünden daha sıcak.', 'Сегодня теплее, чем вчера.'],
+                  ],
+                },
+                {
+                  title: 'Превосходная степень: en',
+                  body: 'Как русское «самый», en ставится перед прилагательным: en güzel — «самый красивый», en iyi — «лучший». Круг сравнения выражается родительным падежом, а существительное получает притяжательное окончание -(s)I: sınıfın en çalışkan öğrencisi — «самый старательный ученик класса».',
+                  examples: [
+                    ['Türkiye’nin en büyük şehri İstanbul’dur.', 'Самый большой город Турции — Стамбул.'],
+                    ['Bu, hayatımın en güzel günü.', 'Это самый прекрасный день в моей жизни.'],
+                  ],
+                },
+              ],
+              words: [
+                ['daha', 'более; ещё', 'adverb', 'Bu kitap daha ilginç.', 'Эта книга интереснее.'],
+                ['en', 'самый', 'adverb', 'Bu, şehrin en eski binası.', 'Это самое старое здание города.'],
+                ['hızlı', 'быстрый', 'adjective', 'Uçak trenden daha hızlı.', 'Самолёт быстрее поезда.'],
+                ['kalabalık', 'многолюдный; толпа', 'adjective', 'İstanbul çok kalabalık bir şehir.', 'Стамбул — очень многолюдный город.'],
+                ['sakin', 'спокойный, тихий', 'adjective', 'Köyde hayat daha sakin.', 'В деревне жизнь спокойнее.'],
+                ['rahat', 'удобный; спокойный', 'adjective', 'Bu koltuk daha rahat.', 'Это кресло удобнее.'],
+                ['kadar', 'такой же, как; до', 'postposition', 'Sen de benim kadar yorgunsun.', 'Ты устал так же, как я.'],
+              ],
+              exercises: [
+                fill('Uçak tren___ daha hızlı.', ['den'], 'tren оканчивается на звонкую n, последняя гласная e → -den.', { s: 'grammar', t: 'cases', d: 2 }, { translation: 'Самолёт быстрее поезда.', options: ['den', 'ten', 'dan', 'de'] }),
+                fill('Ankara İstanbul’___ daha küçük.', ['dan'], 'После имени собственного — апостроф; последняя гласная u → -dan.', { s: 'grammar', t: 'cases', d: 2 }, { translation: 'Анкара меньше Стамбула.', options: ['dan', 'den', 'da', 'a'] }),
+                choice('Как сказать «Это самый дешёвый телефон»?', ['Bu en ucuz telefon.', 'Bu daha ucuz telefon.', 'Bu ucuzdan telefon.'], 0, 'en — «самый» — ставится перед прилагательным; daha — «более».', { s: 'grammar', d: 2 }),
+                choiceRu('Что означает это предложение?', 'Annem babamdan daha genç.', ['Моя мама моложе моего папы.', 'Мой папа моложе моей мамы.', 'Моя мама такая же молодая, как папа.'], 0, 'babamdan — «чем мой папа»: слово в исходном падеже — это точка отсчёта.', { s: 'reading', c: 'comprehension', d: 2 }),
+                translate('Сегодня холоднее, чем вчера.', ['Bugün dünden daha soğuk.', 'Bugün dünden soğuk.', 'Bugün hava dünden daha soğuk.', 'Bugün hava dünden soğuk.'], 'dün + -den — «чем вчера». Если есть -den, daha можно опустить.', { s: 'grammar', d: 2 }),
+                order(['Ali', 'sınıfın', 'en', 'çalışkan', 'öğrencisi'], 'Али — самый старательный ученик в классе.', 'Круг сравнения (sınıfın) + en + прилагательное + существительное с -si.', { s: 'grammar', t: 'word_order', d: 3 }, { alternatives: [['Sınıfın', 'en', 'çalışkan', 'öğrencisi', 'Ali']] }),
+                dialogue(
+                  [
+                    ['A', 'Sence şehirde mi yaşamak daha iyi, köyde mi?', 'По-твоему, где лучше жить — в городе или в деревне?'],
+                    ['B', null],
+                  ],
+                  ['Bence köy daha iyi, çünkü orada hayat daha sakin.', 'Bence köy en iyi şehirden.', 'Dün köyde yaşadım.'],
+                  0,
+                  'Сравнение с обоснованием: daha + прилагательное и çünkü. «En iyi şehirden» — смешение двух конструкций.',
+                  { t: 'opinions', d: 2 },
+                ),
+                translateBack('Bu otel o otel kadar rahat değil.', ['Этот отель не такой удобный, как тот', 'Этот отель менее удобный, чем тот', 'Эта гостиница не такая удобная, как та', 'Этот отель не так удобен, как тот'], 'X kadar — «такой же, как X»; с değil — «не такой, как».', { d: 3 }),
+                listen('İstanbul Ankara’dan daha kalabalık.', 'kalabalık — «многолюдный», Ankara’dan — «чем Анкара».', {}, { translation: 'Стамбул многолюднее Анкары.' }),
+              ],
+              test: [
+                fill('Kahve çay___ daha pahalı.', ['dan'], 'çay: последняя гласная a, конечная y звонкая → -dan.', { s: 'grammar', t: 'cases', d: 2 }, { translation: 'Кофе дороже чая.', options: ['dan', 'tan', 'den', 'a'] }),
+                fill('Film kitap___ daha sıkıcıydı.', ['tan'], 'kitap оканчивается на глухую p, поэтому d → t: kitaptan.', { s: 'grammar', t: 'cases', d: 3 }, { translation: 'Фильм был скучнее книги.', options: ['tan', 'dan', 'ten', 'ta'] }),
+                choice('Как сказать «Это лучший ресторан в городе»?', ['Bu, şehrin en iyi restoranı.', 'Bu, şehrin daha iyi restoranı.', 'Bu, şehirden en iyi restoran.'], 0, 'en iyi — «лучший»; круг сравнения — родительный падеж şehrin (гласная i выпадает), существительное получает -ı: restoranı.', { s: 'grammar', d: 3 }),
+                translate('Моя сестра младше меня.', ['Kız kardeşim benden daha küçük.', 'Kız kardeşim benden küçük.', 'Kardeşim benden daha küçük.', 'Kardeşim benden küçük.', 'Kız kardeşim benden daha genç.', 'Kız kardeşim benden genç.', 'Ablam benden daha küçük.'], 'benden — «чем я»; «младше» — daha küçük (или daha genç).', { s: 'grammar', d: 2 }),
+                choiceRu('Что означает это предложение?', 'Ali, Ayşe kadar uzun.', ['Али такой же высокий, как Айше.', 'Али выше Айше.', 'Али ниже Айше.'], 0, 'kadar выражает равенство: «такой же, как».', { s: 'reading', c: 'comprehension', d: 2 }),
+              ],
+            },
+            {
+              key: 'tr-b1-participles',
+              title: 'Человек, который…',
+              objective: 'Описывать людей и предметы причастиями на -(y)an и -dık вместо придаточного с «который».',
+              topic: 'participles',
+              minutes: 14,
+              theory: [
+                {
+                  title: 'Причастие на -(y)an: «который делает»',
+                  body: 'По-русски можно сказать «человек, который читает книгу» или «читающий книгу человек». В турецком придаточных с «который» почти нет: используется причастие на -(y)An, которое, как русское «читающий», стоит перед существительным: kitap okuyan adam. Эта форма нужна, когда определяемое слово само выполняет действие. Гласная — по гармонии: gel-en, bak-an, oku-y-an.',
+                  examples: [
+                    ['Orada oturan kız benim kardeşim.', 'Девушка, которая сидит там, — моя сестра.'],
+                    ['Türkçe bilen biri lazım.', 'Нужен кто-то, кто знает турецкий.'],
+                    ['Dün gelen mektubu okudum.', 'Я прочитал письмо, которое пришло вчера.'],
+                  ],
+                },
+                {
+                  title: 'Причастие на -dık: «которое я делаю»',
+                  body: 'Если определяемое слово — объект или место действия («книга, которую я читаю»), используют -DIk + притяжательное окончание, которое показывает, кто действует: okuduğum kitap — «книга, которую я читаю (прочитал)», okuduğun — «которую ты…», okuduğu — «которую он…». Действующее лицо можно назвать в родительном падеже: annemin yaptığı yemek — «блюдо, которое готовит мама». После глухих согласных d → t (içtiğim), а k перед гласной → ğ.',
+                  examples: [
+                    ['Bu, en sevdiğim film.', 'Это мой самый любимый фильм.'],
+                    ['Yaşadığım şehir çok güzel.', 'Город, в котором я живу, очень красивый.'],
+                  ],
+                },
+              ],
+              words: [
+                ['oturmak', 'сидеть; жить', 'verb', 'Ankara’da oturuyoruz.', 'Мы живём в Анкаре.'],
+                ['bilmek', 'знать', 'verb', 'İngilizce bilen birini arıyoruz.', 'Мы ищем человека, который знает английский.'],
+                ['tanımak', 'знать (кого-то); узнавать', 'verb', 'Tanıdığım herkes geldi.', 'Пришли все, кого я знаю.'],
+                ['sevmek', 'любить', 'verb', 'En sevdiğim şarkı bu.', 'Это моя самая любимая песня.'],
+                ['komşu', 'сосед', 'noun', 'Yan dairede oturan komşumuz çok nazik.', 'Наш сосед, который живёт в соседней квартире, очень вежливый.'],
+                ['mektup', 'письмо', 'noun', 'Gelen mektupları okudum.', 'Я прочитал пришедшие письма.'],
+                ['söylemek', 'говорить, сказать', 'verb', 'Söylediğin her şey doğru.', 'Всё, что ты сказал, — правда.'],
+              ],
+              exercises: [
+                fill('Orada otur___ adam benim öğretmenim.', ['an'], 'Человек сам выполняет действие («сидит») — причастие -an; последняя гласная u → -an.', { s: 'grammar', d: 2 }, { translation: 'Мужчина, который сидит там, — мой учитель.', options: ['an', 'en', 'duğum', 'yan'] }),
+                fill('Dün oku___ kitap çok ilginçti.', ['duğum'], 'Книга — объект действия, поэтому -dık + -ım; u → -duk, k → ğ перед гласной: okuduğum.', { s: 'grammar', d: 3 }, { translation: 'Книга, которую я вчера прочитал, была очень интересной.', options: ['duğum', 'yan', 'dığım', 'dukum'] }),
+                choice('Как сказать «Нам нужен человек, который знает турецкий»?', ['Türkçe bilen birine ihtiyacımız var.', 'Türkçe bildiğim birine ihtiyacımız var.', 'Türkçe biliyor biri ihtiyacımız var.'], 0, 'Человек сам «знает» — значит, -en: bilen. bildiğim значило бы «которого я знаю».', { s: 'grammar', d: 3 }),
+                choiceRu('Что означает это словосочетание?', 'yaşadığım şehir', ['город, в котором я живу', 'город, который живёт', 'город, где ты живёшь'], 0, 'yaşa-dığ-ım: окончание -ım указывает на «я», а город — место действия.', { s: 'grammar', d: 2 }),
+                translate('Человек, который говорит по-турецки, — мой друг.', ['Türkçe konuşan adam benim arkadaşım.', 'Türkçe konuşan adam arkadaşım.', 'Türkçe konuşan kişi benim arkadaşım.', 'Türkçe konuşan kişi arkadaşım.'], 'Человек сам говорит — причастие konuşan перед существительным.', { s: 'grammar', d: 3 }),
+                order(['Annemin', 'yaptığı', 'yemekler', 'çok', 'lezzetli'], 'Блюда, которые готовит моя мама, очень вкусные.', 'Причастный оборот (annemin yaptığı) стоит перед существительным; деятель — в родительном падеже, -dığı указывает на «её».', { s: 'grammar', t: 'word_order', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Hangi kitabı istiyorsun?', 'Какую книгу ты хочешь?'],
+                    ['B', null],
+                  ],
+                  ['Masanın üstünde duran kitabı.', 'Masanın üstünde durdu kitabı.', 'Masanın üstünde kitap duruyor istiyorum.'],
+                  0,
+                  'Определение «которая лежит на столе» — причастие duran перед существительным; kitabı — винительный падеж (p → b).',
+                  { d: 2 },
+                ),
+                translateBack('Dün tanıştığım adam bir doktor.', ['Мужчина, с которым я вчера познакомился, — врач', 'Человек, с которым я вчера познакомился, — врач', 'Мужчина, с которым я познакомился вчера, — врач', 'Человек, с которым я познакомился вчера, — врач'], 'tanışmak — «знакомиться»; tanıştığım — «с которым я познакомился».', { d: 3 }),
+                listen('Burada çalışan herkes Türkçe biliyor.', 'çalışan — «работающий», herkes — «все».', {}, { translation: 'Все, кто здесь работает, знают турецкий.' }),
+                speak('En sevdiğim şehir İstanbul.', 'Мой самый любимый город — Стамбул.', 'ğ в sevdiğim не произносится, а слегка удлиняет i: [севди́:м].'),
+              ],
+              test: [
+                fill('Kapıda bekle___ kadın kim?', ['yen'], 'Женщина сама ждёт → -(y)en; после гласной основы — соединительная -y-: bekleyen.', { s: 'grammar', d: 2 }, { translation: 'Кто эта женщина, которая ждёт у двери?', options: ['yen', 'en', 'diğim', 'yan'] }),
+                fill('İç___ kahve çok sıcaktı.', ['tiğim'], 'Кофе — объект действия: -dık + -im; после глухой ç d → t, k → ğ: içtiğim.', { s: 'grammar', d: 3 }, { translation: 'Кофе, который я пил, был очень горячим.', options: ['tiğim', 'diğim', 'en', 'tığım'] }),
+                choice('Как сказать «фильм, который ты посмотрел»?', ['izlediğin film', 'izleyen film', 'izlediğim film'], 0, 'Фильм — объект; «ты» — притяжательное -in: izlediğin. izlediğim — «который я посмотрел».', { s: 'grammar', d: 2 }),
+                choiceRu('Что означает это словосочетание?', 'kitap okuyan çocuk', ['ребёнок, который читает книгу', 'книга, которую читает ребёнок', 'ребёнок, которому читают книгу'], 0, '-(y)an: ребёнок сам выполняет действие.', { s: 'grammar', d: 2 }),
+                translate('Город, в котором мы живём, очень большой.', ['Yaşadığımız şehir çok büyük.', 'Oturduğumuz şehir çok büyük.'], '«Мы» — окончание -ımız: yaşa-dığ-ımız.', { s: 'grammar', d: 3 }),
+              ],
             },
           ],
         },
@@ -465,7 +826,7 @@ export const turkish: LanguageSpec = {
     {
       level: 'B2',
       title: 'Турецкий B2: гипотезы',
-      description: 'Условное наклонение -sa/-se и нереальные условия.',
+      description: 'Условное наклонение -sa/-se, страдательный залог и косвенная речь.',
       modules: [
         {
           title: 'Если бы…',
@@ -502,6 +863,156 @@ export const turkish: LanguageSpec = {
                 translate('Жаль, что тебя здесь нет.', ['Keşke burada olsan.', 'Keşke sen burada olsan.'], 'keşke + -sa — сожаление.', { s: 'grammar', t: 'conditionals', d: 3 }),
                 translateBack('Eğer erken gelirsen birlikte yemek yeriz.', ['Если ты придёшь рано, мы поедим вместе', 'Если придёшь рано, поедим вместе'], 'gelirsen — реальное условие.', { d: 3 }),
               ],
+              test: [
+                fill('Vaktim ___ sana yardım ederdim.', ['olsa'], 'Нереальное условие: olsa + сказуемое на -(e)rdi (ederdim).', { s: 'grammar', t: 'conditionals', d: 3 }, { translation: 'Если бы у меня было время, я бы тебе помог.', options: ['olsa', 'olursa', 'var'] }),
+                fill('Erken kalk___ treni yakalarsın.', ['arsan'], 'Реальное условие: kalk- + -ar + -sa + -n («ты»): kalkarsan.', { s: 'grammar', t: 'conditionals', d: 3 }, { translation: 'Если встанешь рано, успеешь на поезд.', options: ['arsan', 'sam', 'dın', 'arsa'] }),
+                choice('Как сказать «Если бы я знал, я бы сказал»?', ['Bilsem söylerdim.', 'Bilirsem söyledim.', 'Bildim söylerim.'], 0, 'Нереальное условие: bil- + -se + -m, в главной части — söyler + -di + -m.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                translate('Хоть бы завтра была хорошая погода.', ['Keşke yarın hava güzel olsa.', 'Keşke yarın hava iyi olsa.'], 'Пожелание: keşke + форма на -sa (olsa).', { s: 'grammar', t: 'conditionals', d: 3 }),
+                translateBack('Yerinde olsam o işi kabul ederdim.', ['На твоём месте я бы принял эту работу', 'На твоём месте я бы согласился на эту работу', 'На вашем месте я бы принял эту работу', 'На твоём месте я бы принял это предложение о работе'], 'Yerinde olsam — «будь я на твоём месте», kabul ederdim — «я бы принял».', { d: 3 }),
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Новости и чужие слова',
+          description: 'Страдательный залог и косвенная речь в новостях и пересказе.',
+          lessons: [
+            {
+              key: 'tr-b2-passive',
+              title: 'Это было сделано…',
+              objective: 'Понимать и строить страдательные конструкции с -ıl/-ın/-n в новостях и официальных текстах.',
+              topic: 'passive',
+              minutes: 13,
+              theory: [
+                {
+                  title: 'Три суффикса пассива',
+                  body: 'В русском пассив образуется возвратным -ся («строится») или причастием («построен»). В турецком к основе глагола добавляется суффикс, а затем время и лицо, как обычно: -Il после большинства согласных (yap-ıl-dı — «был сделан», gör-ül-dü — «был замечен»), -In после основ на l (bil-in-iyor — «известно», bul-un-du — «был найден»), -n после гласной (oku-n-du — «был прочитан», ara-n-ıyor — «разыскивается»).',
+                  examples: [
+                    ['Köprü 1973’te yapıldı.', 'Мост был построен в 1973 году.'],
+                    ['Bu kitap birçok dile çevrildi.', 'Эта книга переведена на многие языки.'],
+                    ['Kayıp çocuk bulundu.', 'Пропавший ребёнок найден.'],
+                  ],
+                },
+                {
+                  title: 'Кем сделано? — tarafından',
+                  body: 'Деятель при пассиве в русском стоит в творительном падеже («написан Пушкиным»), в турецком — с послелогом tarafından: Roman Orhan Pamuk tarafından yazıldı. В живой речи деятеля обычно не называют. Пассив возможен и от непереходных глаголов — это безличная форма для правил и запретов, как русское «здесь не курят»: Burada sigara içilmez.',
+                  examples: [
+                    ['Proje belediye tarafından onaylandı.', 'Проект был одобрен мэрией.'],
+                    ['Müzede fotoğraf çekilmez.', 'В музее не фотографируют.'],
+                  ],
+                },
+              ],
+              words: [
+                ['tarafından', 'кем-либо (при пассиве)', 'postposition', 'Bina ünlü bir mimar tarafından tasarlandı.', 'Здание было спроектировано известным архитектором.'],
+                ['inşa etmek', 'строить', 'verb', 'Yeni bir hastane inşa edilecek.', 'Будет построена новая больница.'],
+                ['açıklamak', 'объявлять; объяснять', 'verb', 'Sonuçlar yarın açıklanacak.', 'Результаты объявят завтра.'],
+                ['seçim', 'выборы; выбор', 'noun', 'Seçim sonuçları açıklandı.', 'Результаты выборов объявлены.'],
+                ['yasak', 'запрещённый; запрет', 'adjective', 'Burada park etmek yasak.', 'Здесь запрещено парковаться.'],
+                ['kurmak', 'основывать; устанавливать', 'verb', 'Şirket 2005’te kuruldu.', 'Компания была основана в 2005 году.'],
+                ['tamamlamak', 'завершать', 'verb', 'Çalışmalar tamamlandı.', 'Работы завершены.'],
+              ],
+              exercises: [
+                fill('Mektup dün gönder___.', ['ildi'], 'gönder- оканчивается на согласную r → суффикс -il; затем прошедшее -di: gönderildi.', { s: 'grammar', d: 2 }, { translation: 'Письмо было отправлено вчера.', options: ['ildi', 'indi', 'di', 'ıldı'] }),
+                fill('Kayıp anahtar bul___.', ['undu'], 'Основа bul- оканчивается на l, поэтому суффикс -un: bulundu.', { s: 'grammar', d: 3 }, { translation: 'Потерянный ключ был найден.', options: ['undu', 'uldu', 'ndu', 'du'] }),
+                fill('Bu şarkı her yerde dinle___.', ['niyor'], 'Основа dinle- оканчивается на гласную → суффикс -n; настоящее время -iyor: dinleniyor.', { s: 'grammar', d: 3 }, { translation: 'Эту песню слушают везде.', options: ['niyor', 'iliyor', 'iyor', 'nıyor'] }),
+                choice('Выберите пассивную форму: «Музей был открыт в прошлом году».', ['Müze geçen yıl açıldı.', 'Müze geçen yıl açtı.', 'Müze geçen yıl açılacak.'], 0, 'aç- + -ıl- + -dı: açıldı — «был открыт». açtı — «открыл» (действительный залог), açılacak — «будет открыт».', { s: 'grammar', d: 2 }),
+                choiceRu('Что означает эта табличка?', 'Burada sigara içilmez.', ['Здесь не курят.', 'Здесь можно курить.', 'Он здесь не курит.'], 0, 'Безличный пассив с отрицанием -mez выражает общее правило или запрет.', { s: 'reading', c: 'comprehension', d: 2 }),
+                translate('Роман был написан известным писателем.', ['Roman ünlü bir yazar tarafından yazıldı.', 'Roman ünlü bir yazar tarafından yazılmış.', 'Bu roman ünlü bir yazar tarafından yazıldı.'], 'Деятель — с tarafından, глагол yaz- + -ıl- + -dı.', { s: 'grammar', d: 3 }),
+                order(['Yeni', 'hastane', 'gelecek', 'yıl', 'açılacak'], 'Новая больница откроется в следующем году.', 'Пассивный глагол açılacak — в конце предложения.', { s: 'grammar', t: 'word_order', d: 2 }, { alternatives: [['Gelecek', 'yıl', 'yeni', 'hastane', 'açılacak']] }),
+                translateBack('Seçim sonuçları henüz açıklanmadı.', ['Результаты выборов ещё не объявлены', 'Результаты выборов пока не объявлены', 'Результаты выборов ещё не объявили', 'Результаты выборов пока не объявили'], 'açıkla-n-ma-dı: пассив + отрицание; henüz — «ещё (не)».', { t: 'media', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Rapor hazır mı?', 'Отчёт готов?'],
+                    ['B', null],
+                  ],
+                  ['Evet, dün akşam tamamlandı.', 'Evet, dün akşam tamamlanacak.', 'Evet, raporu tamamlandım.'],
+                  0,
+                  'Кто завершил, неважно, поэтому пассив в прошедшем времени: tamamla-n-dı.',
+                  { d: 2 },
+                  'Разговор коллег в офисе.',
+                ),
+                listen('Toplantı yarına ertelendi.', 'ertele-n-di — «был перенесён», yarına — «на завтра».', {}, { translation: 'Собрание перенесено на завтра.' }),
+              ],
+              test: [
+                fill('Yeni yasa gelecek ay tartış___.', ['ılacak'], 'tartış- оканчивается на согласную ş → -ıl; будущее -acak: tartışılacak.', { s: 'grammar', d: 3 }, { translation: 'Новый закон будут обсуждать в следующем месяце.', options: ['ılacak', 'nacak', 'acak', 'ılıyor'] }),
+                fill('Bu bina geçen yüzyılda inşa ed___.', ['ildi'], 'inşa etmek → inşa edilmek: t перед гласной переходит в d, суффикс -il, прошедшее -di.', { s: 'grammar', d: 3 }, { translation: 'Это здание было построено в прошлом веке.', options: ['ildi', 'di', 'ıldı', 'indi'] }),
+                choice('Выберите правильную форму: «Окна моют каждую неделю».', ['Pencereler her hafta yıkanıyor.', 'Pencereler her hafta yıkılıyor.', 'Pencereler her hafta yıkıyor.'], 0, 'yıka- оканчивается на гласную → -n: yıkanıyor. yıkılıyor — от yıkmak («разрушать»): «рушатся».', { s: 'grammar', d: 3 }),
+                translate('Эта книга была переведена на русский язык.', ['Bu kitap Rusçaya çevrildi.', 'Bu kitap Rusçaya çevrilmiş.', 'Kitap Rusçaya çevrildi.', 'Bu kitap Rus diline çevrildi.'], 'çevir- + -il-: гласная основы выпадает — çevrildi; направление — дательный падеж Rusçaya.', { s: 'grammar', d: 3 }),
+                choiceRu('Что означает это предложение?', 'Hırsız polis tarafından yakalandı.', ['Вор был пойман полицией.', 'Полиция была поймана вором.', 'Вор поймал полицейского.'], 0, 'tarafından указывает на деятеля: polis tarafından — «полицией».', { s: 'reading', c: 'comprehension', d: 2 }),
+              ],
+            },
+            {
+              key: 'tr-b2-reported',
+              title: 'Говорят, что…',
+              objective: 'Пересказывать чужие слова и новости с помощью -dığını / -acağını söyledi, суффикса -mış и слова diye.',
+              topic: 'reported_speech',
+              minutes: 14,
+              theory: [
+                {
+                  title: 'Косвенная речь: -dığını и -acağını',
+                  body: 'В русском косвенная речь вводится союзом «что»: «Он сказал, что устал». В турецком союза нет: придаточное превращается в отглагольное имя с притяжательным окончанием и винительным падежом и стоит перед глаголом речи. Для прошлого и настоящего — -DIğInI, для будущего — -(y)AcAğInI. Лицо показывает притяжательное окончание: geldiğimi — «что я пришёл», geldiğini — «что ты/он пришёл». Подлежащее придаточного ставится в родительный падеж: Havanın soğuk olduğunu söyledi.',
+                  examples: [
+                    ['Ayşe hasta olduğunu söyledi.', 'Айше сказала, что больна.'],
+                    ['Toplantının iptal edildiğini öğrendim.', 'Я узнал, что собрание отменили.'],
+                    ['Bize yardım edeceğini söyledi.', 'Он сказал, что поможет нам.'],
+                  ],
+                },
+                {
+                  title: 'Пересказ: -mış и diye',
+                  body: 'Если говорящий передаёт сведения с чужих слов, он использует суффикс -mIş — как русские «говорят», «якобы», «оказывается»: Ali evlenmiş — «Али, говорят, женился». Так часто пишут в новостях. Прямую цитату вводят словом diye («мол», «со словами»): «Geliyorum» diye bağırdı — «Он крикнул: „Иду!“». Косвенный вопрос строится так же: Saatin kaç olduğunu sordu — «Он спросил, который час».',
+                  examples: [
+                    ['Dün gece kar yağmış.', 'Оказывается, вчера ночью шёл снег.'],
+                    ['Annem “Geç kalma” diye uyardı.', 'Мама предупредила: «Не опаздывай».'],
+                  ],
+                },
+              ],
+              words: [
+                ['haber', 'новость; известие', 'noun', 'Bu haberi gazetede okudum.', 'Я прочитал эту новость в газете.'],
+                ['iddia etmek', 'утверждать', 'verb', 'Tanık, adamı gördüğünü iddia etti.', 'Свидетель утверждал, что видел этого человека.'],
+                ['öğrenmek', 'узнавать; учить', 'verb', 'Sınavı geçtiğimi bugün öğrendim.', 'Сегодня я узнал, что сдал экзамен.'],
+                ['sormak', 'спрашивать', 'verb', 'Bana nerede çalıştığımı sordu.', 'Он спросил меня, где я работаю.'],
+                ['diye', 'мол; со словами', 'conjunction', '“Yardım edin!” diye bağırdı.', 'Он закричал: «Помогите!»'],
+                ['açıklama', 'заявление', 'noun', 'Bakan bir açıklama yaptı.', 'Министр сделал заявление.'],
+                ['göre', 'по словам; согласно', 'postposition', 'Uzmanlara göre fiyatlar artacak.', 'По словам экспертов, цены вырастут.'],
+              ],
+              exercises: [
+                fill('Ayşe yorgun ol___ söyledi.', ['duğunu'], 'ol- + -duğ- + -u («её») + -nu (винительный падеж): olduğunu.', { s: 'grammar', d: 3 }, { translation: 'Айше сказала, что устала.', options: ['duğunu', 'acağını', 'du', 'duğumu'] }),
+                fill('Ahmet yarın gel___ söyledi.', ['eceğini'], 'Будущее в косвенной речи: gel- + -eceğ- + -i + -ni: geleceğini.', { s: 'grammar', d: 3 }, { translation: 'Ахмет сказал, что придёт завтра.', options: ['eceğini', 'diğini', 'ecek', 'eceğimi'] }),
+                choice('Как сказать «Говорят, Али переехал в Измир» (вы знаете это с чужих слов)?', ['Ali İzmir’e taşınmış.', 'Ali İzmir’e taşındı.', 'Ali İzmir’e taşınacak.'], 0, '-mış показывает, что сведения получены с чужих слов; -dı — факт, известный говорящему лично.', { s: 'grammar', d: 3 }),
+                choiceRu('Что означает это предложение?', 'Bana nerede yaşadığımı sordu.', ['Он спросил меня, где я живу.', 'Он спросил меня, где он живёт.', 'Он сказал мне, где я живу.'], 0, 'yaşadığımı — «(то,) где я живу»: окончание -ım — 1-е лицо; sordu — «спросил».', { s: 'reading', c: 'comprehension', d: 3 }),
+                translate('Она сказала, что не знает.', ['Bilmediğini söyledi.', 'O bilmediğini söyledi.'], 'Отрицание -me- ставится перед -diğ-: bil-me-diğ-i-ni.', { s: 'grammar', d: 3 }),
+                order(['Kardeşim', 'sınavı', 'geçtiğini', 'söyledi'], 'Мой брат сказал, что сдал экзамен.', 'Придаточное с -tiğini стоит перед глаголом речи söyledi; после глухой ç d → t.', { s: 'grammar', t: 'word_order', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Haberleri izledin mi? Ne diyorlar?', 'Ты смотрел новости? Что говорят?'],
+                    ['B', null],
+                  ],
+                  ['Yarın havanın çok soğuk olacağını söylüyorlar.', 'Yarın hava çok soğuk olacağını söylüyorlar.', 'Yarın havanın çok soğuk olacak söylüyorlar.'],
+                  0,
+                  'Подлежащее придаточного стоит в родительном падеже (havanın), а глагол — в форме -acağını.',
+                  { t: 'media', d: 3 },
+                  'Вы пересказываете другу прогноз погоды.',
+                ),
+                translateBack('Habere göre deprem gece yarısı olmuş.', ['Согласно новостям, землетрясение произошло в полночь', 'По сообщениям, землетрясение произошло в полночь', 'Как сообщается, землетрясение произошло в полночь', 'Согласно новости, землетрясение произошло в полночь', 'По данным новостей, землетрясение произошло в полночь'], 'göre — «согласно», -mış — сведения с чужих слов (в русском — «как сообщается»).', { t: 'media', d: 3 }),
+                listen('Bakan yeni bir açıklama yapacağını söyledi.', 'yapacağını — «что сделает»: будущее в косвенной речи.', {}, { translation: 'Министр сказал, что сделает новое заявление.' }),
+                speak('Geleceğini söyledi.', 'Он сказал, что придёт.', 'ğ между гласными не произносится: [геледжеи́ни сёйледи́].'),
+              ],
+              test: [
+                fill('Bana Ankara’da yaşa___ söyledi.', ['dığını'], 'yaşa- + -dığ- + -ı + -nı: yaşadığını — «что он живёт».', { s: 'grammar', d: 3 }, { translation: 'Он сказал мне, что живёт в Анкаре.', options: ['dığını', 'yacağını', 'dı', 'dığımı'] }),
+                fill('Komşumuz yeni bir araba al___.', ['mış'], 'Сведения получены с чужих слов — суффикс -mış: almış.', { s: 'grammar', d: 2 }, { translation: 'Наш сосед, говорят, купил новую машину.', options: ['mış', 'dı', 'acak', 'mışım'] }),
+                choice('Как правильно: «Он спросил, сколько стоит билет»?', ['Biletin ne kadar olduğunu sordu.', 'Bilet ne kadar olduğunu sordu.', 'Biletin ne kadar oldu sordu.'], 0, 'Подлежащее придаточного — в родительном падеже (biletin), сказуемое — в форме -duğunu.', { s: 'grammar', d: 3 }),
+                translate('Мама сказала, что приготовит ужин.', ['Annem akşam yemeği hazırlayacağını söyledi.', 'Annem akşam yemeği yapacağını söyledi.', 'Annem yemek yapacağını söyledi.', 'Annem yemek hazırlayacağını söyledi.'], 'Будущее в косвенной речи: -(y)acağını; после гласной основы — соединительная -y-.', { s: 'grammar', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Can neden gelmedi?', 'Почему Джан не пришёл?'],
+                    ['B', null],
+                  ],
+                  ['Hasta olduğunu söyledi.', 'Hasta olduğumu söyledi.', 'Hasta oldu söyledi.'],
+                  0,
+                  'Речь идёт о Джане (3-е лицо) — olduğunu; olduğumu значило бы «что я болен».',
+                  { d: 3 },
+                ),
+              ],
             },
           ],
         },
@@ -517,7 +1028,7 @@ export const turkish: LanguageSpec = {
     { level: 'A2', exercise: choice('Çay var ___?', ['mı', 'mi', 'mu'], 0, 'Гармония: a → mı.', { s: 'grammar', t: 'questions' }) },
     { level: 'B1', exercise: choice('Sana ___.', ['katılıyorum', 'katılıyor', 'katılmak'], 0, 'Согласие: katılıyorum.', { t: 'opinions' }) },
     { level: 'B1', exercise: fill('Gelemedim ___ hastaydım.', ['çünkü'], 'Причина — çünkü.', { s: 'grammar', t: 'conjunctions' }, { options: ['çünkü', 'ama', 'eğer'] }) },
-    { level: 'B1', exercise: choice('Yarın ne ___?', ['yapacaksın', 'yaptın', 'yapıyordun'], 0, 'Будущее время: -acak.', { s: 'grammar', t: 'present_tense' }) },
+    { level: 'B1', exercise: choice('Yarın ne ___?', ['yapacaksın', 'yaptın', 'yapıyordun'], 0, 'Будущее время: -acak.', { s: 'grammar', t: 'future_tense' }) },
     { level: 'B2', exercise: fill('Zamanım ___ gelirdim.', ['olsa'], 'Нереальное условие.', { s: 'grammar', t: 'conditionals' }, { options: ['olsa', 'oldu', 'olur'] }) },
     { level: 'B2', exercise: choice('Bu ev 1990’da ___.', ['yapıldı', 'yaptı', 'yapıyor'], 0, 'Пассив: yapıldı.', { s: 'grammar', t: 'passive' }) },
     { level: 'B2', exercise: choice('Keşke burada ___.', ['olsan', 'oldun', 'olursun'], 0, 'keşke + -sa.', { s: 'grammar', t: 'conditionals' }) },

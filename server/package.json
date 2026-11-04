@@ -8,7 +8,7 @@
     "build": "tsup",
     "start": "node dist/index.js",
     "seed": "tsx src/seed/run.ts",
-    "evaluate": "tsx src/recommendations/evaluation/run.ts",
+    "evaluate": "tsx src/modules/recommendations/evaluation/run.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "demo": "tsx src/demo.ts"

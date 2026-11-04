@@ -2,7 +2,7 @@ import type { Types } from 'mongoose';
 import type { Exercise } from '@linguapath/shared';
 import { Course, CourseModule, Language, Lesson, Test, Topic, Word } from '../models/content';
 import { exerciseSchema } from '../modules/content/schemas';
-import { finalizeExercise, ru, type LanguageSpec } from './builders';
+import { finalizeExercise, ru, type LanguageSpec, type LessonSpec } from './builders';
 import { english } from './content/en';
 import { german } from './content/de';
 import { kazakh } from './content/kk';
@@ -12,16 +12,23 @@ import { TOPICS } from './topics';
 
 export const LANGUAGES: LanguageSpec[] = [kazakh, english, turkish, german, spanish];
 
-/** Number of exercises taken from each lesson for the module test and the lesson test. */
+/** Number of exercises taken from each lesson for the module test. */
 const MODULE_TEST_PER_LESSON = 3;
-const LESSON_TEST_SIZE = 5;
+
+const TOPIC_KEYS = new Set(TOPICS.map((t) => t.key));
 
 function validate(exercise: Exercise, context: string): Exercise {
+  if (exercise.topic !== 'placement' && !TOPIC_KEYS.has(exercise.topic)) throw new Error(`Unknown topic "${exercise.topic}" in ${exercise.key} (${context})`);
   const result = exerciseSchema.safeParse(exercise);
   if (!result.success) {
     throw new Error(`Invalid exercise ${exercise.key} in ${context}: ${result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')}`);
   }
   return exercise;
+}
+
+/** Lesson tests use their own questions, so the test checks the material rather than recall of the lesson's tasks. */
+function lessonTest(lesson: LessonSpec): Exercise[] {
+  return lesson.test.map((draft, i) => validate(finalizeExercise(draft, `${lesson.key}-t${i + 1}`, lesson.topic), `${lesson.key} test`));
 }
 
 /** Spreads selected exercises across types and avoids speaking tasks, which may be unsupported. */
@@ -151,7 +158,7 @@ export async function seedLanguage(spec: LanguageSpec) {
               module: mod._id,
               title: ru(`Контрольный тест: ${lessonSpec.title}`),
               passPercent: 70,
-              exercises: pickForTest(exercises, LESSON_TEST_SIZE).map((e) => ({ ...e, key: `${e.key}-lt` })),
+              exercises: lessonTest(lessonSpec),
               isPublished: true,
             },
           },

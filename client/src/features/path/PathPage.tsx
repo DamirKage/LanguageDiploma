@@ -1,34 +1,34 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Check, CircleDot, FileCheck2 } from 'lucide-react';
-import type { PathLessonDTO, PathModuleDTO } from '@linguapath/shared';
+import { FileCheck2 } from 'lucide-react';
+import { TEST_PASS_PERCENT, type PathLessonDTO, type PathModuleDTO } from '@linguapath/shared';
 import { catalogApi, learningApi, meApi } from '../../api/endpoints';
 import { Button, ErrorState, errorMessage, PageLoader, useTitle, useToast } from '../../components/ui';
 import { useI18n } from '../../i18n';
 import { LEARNING_KEYS, qk, useActiveLanguage, useTopics } from '../../lib/queries';
 
-function LessonRow({ lesson }: { lesson: PathLessonDTO }) {
+function LessonRow({ lesson, index }: { lesson: PathLessonDTO; index: number }) {
   const { t, plural } = useI18n();
   const { topicTitle } = useTopics();
   return (
-    <li className="route__stop" data-status={lesson.status}>
-      <span className="route__marker" aria-hidden>
-        {lesson.status === 'completed' ? <Check size={14} /> : lesson.status === 'in_progress' ? <CircleDot size={14} /> : null}
-      </span>
-      <Link to={`/lessons/${lesson.id}`} className="route__link">
-        <span className="route__title">{lesson.title}</span>
-        <span className="route__meta">
-          {topicTitle(lesson.topic)} · {t('common.minutesShort', { n: lesson.estimatedMinutes })} · {plural('common.exercises', lesson.exerciseCount)}
-        </span>
-      </Link>
-      <span className="route__status">
-        {lesson.status === 'completed' && lesson.bestPercent !== null ? (
-          <span className={`tag ${lesson.bestPercent >= 70 ? 'tag--ok' : 'tag--warn'}`}>{lesson.bestPercent}%</span>
-        ) : (
-          <span className="tag">{t(`path.status.${lesson.status}`)}</span>
-        )}
-      </span>
-    </li>
+    <tr data-status={lesson.status}>
+      <td className="syllabus__num">{index}</td>
+      <td>
+        <Link to={`/lessons/${lesson.id}`} className="syllabus__title">
+          {lesson.title}
+        </Link>
+        <div className="caption">{lesson.objective}</div>
+      </td>
+      <td className="small">{topicTitle(lesson.topic)}</td>
+      <td className="small syllabus__nowrap">
+        {t('common.minutesShort', { n: lesson.estimatedMinutes })} · {plural('common.exercises', lesson.exerciseCount)}
+      </td>
+      <td className="small syllabus__nowrap">{t(`path.status.${lesson.status}`)}</td>
+      <td className="small syllabus__nowrap">
+        {lesson.bestPercent !== null ? <span className={lesson.bestPercent >= TEST_PASS_PERCENT ? 'text-ok' : 'text-warn'}>{lesson.bestPercent}%</span> : '—'}
+        {lesson.attempts > 0 ? <div className="caption">{plural('path.attempts', lesson.attempts)}</div> : null}
+      </td>
+    </tr>
   );
 }
 
@@ -45,20 +45,24 @@ function ModuleTestRow({ module }: { module: PathModuleDTO }) {
   if (!module.test) return null;
   const { bestPercent, passed } = module.test;
   return (
-    <li className="route__stop route__stop--test" data-status={passed ? 'completed' : 'not_started'}>
-      <span className="route__marker" aria-hidden>
-        <FileCheck2 size={14} />
-      </span>
-      <div className="route__link">
-        <span className="route__title">{t('path.moduleTest')}</span>
-        <span className="route__meta">
-          {bestPercent === null ? t('path.testNotTaken') : passed ? t('path.testPassed', { n: bestPercent }) : t('path.testFailed', { n: bestPercent })}
-        </span>
-      </div>
-      <Button size="sm" onClick={() => start.mutate()} loading={start.isPending}>
-        {t('recommendation.action.module_test')}
-      </Button>
-    </li>
+    <tr className="syllabus__test">
+      <td className="syllabus__num">
+        <FileCheck2 size={16} aria-label={t('path.moduleTest')} />
+      </td>
+      <td colSpan={3}>
+        <span className="syllabus__title">{t('path.moduleTest')}</span>
+        <div className="caption">{t('path.moduleTestHint')}</div>
+      </td>
+      <td className="small syllabus__nowrap">{bestPercent === null ? t('path.testNotTaken') : passed ? t('path.testPassedShort') : t('path.testFailedShort')}</td>
+      <td className="small syllabus__nowrap">
+        {bestPercent !== null ? `${bestPercent}%` : null}
+        <div>
+          <Button size="sm" onClick={() => start.mutate()} loading={start.isPending}>
+            {t('recommendation.action.module_test')}
+          </Button>
+        </div>
+      </td>
+    </tr>
   );
 }
 
@@ -122,12 +126,26 @@ export default function PathPage() {
             <div key={module.id} className="module">
               <h3 className="module__title">{module.title}</h3>
               {module.description ? <p className="small muted">{module.description}</p> : null}
-              <ol className="route">
-                {module.lessons.map((lesson) => (
-                  <LessonRow key={lesson.id} lesson={lesson} />
-                ))}
-                <ModuleTestRow module={module} />
-              </ol>
+              <div className="table-wrap">
+                <table className="table syllabus">
+                  <thead>
+                    <tr>
+                      <th className="syllabus__num">№</th>
+                      <th>{t('path.col.lesson')}</th>
+                      <th>{t('path.col.topic')}</th>
+                      <th>{t('path.col.volume')}</th>
+                      <th>{t('path.col.status')}</th>
+                      <th>{t('path.col.result')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {module.lessons.map((lesson, i) => (
+                      <LessonRow key={lesson.id} lesson={lesson} index={i + 1} />
+                    ))}
+                    <ModuleTestRow module={module} />
+                  </tbody>
+                </table>
+              </div>
             </div>
           ))}
         </section>

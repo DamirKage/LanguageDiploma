@@ -113,7 +113,6 @@ export const analyticsApi = {
 export const adminApi = {
   stats: () => api<AdminStatsDTO>({ url: '/admin/stats' }),
   users: (params: { page?: number; q?: string }) => api<Paginated<AdminUserDTO>>({ url: '/admin/users', params }),
-  updateUser: (id: string, data: { role?: 'user' | 'admin'; isBlocked?: boolean }) => api({ method: 'PATCH', url: `/admin/users/${id}`, data }),
   list: <T>(resource: string, params?: Record<string, unknown>) => api<T>({ url: `/admin/${resource}`, params }),
   get: <T>(resource: string, id: string) => api<T>({ url: `/admin/${resource}/${id}` }),
   create: <T>(resource: string, data: unknown) => api<T>({ method: 'POST', url: `/admin/${resource}`, data }),

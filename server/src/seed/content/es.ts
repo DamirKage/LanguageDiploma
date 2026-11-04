@@ -1,4 +1,4 @@
-import { choice, choiceRu, dialogue, fill, listen, match, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
+import { choice, choiceRu, dialogue, fill, listen, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
 
 export const spanish: LanguageSpec = {
   code: 'es',
@@ -47,15 +47,7 @@ export const spanish: LanguageSpec = {
               ],
               exercises: [
                 choice('Как ответить на «¿Cómo estás?»', ['Bien, gracias.', 'Me llamo Ana.', '¡Adiós!'], 0, '¿Cómo estás? — «Как дела?» Ответ: Bien, gracias.'),
-                match(
-                  [
-                    ['hola', 'привет'],
-                    ['adiós', 'до свидания'],
-                    ['gracias', 'спасибо'],
-                    ['buenas noches', 'доброй ночи'],
-                  ],
-                  'buenas noches — и «добрый вечер» (поздно), и «спокойной ночи».',
-                ),
+                choiceRu('Что означает это выражение?', 'Buenas noches', ['Добрый вечер / спокойной ночи', 'Доброе утро', 'До свидания'], 0, 'buenas noches — и «добрый вечер» (поздно), и «спокойной ночи». «До свидания» — adiós, «доброе утро» — buenos días.'),
                 fill('Me ___ Aliya.', ['llamo'], 'Me llamo … — «Меня зовут …», от глагола llamarse.', { s: 'grammar', t: 'present_tense' }, { translation: 'Меня зовут Алия.', options: ['llamo', 'llama', 'llamas'] }),
                 dialogue(
                   [
@@ -71,6 +63,21 @@ export const spanish: LanguageSpec = {
                 translate('Привет, меня зовут Анна.', ['Hola, me llamo Ana.', 'Hola, me llamo Anna.', 'Hola, soy Ana.', 'Hola, soy Anna.'], 'Me llamo … или Soy … — оба варианта естественны.'),
                 listen('Buenos días.', 'días — с ударением на í.', {}, { options: ['Buenos días.', 'Buenas noches.', 'Buenas tardes.'], translation: 'Доброе утро.' }),
                 speak('Mucho gusto.', 'Очень приятно.', 'ch читается как «ч»; g перед u — твёрдое.'),
+              ],
+              test: [
+                choice('Как попрощаться до завтра?', ['Hasta mañana.', 'Buenos días.', 'Mucho gusto.'], 0, 'Hasta mañana — «до завтра». Buenos días — приветствие, mucho gusto — «очень приятно».'),
+                fill('Buenas ___, señor García.', ['tardes'], 'Buenas tardes — «добрый день» во второй половине дня. Обратите внимание: buenas (ж. р.), потому что tarde — женского рода; а días — мужского: buenos días.', {}, { translation: 'Добрый день, сеньор Гарсия.', options: ['tardes', 'días', 'gusto'] }),
+                translate('Меня зовут Карлос, а тебя?', ['Me llamo Carlos, ¿y tú?', 'Soy Carlos, ¿y tú?', 'Yo me llamo Carlos, ¿y tú?'], '«А тебя?» по-испански — ¿y tú? (дословно «а ты?»).', { d: 2 }),
+                dialogue(
+                  [
+                    ['A', '¡Hola, Marta! ¿Qué tal?', 'Привет, Марта! Как дела?'],
+                    ['B', null],
+                  ],
+                  ['Muy bien, ¿y tú?', 'Me llamo Marta.', 'Buenas noches, adiós.'],
+                  0,
+                  '¿Qué tal? — «Как дела?». Отвечают Bien / Muy bien и возвращают вопрос: ¿y tú?',
+                ),
+                translateBack('Encantada, me llamo Sara.', ['Очень приятно, меня зовут Сара', 'Приятно познакомиться, меня зовут Сара', 'Очень приятно, я Сара'], 'encantado / encantada — «очень приятно»; форма зависит от пола говорящего: женщина говорит encantada.', { d: 2 }),
               ],
             },
             {
@@ -106,21 +113,19 @@ export const spanish: LanguageSpec = {
                 fill('Yo ___ estudiante.', ['soy'], 'yo → soy.', {}, { options: ['soy', 'eres', 'es', 'somos'] }),
                 fill('Nosotros ___ de Kazajistán.', ['somos'], 'nosotros → somos.', {}, { options: ['soy', 'es', 'somos', 'son'] }),
                 fill('Tú ___ muy simpático.', ['eres'], 'tú → eres.', { d: 2 }, { options: ['soy', 'eres', 'es'] }),
-                match(
-                  [
-                    ['yo', 'soy'],
-                    ['tú', 'eres'],
-                    ['ella', 'es'],
-                    ['ellos', 'son'],
-                  ],
-                  'Спряжение ser неправильное, его нужно выучить.',
-                  { s: 'grammar' },
-                ),
+                choice('Какая форма ser нужна с ellos («они»)?', ['son', 'es', 'somos', 'eres'], 0, 'ellos → son. Спряжение ser неправильное, его нужно выучить: soy, eres, es, somos, sois, son.', { s: 'grammar' }),
                 choice('Как сказать «Она врач»?', ['Ella es médica.', 'Ella es una la médica.', 'Ella médica.'], 0, 'Профессия после ser — без артикля, форма женского рода médica.', { s: 'grammar', t: 'noun_gender', d: 2 }),
                 order(['Mi', 'padre', 'es', 'de', 'Shymkent'], 'Мой отец из Шымкента.', 'Порядок слов как в русском: подлежащее — глагол — дополнение.'),
                 translate('Я живу в Астане.', ['Vivo en Astana.', 'Yo vivo en Astana.'], 'Местоимение yo часто опускают: окончание -o уже показывает лицо.', { s: 'grammar', t: 'present_tense' }),
                 translateBack('Somos estudiantes.', ['Мы студенты', 'Мы студентки'], 'somos — «мы есть», в русском опускается.'),
                 speak('Soy de Kazajistán.', 'Я из Казахстана.', 'j в Kazajistán — глухое «х», ударение на последний слог.'),
+              ],
+              test: [
+                fill('Ellos ___ de México.', ['son'], 'ellos → son.', {}, { translation: 'Они из Мексики.', options: ['es', 'son', 'somos'] }),
+                fill('Vosotros ___ estudiantes, ¿verdad?', ['sois'], 'vosotros → sois. Эта форма используется в Испании; в Латинской Америке вместо неё говорят ustedes son.', { d: 2 }, { translation: 'Вы студенты, правда?', options: ['sois', 'son', 'somos'] }),
+                choice('Как сказать «Он инженер»?', ['Él es ingeniero.', 'Él está ingeniero.', 'Él ingeniero.'], 0, 'Профессия — постоянная характеристика: ser. Глагол-связку в испанском опускать нельзя, а артикль перед профессией не нужен.', { s: 'grammar', d: 2 }),
+                translate('Ты из Испании?', ['¿Eres de España?', '¿Tú eres de España?', '¿Eres tú de España?'], 'tú → eres; «из» — de.', { s: 'grammar', t: 'questions' }),
+                order(['Ella', 'es', 'profesora', 'de', 'español'], 'Она преподаватель испанского.', 'profesora de español — «преподаватель испанского»: de связывает два существительных.'),
               ],
             },
             {
@@ -151,15 +156,7 @@ export const spanish: LanguageSpec = {
                 ['año', 'год', 'noun', 'Un año tiene doce meses.', 'В году двенадцать месяцев.', 'm'],
               ],
               exercises: [
-                match(
-                  [
-                    ['tres', '3'],
-                    ['doce', '12'],
-                    ['veinte', '20'],
-                    ['cincuenta', '50'],
-                  ],
-                  'Основные числа для цен и возраста.',
-                ),
+                translate('Напишите словом число 50.', ['cincuenta'], 'cincuenta — 50. Сравните: cinco — 5, quince — 15, cincuenta — 50.'),
                 choice('Как сказать «Мне 25 лет»?', ['Tengo veinticinco años.', 'Soy veinticinco años.', 'Estoy veinticinco años.'], 0, 'Возраст выражается глаголом tener — «иметь».', { s: 'grammar', t: 'to_be', d: 2 }),
                 fill('¿Cuántos años ___?', ['tienes'], 'tú → tienes (от tener).', { s: 'grammar', t: 'questions', d: 2 }, { options: ['tienes', 'eres', 'tengo'] }),
                 listen('cuarenta y siete', 'cuarenta — 40, siete — 7.', {}, { options: ['47', '74', '27'], answers: ['47'] }),
@@ -175,6 +172,21 @@ export const spanish: LanguageSpec = {
                   'О третьем лице: tiene … años.',
                 ),
                 speak('Tengo veinte años.', 'Мне двадцать лет.', 'ñ в слове años — мягкое «нь»: [аньос].'),
+              ],
+              test: [
+                choiceRu('Что это за число?', 'setenta', ['70', '60', '17'], 0, 'setenta — 70. Не путайте с sesenta (60) и diecisiete (17).', { d: 2 }),
+                fill('Mi abuelo ___ ochenta años.', ['tiene'], 'Возраст — через tener; él → tiene.', { s: 'grammar', d: 2 }, { translation: 'Моему дедушке восемьдесят лет.', options: ['tiene', 'es', 'está'] }),
+                translate('Мне восемнадцать лет.', ['Tengo dieciocho años.', 'Yo tengo dieciocho años.'], 'dieciocho пишется слитно; возраст — tener … años.'),
+                choice('Как правильно написать число 21?', ['veintiuno', 'veinte y uno', 'veinteuno'], 0, 'Числа от 16 до 29 пишутся одним словом: veintiuno, veintidós, veintitrés.', { d: 2 }),
+                dialogue(
+                  [
+                    ['A', '¿Cuántos años tiene usted?', 'Сколько Вам лет?'],
+                    ['B', null],
+                  ],
+                  ['Tengo cuarenta y dos años.', 'Soy cuarenta y dos.', 'Tiene cuarenta y dos.'],
+                  0,
+                  'О себе отвечают tengo … años; с 31 десятки и единицы соединяются через y.',
+                ),
               ],
             },
           ],
@@ -213,15 +225,7 @@ export const spanish: LanguageSpec = {
                 ['el hijo', 'сын', 'noun', 'Tienen dos hijos.', 'У них двое детей.', 'm'],
               ],
               exercises: [
-                match(
-                  [
-                    ['la madre', 'мать'],
-                    ['el padre', 'отец'],
-                    ['los padres', 'родители'],
-                    ['la hermana', 'сестра'],
-                  ],
-                  'los padres — «родители», а не «отцы».',
-                ),
+                translate('родители (с артиклем)', ['los padres'], 'los padres — «родители», а не «отцы»: мужской род множественного числа обозначает смешанную группу.'),
                 fill('___ padres viven en Taraz.', ['Mis'], 'padres — множественное число, поэтому mis.', { s: 'grammar', t: 'possessive' }, { options: ['Mi', 'Mis'] }),
                 fill('___ hermana es médica.', ['Mi'], 'hermana — единственное число: mi.', { s: 'grammar', t: 'possessive' }, { options: ['Mi', 'Mis'] }),
                 choice('Какой артикль у слова hermano?', ['el', 'la', 'los'], 0, 'hermano — мужского рода, единственное число: el.', { s: 'grammar', t: 'articles' }),
@@ -229,6 +233,13 @@ export const spanish: LanguageSpec = {
                 translateBack('Mis padres tienen tres hijos.', ['У моих родителей трое детей', 'У моих родителей три ребёнка'], 'hijos — «дети» (сыновья и дочери).', { d: 2 }),
                 order(['Mi', 'familia', 'es', 'muy', 'grande'], 'Моя семья очень большая.', 'Прилагательное grande стоит после глагола es.'),
                 speak('Esta es mi familia.', 'Это моя семья.', 'Ударение в familia — на второй слог: фа-ми́-лья.'),
+              ],
+              test: [
+                fill('___ hijos se llaman Ali y Timur.', ['Mis'], 'hijos — множественное число, поэтому mis.', { s: 'grammar', t: 'possessive' }, { translation: 'Моих сыновей зовут Али и Тимур.', options: ['Mi', 'Mis'] }),
+                choice('Какой артикль у слова familia?', ['la', 'el', 'los'], 0, 'familia оканчивается на -a и относится к женскому роду: la familia.', { s: 'grammar', t: 'articles' }),
+                translate('Моя мама — врач.', ['Mi madre es médica.', 'Mi mamá es médica.'], 'Профессия согласуется с полом: médica; артикль после es не нужен.', { s: 'grammar', t: 'noun_gender', d: 2 }),
+                translateBack('Tengo dos hermanas.', ['У меня две сестры', 'У меня есть две сестры'], 'hermanas — «сёстры»; tengo — «у меня есть».'),
+                order(['Mi', 'hermano', 'tiene', 'quince', 'años'], 'Моему брату пятнадцать лет.', 'Возраст: подлежащее + tiene + число + años.'),
               ],
             },
             {
@@ -258,15 +269,7 @@ export const spanish: LanguageSpec = {
               exercises: [
                 choice('Как попросить счёт?', ['La cuenta, por favor.', 'La carta, gracias.', 'Soy la cuenta.'], 0, 'cuenta — «счёт», carta — «меню».'),
                 fill('___ un café con leche.', ['Quisiera', 'Quiero'], 'Quisiera — вежливое «я бы хотел».', { s: 'grammar', t: 'modal_verbs', d: 2 }, { options: ['Quisiera', 'Soy', 'Tengo'] }),
-                match(
-                  [
-                    ['la cuenta', 'счёт'],
-                    ['la carta', 'меню'],
-                    ['el agua', 'вода'],
-                    ['el café', 'кофе'],
-                  ],
-                  'el agua — женского рода, но с артиклем el для благозвучия (ударное a в начале).',
-                ),
+                translate('вода (с артиклем)', ['el agua'], 'el agua — женского рода, но с артиклем el для благозвучия (ударное a в начале).', { d: 2 }),
                 dialogue(
                   [
                     ['A', '¿Qué desea tomar?', 'Что желаете выпить?'],
@@ -284,6 +287,23 @@ export const spanish: LanguageSpec = {
                 order(['Quisiera', 'un', 'agua', 'sin', 'gas'], 'Я бы хотел воду без газа.', 'sin — «без».'),
                 speak('Un café, por favor.', 'Кофе, пожалуйста.', 'Ударение в café на последний слог — его показывает знак á/é.'),
               ],
+              test: [
+                choice('Как попросить меню?', ['La carta, por favor.', 'La cuenta, por favor.', 'El agua, por favor.'], 0, 'la carta — «меню», la cuenta — «счёт».'),
+                fill('Un té ___ azúcar, por favor.', ['sin'], 'sin — «без», con — «с».', {}, { translation: 'Чай без сахара, пожалуйста.', options: ['sin', 'con', 'de'] }),
+                translate('Кофе с молоком, пожалуйста.', ['Un café con leche, por favor.', 'Café con leche, por favor.'], 'con — «с»; leche — «молоко».'),
+                dialogue(
+                  [
+                    ['A', 'La cuenta, por favor. ¿Cuánto es?', 'Счёт, пожалуйста. Сколько с меня?'],
+                    ['B', null],
+                  ],
+                  ['Son ocho euros.', 'Soy camarero.', 'Tengo ocho años.'],
+                  0,
+                  'Сумму называют через son: Son ocho euros.',
+                  {},
+                  'Вы расплачиваетесь в кафе.',
+                ),
+                translateBack('¿Me trae un agua, por favor?', ['Принесите мне воды, пожалуйста', 'Принесёте мне воды, пожалуйста', 'Принесите мне воду, пожалуйста', 'Принесёте мне воду, пожалуйста', 'Принесите воды, пожалуйста', 'Принесите мне, пожалуйста, воды'], '¿Me trae…? — вежливая просьба «Принесёте мне…?» (форма usted от traer).', { d: 2 }),
+              ],
             },
           ],
         },
@@ -292,7 +312,7 @@ export const spanish: LanguageSpec = {
     {
       level: 'A2',
       title: 'Испанский A2: события и поездки',
-      description: 'Pretérito indefinido, ser и estar, ориентирование в городе.',
+      description: 'Pretérito indefinido, ser и estar, ориентирование в городе, распорядок дня с возвратными глаголами, покупки и сравнение.',
       modules: [
         {
           title: 'Истории и поездки',
@@ -326,20 +346,26 @@ export const spanish: LanguageSpec = {
                 fill('Ayer ___ con mi madre.', ['hablé'], 'hablar → yo hablé (ударение на последний слог).', { s: 'grammar', t: 'past_tense' }, { options: ['hablé', 'hablo', 'habló'] }),
                 fill('El sábado ___ al cine.', ['fui'], 'ir → yo fui.', { s: 'grammar', t: 'past_tense', d: 2 }, { options: ['fui', 'voy', 'fue'] }),
                 choiceRu('Что означает эта форма?', 'hizo', ['он сделал', 'я делаю', 'мы сделали'], 0, 'hacer → él/ella hizo.', { s: 'grammar', t: 'past_tense', d: 2 }),
-                match(
-                  [
-                    ['hablar', 'hablé'],
-                    ['comer', 'comí'],
-                    ['ir', 'fui'],
-                    ['hacer', 'hice'],
-                  ],
-                  'Форма yo в pretérito indefinido.',
-                  { s: 'grammar', t: 'past_tense' },
-                ),
+                choice('Форма yo от hacer в pretérito indefinido:', ['hice', 'hizo', 'hago', 'hacía'], 0, 'hacer → yo hice, él hizo. hago — настоящее время, hacía — imperfecto. Сравните правильные: hablar → hablé, comer → comí.', { s: 'grammar', t: 'past_tense', d: 2 }),
                 translate('Что ты делал на выходных?', ['¿Qué hiciste el fin de semana?', 'Qué hiciste el fin de semana?'], 'hacer → tú hiciste.', { s: 'grammar', t: 'past_tense', d: 3 }),
                 listen('Comimos en un restaurante.', 'comimos — «мы поели».', {}, { translation: 'Мы поели в ресторане.' }),
                 order(['El', 'año', 'pasado', 'viajé', 'a', 'México'], 'В прошлом году я ездил в Мексику.', 'Обстоятельство времени часто ставят в начало.', {}, { alternatives: [['Viajé', 'a', 'México', 'el', 'año', 'pasado']] }),
                 translateBack('Ayer no fui a clase.', ['Вчера я не пошёл на занятия', 'Вчера я не ходил на занятия'], 'no fui — «не пошёл».'),
+              ],
+              test: [
+                fill('Ayer mis amigos ___ paella.', ['comieron'], 'comer → ellos comieron.', { s: 'grammar', t: 'past_tense', d: 2 }, { translation: 'Вчера мои друзья ели паэлью.', options: ['comieron', 'comen', 'comió'] }),
+                choiceRu('Что означает эта форма?', 'fuimos', ['мы пошли / мы были', 'они пошли', 'я пошёл'], 0, 'ir и ser в indefinido совпадают: fuimos — «мы пошли» или «мы были»; смысл понятен из контекста.', { s: 'grammar', t: 'past_tense', d: 2 }),
+                translate('Вчера мы говорили по-испански.', ['Ayer hablamos en español.', 'Ayer hablamos español.', 'Hablamos en español ayer.', 'Hablamos español ayer.', 'Ayer nosotros hablamos en español.', 'Ayer nosotros hablamos español.'], 'hablar → nosotros hablamos: в indefinido форма совпадает с настоящим временем, прошлое показывает ayer.', { s: 'grammar', t: 'past_tense', d: 2 }),
+                dialogue(
+                  [
+                    ['A', '¿Qué hiciste ayer?', 'Что ты делал вчера?'],
+                    ['B', null],
+                  ],
+                  ['Fui a la playa con mi familia.', 'Voy a la playa mañana.', 'Hago la playa.'],
+                  0,
+                  'Вопрос в прошедшем времени — ответ тоже в indefinido: fui.',
+                ),
+                order(['Mi', 'hermana', 'viajó', 'a', 'Perú', 'el', 'verano', 'pasado'], 'Моя сестра ездила в Перу прошлым летом.', 'viajar → ella viajó; обстоятельство времени можно поставить в конец или в начало.', {}, { alternatives: [['El', 'verano', 'pasado', 'mi', 'hermana', 'viajó', 'a', 'Perú']] }),
               ],
             },
             {
@@ -370,15 +396,7 @@ export const spanish: LanguageSpec = {
                 fill('¿Dónde ___ la estación?', ['está'], 'Местоположение — estar.', { s: 'grammar', t: 'ser_estar', d: 2 }, { options: ['es', 'está', 'son'] }),
                 fill('Madrid ___ una ciudad muy bonita.', ['es'], 'Характеристика города — ser.', { s: 'grammar', t: 'ser_estar', d: 2 }, { options: ['es', 'está'] }),
                 fill('Hoy ___ muy cansado.', ['estoy'], 'Временное состояние — estar: estoy cansado.', { s: 'grammar', t: 'ser_estar', d: 2 }, { options: ['soy', 'estoy'] }),
-                match(
-                  [
-                    ['a la derecha', 'направо'],
-                    ['a la izquierda', 'налево'],
-                    ['todo recto', 'прямо'],
-                    ['el billete', 'билет'],
-                  ],
-                  'Самые нужные слова для ориентирования.',
-                ),
+                choiceRu('Что означает это выражение?', 'todo recto', ['прямо', 'направо', 'налево'], 0, 'todo recto — «прямо»; a la derecha — «направо», a la izquierda — «налево».'),
                 dialogue(
                   [
                     ['A', 'Perdone, ¿dónde está el museo?', 'Простите, где музей?'],
@@ -392,6 +410,160 @@ export const spanish: LanguageSpec = {
                 choice('Где ошибка?', ['El hotel es cerca de la playa.', 'El hotel está cerca de la playa.', 'El hotel es caro.'], 0, 'Местоположение выражается через estar: está cerca.', { s: 'grammar', t: 'ser_estar', d: 3 }),
                 speak('¿Dónde está la estación?', 'Где вокзал?', 'Ударение в estación падает на последний слог (знак ó).'),
               ],
+              test: [
+                fill('El banco ___ al lado del hotel.', ['está'], 'Местоположение — estar.', { s: 'grammar', t: 'ser_estar', d: 2 }, { translation: 'Банк рядом с гостиницей.', options: ['es', 'está'] }),
+                fill('Mis amigos ___ de Argentina.', ['son'], 'Происхождение — ser: son de Argentina.', { s: 'grammar', t: 'ser_estar', d: 2 }, { translation: 'Мои друзья из Аргентины.', options: ['son', 'están'] }),
+                choice('Как сказать «Поверните налево»?', ['Gire a la izquierda.', 'Gire a la derecha.', 'Siga todo recto.'], 0, 'a la izquierda — «налево», a la derecha — «направо».'),
+                translate('Музей рядом с вокзалом.', ['El museo está cerca de la estación.', 'El museo está al lado de la estación.'], 'Местоположение — estar; «рядом с» — cerca de.', { s: 'grammar', t: 'ser_estar', d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'Un billete para Valencia, por favor.', 'Билет до Валенсии, пожалуйста.'],
+                    ['B', null],
+                  ],
+                  ['¿Solo ida o ida y vuelta?', 'Estoy en Valencia.', 'Es a la izquierda.'],
+                  0,
+                  'Кассир уточняет: билет в одну сторону (solo ida) или туда и обратно (ida y vuelta).',
+                  {},
+                  'Вы покупаете билет на вокзале.',
+                ),
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Мой день и покупки',
+          description: 'Распорядок дня, возвратные глаголы, покупки и сравнение.',
+          lessons: [
+            {
+              key: 'es-a2-routine',
+              title: 'Мой обычный день',
+              objective: 'Описать свой распорядок дня с помощью возвратных глаголов и слов частотности.',
+              topic: 'daily_routine',
+              minutes: 12,
+              theory: [
+                {
+                  title: 'Возвратные глаголы',
+                  body: 'Как русские глаголы на -ся («умываться», «одеваться»), испанские возвратные глаголы имеют местоимение se: levantarse, ducharse, acostarse. Но в отличие от русского -ся, это местоимение меняется по лицам и стоит перед спрягаемым глаголом: me levanto, te levantas, se levanta, nos levantamos, os levantáis, se levantan. У некоторых глаголов под ударением меняется корень: acostarse → me acuesto, despertarse → me despierto (но nos acostamos, nos despertamos).',
+                  examples: [
+                    ['Me levanto a las siete.', 'Я встаю в семь.'],
+                    ['¿A qué hora te acuestas?', 'Во сколько ты ложишься спать?'],
+                    ['Mi hermano se ducha por la mañana.', 'Мой брат принимает душ утром.'],
+                  ],
+                },
+                {
+                  title: 'Время и частотность',
+                  body: 'Время называют с артиклем: a las ocho — «в восемь», a la una — «в час». Частотность: siempre — всегда, normalmente — обычно, a veces — иногда, nunca — никогда. Будьте внимательны: русский глагол на -ся не всегда возвратный в испанском и наоборот. «Просыпаться» — despertarse, а «учиться» — просто estudiar; «принимать душ» — одно слово ducharse.',
+                  examples: [
+                    ['Normalmente desayuno a las ocho.', 'Обычно я завтракаю в восемь.'],
+                    ['Nunca me acuesto tarde.', 'Я никогда не ложусь поздно.'],
+                  ],
+                },
+              ],
+              words: [
+                ['levantarse', 'вставать', 'verb', 'Los domingos me levanto tarde.', 'По воскресеньям я встаю поздно.'],
+                ['ducharse', 'принимать душ', 'verb', 'Me ducho después del gimnasio.', 'Я принимаю душ после спортзала.'],
+                ['acostarse', 'ложиться спать', 'verb', 'Nos acostamos a las once.', 'Мы ложимся спать в одиннадцать.'],
+                ['despertarse', 'просыпаться', 'verb', 'Me despierto muy temprano.', 'Я просыпаюсь очень рано.'],
+                ['desayunar', 'завтракать', 'verb', 'Desayuno café y tostadas.', 'На завтрак я пью кофе и ем тосты.'],
+                ['temprano', 'рано', 'adverb', 'Mi padre se levanta temprano.', 'Мой отец встаёт рано.'],
+                ['normalmente', 'обычно', 'adverb', 'Normalmente ceno en casa.', 'Обычно я ужинаю дома.'],
+                ['la mañana', 'утро', 'noun', 'Estudio por la mañana.', 'Я учусь по утрам.', 'f'],
+              ],
+              exercises: [
+                fill('Yo ___ levanto a las seis y media.', ['me'], 'yo → me levanto. Местоимение стоит перед глаголом.', { s: 'grammar', t: 'reflexive' }, { translation: 'Я встаю в половине седьмого.', options: ['me', 'te', 'se'] }),
+                fill('¿Tú ___ duchas por la mañana o por la noche?', ['te'], 'tú → te duchas.', { s: 'grammar', t: 'reflexive' }, { translation: 'Ты принимаешь душ утром или вечером?', options: ['me', 'te', 'se'] }),
+                fill('Mis padres se ___ a las once.', ['acuestan'], 'acostarse: под ударением o → ue, ellos → se acuestan.', { s: 'grammar', t: 'reflexive', d: 2 }, { translation: 'Мои родители ложатся спать в одиннадцать.', options: ['acuestan', 'acostan', 'acuesta'] }),
+                choiceRu('Что означает этот глагол?', 'despertarse', ['просыпаться', 'ложиться спать', 'одеваться'], 0, 'despertarse — «просыпаться»; acostarse — «ложиться спать», vestirse — «одеваться».'),
+                choice('Как сказать «Обычно я завтракаю дома»?', ['Normalmente desayuno en casa.', 'Normalmente desayunas en casa.', 'Normalmente desayuno de casa.'], 0, 'yo → desayuno; «дома» — en casa. desayunar не возвратный глагол.', { s: 'grammar', t: 'present_tense', d: 2 }),
+                order(['Los', 'sábados', 'me', 'despierto', 'a', 'las', 'diez'], 'По субботам я просыпаюсь в десять.', 'Возвратное местоимение me стоит прямо перед спрягаемым глаголом despierto.', { s: 'grammar', t: 'reflexive', d: 2 }, { alternatives: [['Me', 'despierto', 'a', 'las', 'diez', 'los', 'sábados']] }),
+                translate('Мы встаём рано.', ['Nos levantamos temprano.', 'Nosotros nos levantamos temprano.'], 'nosotros → nos levantamos; «рано» — temprano.', { s: 'grammar', t: 'reflexive', d: 2 }),
+                dialogue(
+                  [
+                    ['A', '¿A qué hora te levantas normalmente?', 'Во сколько ты обычно встаёшь?'],
+                    ['B', null],
+                    ['A', '¡Qué temprano!', 'Как рано!'],
+                  ],
+                  ['Me levanto a las seis.', 'Se levanta a las seis.', 'Levanto a las seis.'],
+                  0,
+                  'О себе — me levanto. Без me фраза значит «поднимаю (что-то)», а se levanta — «он встаёт».',
+                  { t: 'reflexive', d: 2 },
+                ),
+                listen('Me ducho y desayuno a las ocho.', 'me ducho — «я принимаю душ», desayuno — «завтракаю».', { d: 2 }, { translation: 'Я принимаю душ и завтракаю в восемь.' }),
+                translateBack('A veces mi hermana se acuesta muy tarde.', ['Иногда моя сестра ложится спать очень поздно', 'Иногда моя сестра ложится очень поздно', 'Моя сестра иногда ложится спать очень поздно', 'Моя сестра иногда ложится очень поздно'], 'a veces — «иногда», se acuesta — «ложится спать».', { d: 2 }),
+              ],
+              test: [
+                fill('Mi madre ___ despierta a las cinco.', ['se'], 'ella → se despierta.', { s: 'grammar', t: 'reflexive' }, { translation: 'Моя мама просыпается в пять.', options: ['me', 'se', 'te'] }),
+                fill('Nosotros nos ___ a las diez.', ['acostamos'], 'В форме nosotros ударение падает на окончание, поэтому корень не меняется: acostamos.', { s: 'grammar', t: 'reflexive', d: 3 }, { translation: 'Мы ложимся спать в десять.', options: ['acostamos', 'acuestamos', 'acuestan'] }),
+                choiceRu('Что означает эта фраза?', 'Nunca desayuno.', ['Я никогда не завтракаю.', 'Я всегда завтракаю.', 'Я завтракаю поздно.'], 0, 'nunca — «никогда»; в испанском перед глаголом не нужно дополнительное no.'),
+                translate('Во сколько ты встаёшь?', ['¿A qué hora te levantas?', '¿A qué hora te levantas tú?', '¿Tú a qué hora te levantas?'], '«Во сколько?» — ¿A qué hora?; tú → te levantas.', { s: 'grammar', t: 'reflexive', d: 2 }),
+                order(['Mi', 'padre', 'se', 'ducha', 'por', 'la', 'noche'], 'Мой отец принимает душ по вечерам.', 'se стоит перед глаголом ducha; por la noche — «вечером, ночью».', { s: 'grammar', t: 'reflexive' }),
+              ],
+            },
+            {
+              key: 'es-a2-shopping',
+              title: 'В магазине: что лучше?',
+              objective: 'Спросить цену, выбрать вещь и сравнить товары с помощью más … que, menos … que и tan … como.',
+              topic: 'shopping',
+              minutes: 12,
+              theory: [
+                {
+                  title: 'Сравнение: más / menos … que',
+                  body: 'В русском «дороже», «дешевле» — одно слово. В испанском прилагательное не меняется: перед ним ставят más («более») или menos («менее»), а «чем» передаётся словом que: más caro que — «дороже, чем». Равенство: tan … como — «такой же …, как». Прилагательное, как обычно, согласуется с существительным в роде и числе.',
+                  examples: [
+                    ['Este abrigo es más caro que ese.', 'Это пальто дороже, чем то.'],
+                    ['Las botas son menos cómodas que las zapatillas.', 'Сапоги менее удобные, чем кроссовки.'],
+                    ['Mi bolso es tan grande como el tuyo.', 'Моя сумка такая же большая, как твоя.'],
+                  ],
+                },
+                {
+                  title: 'Особые формы и фразы в магазине',
+                  body: 'Как в русском «хороший — лучше», у нескольких прилагательных особые формы: bueno → mejor (лучше), malo → peor (хуже), о возрасте: mayor (старше), menor (младше). Говорить «más mejor» нельзя — так же, как «более лучше» в русском. В магазине пригодятся: ¿Cuánto cuesta? (об одной вещи), ¿Cuánto cuestan? (о нескольких), ¿Tiene otra talla?',
+                  examples: [
+                    ['Esta tienda es mejor que esa.', 'Этот магазин лучше, чем тот.'],
+                    ['¿Cuánto cuestan estos pantalones?', 'Сколько стоят эти брюки?'],
+                  ],
+                },
+              ],
+              words: [
+                ['caro', 'дорогой', 'adjective', 'Este móvil es muy caro.', 'Этот телефон очень дорогой.'],
+                ['barato', 'дешёвый', 'adjective', 'En el mercado la fruta es barata.', 'На рынке фрукты дешёвые.'],
+                ['la tienda', 'магазин', 'noun', 'La tienda abre a las diez.', 'Магазин открывается в десять.', 'f'],
+                ['costar', 'стоить', 'verb', '¿Cuánto cuesta esta camisa?', 'Сколько стоит эта рубашка?'],
+                ['la camisa', 'рубашка', 'noun', 'Busco una camisa blanca.', 'Я ищу белую рубашку.', 'f'],
+                ['los zapatos', 'обувь, туфли', 'noun', 'Estos zapatos son muy cómodos.', 'Эти туфли очень удобные.', 'm'],
+                ['mejor', 'лучше', 'adjective', 'Este modelo es mejor.', 'Эта модель лучше.'],
+                ['la talla', 'размер (одежды)', 'noun', '¿Tiene una talla más grande?', 'У вас есть размер побольше?', 'f'],
+              ],
+              exercises: [
+                choiceRu('Что означает это слово?', 'barato', ['дешёвый', 'дорогой', 'удобный'], 0, 'barato — «дешёвый», caro — «дорогой», cómodo — «удобный».'),
+                fill('La camisa es ___ cara que la camiseta.', ['más'], 'más … que — «более …, чем».', { s: 'grammar', t: 'comparatives' }, { translation: 'Рубашка дороже, чем футболка.', options: ['más', 'tan', 'muy'] }),
+                fill('Mi hermano es tan alto ___ mi padre.', ['como'], 'Равенство: tan … como — «такой же …, как».', { s: 'grammar', t: 'comparatives', d: 2 }, { translation: 'Мой брат такой же высокий, как мой отец.', options: ['como', 'que', 'de'] }),
+                fill('¿Cuánto ___ estos zapatos?', ['cuestan'], 'zapatos — множественное число: cuestan; под ударением o → ue.', { s: 'grammar', t: 'present_tense', d: 2 }, { translation: 'Сколько стоят эти туфли?', options: ['cuestan', 'cuesta', 'costan'] }),
+                choice('Какое предложение верно?', ['Este mercado es mejor que el otro.', 'Este mercado es más bueno que el otro.', 'Este mercado es más mejor que el otro.'], 0, 'bueno → mejor; перед mejor más не ставят.', { s: 'grammar', t: 'comparatives', d: 2 }),
+                translate('Эта рубашка дешевле.', ['Esta camisa es más barata.', 'Esta camisa es menos cara.'], '«Дешевле» — más barato; согласуем с camisa (ж. р.): más barata.', { s: 'grammar', t: 'comparatives', d: 2 }),
+                dialogue(
+                  [
+                    ['A', '¿Qué tal le queda la camisa?', 'Как Вам рубашка, подходит?'],
+                    ['B', null],
+                    ['A', 'Un momento, ahora le traigo la L.', 'Минутку, сейчас принесу Вам L.'],
+                  ],
+                  ['Es un poco pequeña. ¿Tiene una talla más grande?', 'Es más barata que la tienda.', 'Me levanto a las siete.'],
+                  0,
+                  'Продавец приносит размер побольше — значит, покупатель попросил другую talla.',
+                  { d: 2 },
+                  'Вы в магазине одежды.',
+                ),
+                order(['El', 'tren', 'es', 'más', 'rápido', 'que', 'el', 'autobús'], 'Поезд быстрее, чем автобус.', 'Схема: más + прилагательное + que.', { s: 'grammar', t: 'comparatives' }),
+                translateBack('Mi hermana es menor que yo.', ['Моя сестра младше меня', 'Моя сестра моложе меня', 'Моя сестра младше, чем я', 'Моя сестра моложе, чем я'], 'menor — «младше»; после que ставится yo, а не me.', { t: 'comparatives', d: 2 }),
+                speak('¿Cuánto cuesta esta camisa?', 'Сколько стоит эта рубашка?', 'cuesta: ue читается слитно, [куэ́ста]; ударение на первый слог.'),
+              ],
+              test: [
+                fill('El café es ___ caro que el té.', ['menos'], 'menos … que — «менее …, чем».', { s: 'grammar', t: 'comparatives' }, { translation: 'Кофе дешевле (менее дорогой), чем чай.', options: ['menos', 'tan', 'como'] }),
+                choice('Как сказать «Эта книга хуже»?', ['Este libro es peor.', 'Este libro es más malo que.', 'Este libro es menos peor.'], 0, 'malo → peor — особая форма, как русское «плохой — хуже».', { s: 'grammar', t: 'comparatives', d: 2 }),
+                translate('Сколько стоит это пальто?', ['¿Cuánto cuesta este abrigo?'], 'Об одной вещи — cuesta; el abrigo мужского рода, поэтому este.', { d: 2 }),
+                choiceRu('Что означает эта фраза?', '¿Tiene una talla más pequeña?', ['У вас есть размер поменьше?', 'У вас есть размер побольше?', 'Это самый маленький магазин?'], 0, 'talla — «размер», más pequeña — «поменьше».'),
+                order(['Madrid', 'es', 'más', 'grande', 'que', 'Sevilla'], 'Мадрид больше, чем Севилья.', 'О размере — más grande que; mayor обычно говорят о возрасте.', { s: 'grammar', t: 'comparatives' }),
+              ],
             },
           ],
         },
@@ -399,8 +571,8 @@ export const spanish: LanguageSpec = {
     },
     {
       level: 'B1',
-      title: 'Испанский B1: мнения',
-      description: 'Выражение мнения, creo que и no creo que + subjuntivo.',
+      title: 'Испанский B1: мнения и планы',
+      description: 'Выражение мнения, creo que и no creo que + subjuntivo, будущее время и карьера, советы и инструкции в imperativo.',
       modules: [
         {
           title: 'Своё мнение',
@@ -438,15 +610,7 @@ export const spanish: LanguageSpec = {
                 fill('Creo que ___ una buena idea.', ['es'], 'После creo que — обычное наклонение: es.', { s: 'grammar', t: 'subjunctive', d: 2 }, { options: ['es', 'sea'] }),
                 fill('No creo que ___ una buena idea.', ['sea'], 'После no creo que — subjuntivo: sea.', { s: 'grammar', t: 'subjunctive', d: 3 }, { options: ['es', 'sea'] }),
                 choice('Как сказать «Я с тобой согласен»?', ['Estoy de acuerdo contigo.', 'Soy de acuerdo contigo.', 'Tengo acuerdo contigo.'], 0, 'Устойчивое выражение: estar de acuerdo.', { s: 'grammar', t: 'ser_estar', d: 2 }),
-                match(
-                  [
-                    ['porque', 'потому что'],
-                    ['aunque', 'хотя'],
-                    ['sin embargo', 'однако'],
-                    ['la ventaja', 'преимущество'],
-                  ],
-                  'Связки помогают строить аргумент.',
-                ),
+                translate('однако', ['sin embargo'], 'sin embargo — «однако»; porque — «потому что», aunque — «хотя». Связки помогают строить аргумент.'),
                 translate('По-моему, это очень полезно.', ['En mi opinión, es muy útil.', 'Creo que es muy útil.', 'En mi opinión es muy útil.'], 'En mi opinión, … / Creo que …', { d: 2 }),
                 dialogue(
                   [
@@ -460,6 +624,155 @@ export const spanish: LanguageSpec = {
                 ),
                 translateBack('Aunque es difícil, me gusta mucho.', ['Хотя это сложно, мне очень нравится', 'Хотя это трудно, мне очень нравится'], 'aunque — «хотя».', { d: 2 }),
               ],
+              test: [
+                fill('No creo que mi hermano ___ razón.', ['tenga'], 'После no creo que — subjuntivo: tener → tenga.', { s: 'grammar', t: 'subjunctive', d: 3 }, { translation: 'Не думаю, что мой брат прав.', options: ['tiene', 'tenga'] }),
+                fill('Creo que el español ___ muy útil.', ['es'], 'Утверждение мнения с creo que — обычное наклонение (indicativo).', { s: 'grammar', t: 'subjunctive', d: 2 }, { translation: 'Думаю, что испанский очень полезен.', options: ['es', 'sea'] }),
+                choiceRu('Что означает эта фраза?', 'Tienes razón.', ['Ты прав.', 'У тебя есть причина.', 'Ты ошибаешься.'], 0, 'tener razón — «быть правым». Дословный перевод «иметь причину» здесь неверен.', { d: 2 }),
+                translate('Я не согласен с тобой.', ['No estoy de acuerdo contigo.', 'Yo no estoy de acuerdo contigo.'], 'estar de acuerdo — «соглашаться»; con + ti = contigo.', { d: 2 }),
+                translateBack('No creo que sea tan caro.', ['Не думаю, что это так дорого', 'Я не думаю, что это так дорого', 'Не думаю, что это настолько дорого', 'Не думаю, что это так уж дорого'], 'no creo que + sea — сомнение; tan caro — «так дорого».', { d: 2 }),
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Работа и планы',
+          description: 'Будущее время, профессиональная лексика и повелительное наклонение.',
+          lessons: [
+            {
+              key: 'es-b1-future',
+              title: 'Работа моей мечты',
+              objective: 'Рассказать о карьерных планах, используя futuro simple и ir a + инфинитив.',
+              topic: 'work',
+              minutes: 13,
+              theory: [
+                {
+                  title: 'Futuro simple',
+                  body: 'В русском будущее образуется приставкой («сделаю») или через «буду + инфинитив». В испанском futuro simple строится от целого инфинитива с одинаковыми для всех спряжений окончаниями: -é, -ás, -á, -emos, -éis, -án: trabajaré, comerás, vivirá. У нескольких частых глаголов изменённая основа: tener → tendré, hacer → haré, poder → podré, salir → saldré, venir → vendré, decir → diré.',
+                  examples: [
+                    ['El año que viene trabajaré en una empresa internacional.', 'В следующем году я буду работать в международной компании.'],
+                    ['Tendremos una reunión el lunes.', 'В понедельник у нас будет совещание.'],
+                    ['¿Qué harás después de la universidad?', 'Что ты будешь делать после университета?'],
+                  ],
+                },
+                {
+                  title: 'ir a + инфинитив и предположение',
+                  body: 'Для ближайших, уже решённых планов чаще используют ir a + инфинитив — это похоже на русское «собираюсь»: Voy a buscar trabajo. Futuro simple звучит более отдалённо, как прогноз или обещание: Algún día seré directora. Кроме того, futuro выражает предположение о настоящем — в русском здесь говорят «наверное»: Estará en la oficina — «Он, наверное, в офисе».',
+                  examples: [
+                    ['Voy a enviar mi currículum mañana.', 'Завтра я собираюсь отправить своё резюме.'],
+                    ['Mi jefa estará en una reunión.', 'Моя начальница, наверное, на совещании.'],
+                  ],
+                },
+              ],
+              words: [
+                ['el trabajo', 'работа', 'noun', 'Busco un trabajo nuevo.', 'Я ищу новую работу.', 'm'],
+                ['la empresa', 'компания, фирма', 'noun', 'Trabajo en una empresa pequeña.', 'Я работаю в небольшой компании.', 'f'],
+                ['el jefe', 'начальник', 'noun', 'Mi jefe es muy exigente.', 'Мой начальник очень требовательный.', 'm'],
+                ['el sueldo', 'зарплата', 'noun', 'El sueldo es bueno, pero el horario es largo.', 'Зарплата хорошая, но рабочий день длинный.', 'm'],
+                ['el currículum', 'резюме', 'noun', 'Te enviaré mi currículum hoy.', 'Я отправлю тебе резюме сегодня.', 'm'],
+                ['la entrevista', 'собеседование; интервью', 'noun', 'Mañana tengo una entrevista de trabajo.', 'Завтра у меня собеседование.', 'f'],
+                ['contratar', 'нанимать', 'verb', 'La empresa va a contratar a dos ingenieros.', 'Компания собирается нанять двух инженеров.'],
+              ],
+              exercises: [
+                choiceRu('Что означает это слово?', 'el sueldo', ['зарплата', 'начальник', 'отпуск'], 0, 'el sueldo — «зарплата»; el jefe — «начальник», las vacaciones — «отпуск».'),
+                fill('El año que viene yo ___ en Madrid.', ['trabajaré'], 'Окончание yo в futuro — -é: trabajaré.', { s: 'grammar', t: 'future_tense', d: 2 }, { translation: 'В следующем году я буду работать в Мадриде.', options: ['trabajaré', 'trabajaba', 'trabajé'] }),
+                fill('Pasado mañana ___ una entrevista importante.', ['tendré'], 'tener → tendré: неправильная основа tendr- и обычное окончание -é.', { s: 'grammar', t: 'future_tense', d: 2 }, { translation: 'Послезавтра у меня будет важное собеседование.', options: ['tendré', 'teneré', 'tuve'] }),
+                choice('Какая форма futuro simple от hacer для nosotros?', ['haremos', 'haceremos', 'hacemos'], 0, 'hacer → har-: haremos. hacemos — настоящее время.', { s: 'grammar', t: 'future_tense', d: 2 }),
+                translate('Я собираюсь искать работу.', ['Voy a buscar trabajo.', 'Yo voy a buscar trabajo.', 'Voy a buscar un trabajo.', 'Yo voy a buscar un trabajo.'], 'Решённый план — ir a + инфинитив, как русское «собираюсь».', { s: 'grammar', t: 'future_tense', d: 2 }),
+                order(['Te', 'llamaré', 'después', 'de', 'la', 'reunión'], 'Я позвоню тебе после совещания.', 'Местоимение te стоит перед спрягаемым глаголом llamaré.', { s: 'grammar', t: 'future_tense', d: 2 }, { alternatives: [['Después', 'de', 'la', 'reunión', 'te', 'llamaré']] }),
+                dialogue(
+                  [
+                    ['A', '¿Cómo se ve usted dentro de cinco años?', 'Каким Вы видите себя через пять лет?'],
+                    ['B', null],
+                  ],
+                  ['Espero dirigir un equipo. Aprenderé mucho en esta empresa.', 'Hace cinco años trabajé en un banco.', 'Tengo cinco años de edad.'],
+                  0,
+                  'Вопрос о будущем — ответ с futuro: aprenderé.',
+                  { t: 'future_tense', d: 2 },
+                  'Собеседование в компании.',
+                ),
+                translateBack('No contesta. Estará en una reunión.', ['Не отвечает. Наверное, он на совещании', 'Не отвечает. Он, наверное, на совещании', 'Не отвечает. Должно быть, он на совещании', 'Не отвечает. Наверное, она на совещании', 'Не отвечает. Она, наверное, на совещании', 'Не отвечает. Должно быть, она на совещании', 'Не отвечает. Наверное, на совещании'], 'Futuro здесь выражает предположение о настоящем: estará — «наверное, находится».', { t: 'future_tense', d: 3 }),
+                listen('Enviaré mi currículum a tres empresas.', 'enviaré — «отправлю», futuro от enviar.', { d: 2 }, { translation: 'Я отправлю резюме в три компании.' }),
+              ],
+              test: [
+                fill('Mis compañeros ___ la próxima semana.', ['vendrán'], 'venir → vendrán: основа vendr-.', { s: 'grammar', t: 'future_tense', d: 3 }, { translation: 'Мои коллеги приедут на следующей неделе.', options: ['vendrán', 'venirán', 'vinieron'] }),
+                fill('¿Tú ___ ir a la reunión mañana?', ['podrás'], 'poder → podrás: основа podr-.', { s: 'grammar', t: 'future_tense', d: 2 }, { translation: 'Ты сможешь пойти на совещание завтра?', options: ['podrás', 'poderás', 'pudiste'] }),
+                choiceRu('Что означает этот глагол?', 'contratar', ['нанимать', 'увольнять', 'договариваться'], 0, 'contratar — «нанимать (по контракту)»; «увольнять» — despedir.'),
+                translate('В понедельник у меня будет собеседование.', ['El lunes tendré una entrevista.', 'El lunes tendré una entrevista de trabajo.', 'Tendré una entrevista el lunes.', 'El lunes voy a tener una entrevista.', 'El lunes tengo una entrevista.', 'El lunes tengo una entrevista de trabajo.'], 'tener → tendré; можно и ir a tener или настоящее время для запланированного события.', { s: 'grammar', t: 'future_tense', d: 2 }),
+                dialogue(
+                  [
+                    ['A', '¿Qué vas a hacer después de terminar la carrera?', 'Что ты собираешься делать после окончания университета?'],
+                    ['B', null],
+                  ],
+                  ['Voy a buscar trabajo en una empresa de tecnología.', 'Busqué trabajo el año pasado.', 'Estoy terminado la carrera.'],
+                  0,
+                  'Вопрос с vas a hacer — ответ о плане: voy a + инфинитив.',
+                  { t: 'future_tense', d: 2 },
+                ),
+              ],
+            },
+            {
+              key: 'es-b1-imperative',
+              title: 'Инструкции и советы',
+              objective: 'Давать советы и инструкции в утвердительной и отрицательной форме повелительного наклонения.',
+              topic: 'imperative',
+              minutes: 13,
+              theory: [
+                {
+                  title: 'Утвердительный imperativo: tú и usted',
+                  body: 'В русском «читай / читайте» различаются окончанием. В испанском у tú и usted разные формы. Для tú форма совпадает с 3-м лицом настоящего времени: habla, come, escribe; неправильные: haz, ven, pon, sal, ten, di, ve. Для вежливого usted берут форму subjuntivo: hable, coma, escriba. Местоимения присоединяются к концу глагола: dime, siéntese.',
+                  examples: [
+                    ['Abre la ventana, por favor.', 'Открой окно, пожалуйста.'],
+                    ['Pase usted, por favor.', 'Проходите, пожалуйста.'],
+                    ['Ven aquí.', 'Иди сюда.'],
+                  ],
+                },
+                {
+                  title: 'Отрицательный imperativo',
+                  body: 'В русском отрицание — это просто «не» перед той же формой. В испанском отрицательный imperativo всегда строится на основе subjuntivo, даже для tú: habla → no hables, come → no comas, haz → no hagas. Местоимения при отрицании переходят на место перед глаголом: dímelo → no me lo digas.',
+                  examples: [
+                    ['No llegues tarde.', 'Не опаздывай.'],
+                    ['No se preocupe.', 'Не волнуйтесь.'],
+                    ['No me lo digas.', 'Не говори мне этого.'],
+                  ],
+                },
+              ],
+              words: [
+                ['abrir', 'открывать', 'verb', 'Abra el archivo adjunto.', 'Откройте прикреплённый файл.'],
+                ['llegar tarde', 'опаздывать', 'phrase', 'Siempre llega tarde al trabajo.', 'Он всегда опаздывает на работу.'],
+                ['preocuparse', 'волноваться, беспокоиться', 'verb', 'No te preocupes, todo saldrá bien.', 'Не волнуйся, всё будет хорошо.'],
+                ['el consejo', 'совет', 'noun', 'Te doy un consejo: descansa más.', 'Дам тебе совет: больше отдыхай.', 'm'],
+                ['olvidar', 'забывать', 'verb', 'No olvides la contraseña.', 'Не забудь пароль.'],
+                ['la contraseña', 'пароль', 'noun', 'Cambie la contraseña cada mes.', 'Меняйте пароль каждый месяц.', 'f'],
+                ['seguir', 'продолжать; следовать', 'verb', 'Siga las instrucciones.', 'Следуйте инструкциям.'],
+              ],
+              exercises: [
+                fill('___ la ventana, por favor, hace calor.', ['Abre'], 'tú: утвердительная форма совпадает с 3-м лицом настоящего времени — abre.', { s: 'grammar', d: 2 }, { translation: 'Открой окно, пожалуйста, жарко.', options: ['Abre', 'Abres', 'Abrir'] }),
+                fill('No ___ tarde mañana.', ['llegues'], 'Отрицание для tú — форма subjuntivo: no llegues (g → gu перед e).', { s: 'grammar', d: 3 }, { translation: 'Не опаздывай завтра.', options: ['llegues', 'llegas', 'llega'] }),
+                choice('Как сказать «Сделай это сейчас»?', ['Hazlo ahora.', 'Haces lo ahora.', 'Lo haz ahora.'], 0, 'hacer → haz; в утвердительной форме местоимение присоединяется к концу: hazlo.', { s: 'grammar', d: 2 }),
+                choice('Как вежливо объяснить дорогу незнакомому человеку?', ['Siga todo recto y gire a la derecha.', 'Sigue todo recto y gira a la derecha.', 'Seguir todo recto y girar a la derecha.'], 0, 'usted → siga, gire (формы subjuntivo). sigue, gira — обращение на «ты».', { s: 'grammar', d: 2 }),
+                choiceRu('Что означает эта фраза?', 'No te preocupes.', ['Не волнуйся.', 'Не опаздывай.', 'Не забывай.'], 0, 'preocuparse — «волноваться»; no te preocupes — отрицательный imperativo для tú.'),
+                translate('Не забывай свой паспорт.', ['No olvides tu pasaporte.', 'No olvides el pasaporte.', 'No te olvides de tu pasaporte.', 'No te olvides del pasaporte.'], 'olvidar → no olvides (subjuntivo); вариант olvidarse de тоже правильный.', { s: 'grammar', d: 2 }),
+                order(['No', 'se', 'lo', 'cuentes', 'a', 'nadie'], 'Никому об этом не рассказывай.', 'При отрицании местоимения стоят перед глаголом: no se lo cuentes.', { s: 'grammar', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Me duele mucho la cabeza.', 'У меня сильно болит голова.'],
+                    ['B', null],
+                  ],
+                  ['Toma una pastilla y descansa un poco.', 'Tomas una pastilla y descansas un poco.', 'Tomar una pastilla y descansar.'],
+                  0,
+                  'Совет другу даётся в imperativo для tú: toma, descansa.',
+                  { d: 2 },
+                ),
+                translateBack('Cambie la contraseña y no la comparta con nadie.', ['Измените пароль и ни с кем им не делитесь', 'Смените пароль и ни с кем им не делитесь', 'Поменяйте пароль и ни с кем им не делитесь', 'Измените пароль и никому его не сообщайте', 'Смените пароль и никому его не сообщайте', 'Измените пароль и никому его не говорите', 'Смените пароль и никому его не говорите'], 'cambie, no comparta — вежливые формы для usted.', { d: 3 }),
+                speak('Pase, por favor, y siéntese.', 'Проходите, пожалуйста, и садитесь.', 'В siéntese ударение падает на первый слог, поэтому нужен знак: sién-te-se.'),
+              ],
+              test: [
+                fill('___ aquí, por favor, quiero enseñarte algo.', ['Ven'], 'venir → ven (неправильная форма для tú). Venga — форма для usted, а enseñarte показывает обращение на «ты».', { s: 'grammar', d: 2 }, { translation: 'Иди сюда, пожалуйста, хочу тебе кое-что показать.', options: ['Ven', 'Vienes', 'Venga'] }),
+                fill('No ___ la puerta, hace frío.', ['abras'], 'abrir → no abras: отрицание строится на основе subjuntivo.', { s: 'grammar', d: 2 }, { translation: 'Не открывай дверь, холодно.', options: ['abras', 'abres', 'abre'] }),
+                choice('Как вежливо сказать «Подождите минутку»?', ['Espere un momento.', 'Espera un momento.', 'Esperar un momento.'], 0, 'usted → espere (subjuntivo); espera — обращение на «ты».', { s: 'grammar', d: 2 }),
+                translate('Скажи мне правду.', ['Dime la verdad.'], 'decir → di; местоимение me присоединяется к концу: dime.', { s: 'grammar', d: 3 }),
+                order(['No', 'pongas', 'el', 'móvil', 'en', 'la', 'mesa'], 'Не клади телефон на стол.', 'poner → no pongas (subjuntivo от pongo).', { s: 'grammar', d: 2 }),
+              ],
             },
           ],
         },
@@ -467,8 +780,8 @@ export const spanish: LanguageSpec = {
     },
     {
       level: 'B2',
-      title: 'Испанский B2: гипотезы',
-      description: 'Si + imperfecto de subjuntivo + condicional.',
+      title: 'Испанский B2: гипотезы и общество',
+      description: 'Si + imperfecto de subjuntivo + condicional, косвенная речь в новостях, экология и subjuntivo после безличных выражений.',
       modules: [
         {
           title: 'Если бы…',
@@ -504,6 +817,166 @@ export const spanish: LanguageSpec = {
                 order(['Si', 'pudiera', 'te', 'ayudaría'], 'Если бы я мог, я бы тебе помог.', 'si + subjuntivo, затем condicional.', { s: 'grammar', t: 'conditionals', d: 3 }),
                 translate('Что бы ты сделал на моём месте?', ['¿Qué harías en mi lugar?', 'Qué harías en mi lugar?', '¿Qué harías tú en mi lugar?'], 'hacer → harías (condicional).', { s: 'grammar', t: 'conditionals', d: 3 }),
                 translateBack('Si tuviera dinero, viajaría por todo el mundo.', ['Если бы у меня были деньги, я бы путешествовал по всему миру', 'Если бы у меня были деньги, я бы объездил весь мир'], 'tuviera … viajaría — нереальное условие.', { d: 3 }),
+              ],
+              test: [
+                fill('Si ___ en Madrid, iría al Prado cada semana.', ['viviera', 'viviese'], 'Нереальное условие: si + imperfecto de subjuntivo (viviera / viviese).', { s: 'grammar', t: 'conditionals', d: 3 }, { translation: 'Если бы я жил в Мадриде, я бы ходил в Прадо каждую неделю.', options: ['viviera', 'vivo', 'viviría'] }),
+                fill('Si tuviéramos coche, ___ a la montaña.', ['iríamos'], 'Главная часть — condicional: ir → iríamos.', { s: 'grammar', t: 'conditionals', d: 3 }, { translation: 'Если бы у нас была машина, мы бы поехали в горы.', options: ['iríamos', 'íbamos', 'fuéramos'] }),
+                choice('Какое предложение верно?', ['Si lo supiera, te lo diría.', 'Si lo sabría, te lo diría.', 'Si lo supiera, te lo digo.'], 0, 'После si в нереальном условии condicional не ставится — только subjuntivo (supiera); в главной части — condicional (diría). В русском «бы» стоит в обеих частях, в испанском — нет.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                translate('Если бы я был тобой, я бы учил испанский.', ['Si yo fuera tú, estudiaría español.', 'Si fuera tú, estudiaría español.', 'Si yo fuese tú, estudiaría español.', 'Si fuese tú, estudiaría español.', 'Si yo fuera tú, aprendería español.', 'Si fuera tú, aprendería español.', 'Yo que tú, estudiaría español.', 'Yo en tu lugar estudiaría español.'], 'ser → fuera / fuese; estudiar → estudiaría. Разговорный вариант: Yo que tú, …', { s: 'grammar', t: 'conditionals', d: 3 }),
+                dialogue(
+                  [
+                    ['A', '¿Qué harías si tuvieras un mes de vacaciones?', 'Что бы ты делал, если бы у тебя был месяц отпуска?'],
+                    ['B', null],
+                  ],
+                  ['Viajaría por Sudamérica.', 'Viajo por Sudamérica.', 'Viajé por Sudamérica.'],
+                  0,
+                  'На вопрос с harías отвечают тоже в condicional: viajaría.',
+                  { t: 'conditionals', d: 2 },
+                ),
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Общество и медиа',
+          description: 'Косвенная речь, новости и экология с subjuntivo.',
+          lessons: [
+            {
+              key: 'es-b2-media',
+              title: 'Что пишут в новостях',
+              objective: 'Пересказывать чужие слова, вопросы и просьбы в косвенной речи с согласованием времён.',
+              topic: 'media',
+              minutes: 14,
+              theory: [
+                {
+                  title: 'Согласование времён',
+                  body: 'В русском при пересказе время не меняется: «Он сказал, что устал». В испанском, если вводящий глагол стоит в прошедшем (dijo, explicó, anunció), время в придаточном сдвигается «на шаг назад»: presente → imperfecto (estoy → estaba), indefinido → pluscuamperfecto (perdí → había perdido), futuro → condicional (llegará → llegaría).',
+                  examples: [
+                    ['«Estoy cansado». → Dijo que estaba cansado.', '«Я устал». → Он сказал, что устал.'],
+                    ['«El tren llegará tarde». → Anunciaron que el tren llegaría tarde.', '«Поезд опоздает». → Объявили, что поезд опоздает.'],
+                    ['«Perdí el vuelo». → Explicó que había perdido el vuelo.', '«Я опоздал на рейс». → Он объяснил, что опоздал на рейс.'],
+                  ],
+                },
+                {
+                  title: 'Просьбы и вопросы',
+                  body: 'Просьба или приказ передаются через que + subjuntivo; после прошедшего времени — imperfecto de subjuntivo: «Llama a tu madre» → Me pidió que llamara a mi madre. Общий вопрос вводится через si — как русская частица «ли»: Me preguntó si tenía tiempo — «Он спросил, есть ли у меня время». Специальный вопрос сохраняет вопросительное слово с ударением: Me preguntó dónde vivía.',
+                  examples: [
+                    ['Me pidió que le enviara el artículo.', 'Он попросил меня отправить ему статью.'],
+                    ['La periodista preguntó si el ministro iba a dimitir.', 'Журналистка спросила, собирается ли министр уйти в отставку.'],
+                  ],
+                },
+              ],
+              words: [
+                ['la noticia', 'новость', 'noun', 'La noticia salió en todos los periódicos.', 'Новость появилась во всех газетах.', 'f'],
+                ['el periódico', 'газета', 'noun', 'Leo el periódico en el móvil.', 'Я читаю газету в телефоне.', 'm'],
+                ['periodista', 'журналист, журналистка', 'noun', 'El periodista entrevistó a la alcaldesa.', 'Журналист взял интервью у мэра.', 'mf'],
+                ['anunciar', 'объявлять', 'verb', 'El Gobierno anunció nuevas medidas.', 'Правительство объявило о новых мерах.'],
+                ['según', 'согласно, по словам, по данным', 'preposition', 'Según la prensa, el acuerdo se firmará mañana.', 'По данным прессы, соглашение подпишут завтра.'],
+                ['afirmar', 'утверждать, заявлять', 'verb', 'El portavoz afirmó que no había ningún problema.', 'Представитель заявил, что никаких проблем нет.'],
+                ['el titular', 'заголовок', 'noun', 'El titular no refleja el contenido del artículo.', 'Заголовок не отражает содержания статьи.', 'm'],
+                ['la fuente', 'источник', 'noun', 'Hay que comprobar siempre la fuente.', 'Источник всегда нужно проверять.', 'f'],
+              ],
+              exercises: [
+                choiceRu('Что означает это слово?', 'el titular', ['заголовок', 'редактор', 'подписка'], 0, 'el titular — «заголовок» статьи; «редактор» — el editor, «подписка» — la suscripción.'),
+                fill('«Estoy enfermo». → Ayer Juan dijo que ___ enfermo.', ['estaba'], 'После dijo presente сдвигается в imperfecto: estoy → estaba.', { s: 'grammar', t: 'reported_speech', d: 2 }, { options: ['estaba', 'estuvo', 'estuviera'] }),
+                fill('«Lo haré mañana». → Prometió que lo ___ al día siguiente.', ['haría'], 'futuro → condicional: haré → haría. «Mañana» в пересказе становится al día siguiente.', { s: 'grammar', t: 'reported_speech', d: 3 }, { options: ['haría', 'hiciera', 'hizo'] }),
+                fill('«¿Tienes tiempo?» → Me preguntó ___ tenía tiempo.', ['si'], 'Общий вопрос в косвенной речи вводится через si — как русское «ли».', { s: 'grammar', t: 'reported_speech', d: 2 }, { options: ['si', 'que', 'qué'] }),
+                choice('Как передать просьбу «Envíame el informe»?', ['Me pidió que le enviara el informe.', 'Me pidió que le enviaba el informe.', 'Me pidió si le enviara el informe.'], 0, 'Просьба в прошлом: pedir que + imperfecto de subjuntivo (enviara).', { s: 'grammar', t: 'reported_speech', d: 3 }),
+                translate('Журналист сказал, что новость ложная.', ['El periodista dijo que la noticia era falsa.', 'El periodista afirmó que la noticia era falsa.'], 'После dijo: es → era.', { s: 'grammar', t: 'reported_speech', d: 3 }),
+                order(['Según', 'el', 'periódico', 'el', 'alcalde', 'dimitirá', 'mañana'], 'По данным газеты, мэр завтра уйдёт в отставку.', 'según — «по данным»; это не пересказ с вводящим глаголом в прошедшем, поэтому время не меняется.', { d: 2 }, { alternatives: [['El', 'alcalde', 'dimitirá', 'mañana', 'según', 'el', 'periódico']] }),
+                dialogue(
+                  [
+                    ['A', '¿Qué dijo la ministra en la rueda de prensa?', 'Что сказала министр на пресс-конференции?'],
+                    ['B', null],
+                  ],
+                  ['Afirmó que el Gobierno bajaría los impuestos.', 'Afirmó si el Gobierno bajaría los impuestos.', 'Afirmó que el Gobierno bajara los impuestos.'],
+                  0,
+                  'Утверждение пересказывают через que + indicativo; futuro → condicional: bajará → bajaría. Subjuntivo после afirmar не нужен.',
+                  { t: 'reported_speech', d: 3 },
+                ),
+                translateBack('Me preguntó dónde había estudiado periodismo.', ['Он спросил меня, где я изучал журналистику', 'Он спросил, где я изучал журналистику', 'Она спросила меня, где я изучал журналистику', 'Она спросила, где я изучал журналистику', 'Он спросил меня, где я изучала журналистику', 'Он спросил, где я изучала журналистику', 'Она спросила меня, где я изучала журналистику', 'Она спросила, где я изучала журналистику', 'Он спросил, где я учился на журналиста', 'Она спросила, где я училась на журналиста'], 'había estudiado — pluscuamperfecto: в прямой речи было ¿Dónde estudiaste?', { t: 'reported_speech', d: 3 }),
+                listen('Según fuentes oficiales, la noticia es falsa.', 'según — «по данным», fuentes oficiales — «официальные источники».', { d: 2 }, { translation: 'По данным официальных источников, новость ложная.' }),
+              ],
+              test: [
+                fill('«Vivo en Lima». → Me contó que ___ en Lima.', ['vivía'], 'presente → imperfecto: vivo → vivía.', { s: 'grammar', t: 'reported_speech', d: 2 }, { options: ['vivía', 'vivió', 'viviera'] }),
+                fill('«Perdí las llaves». → Dijo que ___ las llaves.', ['había perdido'], 'indefinido → pluscuamperfecto: perdí → había perdido.', { s: 'grammar', t: 'reported_speech', d: 3 }, { options: ['había perdido', 'perdía', 'perdiera'] }),
+                choice('Как передать вопрос «¿Dónde está la estación?»', ['Me preguntó dónde estaba la estación.', 'Me preguntó si dónde estaba la estación.', 'Me preguntó dónde estuviera la estación.'], 0, 'Специальный вопрос: вопросительное слово сохраняется (без si), время сдвигается: está → estaba.', { s: 'grammar', t: 'reported_speech', d: 3 }),
+                translate('Она попросила меня позвонить ей.', ['Me pidió que la llamara.', 'Ella me pidió que la llamara.', 'Me pidió que la llamase.', 'Ella me pidió que la llamase.'], 'pedir que + imperfecto de subjuntivo; «ей» при llamar — прямое дополнение la.', { s: 'grammar', t: 'reported_speech', d: 3 }),
+                choiceRu('Что означает это выражение?', 'Según la prensa…', ['По данным прессы…', 'Вопреки прессе…', 'После выхода в прессе…'], 0, 'según — «согласно, по данным»; «вопреки» — a pesar de.', { d: 2 }),
+              ],
+            },
+            {
+              key: 'es-b2-environment',
+              title: 'Экология: что нужно сделать',
+              objective: 'Обсуждать экологические проблемы, используя безличные выражения и para que с subjuntivo.',
+              topic: 'environment',
+              minutes: 14,
+              theory: [
+                {
+                  title: 'Es necesario que + subjuntivo',
+                  body: 'Русские конструкции «нужно, чтобы…», «важно, чтобы…» подсказывают правило: после безличных выражений необходимости и оценки (es necesario, es importante, es fundamental, hace falta) испанский требует subjuntivo, если у придаточного есть своё подлежащее. Если подлежащего нет, ставится инфинитив — как в русском «нужно перерабатывать». А после выражений уверенности (es cierto, es evidente, está claro) — обычное наклонение.',
+                  examples: [
+                    ['Es importante que los gobiernos actúen ya.', 'Важно, чтобы правительства действовали уже сейчас.'],
+                    ['Es necesario reducir el consumo de plástico.', 'Нужно сократить потребление пластика.'],
+                    ['Es cierto que la contaminación ha aumentado.', 'Действительно, загрязнение выросло.'],
+                  ],
+                },
+                {
+                  title: 'para que и цель',
+                  body: 'Русское «чтобы» с другим подлежащим переводится как para que + subjuntivo: Los científicos publican datos para que la gente entienda el problema. Если подлежащее то же, ставится para + инфинитив: Uso el transporte público para contaminar menos. После прошедшего времени в главной части — imperfecto de subjuntivo: Plantaron árboles para que hubiera más sombra.',
+                  examples: [
+                    ['Los científicos publican datos para que la gente entienda el problema.', 'Учёные публикуют данные, чтобы люди поняли проблему.'],
+                    ['Uso el transporte público para contaminar menos.', 'Я пользуюсь общественным транспортом, чтобы меньше загрязнять среду.'],
+                    ['Plantaron árboles para que hubiera más sombra.', 'Посадили деревья, чтобы было больше тени.'],
+                  ],
+                },
+              ],
+              words: [
+                ['el medio ambiente', 'окружающая среда', 'noun', 'Debemos proteger el medio ambiente.', 'Мы должны защищать окружающую среду.', 'm'],
+                ['la contaminación', 'загрязнение', 'noun', 'La contaminación del aire es un problema grave.', 'Загрязнение воздуха — серьёзная проблема.', 'f'],
+                ['reciclar', 'перерабатывать', 'verb', 'En mi barrio reciclamos el vidrio.', 'В нашем районе мы сдаём стекло на переработку.'],
+                ['el cambio climático', 'изменение климата', 'noun', 'El cambio climático nos afecta a todos.', 'Изменение климата касается всех нас.', 'm'],
+                ['los residuos', 'отходы', 'noun', 'Hay que reducir los residuos.', 'Нужно сокращать количество отходов.', 'm'],
+                ['ahorrar', 'экономить', 'verb', 'Ahorramos agua en casa.', 'Мы экономим воду дома.'],
+                ['sostenible', 'устойчивый, экологичный', 'adjective', 'Buscamos un turismo más sostenible.', 'Мы ищем более экологичный туризм.'],
+                ['la sequía', 'засуха', 'noun', 'La sequía ha afectado a la agricultura.', 'Засуха нанесла ущерб сельскому хозяйству.', 'f'],
+              ],
+              exercises: [
+                choiceRu('Что означает это слово?', 'la sequía', ['засуха', 'наводнение', 'пожар'], 0, 'la sequía — «засуха»; «наводнение» — la inundación, «пожар» — el incendio.'),
+                fill('Es necesario que todos ___ más.', ['reciclemos'], 'Es necesario que + subjuntivo: nosotros → reciclemos.', { s: 'grammar', t: 'subjunctive', d: 2 }, { translation: 'Нужно, чтобы все мы больше сдавали отходы на переработку.', options: ['reciclemos', 'reciclamos', 'reciclar'] }),
+                fill('Es importante ___ energía.', ['ahorrar'], 'У придаточного нет своего подлежащего — инфинитив, как в русском «важно экономить».', { s: 'grammar', t: 'subjunctive', d: 2 }, { translation: 'Важно экономить энергию.', options: ['ahorrar', 'ahorremos', 'ahorramos'] }),
+                fill('Es evidente que el clima ___ cambiando.', ['está'], 'Выражение уверенности (es evidente que) — indicativo.', { s: 'grammar', t: 'subjunctive', d: 3 }, { translation: 'Очевидно, что климат меняется.', options: ['está', 'esté'] }),
+                fill('El ayuntamiento instaló contenedores para que los vecinos ___ la basura.', ['separaran', 'separasen'], 'para que + subjuntivo; после прошедшего (instaló) — imperfecto de subjuntivo: separaran.', { s: 'grammar', t: 'subjunctive', d: 3 }, { translation: 'Мэрия установила контейнеры, чтобы жители сортировали мусор.', options: ['separaran', 'separan', 'separarán'] }),
+                choice('Какое предложение верно?', ['Apago las luces para ahorrar energía.', 'Apago las luces para que ahorre energía.', 'Apago las luces para que ahorro energía.'], 0, 'Подлежащее одно (я выключаю — я экономлю), поэтому para + инфинитив.', { s: 'grammar', t: 'subjunctive', d: 2 }),
+                translate('Нужно, чтобы правительство защищало окружающую среду.', ['Es necesario que el gobierno proteja el medio ambiente.', 'Hace falta que el gobierno proteja el medio ambiente.', 'Es preciso que el gobierno proteja el medio ambiente.'], 'Es necesario que + subjuntivo: proteger → proteja (g → j перед a).', { s: 'grammar', t: 'subjunctive', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Creo que reciclar no sirve para nada.', 'По-моему, переработка совершенно бесполезна.'],
+                    ['B', null],
+                  ],
+                  ['No estoy de acuerdo. Es fundamental que todos reduzcamos los residuos.', 'No estoy de acuerdo. Es fundamental que todos reducimos los residuos.', 'Estoy de acuerdo, es fundamental que reciclas.'],
+                  0,
+                  'После es fundamental que — subjuntivo: reducir → reduzcamos.',
+                  { t: 'subjunctive', d: 3 },
+                ),
+                order(['Es', 'importante', 'que', 'los', 'jóvenes', 'participen', 'en', 'el', 'debate'], 'Важно, чтобы молодёжь участвовала в обсуждении.', 'Es importante que + subjuntivo: participen.', { s: 'grammar', t: 'subjunctive', d: 2 }),
+                translateBack('La sequía será más frecuente si no cambiamos nuestros hábitos.', ['Засуха будет чаще, если мы не изменим свои привычки', 'Засуха будет чаще, если мы не изменим наши привычки', 'Засухи будут чаще, если мы не изменим свои привычки', 'Засухи будут чаще, если мы не изменим наши привычки', 'Засухи станут чаще, если мы не изменим свои привычки', 'Засухи станут чаще, если мы не изменим наши привычки', 'Засухи будут случаться чаще, если мы не изменим свои привычки', 'Засухи будут случаться чаще, если мы не изменим наши привычки', 'Засуха станет более частой, если мы не изменим свои привычки', 'Засуха станет более частой, если мы не изменим наши привычки'], 'В реальном условии после si — presente, хотя по-русски «если не изменим»: si no cambiamos.', { d: 2 }),
+              ],
+              test: [
+                fill('Es fundamental que la gente ___ menos plástico.', ['use', 'utilice'], 'Es fundamental que + subjuntivo: usar → use.', { s: 'grammar', t: 'subjunctive', d: 2 }, { translation: 'Крайне важно, чтобы люди использовали меньше пластика.', options: ['use', 'usa', 'usar'] }),
+                fill('Es verdad que el nivel del mar ___ subiendo.', ['está'], 'Es verdad que выражает уверенность — indicativo.', { s: 'grammar', t: 'subjunctive', d: 3 }, { translation: 'Правда, что уровень моря поднимается.', options: ['está', 'esté'] }),
+                choiceRu('Что означает это слово?', 'sostenible', ['экологичный, устойчивый', 'одноразовый', 'загрязнённый'], 0, 'sostenible — «устойчивый, экологичный»; «одноразовый» — desechable, «загрязнённый» — contaminado.'),
+                translate('Важно, чтобы ты экономил воду.', ['Es importante que ahorres agua.', 'Es importante que tú ahorres agua.', 'Es importante que ahorres el agua.'], 'Es importante que + subjuntivo: tú → ahorres.', { s: 'grammar', t: 'subjunctive', d: 3 }),
+                dialogue(
+                  [
+                    ['A', '¿Por qué vas al trabajo en bicicleta?', 'Почему ты ездишь на работу на велосипеде?'],
+                    ['B', null],
+                  ],
+                  ['Para contaminar menos y hacer ejercicio.', 'Para que contamine menos y haga ejercicio.', 'Porque contaminar menos.'],
+                  0,
+                  'Подлежащее одно и то же (я езжу — я меньше загрязняю), поэтому para + инфинитив.',
+                  { t: 'subjunctive', d: 2 },
+                ),
               ],
             },
           ],
