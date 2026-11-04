@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, CheckCircle2, CircleAlert, CircleX } from 'lucide-react';
-import type { AnswerFeedback, AttemptStateDTO, AttemptSummaryDTO, ExerciseAnswer } from '@linguapath/shared';
+import type { AnswerFeedback, AttemptStateDTO, AttemptSummaryDTO, ExerciseAnswer, ExerciseType } from '@linguapath/shared';
 import { learningApi } from '../../api/endpoints';
 import { Alert, Button, ErrorState, errorMessage, PageLoader, useTitle } from '../../components/ui';
 import { useI18n } from '../../i18n';
@@ -56,9 +56,24 @@ function TaskContext({ state }: { state: AttemptStateDTO }) {
           <dd>{t(`skills.${current.skill}`)}</dd>
         </div>
       </dl>
-      <p className="caption">{state.feedbackMode === 'deferred' ? t('player.deferredHint') : t('player.analyticsNote')}</p>
+      <p className="caption">{state.kind === 'placement' ? t('player.placementNote') : state.feedbackMode === 'deferred' ? t('player.deferredHint') : t('player.analyticsNote')}</p>
     </aside>
   );
+}
+
+/** Placeholder sent with "don't know": the server scores it as a wrong answer without checking it. */
+function emptyAnswer(type: ExerciseType): ExerciseAnswer {
+  switch (type) {
+    case 'choice':
+    case 'dialogue':
+      return { type, option: '' };
+    case 'order':
+      return { type, tokens: [] };
+    case 'speak':
+      return { type, transcript: '' };
+    default:
+      return { type, text: '' };
+  }
 }
 
 function Steps({ done, total }: { done: number; total: number }) {
@@ -90,7 +105,8 @@ function ExerciseStage({
   const instruction = useInstruction(current, language);
 
   const submit = useMutation({
-    mutationFn: (a: ExerciseAnswer) => learningApi.answer(state.id, current.itemIndex, a, Date.now() - startedAt.current),
+    mutationFn: ({ answer: a, dontKnow }: { answer: ExerciseAnswer; dontKnow?: boolean }) =>
+      learningApi.answer(state.id, current.itemIndex, a, Date.now() - startedAt.current, dontKnow),
     onSuccess: (res) => {
       if (res.feedback) {
         setFeedback(res.feedback);
@@ -100,7 +116,7 @@ function ExerciseStage({
   });
 
   const check = useCallback(() => {
-    if (answer && !submit.isPending && !feedback) submit.mutate(answer);
+    if (answer && !submit.isPending && !feedback) submit.mutate({ answer });
   }, [answer, submit, feedback]);
   const proceed = useCallback(() => nextState && onAnswered(nextState), [nextState, onAnswered]);
   const onAnswer = useCallback((a: ExerciseAnswer | null) => setAnswer(a), []);
@@ -119,25 +135,32 @@ function ExerciseStage({
 
   const isSkip = (answer?.type === 'speak' || answer?.type === 'listen') && answer.skipped;
   return (
-    <div className="workspace" key={`${state.id}-${current.itemIndex}`}>
-      <section className="workspace__task" aria-labelledby="task-instruction">
-        <h1 className="exercise__instruction" id="task-instruction">
-          {instruction}
-        </h1>
-        <ExerciseView exercise={current} language={language} answer={answer} onAnswer={onAnswer} onSubmit={check} locked={!!feedback || submit.isPending} feedback={feedback} />
-        {submit.error ? <Alert tone="bad">{errorMessage(submit.error, i18n)}</Alert> : null}
-        {feedback ? (
-          <FeedbackPanel feedback={feedback} onNext={proceed} last={!nextState?.current} />
-        ) : (
-          <div className="task-actions">
-            <span className="caption task-actions__hint">{t('player.keyboardHint')}</span>
-            <Button variant="primary" disabled={!answer} loading={submit.isPending} onClick={check}>
-              {isSkip ? t('player.skip') : t('player.check')}
-            </Button>
-          </div>
-        )}
-      </section>
-      <TaskContext state={state} />
+    <div className="focus__body">
+      <div className="workspace" key={`${state.id}-${current.itemIndex}`}>
+        <section className="workspace__task" aria-labelledby="task-instruction">
+          <h1 className="exercise__instruction" id="task-instruction">
+            {instruction}
+          </h1>
+          <ExerciseView exercise={current} language={language} answer={answer} onAnswer={onAnswer} onSubmit={check} locked={!!feedback || submit.isPending} feedback={feedback} />
+          {submit.error ? <Alert tone="bad">{errorMessage(submit.error, i18n)}</Alert> : null}
+          {feedback ? (
+            <FeedbackPanel feedback={feedback} onNext={proceed} last={!nextState?.current} />
+          ) : (
+            <div className="task-actions">
+              <span className="caption task-actions__hint">{t('player.keyboardHint')}</span>
+              {state.kind === 'placement' ? (
+                <Button variant="ghost" disabled={submit.isPending} onClick={() => submit.mutate({ answer: emptyAnswer(current.type), dontKnow: true })} title={t('player.dontKnowHint')}>
+                  {t('player.dontKnow')}
+                </Button>
+              ) : null}
+              <Button variant="primary" disabled={!answer} loading={submit.isPending} onClick={check}>
+                {isSkip ? t('player.skip') : t('player.check')}
+              </Button>
+            </div>
+          )}
+        </section>
+        <TaskContext state={state} />
+      </div>
     </div>
   );
 }
@@ -206,10 +229,14 @@ function Player({ attemptId }: { attemptId: string }) {
           {t('player.close')}
         </Button>
         <div className="focus__title">
-          <span className="eyebrow">{t(`player.kind.${state.kind}`)}</span>
+          {t(`player.kind.${state.kind}`) !== state.title ? <span className="eyebrow">{t(`player.kind.${state.kind}`)}</span> : null}
           <span className="focus__name">{state.title}</span>
         </div>
-        {summary ? null : (
+        {summary ? null : state.maxItems ? (
+          <div className="focus__progress">
+            <span className="small muted">{t('player.progressAdaptive', { current: answered + 1, max: state.maxItems })}</span>
+          </div>
+        ) : (
           <div className="focus__progress">
             <span className="small muted">{t('player.progress', { current: Math.min(answered + 1, state.total), total: state.total })}</span>
             <Steps done={answered} total={state.total} />

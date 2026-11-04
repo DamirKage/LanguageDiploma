@@ -75,6 +75,8 @@ export function buildCatalog(): { lessons: CatalogLesson[]; modules: CatalogModu
 }
 
 const CATALOG = buildCatalog();
+/** Calendar date of simulated day 0. */
+export const SIM_START = new Date('2026-01-01T09:00:00Z');
 
 export class SimulatedLearner {
   day = 0;
@@ -129,7 +131,8 @@ export class SimulatedLearner {
     return Math.pow(0.5, (this.day - word.lastSeen) / word.strength);
   }
 
-  snapshot(now: Date): LearnerSnapshot {
+  snapshot(now: Date, cfg: EngineConfig = DEFAULT_ENGINE_CONFIG): LearnerSnapshot {
+    const window = cfg.thresholds.recentWindow;
     const dueWords = this.words.filter((w) => w.due <= this.day);
     const overdue = dueWords.filter((w) => w.due < this.day);
     const ignored: Record<string, number> = {};
@@ -156,8 +159,8 @@ export class SimulatedLearner {
             kind: 'grammar',
             answers: s.answers.length,
             correct: s.answers.filter((a) => a.correct).length,
-            recentAnswers: s.answers.slice(-DEFAULT_ENGINE_CONFIG.thresholds.recentWindow).length,
-            recentCorrect: s.answers.slice(-DEFAULT_ENGINE_CONFIG.thresholds.recentWindow).filter((a) => a.correct).length,
+            recentAnswers: s.answers.slice(-window).length,
+            recentCorrect: s.answers.slice(-window).filter((a) => a.correct).length,
             lastPracticedAt: s.lastPracticed === null ? null : new Date(+now - (this.day - s.lastPracticed) * 86_400_000),
             sessionAccuracies: [...bySession.values()].filter((v) => v.length >= 2).map((v) => Math.round((v.filter(Boolean).length / v.length) * 100)).slice(-5),
             topCategory: null,
@@ -194,7 +197,13 @@ export class SimulatedLearner {
         const scores = lessonTopics[id]!.map((t) => this.answer(t, 4, 1));
         const percent = Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 100);
         const prev = this.progress[id];
-        this.progress[id] = { status: 'completed', bestPercent: Math.max(prev?.bestPercent ?? 0, percent), attempts: (prev?.attempts ?? 0) + 1 };
+        this.progress[id] = {
+          status: 'completed',
+          bestPercent: Math.max(prev?.bestPercent ?? 0, percent),
+          attempts: (prev?.attempts ?? 0) + 1,
+          // As in LessonProgress.completedAt: the date of the first completion.
+          completedAt: prev?.completedAt ?? new Date(+SIM_START + this.day * 86_400_000),
+        };
         if (!prev) for (let i = 0; i < 6; i++) this.words.push({ strength: 1.5, due: this.day + 1, lastSeen: this.day });
         return 10;
       }
@@ -212,7 +221,8 @@ export class SimulatedLearner {
         return 6;
       }
       case 'review': {
-        const due = this.words.filter((w) => w.due <= this.day).slice(0, 20);
+        // As in the product, the session ends once the planned number of cards is reviewed.
+        const due = this.words.filter((w) => w.due <= this.day).slice(0, Math.min(20, item.target.reviewCount ?? 20));
         for (const w of due) {
           const recalled = this.rand() < this.wordRetention(w);
           this.reviewsDone++;
@@ -250,7 +260,7 @@ function sequentialPlan(snapshot: LearnerSnapshot): Recommendation[] {
   const items: Recommendation[] = [];
   if (next) items.push(mk({ key: `lesson:${next.id}`, type: 'next_lesson', target: { lessonId: next.id } }));
   const mod = snapshot.modules.find((m) => m.test && m.lessonIds.every((l) => snapshot.progress[l]) && !snapshot.testResults[m.test.id]?.passed);
-  if (mod) items.push(mk({ key: `module_test:${mod.test!.id}`, type: 'module_test', target: { testId: mod.test!.id } }));
+  if (mod) items.push(mk({ key: `module_test:${mod.test!.id}`, type: 'module_test', estimatedMinutes: 6, target: { testId: mod.test!.id } }));
   return items;
 }
 
@@ -276,30 +286,53 @@ export interface RunMetrics {
   gainPerHour: number;
 }
 
-export function runSimulation(profile: LearnerProfile, strategy: Strategy, seed: number, days = 30, cfg: EngineConfig = DEFAULT_ENGINE_CONFIG): RunMetrics {
+/**
+ * How a strategy's list of activities is cut to the daily time budget.
+ * - `strict` (default): every strategy follows the same rule as composePlan — an
+ *   activity is skipped when it does not fit into the minutes left, except that the
+ *   first learning activity of the day is always allowed. All strategies thus get
+ *   the same time budget.
+ * - `loose`: the rule used up to rules-1.3 — activities are performed until the
+ *   budget is used up, so the last one may overrun it. It favours baselines that
+ *   ignore the budget and is kept only for comparison.
+ */
+export type BudgetRule = 'strict' | 'loose';
+
+export function runSimulation(
+  profile: LearnerProfile,
+  strategy: Strategy,
+  seed: number,
+  days = 30,
+  cfg: EngineConfig = DEFAULT_ENGINE_CONFIG,
+  budget: BudgetRule = 'strict',
+): RunMetrics {
   const learner = new SimulatedLearner(profile, seed);
   const rand = seededRandom(seed * 31 + 7);
   let minutes = 0;
-  const start = new Date('2026-01-01T09:00:00Z');
+  const start = SIM_START;
   for (let d = 0; d < days; d++) {
     const now = new Date(+start + d * 86_400_000);
     const weakest = learner.weakestIntroduced();
     const hasWeak = !!weakest && weakest.latent < 0.6;
-    if (hasWeak) learner.daysWithWeakTopic++;
     const studies = rand() < profile.adherence;
+    // Only study days count: on a day without a session no strategy can cover anything.
+    if (studies && hasWeak) learner.daysWithWeakTopic++;
     if (studies) {
-      const snap = learner.snapshot(now);
+      const snap = learner.snapshot(now, cfg);
       const items =
         strategy === 'engine'
-          ? composePlan(recommend(snap, cfg), profile.dailyMinutes)
+          ? composePlan(recommend(snap, cfg), profile.dailyMinutes, cfg)
           : strategy === 'sequential'
             ? sequentialPlan(snap)
             : randomPlan(snap, rand, cfg);
       let used = 0;
       let practisedWeak = false;
+      let learning = 0;
       for (const item of items) {
         if (used >= profile.dailyMinutes) break;
         if (item.type === 'level_up' || item.type === 'placement' || item.type === 'resume') continue;
+        if (budget === 'strict' && learning > 0 && used + item.estimatedMinutes > profile.dailyMinutes) continue;
+        if (item.type !== 'review') learning++;
         if (weakest && item.target.topic === weakest.topic) practisedWeak = true;
         if (weakest && item.target.lessonId && CATALOG.lessonTopics[item.target.lessonId]?.includes(weakest.topic)) practisedWeak = true;
         used += learner.perform(item);

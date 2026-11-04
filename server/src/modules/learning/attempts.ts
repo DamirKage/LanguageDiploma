@@ -13,6 +13,7 @@ import {
   type Exercise,
   type ExerciseAnswer,
   type LocalizedText,
+  type Verdict,
 } from '@linguapath/shared';
 import { AppError, errors } from '../../lib/errors';
 import { Lesson, Test, Topic } from '../../models/content';
@@ -22,6 +23,7 @@ import { introduceWords } from '../srs/service';
 import { targetDifficultyFor } from '../recommendations/engine';
 import { checkAnswer, expectedAnswer, promptText } from './checker';
 import { toPublicExercise } from './presenter';
+import { PLACEMENT_CONFIG, estimateAbility, nextItem, shouldStop, summarizePlacement, type PlacementItem, type PlacementResponse, type SelfAssessment } from './placement';
 import { serverText } from './texts';
 
 type AttemptDoc = AttemptDocument;
@@ -29,13 +31,11 @@ type Item = AttemptDoc['items'][number];
 
 const MAX_ITEM_TIME_MS = 120_000;
 const PRACTICE_SIZE = 8;
-/** Placement: a level block counts as passed at this share of correct answers. */
-const PLACEMENT_BLOCK_PASS = 2 / 3;
 
 const randomSeed = () => Math.floor(Math.random() * 2 ** 31);
 
-function makeItem(exercise: Exercise, extra: Partial<{ sourceLesson: Types.ObjectId | null; level: CefrLevel | null; isRetry: boolean }> = {}) {
-  return { exercise, seed: randomSeed(), sourceLesson: extra.sourceLesson ?? null, level: extra.level ?? null, isRetry: extra.isRetry ?? false };
+function makeItem(exercise: Exercise, extra: Partial<{ sourceLesson: Types.ObjectId | null; level: CefrLevel | null }> = {}) {
+  return { exercise, seed: randomSeed(), sourceLesson: extra.sourceLesson ?? null, level: extra.level ?? null };
 }
 
 async function loadOwnAttempt(userId: string, attemptId: string): Promise<AttemptDoc> {
@@ -70,6 +70,7 @@ export function toState(attempt: AttemptDoc, locale = 'ru'): AttemptStateDTO {
       ? { ...toPublicExercise(current.exercise as Exercise, current.seed, locale), itemIndex: attempt.position }
       : null,
     lessonId: attempt.lesson ? String(attempt.lesson) : null,
+    maxItems: attempt.kind === 'placement' ? PLACEMENT_CONFIG.maxItems : null,
   };
 }
 
@@ -124,19 +125,34 @@ export async function startTestAttempt(userId: string, testId: string, recommend
   });
 }
 
-async function placementBlock(language: string, level: CefrLevel) {
+type PlacementExercise = Exercise & { level: CefrLevel };
+
+async function placementBank(language: string) {
   const test = await Test.findOne({ language, kind: 'placement', isPublished: true }).lean();
   if (!test) throw errors.notFound();
-  const exercises = (test.exercises as Array<Exercise & { level?: CefrLevel }>).filter((e) => e.level === level);
+  const exercises = (test.exercises as PlacementExercise[]).filter((e) => e.level);
+  if (exercises.length === 0) throw errors.badRequest('no_exercises');
   return { test, exercises };
 }
 
-export async function startPlacementAttempt(userId: string, language: string, now = new Date()) {
+function toPlacementItem(ex: PlacementExercise): PlacementItem {
+  const hasOptions = (ex.type === 'fill_blank' && !!ex.options?.length) || (ex.type === 'listen' && ex.mode === 'choice');
+  return { key: ex.key, level: ex.level, difficulty: ex.difficulty, skill: ex.skill, type: ex.type, hasOptions };
+}
+
+function placementResponses(attempt: AttemptDoc): PlacementResponse[] {
+  return attempt.items
+    .filter((i) => i.verdict)
+    .map((i) => ({ item: toPlacementItem({ ...(i.exercise as Exercise), level: i.level as CefrLevel }), verdict: i.verdict as Verdict }));
+}
+
+export async function startPlacementAttempt(userId: string, language: string, selfAssessment: SelfAssessment = 'beginner', now = new Date()) {
   await ensureEnrollment(userId, language);
   const existing = await Attempt.findOne({ user: userId, kind: 'placement', language, status: 'in_progress' });
   if (existing) return existing;
-  const { test, exercises } = await placementBlock(language, 'A1');
-  if (exercises.length === 0) throw errors.badRequest('no_exercises');
+  const { test, exercises } = await placementBank(language);
+  const first = nextItem(exercises.map(toPlacementItem), [], PLACEMENT_CONFIG.priorMean[selfAssessment])!;
+  const exercise = exercises.find((e) => e.key === first.key)!;
   return Attempt.create({
     user: userId,
     kind: 'placement',
@@ -144,8 +160,8 @@ export async function startPlacementAttempt(userId: string, language: string, no
     test: test._id,
     title: test.title,
     feedbackMode: 'deferred',
-    items: exercises.map((ex) => makeItem(ex, { level: 'A1' })),
-    placement: { currentLevel: 'A1', estimatedLevel: null, finished: false },
+    items: [makeItem(exercise, { level: exercise.level })],
+    placement: { selfAssessment, estimatedLevel: null, finished: false },
     startedAt: now,
   });
 }
@@ -160,7 +176,7 @@ export async function startPracticeAttempt(
   const [lessons, progress, recentEvents, mistakes] = await Promise.all([
     Lesson.find({ language, isPublished: true }).select('exercises level topic').lean(),
     LessonProgress.find({ user: userId, language }).select('lesson').lean(),
-    AnswerEvent.find({ user: userId, language, isRetry: false, verdict: { $ne: 'skipped' } }).sort({ at: -1 }).limit(30).select('verdict').lean(),
+    AnswerEvent.find({ user: userId, language, verdict: { $ne: 'skipped' } }).sort({ at: -1 }).limit(30).select('verdict').lean(),
     AnswerEvent.aggregate<{ _id: string; misses: number }>([
       { $match: { user: userObjectId, language, verdict: 'incorrect', at: { $gte: new Date(Date.now() - 45 * 86400_000) } } },
       { $group: { _id: '$exerciseKey', misses: { $sum: 1 } } },
@@ -212,7 +228,7 @@ export async function getAttemptState(userId: string, attemptId: string, locale 
 }
 
 function scoreItems(items: Item[]) {
-  const scored = items.filter((i) => !i.isRetry);
+  const scored = items;
   const counted = scored.filter((i) => i.verdict !== 'skipped');
   const correct = counted.filter((i) => i.verdict === 'correct').length;
   const almost = counted.filter((i) => i.verdict === 'almost').length;
@@ -224,28 +240,33 @@ function scoreItems(items: Item[]) {
   return { correct, almost, incorrect, skipped, total: scored.length, points, maxPoints, percent };
 }
 
+/** After each answer: re-estimate ability, then either add the most informative next item or finish. */
 async function advancePlacement(attempt: AttemptDoc) {
-  const level = attempt.placement!.currentLevel as CefrLevel;
-  const block = attempt.items.filter((i) => i.level === level);
-  if (block.some((i) => !i.verdict)) return;
-  const share = block.filter((i) => i.verdict === 'correct').length / Math.max(1, block.length);
-  const next = CEFR_LEVELS[CEFR_LEVELS.indexOf(level) + 1];
-  if (share >= PLACEMENT_BLOCK_PASS && next) {
-    const { exercises } = await placementBlock(attempt.language, next);
-    if (exercises.length > 0) {
-      attempt.items.push(...exercises.map((ex) => makeItem(ex, { level: next })));
-      attempt.placement!.currentLevel = next;
+  const self = (attempt.placement!.selfAssessment as SelfAssessment) ?? 'beginner';
+  const responses = placementResponses(attempt);
+  const { exercises } = await placementBank(attempt.language);
+  const bank = exercises.map(toPlacementItem);
+  const { theta, sd } = estimateAbility(responses, self);
+  const left = bank.filter((b) => !responses.some((r) => r.item.key === b.key)).length;
+  if (!shouldStop(responses, sd, left)) {
+    const next = nextItem(bank, responses, theta);
+    if (next) {
+      const exercise = exercises.find((e) => e.key === next.key)!;
+      attempt.items.push(makeItem(exercise, { level: exercise.level }));
       return;
     }
   }
-  attempt.placement!.estimatedLevel = share >= PLACEMENT_BLOCK_PASS ? (next ? level : 'B2') : level;
+  const result = summarizePlacement(responses, self);
+  attempt.placement!.estimatedLevel = result.level;
+  attempt.placement!.theta = Math.round(result.theta * 100) / 100;
+  attempt.placement!.sd = Math.round(result.sd * 100) / 100;
   attempt.placement!.finished = true;
 }
 
 export async function submitAnswer(
   userId: string,
   attemptId: string,
-  input: { itemIndex: number; answer: ExerciseAnswer; timeMs?: number },
+  input: { itemIndex: number; answer: ExerciseAnswer; timeMs?: number; dontKnow?: boolean },
   locale = 'ru',
   now = new Date(),
 ): Promise<AnswerResultDTO> {
@@ -257,11 +278,15 @@ export async function submitAnswer(
   const exercise = item.exercise as Exercise;
   if (input.answer.type !== exercise.type) throw new AppError(400, 'answer_mismatch');
 
-  const result = checkAnswer(exercise, input.answer, attempt.language, locale);
+  // "Don't know" is offered only in placement: it is scored as a wrong answer without the noise of guessing.
+  const result =
+    input.dontKnow && attempt.kind === 'placement'
+      ? { verdict: 'incorrect' as const, points: 0, category: exercise.errorCategory, given: '', feedback: null }
+      : checkAnswer(exercise, input.answer, attempt.language, locale);
   const timeMs = Math.max(0, Math.min(input.timeMs ?? 0, MAX_ITEM_TIME_MS));
   item.answer = input.answer;
   item.verdict = result.verdict;
-  item.points = item.isRetry ? 0 : result.points;
+  item.points = result.points;
   item.timeMs = timeMs;
   item.answeredAt = now;
 
@@ -278,7 +303,6 @@ export async function submitAnswer(
     category: result.category as ErrorCategory,
     difficulty: exercise.difficulty,
     verdict: result.verdict,
-    isRetry: item.isRetry,
     prompt: promptText(exercise, locale).slice(0, 300),
     given: result.given.slice(0, 300),
     expected: expectedAnswer(exercise, locale).slice(0, 300),
@@ -299,7 +323,7 @@ export async function submitAnswer(
 }
 
 function summarize(attempt: AttemptDoc, locale: string) {
-  const scored = attempt.items.filter((i) => !i.isRetry && i.verdict && i.verdict !== 'skipped');
+  const scored = attempt.items.filter((i) => i.verdict && i.verdict !== 'skipped');
   const byTopicMap = new Map<string, { correct: number; total: number }>();
   const byCategoryMap = new Map<ErrorCategory, number>();
   for (const item of scored) {
@@ -327,7 +351,6 @@ function summarize(attempt: AttemptDoc, locale: string) {
     weaknesses: byTopic.filter((t) => t.percent < 60).map((t) => t.topic),
     review: attempt.items
       .map((item, index) => ({ item, index }))
-      .filter(({ item }) => !item.isRetry)
       .map(({ item, index }) => {
         const ex = item.exercise as Exercise;
         const answer = item.answer as ExerciseAnswer | null;
@@ -415,11 +438,17 @@ async function buildSummary(attempt: AttemptDoc, locale: string): Promise<Attemp
   const r = attempt.result!;
   let placement: AttemptSummaryDTO['placement'];
   if (attempt.kind === 'placement') {
-    const perLevel = CEFR_LEVELS.map((level) => {
-      const block = attempt.items.filter((i) => i.level === level);
-      return { level, correct: block.filter((i) => i.verdict === 'correct').length, total: block.length };
-    }).filter((l) => l.total > 0);
-    placement = { estimatedLevel: (attempt.placement?.estimatedLevel as CefrLevel) ?? 'A1', perLevel };
+    const self = (attempt.placement?.selfAssessment as SelfAssessment) ?? 'beginner';
+    const result = summarizePlacement(placementResponses(attempt), self);
+    placement = {
+      estimatedLevel: (attempt.placement?.estimatedLevel as CefrLevel) ?? result.level,
+      band: result.band,
+      confidence: result.confidence,
+      answered: result.answered,
+      selfAssessment: self,
+      perLevel: result.perLevel,
+      perSkill: result.perSkill,
+    };
   }
   const recs = await getRecommendations(String(attempt.user), attempt.language);
   const ownKey = attempt.lesson ? `lesson:${String(attempt.lesson)}` : null;

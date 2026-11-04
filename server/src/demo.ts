@@ -70,18 +70,18 @@ async function main() {
   ]);
 
   await connectDb(process.env.MONGODB_URI!);
-  if (!(await User.exists({}))) {
-    console.log('Первый запуск: загрузка курсов и демо-аккаунтов…');
-    await disconnectDb();
-    await new Promise<void>((resolve, reject) => {
-      const seed = spawn(process.execPath, [require.resolve('tsx/cli'), path.join(here, 'seed', 'run.ts')], {
-        env: process.env,
-        stdio: 'inherit',
-      });
-      seed.on('exit', (code) => (code === 0 ? resolve() : reject(new Error(`seed exited with ${code}`))));
+  // Seeding is idempotent and keyed by stable content keys, so running it on every start
+  // brings the curriculum up to date after an update without touching learners' progress.
+  console.log((await User.exists({})) ? 'Обновление курсов…' : 'Первый запуск: загрузка курсов и демо-аккаунтов…');
+  await disconnectDb();
+  await new Promise<void>((resolve, reject) => {
+    const seed = spawn(process.execPath, [require.resolve('tsx/cli'), path.join(here, 'seed', 'run.ts')], {
+      env: process.env,
+      stdio: 'inherit',
     });
-    await connectDb(process.env.MONGODB_URI!);
-  }
+    seed.on('exit', (code) => (code === 0 ? resolve() : reject(new Error(`seed exited with ${code}`))));
+  });
+  await connectDb(process.env.MONGODB_URI!);
 
   const app = express();
   app.use(express.static(clientDist, { index: false }));

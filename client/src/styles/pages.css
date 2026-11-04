@@ -812,11 +812,6 @@ a.syllabus__title:hover {
   font-weight: 500;
   letter-spacing: -0.03em;
 }
-.summary__levels {
-  margin: 0;
-  padding-left: 1.2em;
-  font-size: var(--text-sm);
-}
 .summary__h {
   font-size: var(--text-sm);
   font-weight: 650;
@@ -1361,4 +1356,14 @@ a.syllabus__title:hover {
   .cabinet {
     grid-template-columns: 1fr;
   }
+}
+
+.summary__lead {
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+.summary__tables {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--s6);
 }

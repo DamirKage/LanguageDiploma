@@ -1,4 +1,4 @@
-import type { CefrLevel, ErrorCategory, ExerciseType, LearningGoal, Role, Skill } from './constants';
+import type { CefrLevel, ErrorCategory, ExerciseType, LearningGoal, PlacementSelfAssessment, Role, Skill } from './constants';
 import type { AnswerFeedback, PublicExerciseView, Verdict } from './content';
 import type { Recommendation } from './recommendations';
 
@@ -165,6 +165,8 @@ export interface AttemptStateDTO {
   total: number;
   answered: number;
   current: (PublicExerciseView & { itemIndex: number }) | null;
+  /** Adaptive placement: the number of tasks is not known in advance, only its upper bound. */
+  maxItems: number | null;
   lessonId: string | null;
 }
 
@@ -218,7 +220,13 @@ export interface AttemptSummaryDTO {
   review: AttemptReviewItem[];
   placement?: {
     estimatedLevel: CefrLevel;
+    /** Position inside the level: lower part, middle or close to the next level. */
+    band: 'low' | 'mid' | 'high';
+    confidence: 'high' | 'medium' | 'low';
+    answered: number;
+    selfAssessment: PlacementSelfAssessment;
     perLevel: Array<{ level: CefrLevel; correct: number; total: number }>;
+    perSkill: Array<{ skill: Skill; correct: number; total: number }>;
   };
   next: Recommendation | null;
 }

@@ -9,7 +9,6 @@ const attemptItemSchema = new Schema(
     exercise: { type: Schema.Types.Mixed, required: true },
     sourceLesson: { type: Schema.Types.ObjectId, ref: 'Lesson', default: null },
     level: { type: String, enum: [...CEFR_LEVELS, null], default: null },
-    isRetry: { type: Boolean, default: false },
     /** Shuffle seed so the learner sees the same option order after reloading. */
     seed: { type: Number, required: true },
     answer: { type: Schema.Types.Mixed, default: null },
@@ -37,8 +36,10 @@ const attemptSchema = new Schema(
     practiceTopic: { type: String, default: null },
     recommendationKey: { type: String, default: null },
     placement: {
-      currentLevel: { type: String, enum: [...CEFR_LEVELS, null], default: null },
+      selfAssessment: { type: String, enum: ['beginner', 'basics', 'conversational', 'confident'], default: 'beginner' },
       estimatedLevel: { type: String, enum: [...CEFR_LEVELS, null], default: null },
+      theta: { type: Number, default: null },
+      sd: { type: Number, default: null },
       finished: { type: Boolean, default: false },
     },
     result: {
@@ -82,7 +83,6 @@ const answerEventSchema = new Schema(
     category: { type: String, enum: ERROR_CATEGORIES, required: true },
     difficulty: { type: Number, default: 1 },
     verdict: { type: String, enum: verdicts, required: true },
-    isRetry: { type: Boolean, default: false },
     prompt: { type: String, default: '' },
     given: { type: String, default: '' },
     expected: { type: String, default: '' },

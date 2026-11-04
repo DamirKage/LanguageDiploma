@@ -1,8 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
 
-/** Answers whatever task is on screen; correctness does not matter for the flow itself. */
+/** Answers whatever task is on screen and waits until the player moves on; correctness does not matter here. */
 async function answerCurrentTask(page: Page) {
   const task = page.locator('.workspace__task');
+  const progress = await page.locator('.focus__progress').textContent();
   if (await task.getByRole('button', { name: 'Пропустить без штрафа' }).count()) {
     await task.getByRole('button', { name: 'Пропустить без штрафа' }).click();
   } else if (await task.locator('.tiles:not(.tiles--answer) .tile').count()) {
@@ -13,7 +14,10 @@ async function answerCurrentTask(page: Page) {
   } else {
     await task.locator('input.input, textarea').first().fill('test');
   }
-  await task.getByRole('button', { name: /Проверить|Пропустить/ }).click();
+  await task.locator('.task-actions .btn--primary').click();
+  await expect
+    .poll(async () => (await page.locator('.feedback, .summary').count()) > 0 || (await page.locator('.focus__progress').textContent()) !== progress)
+    .toBe(true);
 }
 
 async function playUntilSummary(page: Page) {
@@ -66,6 +70,7 @@ test('a new learner registers, takes the placement test, completes a lesson and 
   await page.waitForURL('**/lessons/**');
   await page.locator('.lesson-head .btn--primary').click();
   await page.waitForURL('**/learn/**');
+  await expect(page.locator('.workspace__task')).toBeVisible();
 
   await answerCurrentTask(page);
   await expect(page.locator('.feedback')).toBeVisible();

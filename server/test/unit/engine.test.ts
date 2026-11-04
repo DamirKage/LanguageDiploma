@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_ENGINE_CONFIG, type EngineConfig } from '../../src/modules/recommendations/config';
-import { recommend, smoothedAccuracy, targetDifficultyFor, type LearnerSnapshot, type TopicEvidence } from '../../src/modules/recommendations/engine';
+import { estimatedMastery, recommend, smoothedAccuracy, targetDifficultyFor, type LearnerSnapshot, type TopicEvidence } from '../../src/modules/recommendations/engine';
 import { composePlan } from '../../src/modules/recommendations/plan';
 
 const NOW = new Date('2026-05-10T12:00:00Z');
@@ -201,6 +201,43 @@ describe('recommendation engine', () => {
     expect(recommend(s, progressHeavy).items[0]!.type).toBe('next_lesson');
   });
 
+  it('treats a topic not practised for a while as possibly forgotten', () => {
+    const fresh = topic('greetings', 12, 0.8, { lastPracticedAt: daysAgo(1) });
+    const stale = topic('greetings', 12, 0.8, { lastPracticedAt: daysAgo(9) });
+    expect(estimatedMastery(stale, NOW).mastery).toBeLessThan(estimatedMastery(fresh, NOW).mastery);
+    expect(recommend(snapshot({ progress: { l1: done() }, topics: [fresh] })).items.some((i) => i.type === 'topic_refresh')).toBe(false);
+    const r = recommend(snapshot({ progress: { l1: done() }, topics: [stale] }));
+    expect(r.items.find((i) => i.type === 'topic_refresh')).toMatchObject({ target: { topic: 'greetings' }, reasons: [{ code: 'not_practiced_recently', params: { days: 9 } }] });
+  });
+
+  it('holds new material back while a topic is clearly weak, but not for a mild weakness', () => {
+    const base = snapshot({ progress: { l1: done() } });
+    const plain = recommend(base).items.find((i) => i.type === 'next_lesson')!;
+    const clearly = recommend({ ...base, topics: [topic('to_be', 12, 0.3)] });
+    const mildly = recommend({ ...base, topics: [topic('to_be', 12, 0.65)] });
+    const lessonOf = (r: typeof clearly) => r.items.find((i) => i.type === 'next_lesson')!;
+    expect(lessonOf(clearly).score).toBeLessThan(lessonOf(mildly).score);
+    expect(lessonOf(mildly).score).toBeLessThan(plain.score);
+    expect(clearly.items[0]).toMatchObject({ type: 'weak_topic', target: { topic: 'to_be' } });
+    expect(mildly.items[0]!.type).toBe('next_lesson');
+  });
+
+  it('pushes the next lesson again when no new lesson has been completed for days', () => {
+    const topics = [topic('to_be', 12, 0.5)];
+    const recent = recommend(snapshot({ progress: { l1: { ...done(), completedAt: daysAgo(1) } }, topics }));
+    const longAgo = recommend(snapshot({ progress: { l1: { ...done(), completedAt: daysAgo(8) } }, topics }));
+    const lessonOf = (r: typeof recent) => r.items.find((i) => i.type === 'next_lesson')!;
+    expect(lessonOf(longAgo).score).toBeGreaterThan(lessonOf(recent).score);
+    expect(lessonOf(longAgo).features.urgency).toBeGreaterThan(0);
+  });
+
+  it('postpones the module test while one of its topics is weak', () => {
+    const progress = { l1: done(), l2: done() };
+    const ok = recommend(snapshot({ progress })).items.find((i) => i.type === 'module_test')!;
+    const weak = recommend(snapshot({ progress, topics: [topic('to_be', 12, 0.3)] })).items.find((i) => i.type === 'module_test')!;
+    expect(weak.score).toBeLessThan(ok.score);
+  });
+
   it('limits the number of items and the items per type', () => {
     const r = recommend(
       snapshot({
@@ -244,6 +281,29 @@ describe('composePlan', () => {
     expect(plan.filter((p) => p.type === 'weak_topic').length).toBe(1);
     const total = plan.reduce((s, p) => s + p.estimatedMinutes, 0);
     expect(total).toBeLessThanOrEqual(15 + 10);
+  });
+
+  it('gives a detected weak topic a slot in the daily plan alongside reviews', () => {
+    const r = recommend(
+      snapshot({
+        progress: { l1: done(), l2: done() },
+        topics: [topic('to_be', 12, 0.35), topic('greetings', 12, 0.9)],
+        srs: { due: 15, overdue: 0, maxOverdueDays: 0, newAvailable: 0, retention30d: null, reviews30d: 0 },
+      }),
+    );
+    for (const budget of [10, 15, 20]) {
+      const plan = composePlan(r, budget);
+      expect(plan.some((p) => p.type === 'weak_topic' && p.target.topic === 'to_be')).toBe(true);
+      // The first learning activity is always allowed, so a 10-minute day may run one minute over.
+      expect(plan.reduce((s, p) => s + p.estimatedMinutes, 0)).toBeLessThanOrEqual(Math.max(budget, 11));
+    }
+  });
+
+  it('shrinks the review card count together with its capped minutes', () => {
+    const r = recommend(snapshot({ progress: { l1: done() }, srs: { due: 40, overdue: 0, maxOverdueDays: 0, newAvailable: 0, retention30d: null, reviews30d: 0 } }));
+    const review = composePlan(r, 10).find((p) => p.type === 'review')!;
+    expect(review.estimatedMinutes).toBe(5);
+    expect(review.target.reviewCount).toBeLessThanOrEqual(Math.floor(5 / 0.3));
   });
 
   it('includes one activity even when it exceeds a tiny budget', () => {

@@ -10,9 +10,9 @@ import {
   type RecommendationResult,
   type RecommendationType,
 } from '@linguapath/shared';
-import { DEFAULT_ENGINE_CONFIG, type EngineConfig } from './config';
+import { DEFAULT_ENGINE_CONFIG, REVIEW_MINUTES_PER_CARD, type EngineConfig } from './config';
 
-export const ENGINE_VERSION = 'rules-1.3';
+export const ENGINE_VERSION = 'rules-1.4';
 
 export interface CatalogLesson {
   id: string;
@@ -59,7 +59,16 @@ export interface LearnerSnapshot {
   dailyMinutes: number;
   lessons: CatalogLesson[];
   modules: CatalogModule[];
-  progress: Record<string, { status: 'in_progress' | 'completed'; bestPercent: number | null; attempts: number }>;
+  progress: Record<
+    string,
+    {
+      status: 'in_progress' | 'completed';
+      bestPercent: number | null;
+      attempts: number;
+      /** When the lesson was first completed; used to notice that new material has been waiting. */
+      completedAt?: Date | null;
+    }
+  >;
   inProgress: Array<{
     attemptId: string;
     kind: 'lesson' | 'test' | 'practice' | 'placement';
@@ -105,6 +114,30 @@ export function currentAccuracy(t: TopicEvidence, cfg: EngineConfig = DEFAULT_EN
     };
   }
   return { accuracy: smoothedAccuracy(t, cfg), answers: t.answers, observed: t.answers ? t.correct / t.answers : 0 };
+}
+
+/**
+ * Mastery estimate that accounts for forgetting: the current accuracy decays
+ * towards the configured floor with the configured half-life once the grace
+ * period after the last practice is over. Without it a topic answered well a
+ * month ago looks exactly as strong as one practised yesterday.
+ */
+export function estimatedMastery(
+  t: TopicEvidence,
+  now: Date,
+  cfg: EngineConfig = DEFAULT_ENGINE_CONFIG,
+): { mastery: number; accuracy: number; observed: number; answers: number; days: number; retention: number } {
+  const current = currentAccuracy(t, cfg);
+  const days = t.lastPracticedAt ? daysBetween(t.lastPracticedAt, now) : 0;
+  const { halfLifeDays, graceDays, floor } = cfg.forgetting;
+  const retention = 2 ** (-Math.max(0, days - graceDays) / halfLifeDays);
+  const mastery = current.accuracy > floor ? floor + (current.accuracy - floor) * retention : current.accuracy;
+  return { ...current, mastery, days, retention };
+}
+
+/** Remedial need in [0, 1]: 0 at `needCeiling` and above, growing linearly as mastery falls. */
+export function needFor(mastery: number, cfg: EngineConfig = DEFAULT_ENGINE_CONFIG): number {
+  return clamp01((cfg.thresholds.needCeiling - mastery) / cfg.thresholds.needRange);
 }
 
 export function targetDifficultyFor(accuracy: number | null, cfg: EngineConfig = DEFAULT_ENGINE_CONFIG): 1 | 2 | 3 {
@@ -253,37 +286,48 @@ export function recommend(s: LearnerSnapshot, cfg: EngineConfig = DEFAULT_ENGINE
         need: lowRetention ? clamp01((0.9 - srs.retention30d!) / 0.4) : 0,
       },
       reasons,
-      estimatedMinutes: Math.max(2, Math.min(reviewLoad, 20) * 0.3),
+      estimatedMinutes: Math.max(2, Math.min(reviewLoad, 20) * REVIEW_MINUTES_PER_CARD),
       target: { reviewCount: Math.min(reviewLoad, 20) },
     });
   }
 
+  /** Need of the weakest topic with low or declining accuracy; gates new material. */
+  let maxWeakNeed = 0;
+  let weakTopics = 0;
+  const weakNeedByTopic = new Map<string, number>();
   for (const topic of s.topics) {
     if (topic.answers < t.minEvidence) continue;
-    const current = currentAccuracy(topic, cfg);
-    const acc = current.accuracy;
+    const est = estimatedMastery(topic, s.now, cfg);
     const goal = goalMatch(topic.topic, topic.kind, s.goals, cfg);
     const sessions = topic.sessionAccuracies;
     const last = sessions.at(-1);
     const prevAvg = sessions.length >= 2 ? sessions.slice(0, -1).slice(-3).reduce((a, b) => a + b, 0) / Math.min(3, sessions.length - 1) : null;
     const declining = last !== undefined && prevAvg !== null && prevAvg - last >= t.trendDrop;
-    const days = topic.lastPracticedAt ? daysBetween(topic.lastPracticedAt, s.now) : 0;
+    const days = est.days;
+    const lowAccuracy = est.accuracy < t.weakAccuracy;
+    const need = needFor(est.mastery, cfg);
 
-    if (acc < t.weakAccuracy || declining) {
+    if (lowAccuracy || declining) {
       const reasons: RecommendationReason[] = [];
-      if (acc < t.weakAccuracy) {
-        reasons.push({ code: 'low_topic_accuracy', params: { topic: topic.topic, accuracy: pct(current.observed), answers: current.answers } });
+      if (lowAccuracy) {
+        weakTopics++;
+        reasons.push({ code: 'low_topic_accuracy', params: { topic: topic.topic, accuracy: pct(est.observed), answers: est.answers } });
       }
       if (declining) reasons.push({ code: 'declining_trend', params: { topic: topic.topic, from: Math.round(prevAvg!), to: Math.round(last!) } });
+      if (days >= t.refreshAfterDays) reasons.push({ code: 'not_practiced_recently', params: { topic: topic.topic, days } });
       if (topic.topCategory && topic.topCategory.count >= 3) {
         reasons.push({ code: 'recurring_error', params: { category: topic.topCategory.category, count: topic.topCategory.count } });
       }
       if (goal) reasons.push({ code: 'goal_match', params: { goal } });
+      // A declining topic with acceptable accuracy still needs some consolidation.
+      const weakNeed = Math.max(need, declining ? 0.3 : 0);
+      maxWeakNeed = Math.max(maxWeakNeed, weakNeed);
+      weakNeedByTopic.set(topic.topic, weakNeed);
       candidates.push({
         key: `weak_topic:${topic.topic}`,
         type: 'weak_topic',
         features: {
-          need: clamp01((t.weakAccuracy + 0.15 - acc) / 0.4),
+          need: weakNeed,
           trend: declining ? 1 : 0,
           urgency: clamp01(days / 14) * 0.5,
           goal: goal ? 1 : 0,
@@ -292,14 +336,14 @@ export function recommend(s: LearnerSnapshot, cfg: EngineConfig = DEFAULT_ENGINE
         estimatedMinutes: 6,
         target: { topic: topic.topic },
       });
-    } else if (days >= t.refreshAfterDays) {
+    } else if (est.mastery < t.weakAccuracy || days >= t.refreshAfterDays) {
+      // Accuracy was fine when last measured, but enough time has passed that it has probably faded.
       const reasons: RecommendationReason[] = [{ code: 'not_practiced_recently', params: { topic: topic.topic, days } }];
       if (goal) reasons.push({ code: 'goal_match', params: { goal } });
       candidates.push({
         key: `topic_refresh:${topic.topic}`,
         type: 'topic_refresh',
-        // Retention proxy: an exponential forgetting curve with a 14-day half-life after the grace period.
-        features: { urgency: clamp01(1 - 2 ** (-(days - t.refreshAfterDays + 1) / 14)), goal: goal ? 1 : 0 },
+        features: { need, urgency: 0.5 * (1 - est.retention), goal: goal ? 1 : 0 },
         reasons,
         estimatedMinutes: 5,
         target: { topic: topic.topic },
@@ -307,26 +351,36 @@ export function recommend(s: LearnerSnapshot, cfg: EngineConfig = DEFAULT_ENGINE
     }
   }
 
-  const weakTopics = s.topics.filter((x) => x.answers >= t.minEvidence && currentAccuracy(x, cfg).accuracy < t.weakAccuracy).length;
   const resumeLessons = new Set(s.inProgress.map((a) => a.lessonId).filter(Boolean));
   const [next] = nextPathLessons(s, 1);
   if (next && !resumeLessons.has(next.id)) {
     let progress = 1;
     const reasons: RecommendationReason[] = [{ code: 'next_in_path', params: { level: next.level } }];
     if (next.prerequisites.length && prerequisitesMet(s, next, lessonById)) reasons.push({ code: 'prerequisites_met' });
-    if (difficultyAdjustment === 'easier' && weakTopics > 0) progress = 0.55;
     if (difficultyAdjustment === 'harder') {
       progress = 1.2;
       reasons.push(difficultyReason!);
     }
+    // Mastery gating: the weaker the weakest topic, the more new material waits for consolidation.
+    progress *= 1 - cfg.remedialGate * maxWeakNeed;
+    if (difficultyAdjustment === 'easier' && weakTopics > 0) progress = Math.min(progress, 0.55);
     if (returning) progress *= 0.8;
+    // Progression pressure: the longer no new lesson has been completed, the harder the
+    // next one pushes back against remedial work, so consolidation cannot stall the path.
+    const lastNew = Object.values(s.progress).reduce<number | null>(
+      (m, p) => (p.status === 'completed' && p.completedAt ? Math.max(m ?? 0, +p.completedAt) : m),
+      null,
+    );
+    const daysSinceNew = lastNew === null ? null : daysBetween(new Date(lastNew), s.now);
+    const { graceDays, fullDays } = cfg.progression;
+    const pressure = daysSinceNew === null ? 0 : clamp01((daysSinceNew - graceDays) / Math.max(1, fullDays - graceDays));
     const goal = goalMatch(next.topic, topicKinds.get(next.topic), s.goals, cfg);
     if (goal) reasons.push({ code: 'goal_match', params: { goal } });
     if (next.estimatedMinutes <= s.dailyMinutes) reasons.push({ code: 'fits_time', params: { minutes: next.estimatedMinutes } });
     candidates.push({
       key: `lesson:${next.id}`,
       type: 'next_lesson',
-      features: { progress: progress, goal: goal ? 1 : 0 },
+      features: { progress, urgency: 0.5 * pressure, goal: goal ? 1 : 0 },
       reasons,
       estimatedMinutes: next.estimatedMinutes,
       target: { lessonId: next.id, lessonTitle: next.title, level: next.level },
@@ -353,10 +407,13 @@ export function recommend(s: LearnerSnapshot, cfg: EngineConfig = DEFAULT_ENGINE
     if (!mod.lessonIds.every((id) => isLessonDone(s, id))) continue;
     const result = s.testResults[mod.test.id];
     if (result?.passed) continue;
+    // The test checks the module's topics, so it waits while one of them is clearly weak.
+    const moduleTopics = mod.lessonIds.flatMap((id) => lessonById.get(id)?.exerciseTopics ?? []);
+    const gate = 1 - cfg.remedialGate * Math.max(0, ...moduleTopics.map((x) => weakNeedByTopic.get(x) ?? 0));
     candidates.push({
       key: `module_test:${mod.test.id}`,
       type: 'module_test',
-      features: { progress: 0.8, need: result ? 0.3 : 0 },
+      features: { progress: 0.8 * gate, need: result ? 0.3 * gate : 0 },
       reasons: [{ code: 'module_ready', params: { lessons: mod.lessonIds.length } }],
       estimatedMinutes: Math.max(4, mod.test.exerciseCount * 0.8),
       target: { testId: mod.test.id, moduleTitle: mod.title, level: mod.level },

@@ -13,6 +13,7 @@ import type {
   LanguageDTO,
   LearningGoal,
   LearningPathDTO,
+  PlacementSelfAssessment,
   LessonDetailDTO,
   Paginated,
   ProgressOverviewDTO,
@@ -80,13 +81,14 @@ export const learningApi = {
     api<AttemptStateDTO>({ method: 'POST', url: `/lessons/${lessonId}/attempts`, data: { recommendationKey } }),
   startTest: (testId: string, recommendationKey?: string) =>
     api<AttemptStateDTO>({ method: 'POST', url: `/tests/${testId}/attempts`, data: { recommendationKey } }),
-  startPlacement: (language: string) => api<AttemptStateDTO>({ method: 'POST', url: `/placement/${language}/attempts` }),
+  startPlacement: (language: string, selfAssessment?: PlacementSelfAssessment) =>
+    api<AttemptStateDTO>({ method: 'POST', url: `/placement/${language}/attempts`, data: selfAssessment ? { selfAssessment } : {} }),
   skipPlacement: (language: string, level: CefrLevel) => api<{ level: CefrLevel }>({ method: 'POST', url: `/placement/${language}/skip`, data: { level } }),
   startPractice: (language: string, topic?: string, recommendationKey?: string) =>
     api<AttemptStateDTO>({ method: 'POST', url: '/practice/attempts', data: { language, topic, recommendationKey } }),
   attempt: (id: string) => api<AttemptStateDTO>({ url: `/attempts/${id}` }),
-  answer: (id: string, itemIndex: number, answer: ExerciseAnswer, timeMs: number) =>
-    api<AnswerResultDTO>({ method: 'POST', url: `/attempts/${id}/answers`, data: { itemIndex, answer, timeMs } }),
+  answer: (id: string, itemIndex: number, answer: ExerciseAnswer, timeMs: number, dontKnow = false) =>
+    api<AnswerResultDTO>({ method: 'POST', url: `/attempts/${id}/answers`, data: { itemIndex, answer, timeMs, ...(dontKnow ? { dontKnow } : {}) } }),
   complete: (id: string) => api<AttemptSummaryDTO>({ method: 'POST', url: `/attempts/${id}/complete` }),
   summary: (id: string) => api<AttemptSummaryDTO>({ url: `/attempts/${id}/summary` }),
 };

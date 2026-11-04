@@ -985,17 +985,56 @@ export const spanish: LanguageSpec = {
     },
   ],
   placement: [
-    { level: 'A1', exercise: fill('Yo ___ de Kazajistán.', ['soy'], 'yo → soy.', { s: 'grammar', t: 'to_be' }, { options: ['soy', 'es', 'eres'] }) },
-    { level: 'A1', exercise: choice('Как сказать «Мне 20 лет»?', ['Tengo veinte años.', 'Soy veinte años.', 'Estoy veinte años.'], 0, 'Возраст — tener.', { t: 'numbers' }) },
-    { level: 'A1', exercise: choice('___ padres son médicos.', ['Mis', 'Mi', 'Me'], 0, 'Множественное число — mis.', { s: 'grammar', t: 'possessive' }) },
-    { level: 'A2', exercise: fill('Ayer ___ al cine.', ['fui'], 'ir → fui.', { s: 'grammar', t: 'past_tense' }, { options: ['fui', 'voy', 'iré'] }) },
-    { level: 'A2', exercise: choice('¿Dónde ___ el museo?', ['está', 'es', 'son'], 0, 'Местоположение — estar.', { s: 'grammar', t: 'ser_estar' }) },
-    { level: 'A2', exercise: choice('El año pasado nosotros ___ en Madrid.', ['vivimos', 'vivo', 'viven'], 0, 'nosotros → vivimos.', { s: 'grammar', t: 'past_tense' }) },
-    { level: 'B1', exercise: choice('No creo que ___ verdad.', ['sea', 'es', 'será'], 0, 'no creo que + subjuntivo.', { s: 'grammar', t: 'subjunctive' }) },
-    { level: 'B1', exercise: fill('Cuando era niño, ___ en el campo.', ['vivía'], 'Привычное в прошлом — imperfecto.', { s: 'grammar', t: 'past_tense' }, { options: ['vivía', 'viví', 'vivo'] }) },
-    { level: 'B1', exercise: choice('Espero que tú ___ bien.', ['estés', 'estás', 'estar'], 0, 'esperar que + subjuntivo.', { s: 'grammar', t: 'subjunctive' }) },
-    { level: 'B2', exercise: fill('Si ___ tiempo, iría contigo.', ['tuviera'], 'si + imperfecto de subjuntivo.', { s: 'grammar', t: 'conditionals' }, { options: ['tuviera', 'tengo', 'tendría'] }) },
-    { level: 'B2', exercise: choice('Si me lo hubieras dicho, te ___ ayudado.', ['habría', 'había', 'hubiera ido'], 0, 'Нереальное прошлое: habría + participio.', { s: 'grammar', t: 'conditionals' }) },
-    { level: 'B2', exercise: choice('La casa ___ construida en 1900.', ['fue', 'era', 'estuvo'], 0, 'Пассив: fue construida.', { s: 'grammar', t: 'passive' }) },
+    // A1 — vocabulary
+    { level: 'A1', exercise: choiceRu('Что означает это приветствие?', '¡Buenas tardes!', ['Добрый день!', 'Доброе утро!', 'Спокойной ночи!'], 0, 'Buenas tardes — «добрый день» (после обеда); «доброе утро» — buenos días, «спокойной ночи» — buenas noches.', { s: 'vocabulary', t: 'greetings', d: 1 }) },
+    { level: 'A1', exercise: choice('Как по-испански «15»?', ['quince', 'cincuenta', 'cinco'], 0, '15 — quince; cincuenta — 50, cinco — 5.', { s: 'vocabulary', t: 'numbers', d: 2 }) },
+    { level: 'A1', exercise: choiceRu('Что означает это слово?', 'los padres', ['родители', 'родственники', 'братья'], 0, 'los padres — «родители»; «родственники» — los parientes, «братья» — los hermanos.', { s: 'vocabulary', t: 'family', d: 3 }) },
+    // A1 — grammar
+    { level: 'A1', exercise: fill('Yo ___ de Kazajistán.', ['soy'], 'С yo глагол ser имеет форму soy; es — для él/ella, eres — для tú.', { s: 'grammar', t: 'to_be', d: 1 }, { translation: 'Я из Казахстана.', options: ['soy', 'es', 'eres'] }) },
+    { level: 'A1', exercise: choice('___ abuelos viven en Almaty.', ['Mis', 'Mi', 'Me'], 0, 'Перед существительным во множественном числе — mis; me — это местоимение «меня/мне».', { s: 'grammar', t: 'possessive', d: 2 }) },
+    { level: 'A1', exercise: choice('Какое сочетание верно?', ['el problema', 'la problema', 'los problema'], 0, 'problema — мужского рода, хотя оканчивается на -a: el problema, los problemas.', { s: 'grammar', t: 'noun_gender', d: 3 }) },
+    // A1 — reading
+    { level: 'A1', exercise: choiceRu('Прочитайте текст. Где живёт Лусия?', 'Me llamo Lucía. Soy de Valencia, pero vivo en Madrid. Tengo veintidós años y soy estudiante.', ['В Мадриде', 'В Валенсии', 'В Мексике'], 0, 'Soy de Valencia — она родом из Валенсии, а vivo en Madrid — живёт в Мадриде.', { s: 'reading', t: 'greetings', d: 2 }) },
+    // A1 — listening
+    { level: 'A1', exercise: listen('Tengo dos hermanos.', 'dos — «два», hermanos — «братья»; doce — «двенадцать», hijos — «дети».', { s: 'listening', t: 'family', d: 1 }, { options: ['Tengo dos hermanos.', 'Tengo doce años.', 'Tengo dos hijos.'], translation: 'У меня два брата.' }) },
+
+    // A2 — vocabulary
+    { level: 'A2', exercise: choiceRu('Что означает это слово?', 'la maleta', ['чемодан', 'билет', 'карта'], 0, 'la maleta — «чемодан»; «билет» — el billete, «карта» — el mapa.', { s: 'vocabulary', t: 'travel', d: 1 }) },
+    { level: 'A2', exercise: choiceRu('Продавец спрашивает: «¿Qué talla tiene?» Что он хочет узнать?', '¿Qué talla tiene?', ['Какой у вас размер?', 'Сколько это стоит?', 'Какой цвет вам нужен?'], 0, 'la talla — «размер одежды»; цену спрашивают ¿Cuánto cuesta?, цвет — ¿De qué color?', { s: 'vocabulary', t: 'shopping', d: 2 }) },
+    { level: 'A2', exercise: choiceRu('Что означает эта фраза?', 'Normalmente me acuesto tarde.', ['Обычно я поздно ложусь спать.', 'Обычно я поздно встаю.', 'Обычно я опаздываю.'], 0, 'acostarse — «ложиться спать»; «вставать» — levantarse, «опаздывать» — llegar tarde.', { s: 'vocabulary', t: 'daily_routine', d: 3 }) },
+    // A2 — grammar
+    { level: 'A2', exercise: fill('Ayer ___ al cine con mis amigos.', ['fui'], 'Ayer — законченное действие в прошлом: ir → fui (pretérito indefinido).', { s: 'grammar', t: 'past_tense', d: 1 }, { translation: 'Вчера я ходил в кино с друзьями.', options: ['fui', 'voy', 'iré'] }) },
+    { level: 'A2', exercise: fill('Hoy la sopa ___ muy fría, no me gusta.', ['está'], 'Временное состояние (суп сегодня остыл) — estar; hay означает «есть, имеется».', { s: 'grammar', t: 'ser_estar', d: 2 }, { translation: 'Сегодня суп очень холодный, мне не нравится.', options: ['está', 'es', 'hay'] }) },
+    { level: 'A2', exercise: fill('El sábado pasado nosotros ___ una fiesta en casa.', ['hicimos'], 'hacer в pretérito indefinido неправильный: hice, hiciste, hizo, hicimos… Формы «hacimos» не существует.', { s: 'grammar', t: 'past_tense', d: 3 }, { translation: 'В прошлую субботу мы устроили вечеринку дома.', options: ['hicimos', 'hacimos', 'hacemos'] }) },
+    // A2 — reading
+    { level: 'A2', exercise: choiceRu('Прочитайте текст. Что стоило дороже?', 'Ayer fui de compras con mi hermana. Ella compró un vestido rojo y yo, unos zapatos negros. Los zapatos fueron más caros que el vestido.', ['Туфли', 'Платье', 'Они стоили одинаково'], 0, 'Los zapatos fueron más caros que el vestido — туфли оказались дороже платья.', { s: 'reading', t: 'shopping', d: 2 }) },
+    // A2 — listening
+    { level: 'A2', exercise: listen('El tren a Sevilla sale a las nueve y cuarto.', 'y cuarto — «пятнадцать минут после», menos cuarto — «без пятнадцати»; sale — «отправляется», llega — «прибывает».', { s: 'listening', t: 'travel', d: 3 }, { options: ['El tren a Sevilla sale a las nueve y cuarto.', 'El tren a Sevilla sale a las nueve menos cuarto.', 'El tren a Sevilla llega a las diez y cuarto.'], translation: 'Поезд в Севилью отправляется в девять пятнадцать.' }) },
+
+    // B1 — vocabulary
+    { level: 'B1', exercise: choiceRu('Что означает это слово?', 'el sueldo', ['зарплата', 'отпуск', 'начальник'], 0, 'el sueldo — «зарплата»; «отпуск» — las vacaciones, «начальник» — el jefe.', { s: 'vocabulary', t: 'work', d: 1 }) },
+    { level: 'B1', exercise: fill('Me gusta mucho este trabajo; ___, el sueldo es bastante bajo.', ['sin embargo'], 'Здесь противопоставление: sin embargo — «однако»; por eso — «поэтому», además — «кроме того».', { s: 'vocabulary', t: 'conjunctions', d: 2 }, { translation: 'Мне очень нравится эта работа; однако зарплата довольно низкая.', options: ['sin embargo', 'por eso', 'además'] }) },
+    { level: 'B1', exercise: choiceRu('Что означает это предложение?', 'Mi hermana está embarazada.', ['Моя сестра беременна.', 'Моей сестре неловко.', 'Моя сестра занята.'], 0, 'Ложный друг: embarazada — «беременная»; «неловко» — estar avergonzada, «занята» — estar ocupada.', { s: 'vocabulary', t: 'family', d: 3 }) },
+    // B1 — grammar
+    { level: 'B1', exercise: choice('Espero que tú ___ bien.', ['estés', 'estás', 'estar'], 0, 'После esperar que (пожелание) нужен subjuntivo: estés.', { s: 'grammar', t: 'subjunctive', d: 1 }) },
+    { level: 'B1', exercise: fill('Cuando era niño, ___ en el campo con mis abuelos.', ['vivía'], 'Привычная, длительная ситуация в прошлом (cuando era niño) — imperfecto: vivía.', { s: 'grammar', t: 'past_tense', d: 2 }, { translation: 'Когда я был ребёнком, я жил в деревне с бабушкой и дедушкой.', options: ['vivía', 'viví', 'vivo'] }) },
+    { level: 'B1', exercise: choice('Как сказать другу «Не говори ему об этом»?', ['No se lo digas.', 'No se lo dices.', 'No díselo.'], 0, 'Отрицательный imperativo строится на subjuntivo (digas), а местоимения стоят перед глаголом: No se lo digas.', { s: 'grammar', t: 'imperative', d: 3 }) },
+    // B1 — reading
+    { level: 'B1', exercise: choiceRu('Прочитайте текст. Как автор относится к возможному переезду?', 'Mañana tendré una entrevista en una empresa de turismo. Si me dan el puesto, me mudaré a Barcelona, aunque no me hace mucha gracia dejar a mi familia.', ['Сомневается: ему не хочется оставлять семью', 'Очень рад и ждёт переезда', 'Уже переехал в Барселону'], 0, 'aunque no me hace mucha gracia dejar a mi familia — «хотя мне не очень хочется оставлять семью»; переезд возможен только если его возьмут (si me dan el puesto).', { s: 'reading', t: 'future_plans', d: 2 }) },
+    // B1 — listening
+    { level: 'B1', exercise: listen('Creo que mañana lloverá por la tarde.', 'lloverá — будущее время от llover («пойдёт дождь»); hará sol — «будет солнечно».', { s: 'listening', t: 'weather', d: 1 }, { options: ['Creo que mañana lloverá por la tarde.', 'Creo que mañana hará sol por la tarde.', 'Creo que ayer llovió por la tarde.'], translation: 'Думаю, завтра днём пойдёт дождь.' }) },
+
+    // B2 — vocabulary
+    { level: 'B2', exercise: choiceRu('Что означает это слово?', 'el titular', ['заголовок (новости)', 'телеведущий', 'подписчик'], 0, 'el titular — «заголовок»; «ведущий» — el presentador, «подписчик» — el suscriptor.', { s: 'vocabulary', t: 'media', d: 1 }) },
+    { level: 'B2', exercise: fill('Las fábricas deberán reducir sus ___ de CO₂ en un 40 %.', ['emisiones'], 'las emisiones — «выбросы»; los residuos — «отходы», las sequías — «засухи».', { s: 'vocabulary', t: 'environment', d: 2 }, { translation: 'Заводам придётся сократить выбросы CO₂ на 40 %.', options: ['emisiones', 'residuos', 'sequías'] }) },
+    { level: 'B2', exercise: choice('Какое выражение означает «в любом случае»?', ['de todos modos', 'de ningún modo', 'de modo que'], 0, 'de todos modos — «в любом случае»; de ningún modo — «ни в коем случае», de modo que — «так что».', { s: 'vocabulary', t: 'conjunctions', d: 3 }) },
+    // B2 — grammar
+    { level: 'B2', exercise: fill('Cuando ___ a Madrid, te llamaré.', ['llegue'], 'cuando о будущем требует subjuntivo: llegue. Будущее время после cuando не ставится.', { s: 'grammar', t: 'subjunctive', d: 1 }, { translation: 'Когда я приеду в Мадрид, я тебе позвоню.', options: ['llegue', 'llegaré', 'llego'] }) },
+    { level: 'B2', exercise: fill('El jefe nos pidió que ___ el informe antes del viernes.', ['termináramos', 'terminásemos'], 'Переданная просьба в прошлом (pidió que) требует imperfecto de subjuntivo: termináramos.', { s: 'grammar', t: 'reported_speech', d: 2 }, { translation: 'Начальник попросил нас закончить отчёт до пятницы.', options: ['termináramos', 'terminaríamos', 'terminamos'] }) },
+    { level: 'B2', exercise: choice('Si me lo hubieras dicho, te ___ ayudado.', ['habría', 'había', 'he'], 0, 'Нереальное условие в прошлом: si + pluscuamperfecto de subjuntivo, в главной части — condicional compuesto: habría ayudado.', { s: 'grammar', t: 'conditionals', d: 3 }) },
+    // B2 — reading
+    { level: 'B2', exercise: choiceRu('Прочитайте текст. Что, по мнению экспертов, нужно, чтобы аварий не становилось больше?', 'Según un estudio reciente, el uso de la bicicleta en la ciudad ha aumentado un 30 % en dos años. Sin embargo, los expertos advierten que, a menos que se construyan más carriles bici, el número de accidentes seguirá creciendo.', ['Построить больше велодорожек', 'Сократить число велосипедистов', 'Запретить машины в центре города'], 0, 'a menos que se construyan más carriles bici — «если не построят больше велодорожек», число аварий будет расти.', { s: 'reading', t: 'media', d: 3 }) },
+    // B2 — listening
+    { level: 'B2', exercise: listen('Me dijo que no podría venir porque tenía mucho trabajo.', 'В косвенной речи после dijo: podré → podría, tengo → tenía.', { s: 'listening', t: 'reported_speech', d: 2 }, { options: ['Me dijo que no podría venir porque tenía mucho trabajo.', 'Me dijo que no podía venir porque tiene mucho trabajo.', 'Me dice que no podrá venir porque tiene mucho trabajo.'], translation: 'Он сказал мне, что не сможет прийти, потому что у него много работы.' }) },
   ],
 };

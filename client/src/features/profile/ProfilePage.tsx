@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CEFR_LEVELS, DAILY_MINUTES_OPTIONS, LEARNING_GOALS, type CefrLevel, type LearningGoal } from '@linguapath/shared';
+import { CEFR_LEVELS, DAILY_MINUTES_OPTIONS, LEARNING_GOALS, type CefrLevel, type LearningGoal, type PlacementSelfAssessment } from '@linguapath/shared';
 import { learningApi, meApi } from '../../api/endpoints';
 import { useAuth } from '../../auth/AuthContext';
 import { Alert, Button, buttonClass, Dialog, errorMessage, Field, LanguageMark, PasswordInput, Section, Select, TextInput, useTitle, useToast } from '../../components/ui';
@@ -13,6 +13,9 @@ function timezones(): string[] {
   const intl = Intl as unknown as { supportedValuesOf?: (key: string) => string[] };
   return intl.supportedValuesOf?.('timeZone') ?? ['Asia/Almaty', 'Asia/Aqtobe', 'Europe/Moscow', 'Europe/Berlin', 'UTC'];
 }
+
+/** A retake starts from the current level instead of from zero. */
+const SELF_FROM_LEVEL: Record<CefrLevel, PlacementSelfAssessment> = { A1: 'beginner', A2: 'basics', B1: 'conversational', B2: 'confident' };
 
 export default function ProfilePage() {
   const i18n = useI18n();
@@ -61,7 +64,7 @@ export default function ProfilePage() {
     onSuccess: invalidate,
   });
   const placement = useMutation({
-    mutationFn: (code: string) => learningApi.startPlacement(code),
+    mutationFn: (code: string) => learningApi.startPlacement(code, SELF_FROM_LEVEL[enrollments?.find((e) => e.language === code)?.level ?? 'A1']),
     onSuccess: (attempt) => navigate(`/learn/${attempt.id}`),
     onError: (err) => toast(errorMessage(err, i18n), 'bad'),
   });

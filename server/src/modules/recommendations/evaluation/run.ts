@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { DEFAULT_ENGINE_CONFIG as D, type EngineConfig } from '../config';
 import { ENGINE_VERSION } from '../engine';
 import { PROFILES, runSimulation, type RunMetrics, type Strategy } from './simulator';
 
@@ -34,10 +35,10 @@ lines.push('');
 lines.push('Метрики (среднее ± стандартное отклонение):');
 lines.push('- **Среднее умение** — среднее скрытое умение по изученным темам в конце периода, %.');
 lines.push('- **Мин. умение** — скрытое умение самой слабой изученной темы, %.');
-lines.push('- **Покрытие слабых мест** — доля дней с занятиями, когда при наличии слабой темы (умение < 60%) в плане было занятие по ней, %.');
+lines.push('- **Покрытие слабых мест** — доля дней с занятиями, на которые приходилась слабая тема (самая слабая изученная тема с умением < 60%), когда в выполненной части плана было занятие по этой теме (практика темы или урок, в котором она есть), %. Дни без занятий в знаменатель не входят.');
 lines.push('- **Удержание слов** — средняя вероятность вспомнить слово в последний день, %.');
 lines.push('- **Уроков** — число пройденных уроков из 8.');
-lines.push('- **Минут** — суммарное время занятий; стратегии по-разному используют дневной бюджет времени.');
+lines.push('- **Минут** — суммарное время занятий за 30 дней. Все стратегии ограничены одним и тем же дневным бюджетом: занятие, которое не помещается в оставшееся время, пропускается (первое учебное занятие дня допускается всегда) — то же правило, что и в `composePlan`.');
 lines.push('- **Прирост в час** — рост среднего скрытого умения (п. п.) на час занятий; сравнивает эффективность при разном объёме.');
 lines.push('');
 
@@ -59,6 +60,48 @@ for (const profile of PROFILES) {
       `| ${strategy} | ${fmt(runs.map((r) => r.meanSkill))} | ${fmt(runs.map((r) => r.minSkill))} | ${fmt(runs.map((r) => r.weakCoverage))} | ${fmt(runs.map((r) => r.wordRetention))} | ${fmt(runs.map((r) => r.lessonsCompleted), false)} | ${fmt(runs.map((r) => r.minutes), false)} | ${fmt(runs.map((r) => r.gainPerHour), false)} |`,
     );
   }
+  lines.push('');
+}
+
+const ROW_HEAD = '| Вариант | Мин. умение | Покрытие слабых мест | Среднее умение | Удержание слов | Уроков | Минут |';
+const row = (label: string, runs: RunMetrics[]) =>
+  `| ${label} | ${fmt(runs.map((r) => r.minSkill))} | ${fmt(runs.map((r) => r.weakCoverage))} | ${fmt(runs.map((r) => r.meanSkill))} | ${fmt(runs.map((r) => r.wordRetention))} | ${fmt(runs.map((r) => r.lessonsCompleted), false)} | ${fmt(runs.map((r) => r.minutes), false)} |`;
+const WEAK_PROFILES = PROFILES.filter((p) => p.name !== 'strong-fast');
+
+lines.push('## Сравнение при прежнем правиле бюджета');
+lines.push('');
+lines.push(
+  'До версии rules-1.4 симулятор выполнял занятия, пока бюджет не исчерпан, поэтому последнее занятие могло выйти за него. Движок сам укладывает план в бюджет, а случайная стратегия — нет, и получала больше времени. Для прозрачности ниже те же стратегии при прежнем («мягком») правиле.',
+);
+lines.push('');
+for (const profile of WEAK_PROFILES) {
+  lines.push(`### ${profile.name}`);
+  lines.push('');
+  lines.push(ROW_HEAD);
+  lines.push('|---|---|---|---|---|---|---|');
+  for (const strategy of STRATEGIES) {
+    lines.push(row(strategy, Array.from({ length: SEEDS }, (_, i) => runSimulation(profile, strategy, i + 1, DAYS, D, 'loose'))));
+  }
+  lines.push('');
+}
+
+const ablations: Array<[string, EngineConfig]> = [
+  ['rules-1.4 (по умолчанию)', D],
+  ['без модели забывания', { ...D, forgetting: { ...D.forgetting, halfLifeDays: 1e9 } }],
+  ['без порога освоения (remedialGate = 0)', { ...D, remedialGate: 0 }],
+  ['без давления прогресса', { ...D, progression: { graceDays: 1e9, fullDays: 1e9 + 1 } }],
+  ['период полураспада 14 дней', { ...D, forgetting: { ...D.forgetting, halfLifeDays: 14 } }],
+];
+lines.push('## Вклад отдельных правил (абляция)');
+lines.push('');
+lines.push('Движок с одним выключенным или изменённым правилом; остальные параметры по умолчанию.');
+lines.push('');
+for (const profile of WEAK_PROFILES) {
+  lines.push(`### ${profile.name}`);
+  lines.push('');
+  lines.push(ROW_HEAD);
+  lines.push('|---|---|---|---|---|---|---|');
+  for (const [label, cfg] of ablations) lines.push(row(label, Array.from({ length: SEEDS }, (_, i) => runSimulation(profile, 'engine', i + 1, DAYS, cfg))));
   lines.push('');
 }
 

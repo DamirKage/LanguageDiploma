@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import type { Exercise, LearningGoal } from '@linguapath/shared';
+import { CEFR_LEVELS, type CefrLevel, type Exercise, type LearningGoal } from '@linguapath/shared';
 import { seededRandom } from '../lib/text';
 import { Lesson, Test } from '../models/content';
 import { Attempt } from '../models/learning';
@@ -27,8 +27,8 @@ interface Profile {
   /** Probability of a correct answer per topic; `default` for the rest. */
   skill: Record<string, number> & { default: number };
   reviewRecall: number;
-  /** Placement: how many items of each level block are answered correctly. */
-  placementCorrect?: Partial<Record<string, number>>;
+  /** Placement: the simulated learner solves items below this level and the easier items of it. */
+  placementLevel?: CefrLevel;
   /** Activity script: [daysAgo, action]. */
   script: Array<[number, Action]>;
 }
@@ -53,8 +53,9 @@ async function runAttempt(userId: string, attemptId: string, profile: Profile, r
     const ex = item.exercise as Exercise;
     let correct = rand() < (profile.skill[ex.topic] ?? profile.skill.default);
     if (attempt.kind === 'placement') {
-      const block = attempt.items.filter((i) => i.level === item.level);
-      correct = block.indexOf(item) < (profile.placementCorrect?.[item.level ?? ''] ?? 0);
+      const own = CEFR_LEVELS.indexOf(profile.placementLevel ?? 'A1');
+      const level = CEFR_LEVELS.indexOf(item.level as CefrLevel);
+      correct = level < own || (level === own && ex.difficulty < 3);
     }
     const timeMs = Math.round(6000 + rand() * 14000);
     clock += timeMs + 2000;
@@ -105,7 +106,7 @@ export async function createDemoLearner(profile: Profile, password: string, now 
       continue;
     }
     let attemptId: string;
-    if (action.kind === 'placement') attemptId = String((await startPlacementAttempt(userId, profile.language, when))._id);
+    if (action.kind === 'placement') attemptId = String((await startPlacementAttempt(userId, profile.language, 'beginner', when))._id);
     else if (action.kind === 'lesson') {
       const lesson = await Lesson.findOne({ key: action.key }).lean();
       if (!lesson) continue;
@@ -133,7 +134,7 @@ export const DEMO_PROFILES: Profile[] = [
     language: 'de',
     skill: { default: 0.88, cases: 0.35, possessive: 0.45, articles: 0.5 },
     reviewRecall: 0.8,
-    placementCorrect: { A1: 1 },
+    placementLevel: 'A1',
     script: [
       [20, { kind: 'placement' }],
       [19, { kind: 'lesson', key: 'de-a1-greetings' }],
@@ -160,7 +161,7 @@ export const DEMO_PROFILES: Profile[] = [
     language: 'en',
     skill: { default: 0.85, past_tense: 0.5, articles: 0.55 },
     reviewRecall: 0.85,
-    placementCorrect: { A1: 2 },
+    placementLevel: 'A1',
     script: [
       [14, { kind: 'placement' }],
       [13, { kind: 'lesson', key: 'en-a1-greetings' }],

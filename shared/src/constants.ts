@@ -50,3 +50,7 @@ export const DEFAULT_UI_LOCALE: UiLocale = 'ru';
 export const POINTS = { correct: 10, almost: 7, incorrect: 0 } as const;
 export const LESSON_PASS_PERCENT = 70;
 export const TEST_PASS_PERCENT = 70;
+
+/** Self-assessment before the adaptive placement test; it only sets the starting point. */
+export const SELF_ASSESSMENTS = ['beginner', 'basics', 'conversational', 'confident'] as const;
+export type PlacementSelfAssessment = (typeof SELF_ASSESSMENTS)[number];

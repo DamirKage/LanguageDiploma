@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Check, X as XIcon } from 'lucide-react';
-import type { AttemptSummaryDTO } from '@linguapath/shared';
-import { Button, buttonClass, Meter } from '../../components/ui';
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { CEFR_LEVELS, type AttemptSummaryDTO, type CefrLevel } from '@linguapath/shared';
+import { meApi } from '../../api/endpoints';
+import { Button, buttonClass, Meter, useToast } from '../../components/ui';
 import { useI18n } from '../../i18n';
-import { useTopics } from '../../lib/queries';
+import { LEARNING_KEYS, useTopics } from '../../lib/queries';
 import { reasonText, recommendationTitle } from '../today/recommendationText';
 import { useStartActivity } from '../today/useStartActivity';
 
@@ -11,6 +14,89 @@ function formatDuration(sec: number, locale: string) {
   const m = Math.floor(sec / 60);
   const s = sec % 60;
   return `${new Intl.NumberFormat(locale).format(m)}:${String(s).padStart(2, '0')}`;
+}
+
+function PlacementResult({ summary, placement }: { summary: AttemptSummaryDTO; placement: NonNullable<AttemptSummaryDTO['placement']> }) {
+  const i18n = useI18n();
+  const { t, plural } = i18n;
+  const queryClient = useQueryClient();
+  const toast = useToast();
+  const [chosen, setChosen] = useState<CefrLevel>(placement.estimatedLevel);
+  const index = CEFR_LEVELS.indexOf(placement.estimatedLevel);
+  const next = CEFR_LEVELS[index + 1];
+  const options = CEFR_LEVELS.filter((_, i) => Math.abs(i - index) <= 1);
+  const setLevel = useMutation({
+    mutationFn: (level: CefrLevel) => meApi.setLevel(summary.language, level),
+    onSuccess: (_, level) => {
+      setChosen(level);
+      toast(t('summary.placement.levelSet', { level }));
+      for (const key of LEARNING_KEYS) void queryClient.invalidateQueries({ queryKey: key });
+    },
+  });
+  const pct = (row: { correct: number; total: number }) => Math.round((row.correct / Math.max(1, row.total)) * 100);
+  return (
+    <>
+      <section className="summary__score" aria-label={t('summary.score')}>
+        <p className="summary__big">{placement.estimatedLevel}</p>
+        <div className="stack" style={{ '--gap': 'var(--s2)', flex: 1 } as React.CSSProperties}>
+          <p className="summary__lead">
+            {t(`levels.${placement.estimatedLevel}`)} ·{' '}
+            {placement.band === 'high' && next ? t('summary.placement.bandHigh', { next }) : t(`summary.placement.band.${placement.band}`)}
+          </p>
+          <p className="small">{t(`summary.placement.canDo.${placement.estimatedLevel}`)}</p>
+          <p className="small muted">
+            {t('summary.placement.basis', { answers: plural('common.answers', placement.answered), self: t(`onboarding.self.${placement.selfAssessment}`) })}
+          </p>
+          <p className="small muted">{t(`summary.placement.confidence.${placement.confidence}`)}</p>
+        </div>
+      </section>
+
+      <div className="summary__tables">
+        <section className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
+          <h2 className="summary__h">{t('summary.placement.byLevel')}</h2>
+          <table className="table">
+            <tbody>
+              {placement.perLevel.map((row) => (
+                <tr key={row.level}>
+                  <td>{row.level}</td>
+                  <td className="small">{t('summary.correctOf', row)}</td>
+                  <td className="small">{pct(row)}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+        <section className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
+          <h2 className="summary__h">{t('summary.placement.bySkill')}</h2>
+          <table className="table">
+            <tbody>
+              {placement.perSkill.map((row) => (
+                <tr key={row.skill}>
+                  <td>{t(`skills.${row.skill}`)}</td>
+                  <td className="small">{t('summary.correctOf', row)}</td>
+                  <td className="small">{pct(row)}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      </div>
+      <p className="caption">{t('summary.placement.method')}</p>
+
+      <section className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
+        <h2 className="summary__h">{t('summary.placement.chooseTitle')}</h2>
+        <p className="small muted">{t('summary.placement.chooseLead')}</p>
+        <div className="seg" role="radiogroup" aria-label={t('summary.placement.chooseTitle')}>
+          {options.map((level) => (
+            <button key={level} role="radio" aria-checked={chosen === level} aria-pressed={chosen === level} disabled={setLevel.isPending} onClick={() => level !== chosen && setLevel.mutate(level)}>
+              {level}
+              {level === placement.estimatedLevel ? ` · ${t('summary.placement.recommended')}` : ''}
+            </button>
+          ))}
+        </div>
+      </section>
+    </>
+  );
 }
 
 export function SummaryView({ summary }: { summary: AttemptSummaryDTO }) {
@@ -30,18 +116,7 @@ export function SummaryView({ summary }: { summary: AttemptSummaryDTO }) {
       </header>
 
       {summary.placement ? (
-        <section className="summary__score">
-          <p className="summary__big target">{summary.placement.estimatedLevel}</p>
-          <div className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
-            <p>{t('summary.placementLevel', { level: t(`levels.${summary.placement.estimatedLevel}`) })}</p>
-            <p className="small muted">{t('summary.placementLead')}</p>
-            <ul className="summary__levels">
-              {summary.placement.perLevel.map((l) => (
-                <li key={l.level}>{t('summary.placementRow', l)}</li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        <PlacementResult summary={summary} placement={summary.placement} />
       ) : (
         <section className="summary__score" aria-label={t('summary.score')}>
           <p className="summary__big">{summary.percent}%</p>

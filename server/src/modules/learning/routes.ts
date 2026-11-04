@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CEFR_LEVELS, localize, type AttemptHistoryItemDTO, type LocalizedText, type Paginated } from '@linguapath/shared';
+import { CEFR_LEVELS, SELF_ASSESSMENTS, localize, type AttemptHistoryItemDTO, type LocalizedText, type Paginated } from '@linguapath/shared';
 import { createApiRouter, idParams, languageCode, pagination } from '../../lib/http';
 import { Attempt } from '../../models/learning';
 import { markRecommendationFollowed } from '../recommendations/service';
@@ -68,14 +68,16 @@ post(
   '/placement/:language/attempts',
   {
     summary: 'Начать адаптивное входное тестирование',
-    description: 'Задания выдаются блоками по уровням A1→B2; следующий блок открывается, если правильно решено не менее 2/3 текущего.',
+    description:
+      'Компьютерное адаптивное тестирование: после каждого ответа уровень переоценивается, следующим выдаётся самое информативное задание. Самооценка задаёт стартовую точку. Тест завершается, когда оценка достаточно точна (от 8 до 20 заданий).',
     tags: ['Тестирование'],
     access: 'user',
     params: z.object({ language: languageCode }),
+    body: z.object({ selfAssessment: z.enum(SELF_ASSESSMENTS).default('beginner') }).default({ selfAssessment: 'beginner' }),
     status: 201,
     returns: 'AttemptStateDTO',
   },
-  async ({ params, user }) => toState(await startPlacementAttempt(user.id, params.language)),
+  async ({ params, body, user }) => toState(await startPlacementAttempt(user.id, params.language, body.selfAssessment)),
 );
 
 post(
@@ -125,7 +127,12 @@ post(
     access: 'user',
     params: idParams,
     returns: 'AnswerResultDTO',
-    body: z.object({ itemIndex: z.number().int().min(0), answer: answerSchema, timeMs: z.number().int().min(0).max(3_600_000).optional() }),
+    body: z.object({
+      itemIndex: z.number().int().min(0),
+      answer: answerSchema,
+      timeMs: z.number().int().min(0).max(3_600_000).optional(),
+      dontKnow: z.boolean().optional(),
+    }),
   },
   async ({ params, body, user }) => submitAnswer(user.id, params.id, body),
 );

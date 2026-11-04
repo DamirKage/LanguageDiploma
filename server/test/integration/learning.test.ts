@@ -1,8 +1,9 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import type { AttemptStateDTO, Exercise, LearningPathDTO } from '@linguapath/shared';
+import type { AttemptStateDTO, CefrLevel, Exercise, LearningPathDTO } from '@linguapath/shared';
 import { Lesson, Test } from '../../src/models/content';
 import { AnswerEvent, Attempt, LessonProgress, ReviewItem } from '../../src/models/learning';
+import { PLACEMENT_CONFIG, itemDifficulty } from '../../src/modules/learning/placement';
 import { simulateAnswer } from '../../src/seed/answer-sim';
 import { app, enroll, registerUser, useTestDatabase } from '../helpers';
 
@@ -140,34 +141,61 @@ describe('tests and placement', () => {
     expect(summary.body.review.every((r: { explanation: string }) => r.explanation.length > 0)).toBe(true);
   });
 
-  it('adapts the placement test: stops at the first failed level and sets the enrolment level', async () => {
+  /** Plays an adaptive placement as a learner in the middle of `level`: items no harder than that are solved. */
+  async function placeAs(auth: Record<string, string>, language: string, level: CefrLevel | null, selfAssessment = 'basics') {
+    const start = await request(app).post(`/api/placement/${language}/attempts`).set(auth).send({ selfAssessment });
+    expect(start.status).toBe(201);
+    let state = start.body as AttemptStateDTO;
+    expect(state.total).toBe(1);
+    expect(state.maxItems).toBe(20);
+    while (state.current) {
+      const attempt = await Attempt.findById(state.id).lean();
+      const item = attempt!.items[state.position]!;
+      const exercise = item.exercise as Exercise;
+      const correct = level !== null && itemDifficulty({ level: item.level as CefrLevel, difficulty: exercise.difficulty }) <= PLACEMENT_CONFIG.levelCentre[level];
+      const res = await answerCurrent(auth, state, correct);
+      expect(res.status).toBe(200);
+      state = res.body.state;
+    }
+    return state;
+  }
+
+  it('runs an adaptive placement item by item and sets the enrolment level', async () => {
     const u = await registerUser();
     await enroll(u.auth, 'de');
-    const start = await request(app).post('/api/placement/de/attempts').set(u.auth);
-    let state = start.body as AttemptStateDTO;
-    expect(state.total).toBe(3);
-    state = await playThrough(u.auth, state, () => true);
-    // A1 passed → the A2 block was appended; it was answered correctly too, and so on up to B2.
-    expect(state.total).toBe(12);
-
-    const u2 = await registerUser();
-    await enroll(u2.auth, 'de');
-    let s2 = (await request(app).post('/api/placement/de/attempts').set(u2.auth)).body as AttemptStateDTO;
-    s2 = await playThrough(u2.auth, s2, (i) => i < 3);
-    expect(s2.total).toBe(6);
-    const summary = await request(app).post(`/api/attempts/${s2.id}/complete`).set(u2.auth);
-    expect(summary.body.placement).toMatchObject({ estimatedLevel: 'A2' });
-    const enrollments = await request(app).get('/api/me/enrollments').set(u2.auth);
+    const state = await placeAs(u.auth, 'de', 'A2');
+    expect(state.total).toBeGreaterThanOrEqual(8);
+    expect(state.total).toBeLessThanOrEqual(20);
+    const summary = await request(app).post(`/api/attempts/${state.id}/complete`).set(u.auth);
+    expect(summary.body.placement).toMatchObject({ estimatedLevel: 'A2', selfAssessment: 'basics' });
+    expect(summary.body.placement.perSkill.length).toBeGreaterThanOrEqual(3);
+    expect(['low', 'mid', 'high']).toContain(summary.body.placement.band);
+    const enrollments = await request(app).get('/api/me/enrollments').set(u.auth);
     expect(enrollments.body[0]).toMatchObject({ language: 'de', level: 'A2', placementLevel: 'A2' });
   });
 
-  it('places a learner who fails the first block at A1', async () => {
-    const u = await registerUser();
-    await enroll(u.auth, 'kk');
-    let s = (await request(app).post('/api/placement/kk/attempts').set(u.auth)).body as AttemptStateDTO;
-    s = await playThrough(u.auth, s, () => false);
-    const summary = await request(app).post(`/api/attempts/${s.id}/complete`).set(u.auth);
-    expect(summary.body.placement.estimatedLevel).toBe('A1');
+  it('reaches B2 for a strong learner and A1 for a beginner who answers "don\'t know"', async () => {
+    const strong = await registerUser();
+    await enroll(strong.auth, 'es');
+    const s1 = await placeAs(strong.auth, 'es', 'B2', 'confident');
+    const r1 = await request(app).post(`/api/attempts/${s1.id}/complete`).set(strong.auth);
+    expect(r1.body.placement.estimatedLevel).toBe('B2');
+
+    const beginner = await registerUser();
+    await enroll(beginner.auth, 'kk');
+    let state = (await request(app).post('/api/placement/kk/attempts').set(beginner.auth).send({ selfAssessment: 'beginner' })).body as AttemptStateDTO;
+    while (state.current) {
+      const attempt = await Attempt.findById(state.id).lean();
+      const exercise = attempt!.items[state.position]!.exercise as Exercise;
+      const res = await request(app)
+        .post(`/api/attempts/${state.id}/answers`)
+        .set(beginner.auth)
+        .send({ itemIndex: state.position, answer: simulateAnswer(exercise, true), dontKnow: true });
+      state = res.body.state;
+    }
+    const r2 = await request(app).post(`/api/attempts/${state.id}/complete`).set(beginner.auth);
+    expect(r2.body.placement.estimatedLevel).toBe('A1');
+    expect(r2.body.correct).toBe(0);
   });
 });
 

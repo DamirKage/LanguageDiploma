@@ -40,7 +40,7 @@ export async function buildSnapshot(userId: string, language: string, now = new 
       Attempt.find({ user: userId, language, kind: 'test', status: 'completed' }).select('test result').lean(),
       Topic.find().lean(),
       AnswerEvent.aggregate<{ _id: string; answers: number; correct: number; last: Date }>([
-        { $match: { user: uid, language, isRetry: false, verdict: { $ne: 'skipped' } } },
+        { $match: { user: uid, language, verdict: { $ne: 'skipped' } } },
         {
           $group: {
             _id: '$topic',
@@ -51,7 +51,7 @@ export async function buildSnapshot(userId: string, language: string, now = new 
         },
       ]),
       AnswerEvent.aggregate<{ _id: { topic: string; attempt: Types.ObjectId }; answers: number; correct: number; at: Date }>([
-        { $match: { user: uid, language, isRetry: false, verdict: { $ne: 'skipped' } } },
+        { $match: { user: uid, language, verdict: { $ne: 'skipped' } } },
         {
           $group: {
             _id: { topic: '$topic', attempt: '$attempt' },
@@ -63,7 +63,7 @@ export async function buildSnapshot(userId: string, language: string, now = new 
         { $sort: { at: 1 } },
       ]),
       AnswerEvent.aggregate<{ _id: string; verdicts: string[] }>([
-        { $match: { user: uid, language, isRetry: false, verdict: { $ne: 'skipped' } } },
+        { $match: { user: uid, language, verdict: { $ne: 'skipped' } } },
         { $sort: { at: -1 } },
         { $group: { _id: '$topic', verdicts: { $push: '$verdict' } } },
         { $project: { verdicts: { $slice: ['$verdicts', DEFAULT_ENGINE_CONFIG.thresholds.recentWindow] } } },
@@ -72,7 +72,7 @@ export async function buildSnapshot(userId: string, language: string, now = new 
         { $match: { user: uid, language, verdict: { $in: ['incorrect', 'almost'] }, at: { $gte: new Date(+now - 30 * 86400_000) } } },
         { $group: { _id: { topic: '$topic', category: '$category' }, count: { $sum: 1 } } },
       ]),
-      AnswerEvent.find({ user: userId, language, isRetry: false, verdict: { $ne: 'skipped' } }).sort({ at: -1 }).limit(30).select('verdict').lean(),
+      AnswerEvent.find({ user: userId, language, verdict: { $ne: 'skipped' } }).sort({ at: -1 }).limit(30).select('verdict').lean(),
       ReviewItem.find({ user: userId, language, dueAt: { $lte: endOfLocalDay(now, tz) } }).select('dueAt lastReviewedAt').lean(),
       ReviewLog.find({ user: userId, language, at: { $gte: new Date(+now - 30 * 86400_000) } }).select('quality').lean(),
       RecommendationSnapshot.find({ user: userId, language, generatedAt: { $gte: new Date(+now - 7 * 86400_000) } })
@@ -160,7 +160,7 @@ export async function buildSnapshot(userId: string, language: string, now = new 
       };
     }),
     progress: Object.fromEntries(
-      progress.map((p) => [String(p.lesson), { status: p.status as 'in_progress' | 'completed', bestPercent: p.bestPercent ?? null, attempts: p.attempts }]),
+      progress.map((p) => [String(p.lesson), { status: p.status as 'in_progress' | 'completed', bestPercent: p.bestPercent ?? null, attempts: p.attempts, completedAt: p.completedAt ?? null }]),
     ),
     inProgress: inProgress.map((a) => ({
       attemptId: String(a._id),

@@ -95,7 +95,7 @@ get(
         { $sort: { '_id.language': 1, '_id.level': 1 } },
       ]),
       AnswerEvent.aggregate<{ _id: { language: string; topic: string }; answers: number; correct: number; learners: unknown[] }>([
-        { $match: { isRetry: false, verdict: { $ne: 'skipped' } } },
+        { $match: { verdict: { $ne: 'skipped' } } },
         {
           $group: {
             _id: { language: '$language', topic: '$topic' },
@@ -106,7 +106,7 @@ get(
         },
       ]),
       AnswerEvent.aggregate<{ _id: string; answers: number; correct: number; learners: unknown[]; lesson: unknown }>([
-        { $match: { isRetry: false, verdict: { $ne: 'skipped' } } },
+        { $match: { verdict: { $ne: 'skipped' } } },
         {
           $group: {
             _id: '$exerciseKey',

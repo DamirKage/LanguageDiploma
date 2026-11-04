@@ -18,6 +18,23 @@ describe('offline evaluation on synthetic learners', () => {
     }
   });
 
+  it('beats the random baseline on weak-spot coverage and the weakest topic where weak spots exist', () => {
+    for (const name of ['grammar-struggler', 'irregular-forgetful']) {
+      const profile = PROFILES.find((p) => p.name === name)!;
+      const engine = Array.from({ length: 20 }, (_, i) => runSimulation(profile, 'engine', i + 1));
+      const random = Array.from({ length: 20 }, (_, i) => runSimulation(profile, 'random', i + 1));
+      expect(mean(engine.map((r) => r.weakCoverage))).toBeGreaterThan(mean(random.map((r) => r.weakCoverage)) + 0.05);
+      expect(mean(engine.map((r) => r.minSkill))).toBeGreaterThan(mean(random.map((r) => r.minSkill)));
+      expect(mean(engine.map((r) => r.wordRetention))).toBeGreaterThan(mean(random.map((r) => r.wordRetention)));
+    }
+  });
+
+  it('keeps lessons moving for a learner with weak spots', () => {
+    const profile = PROFILES.find((p) => p.name === 'grammar-struggler')!;
+    const runs = Array.from({ length: 20 }, (_, i) => runSimulation(profile, 'engine', i + 1));
+    expect(mean(runs.map((r) => r.lessonsCompleted))).toBeGreaterThanOrEqual(7.5);
+  });
+
   it('stays within the daily time budget on average', () => {
     const profile = PROFILES.find((p) => p.name === 'short-sessions')!;
     const run = runSimulation(profile, 'engine', 3);

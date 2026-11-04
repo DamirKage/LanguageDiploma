@@ -29,7 +29,7 @@ const weightedCorrect = {
 };
 
 const firstAttempts = (user: Types.ObjectId, language: string, extra: Record<string, unknown> = {}) => ({
-  $match: { user, language, isRetry: false, verdict: { $ne: 'skipped' }, ...extra },
+  $match: { user, language, verdict: { $ne: 'skipped' }, ...extra },
 });
 
 async function userTz(userId: string) {
@@ -118,14 +118,13 @@ export async function getTimeline(userId: string, language: string, days: number
   const since = startOfLocalDay(new Date(+now - (days - 1) * DAY), tz);
   const dateExpr = { $dateToString: { format: '%Y-%m-%d', date: '$at', timezone: tz } };
   const [answers, reviews] = await Promise.all([
-    AnswerEvent.aggregate<{ _id: string; answers: number; firstAnswers: number; correct: number; ms: number }>([
+    AnswerEvent.aggregate<{ _id: string; answers: number; correct: number; ms: number }>([
       { $match: { user: uid, language, at: { $gte: since }, verdict: { $ne: 'skipped' } } },
       {
         $group: {
           _id: dateExpr,
           answers: { $sum: 1 },
-          firstAnswers: { $sum: { $cond: ['$isRetry', 0, 1] } },
-          correct: { $sum: { $cond: [{ $and: [{ $not: ['$isRetry'] }, { $eq: ['$verdict', 'correct'] }] }, 1, { $cond: [{ $and: [{ $not: ['$isRetry'] }, { $eq: ['$verdict', 'almost'] }] }, 0.7, 0] }] } },
+          correct: { $sum: { $cond: [{ $eq: ['$verdict', 'correct'] }, 1, { $cond: [{ $eq: ['$verdict', 'almost'] }, 0.7, 0] }] } },
           ms: { $sum: '$timeMs' },
         },
       },
@@ -142,9 +141,9 @@ export async function getTimeline(userId: string, language: string, days: number
     const rev = r.get(date);
     return {
       date,
-      answers: day?.firstAnswers ?? 0,
+      answers: day?.answers ?? 0,
       correct: Math.round((day?.correct ?? 0) * 10) / 10,
-      accuracy: day?.firstAnswers ? day.correct / day.firstAnswers : null,
+      accuracy: day?.answers ? day.correct / day.answers : null,
       minutes: Math.round(((day?.ms ?? 0) + (rev?.ms ?? 0)) / 60000),
       reviews: rev?.count ?? 0,
     };
@@ -212,7 +211,7 @@ export async function getErrorAnalytics(userId: string, language: string): Promi
     groupBy('type'),
     groupBy('skill'),
     AnswerEvent.find({ user: userId, language, verdict: { $in: ['incorrect', 'almost'] } }).sort({ at: -1 }).limit(20).lean(),
-    AnswerEvent.countDocuments({ user: userId, language, isRetry: false, verdict: { $ne: 'skipped' } }),
+    AnswerEvent.countDocuments({ user: userId, language, verdict: { $ne: 'skipped' } }),
   ]);
   return {
     byCategory: byCategory.map((c) => ({ category: c._id, errors: c.errors, answers: total, rate: total ? c.errors / total : 0 })),

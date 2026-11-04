@@ -9,3 +9,4 @@ server/uploads/*
 test-results/
 playwright-report/
 demo-data/
+.vitest/

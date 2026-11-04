@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Check } from 'lucide-react';
-import { CEFR_LEVELS, DAILY_MINUTES_OPTIONS, LEARNING_GOALS, type CefrLevel, type LearningGoal } from '@linguapath/shared';
+import { CEFR_LEVELS, DAILY_MINUTES_OPTIONS, LEARNING_GOALS, SELF_ASSESSMENTS, type CefrLevel, type LearningGoal, type PlacementSelfAssessment } from '@linguapath/shared';
 import { learningApi, meApi } from '../../api/endpoints';
 import { useAuth } from '../../auth/AuthContext';
 import { Brand } from '../../components/layout/AppShell';
@@ -26,6 +26,7 @@ export default function OnboardingPage() {
   const [minutes, setMinutes] = useState<number>(user?.dailyMinutes ?? 15);
   const [mode, setMode] = useState<StartMode>('placement');
   const [level, setLevel] = useState<CefrLevel>('A1');
+  const [selfAssessment, setSelfAssessment] = useState<PlacementSelfAssessment>('beginner');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const languages = useLanguages();
@@ -50,7 +51,7 @@ export default function OnboardingPage() {
       setUser(updated);
       for (const key of LEARNING_KEYS) void queryClient.invalidateQueries({ queryKey: key });
       if (mode === 'placement') {
-        const attempt = await learningApi.startPlacement(language);
+        const attempt = await learningApi.startPlacement(language, selfAssessment);
         navigate(`/learn/${attempt.id}`, { replace: true });
       } else {
         await learningApi.skipPlacement(language, mode === 'beginner' ? 'A1' : level);
@@ -167,6 +168,19 @@ export default function OnboardingPage() {
                   </button>
                 ))}
               </div>
+              {mode === 'placement' ? (
+                <fieldset className="fieldset">
+                  <legend className="field__label">{t('onboarding.selfTitle')}</legend>
+                  <p className="small muted">{t('onboarding.selfHint')}</p>
+                  <div className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties} role="radiogroup" aria-label={t('onboarding.selfTitle')}>
+                    {SELF_ASSESSMENTS.map((value) => (
+                      <button key={value} role="radio" aria-checked={selfAssessment === value} className="option option--compact" onClick={() => setSelfAssessment(value)}>
+                        <span className="option__title">{t(`onboarding.self.${value}`)}</span>
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+              ) : null}
               {mode === 'choose' ? (
                 <div className="seg" role="radiogroup" aria-label={t('common.level')}>
                   {CEFR_LEVELS.map((l) => (

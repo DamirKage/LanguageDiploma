@@ -15,9 +15,13 @@
     "typecheck": "npm run typecheck --workspaces",
     "seed": "npm run seed --workspace server",
     "evaluate": "npm run evaluate --workspace server",
-    "demo": "npm run build --workspace client && npm run demo --workspace server"
+    "demo": "npm run build --workspace client && npm run demo --workspace server",
+    "e2e": "playwright test -c e2e"
   },
   "engines": {
     "node": ">=22.12"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
   }
 }
