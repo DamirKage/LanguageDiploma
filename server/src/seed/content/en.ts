@@ -42,19 +42,19 @@ export const english: LanguageSpec = {
                 ['how are you', 'как дела', 'phrase', 'Hi, Kate! How are you?', 'Привет, Кейт! Как дела?'],
               ],
               exercises: [
-                choice('Как ответить на «How are you?»', ['I’m fine, thank you.', 'I’m Anna.', 'Goodbye!'], 0, 'На вопрос о делах отвечают: I’m fine / I’m good / Not bad.'),
-                translate('До свидания!', ['Goodbye!', 'Bye!', 'Bye-bye!'], 'Goodbye — нейтральное «до свидания», Bye и Bye-bye — более разговорное «пока».'),
+                choice('Как ответить на «How are you?»', ['I’m fine, thank you.', 'I am fine, thanks you.', 'Me fine, thank you.'], 0, 'На вопрос о делах отвечают: I’m fine / I’m good / Not bad.'),
+                translate('До свидания!', ['Goodbye!', 'Bye!', 'Bye-bye!', 'Bye for now!', 'See you!', 'See you later!'], 'Goodbye — нейтральное «до свидания», Bye и Bye-bye — более разговорное «пока».'),
                 fill('My ___ is Arman.', ['name'], 'My name is … — «Меня зовут …», дословно «моё имя — …».', {}, { translation: 'Меня зовут Арман.', options: ['name', 'names', 'nome'] }),
                 dialogue(
                   [
                     ['A', 'Hi! I’m Kate.', 'Привет! Я Кейт.'],
                     ['B', null],
                   ],
-                  ['Nice to meet you, Kate. I’m Daniyar.', 'Goodbye, Kate.', 'I’m fine, thank you.'],
+                  ['Nice to meet you, Kate. I’m Daniyar.', 'Nice to meet you, Kate. My name Daniyar.', 'Nice meet you, Kate. I Daniyar.'],
                   0,
                   'Когда человек представляется, принято ответить «Nice to meet you» и назвать себя.',
                 ),
-                translate('Приятно познакомиться.', ['Nice to meet you.', 'Pleased to meet you.'], 'Устойчивая фраза при знакомстве.'),
+                translate('Приятно познакомиться.', ['Nice to meet you.', 'Pleased to meet you.', 'It’s nice to meet you.', 'Glad to meet you.', 'It’s a pleasure to meet you.', 'Nice meeting you.'], 'Устойчивая фраза при знакомстве.'),
                 listen('Good evening!', 'evening — «вечер», ударение на первый слог.', {}, { options: ['Good evening!', 'Good morning!', 'Good night!'], translation: 'Добрый вечер!' }),
                 order(['What', 'is', 'your', 'name'], 'Как тебя зовут?', 'В вопросе с what глагол is стоит перед подлежащим.', { s: 'grammar', t: 'questions' }),
                 speak('Nice to meet you.', 'Приятно познакомиться.', 'meet и you часто сливаются: [ми:чу].'),
@@ -66,9 +66,9 @@ export const english: LanguageSpec = {
                 ),
                 chat(
                   [
-                    ['Hi! I’m Jack. I live in room 12.', 'Привет! Я Джек. Я живу в комнате 12.', ['Hi, Jack! I’m Aliya. Nice to meet you.', 'Goodbye, Jack!', 'I’m twelve.'], 0],
-                    ['Nice to meet you too! How are you?', 'Мне тоже приятно познакомиться! Как дела?', ['I’m fine, thanks. And you?', 'My name is Aliya.', 'Good night!'], 0],
-                    ['I’m good, thanks. Well, see you later!', 'Хорошо, спасибо. Ну, увидимся!', ['See you, Jack!', 'Nice to meet you!', 'Good morning!'], 0],
+                    ['Hi! I’m Jack. I live in room 12.', 'Привет! Я Джек. Я живу в комнате 12.', ['Hi, Jack! I’m Aliya. Nice to meet you.', 'Hi, Jack! I Aliya. Nice to meet you.', 'Hi, Jack! My name are Aliya.'], 0],
+                    ['Nice to meet you too! How are you?', 'Мне тоже приятно познакомиться! Как дела?', ['I’m fine, thanks. And you?', 'I’m fine, thanks. And your?', 'I fine, thanks. And you?'], 0],
+                    ['I’m good, thanks. Well, see you later!', 'Хорошо, спасибо. Ну, увидимся!', ['See you, Jack!', 'See to you, Jack!', 'You see later, Jack!'], 0],
                   ],
                   'При знакомстве называют себя и говорят Nice to meet you; на How are you? отвечают I’m fine, thanks; на See you later — See you!',
                   {},
@@ -76,16 +76,16 @@ export const english: LanguageSpec = {
                 ),
               ],
               test: [
-                choice('Что ответить на «Nice to meet you»?', ['Nice to meet you too.', 'I’m fine, thank you.', 'My name, thank you.'], 0, 'На «Nice to meet you» отвечают «Nice to meet you too» — «Мне тоже приятно познакомиться».'),
+                choice('Что ответить на «Nice to meet you»?', ['Nice to meet you too.', 'Me too nice to meet you.', 'Nice to meeting you too.'], 0, 'На «Nice to meet you» отвечают «Nice to meet you too» — «Мне тоже приятно познакомиться».'),
                 fill('Good ___, Mr Smith!', ['morning'], 'Good morning — «доброе утро», так здороваются до полудня.', {}, { translation: 'Доброе утро, мистер Смит!', options: ['morning', 'evening', 'night'] }),
-                translate('Как дела?', ['How are you?', 'How are you doing?', 'How’s it going?'], 'How are you? — стандартный вопрос «Как дела?»; How’s it going? — более разговорный вариант.'),
+                translate('Как дела?', ['How are you?', 'How are you doing?', 'How’s it going?', 'How are things?', 'How’s everything?', 'How are you getting on?', 'How is it going?'], 'How are you? — стандартный вопрос «Как дела?»; How’s it going? — более разговорный вариант.'),
                 order(['How', 'are', 'you', 'today'], 'Как у тебя дела сегодня?', 'В вопросе глагол are стоит перед подлежащим you, today — в конце.', { s: 'grammar', t: 'questions' }),
                 dialogue(
                   [
                     ['A', 'Goodbye, Anna!', 'До свидания, Анна!'],
                     ['B', null],
                   ],
-                  ['Bye! See you tomorrow.', 'Hello! How are you?', 'My name is Anna.'],
+                  ['Bye! See you tomorrow.', 'Bye! See you in tomorrow.', 'Bye! You see tomorrow.'],
                   0,
                   'На прощание отвечают Bye! / Goodbye! и часто добавляют See you … — «Увидимся …».',
                 ),
@@ -126,7 +126,7 @@ export const english: LanguageSpec = {
                 fill('She ___ an engineer.', ['is'], 'С she — is.', {}, { options: ['am', 'is', 'are'] }),
                 choice('Как правильно сказать «Он учитель»?', ['He is a teacher.', 'He teacher.', 'He is teacher.'], 0, 'Нужен глагол is и артикль a перед профессией.', { s: 'grammar', t: 'articles', d: 2 }),
                 choice('Выберите правильный артикль: ___ engineer', ['an', 'a', '—'], 0, 'engineer начинается с гласного звука, поэтому an.', { s: 'grammar', t: 'articles', d: 2 }),
-                translate('Мы из Казахстана.', ['We are from Kazakhstan.', 'We’re from Kazakhstan.'], 'to be + from + страна.'),
+                translate('Мы из Казахстана.', ['We are from Kazakhstan.', 'We’re from Kazakhstan.', 'We come from Kazakhstan.'], 'to be + from + страна.'),
                 translateBack('My sister is a doctor.', ['Моя сестра врач', 'Моя сестра — врач', 'Моя сестра работает врачом'], 'В русском переводе глагол «быть» опускается.'),
                 listen('I’m from Kazakhstan.', 'I’m = I am.', {}, { translation: 'Я из Казахстана.', answers: ['I’m from Kazakhstan.', 'I am from Kazakhstan.'] }),
                 speak('I am a student.', 'Я студент.', 'Звук [æ] в слове am — открытый, между «а» и «э».'),
@@ -138,9 +138,9 @@ export const english: LanguageSpec = {
                 ),
                 chat(
                   [
-                    ['Hello! Are you a student here?', 'Здравствуйте! Вы здесь учитесь?', ['No, I’m not. I’m a teacher.', 'No, I not a teacher.', 'Yes, I’m from teacher.'], 0],
-                    ['Oh, nice! Where are you from?', 'О, здорово! Откуда вы?', ['I’m from Kazakhstan. And you?', 'I’m a Kazakhstan.', 'I am teacher from.'], 0],
-                    ['I’m from Canada. Is your city big?', 'Я из Канады. Ваш город большой?', ['Yes, it is. Almaty is a big city.', 'Yes, it are big.', 'Yes, I am big.'], 0],
+                    ['Hello! Are you a student here?', 'Здравствуйте! Вы здесь учитесь?', ['No, I’m not. I’m a teacher.', 'No, I not a teacher.', 'No, I’m not. I’m teacher.'], 0],
+                    ['Oh, nice! Where are you from?', 'О, здорово! Откуда вы?', ['I’m from Kazakhstan. And you?', 'I’m a Kazakhstan.', 'I from Kazakhstan. And you?'], 0],
+                    ['I’m from Canada. Is your city big?', 'Я из Канады. Ваш город большой?', ['Yes, it is. Almaty is a big city.', 'Yes, it are big.', 'Yes, it is. Almaty is big city.'], 0],
                   ],
                   'В каждом ответе нужен глагол to be в правильной форме: I’m, it is; перед профессией — артикль a.',
                   { d: 2 },
@@ -188,14 +188,14 @@ export const english: LanguageSpec = {
                 listen('fifteen', 'Ударение в конце — это -teen, значит 15.', {}, { options: ['15', '50', '5'], answers: ['15'] }),
                 choice('Как сказать «Мне 20 лет»?', ['I am twenty years old.', 'I have twenty years.', 'I am twenty years.'], 0, 'Возраст: to be + число (+ years old). «have … years» — ошибка из-за русского «мне … лет».', { s: 'grammar', t: 'to_be', d: 2 }),
                 fill('How ___ are you?', ['old'], 'How old are you? — «Сколько тебе лет?»', { s: 'grammar', t: 'questions' }, { options: ['old', 'many', 'much'] }),
-                translate('Сколько тебе лет?', ['How old are you?'], 'Дословно «Насколько ты стар?»', { t: 'questions', s: 'grammar' }),
+                translate('Сколько тебе лет?', ['How old are you?', 'What’s your age?', 'What is your age?'], 'Дословно «Насколько ты стар?»', { t: 'questions', s: 'grammar' }),
                 choiceRu('Какое это число?', 'forty-two', ['42', '24', '402'], 0, 'forty (40) + two (2). Обратите внимание: forty пишется без u.', {}),
                 dialogue(
                   [
                     ['A', 'What’s your phone number?', 'Какой у тебя номер телефона?'],
                     ['B', null],
                   ],
-                  ['It’s 8 701 555 23 41.', 'I’m 23.', 'It’s my phone.'],
+                  ['It’s 8 701 555 23 41.', 'I’m 8 701 555 23 41.', 'My number 8 701 555 23 41.'],
                   0,
                   'На вопрос о номере называют цифры: It’s …',
                 ),
@@ -208,9 +208,9 @@ export const english: LanguageSpec = {
                 ),
                 chat(
                   [
-                    ['Hello! What’s your name, please?', 'Здравствуйте! Как вас зовут?', ['My name is Dana Bekova.', 'I’m twenty-five.', 'It’s 8 707 345 12 90.'], 0],
-                    ['Thank you. And how old are you?', 'Спасибо. А сколько вам лет?', ['I’m twenty-five.', 'I have twenty-five years.', 'I’m fine, thank you.'], 0],
-                    ['What’s your phone number?', 'Какой у вас номер телефона?', ['It’s 8 707 345 12 90.', 'I’m 8 707 345 12 90.', 'It’s my phone.'], 0],
+                    ['Hello! What’s your name, please?', 'Здравствуйте! Как вас зовут?', ['My name is Dana Bekova.', 'My name Dana Bekova.', 'Me name is Dana Bekova.'], 0],
+                    ['Thank you. And how old are you?', 'Спасибо. А сколько вам лет?', ['I’m twenty-five.', 'I have twenty-five years.', 'I’m twenty-five year old.'], 0],
+                    ['What’s your phone number?', 'Какой у вас номер телефона?', ['It’s 8 707 345 12 90.', 'I’m 8 707 345 12 90.', 'It 8 707 345 12 90.'], 0],
                   ],
                   'Возраст — через to be: I’m twenty-five. Номер телефона называют с It’s …',
                   {},
@@ -221,13 +221,13 @@ export const english: LanguageSpec = {
                 choiceRu('Какое это число?', 'thirteen', ['13', '30', '3'], 0, 'Окончание -teen — это числа 13–19, значит 13. «Тридцать» — thirty.'),
                 choice('Как сказать «Ему тридцать лет»?', ['He is thirty years old.', 'He has thirty years.', 'He is thirty year old.'], 0, 'Возраст: to be + число + years old (years — во множественном числе).', { s: 'grammar', t: 'to_be', d: 2 }),
                 fill('My sister is ___.', ['twelve'], 'twelve — 12, twenty — 20, two — 2.', {}, { translation: 'Моей сестре двенадцать.', options: ['twelve', 'twenty', 'two'] }),
-                translate('Мне пятьдесят лет.', ['I am fifty.', 'I am fifty years old.', 'I am 50.', 'I am 50 years old.'], 'Возраст выражается через to be: I am fifty (years old).', { s: 'grammar', t: 'to_be', d: 2 }),
+                translate('Мне пятьдесят лет.', ['I am fifty.', 'I am fifty years old.', 'I am 50.', 'I am 50 years old.', 'I’m fifty.', 'I’m fifty years old.', 'I am fifty years of age.'], 'Возраст выражается через to be: I am fifty (years old).', { s: 'grammar', t: 'to_be', d: 2 }),
                 dialogue(
                   [
                     ['A', 'How old is your brother?', 'Сколько лет твоему брату?'],
                     ['B', null],
                   ],
-                  ['He’s nineteen.', 'He has nineteen years.', 'He’s fine, thank you.'],
+                  ['He’s nineteen.', 'He has nineteen years.', 'He is nineteen year old.'],
                   0,
                   'Возраст называют с глаголом to be: He’s nineteen. «He has … years» — калька с русского.',
                 ),
@@ -272,7 +272,7 @@ export const english: LanguageSpec = {
                 fill('She ___ two children.', ['has'], 'С she — has.', { s: 'grammar', t: 'present_tense' }, { options: ['have', 'has', 'is'] }),
                 fill('I ___ a sister.', ['have'], 'С I — have.', { s: 'grammar', t: 'present_tense' }, { options: ['have', 'has', 'am'] }),
                 choice('Как сказать «машина моего отца»?', ['my father’s car', 'my father car', 'the car my father'], 0, 'Принадлежность: существительное + ’s.', { s: 'grammar', t: 'possessive', d: 2 }),
-                translate('У меня есть брат.', ['I have a brother.', 'I’ve got a brother.', 'I have got a brother.'], 'have (got) + a + существительное.', { s: 'grammar', d: 2 }),
+                translate('У меня есть брат.', ['I have a brother.', 'I’ve got a brother.', 'I have got a brother.', 'I’ve a brother.'], 'have (got) + a + существительное.', { s: 'grammar', d: 2 }),
                 translateBack('My parents live in Astana.', ['Мои родители живут в Астане'], 'parents — «родители», live — «жить».'),
                 order(['My', 'brother’s', 'name', 'is', 'Timur'], 'Моего брата зовут Тимур.', 'brother’s name — «имя брата».', { t: 'possessive' }),
                 speak('This is my family.', 'Это моя семья.', 'th в this — звонкий межзубный звук: кончик языка между зубами.'),
@@ -284,9 +284,9 @@ export const english: LanguageSpec = {
                 ),
                 chat(
                   [
-                    ['This is my family. Do you have a big family?', 'Это моя семья. У тебя большая семья?', ['Yes, I have two brothers and a sister.', 'Yes, I has two brothers and a sister.', 'Yes, I am two brothers.'], 0],
-                    ['Cool! What’s your brother’s name?', 'Здорово! Как зовут твоего брата?', ['My brother’s name is Timur.', 'My brother name is Timur.', 'My name is brother Timur.'], 0],
-                    ['Does Timur have children?', 'У Тимура есть дети?', ['Yes, he has a son and a daughter.', 'Yes, he have a son and a daughter.', 'Yes, he is a son and a daughter.'], 0],
+                    ['This is my family. Do you have a big family?', 'Это моя семья. У тебя большая семья?', ['Yes, I have two brothers and a sister.', 'Yes, I has two brothers and a sister.', 'Yes, I have two brother and a sister.'], 0],
+                    ['Cool! What’s your brother’s name?', 'Здорово! Как зовут твоего брата?', ['My brother’s name is Timur.', 'My brother name is Timur.', 'Name of my brother is Timur.'], 0],
+                    ['Does Timur have children?', 'У Тимура есть дети?', ['Yes, he has a son and a daughter.', 'Yes, he have a son and a daughter.', 'Yes, he has got son and daughter.'], 0],
                   ],
                   'С I — have, с he — has; принадлежность — через ’s: my brother’s name.',
                   { s: 'grammar', d: 2 },
@@ -296,7 +296,7 @@ export const english: LanguageSpec = {
               test: [
                 fill('Tom ___ a big family.', ['has'], 'С he/she и именем человека — has.', { s: 'grammar', t: 'present_tense' }, { translation: 'У Тома большая семья.', options: ['have', 'has', 'is'] }),
                 choice('Как сказать «сестра Айгерим»?', ['Aigerim’s sister', 'Aigerim sister', 'sister Aigerim’s'], 0, 'Владелец + ’s + то, что ему принадлежит: Aigerim’s sister.', { s: 'grammar', t: 'possessive', d: 2 }),
-                translate('У них трое детей.', ['They have three children.', 'They have got three children.'], 'have (got) + число + существительное; children — множественное число от child.', { s: 'grammar', d: 2 }),
+                translate('У них трое детей.', ['They have three children.', 'They have got three children.', 'They’ve got three children.'], 'have (got) + число + существительное; children — множественное число от child.', { s: 'grammar', d: 2 }),
                 order(['My', 'parents', 'have', 'a', 'big', 'house'], 'У моих родителей большой дом.', '«У кого-то есть» → кто + have + что.', { s: 'grammar', t: 'present_tense' }),
                 translateBack('My mother’s name is Saule.', ['Мою маму зовут Сауле', 'Мою мать зовут Сауле', 'Имя моей мамы Сауле', 'Имя моей мамы — Сауле'], 'mother’s name — «имя мамы», то есть «маму зовут».', { t: 'possessive' }),
               ],
@@ -330,7 +330,7 @@ export const english: LanguageSpec = {
                 ['how much', 'сколько (о цене)', 'phrase', 'How much is the cake?', 'Сколько стоит торт?'],
               ],
               exercises: [
-                choice('Как вежливо заказать кофе?', ['Could I have a coffee, please?', 'Give me coffee.', 'I coffee.'], 0, 'Could I have … please? — вежливая формула заказа.'),
+                choice('Как вежливо заказать кофе?', ['Could I have a coffee, please?', 'Give me coffee.', 'Can I to have a coffee, please?'], 0, 'Could I have … please? — вежливая формула заказа.'),
                 fill('I’d ___ a sandwich, please.', ['like'], 'I’d like = I would like — «я бы хотел».', { s: 'grammar', t: 'modal_verbs' }, { options: ['like', 'want', 'likes'] }),
                 fill('Can I have ___ glass of water?', ['a'], 'glass — исчисляемое, поэтому a glass of water.', { s: 'grammar', t: 'articles', d: 2 }, { options: ['a', 'an', 'some'] }),
                 dialogue(
@@ -339,14 +339,14 @@ export const english: LanguageSpec = {
                     ['B', null],
                     ['A', 'Sure. Anything else?', 'Конечно. Что-нибудь ещё?'],
                   ],
-                  ['Yes, I’d like the soup, please.', 'Yes, I’m Anna.', 'Goodbye!'],
+                  ['Yes, I’d like the soup, please.', 'Yes, I like the soup, please.', 'Yes, I’d like to the soup, please.'],
                   0,
                   'На вопрос о заказе отвечают I’d like … please.',
                   {},
                   'Вы в кафе в Лондоне.',
                 ),
-                translate('Сколько стоит чай?', ['How much is the tea?', 'How much does the tea cost?'], 'Вопрос о цене: How much is …?', { t: 'questions', s: 'grammar', d: 2 }),
-                translate('Можно посмотреть меню, пожалуйста?', ['Can I see the menu, please?', 'Could I see the menu, please?', 'Can I have the menu, please?', 'Could I have the menu, please?', 'Can I see the menu?', 'Could I see the menu?'], 'menu — «меню»; Can/Could I see …? — вежливая просьба.'),
+                translate('Сколько стоит чай?', ['How much is the tea?', 'How much does the tea cost?', 'How much is tea?', 'How much does tea cost?', 'What does the tea cost?', 'What is the price of the tea?'], 'Вопрос о цене: How much is …?', { t: 'questions', s: 'grammar', d: 2 }),
+                translate('Можно посмотреть меню, пожалуйста?', ['Can I see the menu, please?', 'Could I see the menu, please?', 'Can I have the menu, please?', 'Could I have the menu, please?', 'Can I see the menu?', 'Could I see the menu?', 'May I see the menu, please?', 'May I have the menu, please?', 'Can I look at the menu, please?', 'Could I look at the menu, please?', 'Can I have a look at the menu, please?'], 'menu — «меню»; Can/Could I see …? — вежливая просьба.'),
                 listen('Can I have the bill, please?', 'bill — счёт в ресторане (британский вариант).', {}, { translation: 'Можно счёт, пожалуйста?' }),
                 speak('Could I have a coffee, please?', 'Можно мне кофе, пожалуйста?', 'В could буква l не читается: [кʊд].'),
                 categorize(
@@ -357,9 +357,9 @@ export const english: LanguageSpec = {
                 ),
                 chat(
                   [
-                    ['Hello! Are you ready to order?', 'Здравствуйте! Готовы сделать заказ?', ['Yes. Could I have the chicken soup, please?', 'Yes. Give me soup.', 'Yes, I’m ready. Goodbye!'], 0],
-                    ['Of course. Anything to drink?', 'Конечно. Что будете пить?', ['A glass of water, please.', 'A water glass of, please.', 'Some sandwich, please.'], 0],
-                    ['Here you are. Anything else?', 'Пожалуйста. Что-нибудь ещё?', ['No, thank you. Can I have the bill, please?', 'Yes, I’d like goodbye.', 'How old are you?'], 0],
+                    ['Hello! Are you ready to order?', 'Здравствуйте! Готовы сделать заказ?', ['Yes. Could I have the chicken soup, please?', 'Yes. Give me soup.', 'Yes. Can I has the chicken soup, please?'], 0],
+                    ['Of course. Anything to drink?', 'Конечно. Что будете пить?', ['A glass of water, please.', 'A water glass of, please.', 'A glass water, please.'], 0],
+                    ['Here you are. Anything else?', 'Пожалуйста. Что-нибудь ещё?', ['No, thank you. Can I have the bill, please?', 'No, thank you. I can have the bill, please?', 'No, thank. Can I have the bill, please?'], 0],
                   ],
                   'Could I have … please? — вежливый заказ, «Give me» звучит грубо; a glass of water — «стакан воды».',
                   {},
@@ -369,14 +369,14 @@ export const english: LanguageSpec = {
               test: [
                 fill('Can I have ___ water, please?', ['some'], 'water — неисчисляемое существительное, поэтому some, а не a.', { s: 'grammar', t: 'articles', d: 2 }, { translation: 'Можно мне воды, пожалуйста?', options: ['some', 'a', 'an'] }),
                 choiceRu('Что означает эта фраза?', 'How much is the coffee?', ['Сколько стоит кофе?', 'Сколько кофе вы хотите?', 'Можно мне кофе?'], 0, 'How much is …? — вопрос о цене.'),
-                translate('Я бы хотел чашку чая, пожалуйста.', ['I’d like a cup of tea, please.', 'I would like a cup of tea, please.'], 'I’d like = I would like — «я бы хотел»; a cup of — «чашка».', { s: 'grammar', t: 'modal_verbs', d: 2 }),
+                translate('Я бы хотел чашку чая, пожалуйста.', ['I’d like a cup of tea, please.', 'I would like a cup of tea, please.', 'Could I have a cup of tea, please?', 'Can I have a cup of tea, please?', 'I’d like a cup of tea.', 'I would like a cup of tea.'], 'I’d like = I would like — «я бы хотел»; a cup of — «чашка».', { s: 'grammar', t: 'modal_verbs', d: 2 }),
                 order(['Could', 'I', 'see', 'the', 'menu', 'please'], 'Можно посмотреть меню, пожалуйста?', 'В вежливой просьбе could стоит первым, please — в конце.', { s: 'grammar', t: 'modal_verbs' }),
                 dialogue(
                   [
                     ['A', 'Anything else?', 'Что-нибудь ещё?'],
                     ['B', null],
                   ],
-                  ['No, thank you. Can I have the bill, please?', 'Yes, I’m Kate.', 'Nice to meet you.'],
+                  ['No, thank you. Can I have the bill, please?', 'No, thank you. Can I to have the bill, please?', 'No, thank you. I would like bill.'],
                   0,
                   'Официант спрашивает, нужно ли что-то ещё. Можно отказаться и попросить счёт: Can I have the bill, please?',
                   {},
@@ -391,7 +391,7 @@ export const english: LanguageSpec = {
     {
       level: 'A2',
       title: 'Английский A2: события и поездки',
-      description: 'Past Simple, вопросы о прошлом и ориентирование в путешествии.',
+      description: 'Past Simple, Present Simple и Continuous, будущее время, сравнения и ориентирование в путешествии.',
       modules: [
         {
           title: 'Истории и поездки',
@@ -426,7 +426,7 @@ export const english: LanguageSpec = {
                 fill('___ you see the match?', ['Did'], 'Вопрос в Past Simple: Did + подлежащее + глагол в начальной форме.', { s: 'grammar', t: 'past_tense', d: 2 }, { options: ['Did', 'Do', 'Were'] }),
                 choice('Где ошибка?', ['I didn’t went to work.', 'I didn’t go to work.', 'I went to work.'], 0, 'После didn’t глагол стоит в начальной форме: didn’t go.', { s: 'grammar', t: 'past_tense', d: 2 }),
                 choice('Какая форма прошедшего времени у глагола buy?', ['bought', 'buyed', 'brought'], 0, 'buy — неправильный глагол: buy → bought. Не путайте с brought — это прошедшее время от bring («приносить»).', { s: 'grammar', t: 'past_tense' }),
-                translate('Что ты делал на выходных?', ['What did you do at the weekend?', 'What did you do on the weekend?', 'What did you do last weekend?'], 'at the weekend — британский вариант, on the weekend — американский.', { s: 'grammar', t: 'past_tense', d: 3 }),
+                translate('Что ты делал на выходных?', ['What did you do at the weekend?', 'What did you do on the weekend?', 'What did you do last weekend?', 'What did you do over the weekend?', 'What did you do during the weekend?', 'What did you do at the weekends?'], 'at the weekend — британский вариант, on the weekend — американский.', { s: 'grammar', t: 'past_tense', d: 3 }),
                 order(['We', 'visited', 'our', 'grandparents', 'last', 'week'], 'На прошлой неделе мы навестили бабушку и дедушку.', 'Обстоятельство времени обычно стоит в конце предложения.', { t: 'word_order' }, { alternatives: [['Last', 'week', 'we', 'visited', 'our', 'grandparents']] }),
                 listen('I saw a great film yesterday.', 'saw — прошедшее время от see.', {}, { translation: 'Вчера я посмотрел отличный фильм.' }),
                 translateBack('She didn’t come to the party.', ['Она не пришла на вечеринку'], 'didn’t come — отрицание в Past Simple.'),
@@ -450,7 +450,7 @@ export const english: LanguageSpec = {
               test: [
                 fill('Last week we ___ a new car.', ['bought'], 'buy — неправильный глагол: buy → bought.', { s: 'grammar', t: 'past_tense' }, { translation: 'На прошлой неделе мы купили новую машину.', options: ['bought', 'buyed', 'buy'] }),
                 choice('Выберите правильный вопрос.', ['Did she call you yesterday?', 'Did she called you yesterday?', 'Does she called you yesterday?'], 0, 'После did глагол стоит в начальной форме: Did she call …?', { s: 'grammar', t: 'past_tense', d: 2 }),
-                translate('Вчера я не работал.', ['I didn’t work yesterday.', 'Yesterday I didn’t work.'], 'Отрицание в Past Simple: didn’t + глагол в начальной форме.', { s: 'grammar', t: 'past_tense', d: 2 }),
+                translate('Вчера я не работал.', ['I didn’t work yesterday.', 'Yesterday I didn’t work.', 'I wasn’t working yesterday.', 'Yesterday I wasn’t working.', 'I wasn’t at work yesterday.', 'Yesterday I wasn’t at work.'], 'Отрицание в Past Simple: didn’t + глагол в начальной форме.', { s: 'grammar', t: 'past_tense', d: 2 }),
                 order(['Where', 'did', 'you', 'go', 'last', 'summer'], 'Куда ты ездил прошлым летом?', 'Вопросительное слово + did + подлежащее + глагол в начальной форме.', { s: 'grammar', t: 'questions', d: 2 }),
                 dialogue(
                   [
@@ -489,7 +489,7 @@ export const english: LanguageSpec = {
                 ['change', 'пересаживаться; менять', 'verb', 'You have to change at Victoria.', 'Вам нужно пересесть на «Виктории».'],
               ],
               exercises: [
-                choice('Как спросить дорогу к вокзалу?', ['Excuse me, how do I get to the station?', 'Excuse me, where I get station?', 'Station, please, where?'], 0, 'Вежливое начало Excuse me + how do I get to …?', { t: 'questions', s: 'grammar' }),
+                choice('Как спросить дорогу к вокзалу?', ['Excuse me, how do I get to the station?', 'Excuse me, where I get station?', 'Excuse me, how I get to the station?'], 0, 'Вежливое начало Excuse me + how do I get to …?', { t: 'questions', s: 'grammar' }),
                 fill('You ___ to change at Victoria.', ['have'], 'have to — «нужно, приходится».', { s: 'grammar', t: 'modal_verbs', d: 2 }, { options: ['have', 'must', 'can'] }),
                 choiceRu('Что означает это слово?', 'platform', ['платформа', 'билет', 'вокзал'], 0, 'platform — «платформа»; билет — ticket, вокзал — station.'),
                 dialogue(
@@ -497,18 +497,18 @@ export const english: LanguageSpec = {
                     ['A', 'Excuse me, is the museum far from here?', 'Извините, музей далеко отсюда?'],
                     ['B', null],
                   ],
-                  ['No, go straight on and turn left at the bank.', 'Yes, I’m from Almaty.', 'It’s ten pounds.'],
+                  ['No, go straight on and turn left at the bank.', 'No, go straight and turn on left at the bank.', 'No, you go straight on and turn to left in the bank.'],
                   0,
                   'На вопрос о дороге отвечают направлением.',
                 ),
-                translate('Можно билет до Лондона, пожалуйста?', ['Can I have a ticket to London, please?', 'Could I have a ticket to London, please?', 'A ticket to London, please.'], 'Can/Could I have … please? — вежливая просьба.', { d: 2 }),
+                translate('Можно билет до Лондона, пожалуйста?', ['Can I have a ticket to London, please?', 'Could I have a ticket to London, please?', 'A ticket to London, please.', 'May I have a ticket to London, please?', 'One ticket to London, please.', 'Can I get a ticket to London, please?', 'Could I get a ticket to London, please?', 'Can I buy a ticket to London, please?', 'Could I buy a ticket to London, please?'], 'Can/Could I have … please? — вежливая просьба.', { d: 2 }),
                 listen('The train to Oxford leaves from platform four.', 'leaves from platform four — «отходит с четвёртой платформы».', {}, { translation: 'Поезд до Оксфорда отходит с четвёртой платформы.', answers: ['The train to Oxford leaves from platform four.', 'The train to Oxford leaves from platform 4.'] }),
                 order(['Can', 'you', 'help', 'me', 'please'], 'Не могли бы вы мне помочь?', 'В вопросе с can модальный глагол стоит первым.', { t: 'modal_verbs' }),
                 speak('Excuse me, where is the station?', 'Извините, где вокзал?', 'В station «ti» читается как «ш»: [стейшн].'),
                 chat(
                   [
-                    ['Excuse me, how do I get to the British Museum?', 'Извините, как пройти к Британскому музею?', ['Go straight on and turn left at the bank.', 'Yes, I went to the museum yesterday.', 'It’s ten pounds, please.'], 0],
-                    ['Is it far from here?', 'Это далеко отсюда?', ['No, it’s about five minutes on foot.', 'No, it’s about five minutes on feet.', 'Yes, I’m from here.'], 0],
+                    ['Excuse me, how do I get to the British Museum?', 'Извините, как пройти к Британскому музею?', ['Go straight on and turn left at the bank.', 'Go straight on and turn to left at the bank.', 'You go straight and turn on the left near of the bank.'], 0],
+                    ['Is it far from here?', 'Это далеко отсюда?', ['No, it’s about five minutes on foot.', 'No, it’s about five minutes on feet.', 'No, it’s about five minute on foot.'], 0],
                     ['Can I take a bus?', 'А можно доехать на автобусе?', ['Yes, you can, but you have to change at Holborn.', 'Yes, you can to take, but change.', 'Yes, you have take a bus.'], 0],
                   ],
                   'Направление: go straight on, turn left. «Пешком» — on foot (не on feet). have to + глагол — «нужно».',
@@ -527,7 +527,7 @@ export const english: LanguageSpec = {
               test: [
                 choiceRu('Что означает эта фраза?', 'Turn right at the bank.', ['Поверните направо у банка.', 'Поверните налево у банка.', 'Идите прямо до банка.'], 0, 'turn right — «повернуть направо», turn left — «налево», straight on — «прямо».'),
                 fill('Excuse me, how do I ___ to the museum?', ['get'], 'How do I get to …? — «Как мне добраться до …?»', { s: 'grammar', t: 'questions' }, { translation: 'Извините, как мне добраться до музея?', options: ['get', 'arrive', 'find'] }),
-                translate('Мне нужно пересесть в Оксфорде.', ['I have to change at Oxford.', 'I have to change in Oxford.', 'I need to change at Oxford.', 'I need to change in Oxford.'], 'have to / need to — «нужно»; change — «пересаживаться».', { s: 'grammar', t: 'modal_verbs', d: 2 }),
+                translate('Мне нужно пересесть в Оксфорде.', ['I have to change at Oxford.', 'I have to change in Oxford.', 'I need to change at Oxford.', 'I need to change in Oxford.', 'I have to change trains at Oxford.', 'I have to change trains in Oxford.', 'I need to change trains at Oxford.', 'I need to change trains in Oxford.', 'I must change at Oxford.', 'I must change trains at Oxford.'], 'have to / need to — «нужно»; change — «пересаживаться».', { s: 'grammar', t: 'modal_verbs', d: 2 }),
                 order(['Where', 'is', 'the', 'nearest', 'station'], 'Где ближайшая станция?', 'Where + is + подлежащее; nearest — «ближайший».', { s: 'grammar', t: 'questions' }),
                 dialogue(
                   [
@@ -546,7 +546,7 @@ export const english: LanguageSpec = {
         },
         {
           title: 'Повседневная жизнь',
-          description: 'Распорядок дня, покупки и сравнения.',
+          description: 'Распорядок дня, покупки, сравнения, планы на будущее.',
           lessons: [
             {
               key: 'en-a2-daily-routine',
@@ -587,7 +587,7 @@ export const english: LanguageSpec = {
                 fill('My brother ___ TV in the evening.', ['watches'], 'После -ch, -sh, -s, -x добавляется -es: watch → watches.', { s: 'grammar', t: 'present_tense', d: 2 }, { translation: 'Мой брат смотрит телевизор по вечерам.', options: ['watch', 'watchs', 'watches'] }),
                 choice('Где наречие стоит правильно?', ['I usually have lunch at one.', 'I have usually lunch at one.', 'I have lunch usually at one.'], 0, 'Наречие частоты ставится перед смысловым глаголом: usually have.', { s: 'grammar', t: 'word_order', d: 2 }),
                 choiceRu('Что означает это слово?', 'never', ['никогда', 'иногда', 'всегда'], 0, 'never — «никогда». При never отрицание not не нужно: I never eat meat.'),
-                translate('Я ложусь спать в одиннадцать.', ['I go to bed at eleven.', 'I go to bed at 11.', 'I go to bed at eleven o’clock.'], 'go to bed — «ложиться спать»; время указывается с предлогом at.', { d: 2 }),
+                translate('Я ложусь спать в одиннадцать.', ['I go to bed at eleven.', 'I go to bed at 11.', 'I go to bed at eleven o’clock.', 'I go to sleep at eleven.', 'I go to sleep at 11.', 'I go to bed at 11 o’clock.'], 'go to bed — «ложиться спать»; время указывается с предлогом at.', { d: 2 }),
                 order(['He', 'is', 'never', 'late', 'for', 'work'], 'Он никогда не опаздывает на работу.', 'С глаголом to be наречие частоты стоит после него: is never late.', { s: 'grammar', t: 'word_order', d: 2 }),
                 dialogue(
                   [
@@ -606,7 +606,7 @@ export const english: LanguageSpec = {
                   [
                     ['Hi! What time do you usually get up?', 'Привет! Во сколько ты обычно встаёшь?', ['I usually get up at seven on weekdays.', 'I get usually up at seven.', 'I am usually get up at seven.'], 0],
                     ['And when do you have a shower?', 'А когда ты принимаешь душ?', ['I always have a shower before breakfast.', 'I have always a shower before breakfast.', 'I always am a shower before breakfast.'], 0],
-                    ['Great. I never get up before nine, so the bathroom is yours in the morning!', 'Отлично. Я никогда не встаю раньше девяти, так что утром ванная твоя!', ['Perfect! Then we never need to wait.', 'Perfect! Then we don’t never wait.', 'Sorry, I’m never.'], 0],
+                    ['Great. I never get up before nine, so the bathroom is yours in the morning!', 'Отлично. Я никогда не встаю раньше девяти, так что утром ванная твоя!', ['Perfect! Then we never need to wait.', 'Perfect! Then we don’t never wait.', 'Perfect! Then we never needs to wait.'], 0],
                   ],
                   'Наречие частоты стоит перед смысловым глаголом: usually get up, always have. never уже отрицание — don’t never нельзя.',
                   { s: 'grammar', t: 'word_order', d: 2 },
@@ -624,7 +624,7 @@ export const english: LanguageSpec = {
               test: [
                 fill('My father ___ to work by car.', ['goes'], 'С he/she/it: go → goes (после o добавляется -es).', { s: 'grammar', t: 'present_tense' }, { translation: 'Мой папа ездит на работу на машине.', options: ['go', 'goes', 'gos'] }),
                 choice('Как сказать «Она никогда не пьёт кофе»?', ['She never drinks coffee.', 'She doesn’t never drink coffee.', 'She never drink coffee.'], 0, 'never уже отрицание, второе not не нужно; глагол в 3-м лице получает -s: drinks.', { s: 'grammar', d: 2 }),
-                translate('Обычно я встаю в семь.', ['I usually get up at seven.', 'I usually get up at 7.', 'Usually I get up at seven.', 'Usually I get up at 7.', 'I usually get up at seven o’clock.'], 'usually ставится перед смысловым глаголом; get up — «вставать».', { d: 2 }),
+                translate('Обычно я встаю в семь.', ['I usually get up at seven.', 'I usually get up at 7.', 'Usually I get up at seven.', 'Usually I get up at 7.', 'I usually get up at seven o’clock.', 'I normally get up at seven.', 'I normally get up at 7.', 'I usually get up at 7 o’clock.', 'I usually wake up at seven.'], 'usually ставится перед смысловым глаголом; get up — «вставать».', { d: 2 }),
                 order(['Does', 'she', 'have', 'breakfast', 'at', 'home'], 'Она завтракает дома?', 'Does стоит в начале вопроса, а глагол have — в начальной форме, без -s.', { s: 'grammar', t: 'questions', d: 2 }),
                 dialogue(
                   [
@@ -677,7 +677,7 @@ export const english: LanguageSpec = {
                 fill('The red bag is ___ expensive than the black one.', ['more'], 'expensive — длинное прилагательное, поэтому more expensive.', { s: 'grammar', d: 2 }, { translation: 'Красная сумка дороже чёрной.', options: ['more', 'most', 'much'] }),
                 choice('Как сказать «Этот рынок — лучший в городе»?', ['This market is the best in the city.', 'This market is the goodest in the city.', 'This market is the better in the city.'], 0, 'good → better → the best. Формы goodest не существует.', { s: 'grammar', d: 2 }),
                 choiceRu('Что означает эта фраза?', 'Can I try it on?', ['Можно это примерить?', 'Можно это купить?', 'Можно это вернуть?'], 0, 'try on — «примерять»; местоимение it ставится между try и on.', { t: 'shopping' }),
-                translate('Эти туфли дороже, чем те.', ['These shoes are more expensive than those.', 'These shoes are more expensive than those ones.', 'These shoes are more expensive than those shoes.'], 'expensive — длинное прилагательное: more expensive than.', { s: 'grammar', d: 2 }),
+                translate('Эти туфли дороже, чем те.', ['These shoes are more expensive than those.', 'These shoes are more expensive than those ones.', 'These shoes are more expensive than those shoes.', 'These shoes cost more than those.', 'These shoes cost more than those ones.'], 'expensive — длинное прилагательное: more expensive than.', { s: 'grammar', d: 2 }),
                 order(['This', 'is', 'the', 'cheapest', 'phone', 'in', 'the', 'shop'], 'Это самый дешёвый телефон в магазине.', 'Превосходная степень: the + cheapest; артикль the обязателен.', { s: 'grammar', d: 2 }),
                 dialogue(
                   [
@@ -685,7 +685,7 @@ export const english: LanguageSpec = {
                     ['B', null],
                     ['A', 'Of course. The changing rooms are over there.', 'Конечно. Примерочные вон там.'],
                   ],
-                  ['Yes, could I try on this jacket, please?', 'Yes, I try on yesterday.', 'Yes, it is more cheap.'],
+                  ['Yes, could I try on this jacket, please?', 'Yes, could I try on this jacket on, please?', 'Yes, can I to try on this jacket, please?'],
                   0,
                   'Could I try on …, please? — вежливая просьба примерить вещь.',
                   { t: 'shopping' },
@@ -696,9 +696,9 @@ export const english: LanguageSpec = {
                 speak('This one is cheaper than that one.', 'Этот дешевле, чем тот.', 'than произносится безударно, со звонким межзубным th: [ðən].'),
                 chat(
                   [
-                    ['Hello! Can I help you?', 'Здравствуйте! Вам помочь?', ['Yes, please. I’m looking for a cheap phone.', 'Yes, I’m look a cheap phone.', 'No, I’m more cheap.'], 0],
+                    ['Hello! Can I help you?', 'Здравствуйте! Вам помочь?', ['Yes, please. I’m looking for a cheap phone.', 'Yes, I’m look a cheap phone.', 'Yes, please. I look for a cheap phone.'], 0],
                     ['This one is £150 and that one is £200.', 'Этот стоит 150 фунтов, а тот — 200.', ['Is the more expensive one much better?', 'Is the expensiver one gooder?', 'Is the most expensive one better than?'], 0],
-                    ['Yes, it has a bigger screen and a better camera.', 'Да, у него больше экран и лучше камера.', ['Great, I’ll take it. Can I pay by card?', 'Great, it is the bigger in the shop.', 'Great, I bought it yesterday.'], 0],
+                    ['Yes, it has a bigger screen and a better camera.', 'Да, у него больше экран и лучше камера.', ['Great, I’ll take it. Can I pay by card?', 'Great, I take it. Can I pay by card?', 'Great, I’ll take it. Can I pay by a card?'], 0],
                   ],
                   'expensive — длинное прилагательное: more expensive; good → better. Формы expensiver и gooder не существуют.',
                   { t: 'shopping', d: 2 },
@@ -714,7 +714,7 @@ export const english: LanguageSpec = {
               test: [
                 fill('My new flat is ___ than my old one.', ['bigger'], 'big → bigger: после краткого гласного конечная согласная удваивается.', { s: 'grammar' }, { translation: 'Моя новая квартира больше старой.', options: ['bigger', 'biger', 'more big'] }),
                 choice('Как сказать «Это самая дорогая машина»?', ['This is the most expensive car.', 'This is the expensivest car.', 'This is most expensive car.'], 0, 'Длинное прилагательное: the most expensive; артикль the обязателен.', { s: 'grammar', d: 2 }),
-                translate('Этот телефон хуже, чем мой.', ['This phone is worse than mine.', 'This phone is worse than my phone.'], 'bad → worse — неправильная форма; mine — «мой» без существительного.', { s: 'grammar', d: 2 }),
+                translate('Этот телефон хуже, чем мой.', ['This phone is worse than mine.', 'This phone is worse than my phone.', 'This phone is worse than the one I have.'], 'bad → worse — неправильная форма; mine — «мой» без существительного.', { s: 'grammar', d: 2 }),
                 choiceRu('Что означает это слово?', 'cheap', ['дешёвый', 'дорогой', 'удобный'], 0, 'cheap — «дешёвый», expensive — «дорогой».', { t: 'shopping' }),
                 dialogue(
                   [
@@ -728,6 +728,91 @@ export const english: LanguageSpec = {
                 ),
               ],
             },
+            {
+              key: 'en-a2-now-and-future',
+              title: 'Сейчас и потом',
+              objective: 'Различать Present Simple и Present Continuous и говорить о планах с will, be going to и Present Continuous.',
+              topic: 'future_plans',
+              minutes: 13,
+              theory: [
+                {
+                  title: 'Present Simple или Present Continuous',
+                  body: 'В русском одно настоящее время: «Я работаю» значит и «вообще», и «прямо сейчас». В английском это два времени. Present Simple — привычки и факты: I work in a bank. Present Continuous (am/is/are + -ing) — то, что происходит сейчас или временно: I’m working from home this week. Подсказки: now, at the moment, today, this week, Look!, Listen! — для Continuous; usually, every day, often, never — для Simple. Глаголы состояния (know, like, want, need, understand, believe) в Continuous обычно не ставят: I know, а не I am knowing.',
+                  examples: [
+                    ['I usually walk to work, but today I’m taking a taxi.', 'Обычно я хожу на работу пешком, но сегодня еду на такси.'],
+                    ['Look! It’s raining.', 'Смотри! Идёт дождь.'],
+                    ['She doesn’t like coffee.', 'Она не любит кофе.'],
+                  ],
+                },
+                {
+                  title: 'Будущее: will, be going to и Present Continuous',
+                  body: 'По-русски «Я позвоню» и «Я собираюсь позвонить» близки по смыслу, а в английском их различают. will — решение в момент речи, обещание, прогноз-мнение: I’ll help you; I think it will rain. be going to — заранее принятое намерение или прогноз по очевидным признакам: I’m going to study medicine; Look at those clouds — it’s going to rain. Present Continuous — договорённость с конкретным временем: I’m meeting Tom at six. После when и if в значении будущего ставится Present Simple: When I get home, I’ll call you (а не when I will get).',
+                  examples: [
+                    ['The phone’s ringing. — I’ll get it!', 'Телефон звонит. — Я возьму!'],
+                    ['We’re going to buy a new flat next year.', 'В следующем году мы собираемся купить новую квартиру.'],
+                    ['I’m meeting my friends on Saturday.', 'В субботу я встречаюсь с друзьями.'],
+                  ],
+                },
+              ],
+              words: [
+                ['at the moment', 'сейчас, в данный момент', 'phrase', 'I’m busy at the moment.', 'Сейчас я занят.'],
+                ['tonight', 'сегодня вечером', 'adverb', 'What are you doing tonight?', 'Что ты делаешь сегодня вечером?'],
+                ['next month', 'в следующем месяце', 'phrase', 'We’re moving to a new flat next month.', 'В следующем месяце мы переезжаем в новую квартиру.'],
+                ['be going to', 'собираться (что-то сделать)', 'phrase', 'I’m going to learn to drive.', 'Я собираюсь научиться водить машину.'],
+                ['promise', 'обещать', 'verb', 'I promise I’ll call you tomorrow.', 'Обещаю, я позвоню тебе завтра.'],
+                ['probably', 'вероятно, наверное', 'adverb', 'It will probably rain tomorrow.', 'Завтра, наверное, будет дождь.'],
+                ['appointment', 'запись, назначенная встреча', 'noun', 'I have a doctor’s appointment at ten.', 'У меня запись к врачу на десять.'],
+                ['look forward to', 'с нетерпением ждать', 'phrasal verb', 'I’m looking forward to the holidays.', 'Я с нетерпением жду каникул.'],
+              ],
+              exercises: [
+                fill('Be quiet! The baby ___.', ['is sleeping'], 'Действие происходит прямо сейчас → Present Continuous: is sleeping.', { s: 'grammar', t: 'present_tense', d: 2 }, { translation: 'Тише! Ребёнок спит.', options: ['is sleeping', 'sleeps', 'sleeping'] }),
+                fill('My dad usually ___ in an office, but this month he is working from home.', ['works'], 'usually → привычка, Present Simple; is working from home — временная ситуация.', { s: 'grammar', t: 'present_tense', d: 2 }, { translation: 'Обычно папа работает в офисе, но в этом месяце работает из дома.', options: ['works', 'is working', 'work'] }),
+                choice('Как сказать «Я тебя понимаю»?', ['I understand you.', 'I am understanding you.', 'I understanding you.'], 0, 'understand — глагол состояния, в Continuous его обычно не ставят.', { s: 'grammar', t: 'present_tense', d: 2 }),
+                categorize(
+                  ['Present Simple', 'Present Continuous'],
+                  [['usually', 0], ['every Monday', 0], ['never', 0], ['on Sundays', 0], ['right now', 1], ['at the moment', 1], ['this week', 1], ['Look!', 1]],
+                  'Слова-подсказки: регулярность (usually, every Monday, never, on Sundays) — Present Simple; «сейчас» и «временно» (right now, at the moment, this week, Look!) — Present Continuous.',
+                  { s: 'grammar', t: 'present_tense', d: 2 },
+                ),
+                cloze(
+                  'Hi Mum! I [am writing|write|writing] to you from Edinburgh. It [is raining|rains|rain] at the moment, but we [are having|have|has] a great time. Tomorrow we [are going to|will to|going to] visit the castle — we bought the tickets yesterday. I [will|am going|go] call you when we [get|will get|are getting] back to the hotel.',
+                  'Сейчас → Present Continuous (am writing, is raining, are having); заранее решённый план → are going to; обещание → will call; после when — Present Simple (when we get).',
+                  { s: 'grammar', t: 'future_tense', d: 3 },
+                  'Привет, мама! Пишу тебе из Эдинбурга. Сейчас идёт дождь, но мы отлично проводим время. Завтра мы собираемся посетить замок — вчера купили билеты. Я позвоню тебе, когда мы вернёмся в отель.',
+                ),
+                errorSpot('Look at those clouds! It’s going to raining.', 'raining', 'rain', 'После be going to — глагол в начальной форме: it’s going to rain.', { t: 'future_tense', d: 2 }, 'Посмотри на эти тучи! Сейчас пойдёт дождь.'),
+                chat(
+                  [
+                    ['Hey! What are you doing right now?', 'Привет! Что делаешь прямо сейчас?', ['I’m cooking dinner. Why?', 'I cook dinner. Why?', 'I am cook dinner. Why?'], 0],
+                    ['Do you want to go to the cinema tomorrow?', 'Хочешь завтра в кино?', ['Sorry, I can’t. I’m meeting my grandparents tomorrow.', 'Sorry, I can’t. I meet my grandparents tomorrow.', 'Sorry, I can’t. I will meeting my grandparents tomorrow.'], 0],
+                    ['Oh, OK. What about Sunday?', 'Ладно. А в воскресенье?', ['Sunday is fine. I’ll book the tickets tonight.', 'Sunday is fine. I book the tickets tonight.', 'Sunday is fine. I will to book the tickets tonight.'], 0],
+                  ],
+                  'Сейчас → Present Continuous (I’m cooking); договорённость на завтра → I’m meeting; решение в момент разговора → I’ll book. После will частица to не ставится.',
+                  { s: 'grammar', d: 2 },
+                  'Друг пишет вам в мессенджер в пятницу вечером.',
+                ),
+                translate('Сейчас я смотрю фильм.', ['I’m watching a film now.', 'I am watching a film now.', 'I’m watching a movie now.', 'I am watching a movie now.', 'Now I’m watching a film.', 'Now I am watching a film.', 'Now I’m watching a movie.', 'Now I am watching a movie.', 'I’m watching a film right now.', 'I’m watching a movie right now.', 'I am watching a film at the moment.', 'I am watching a movie at the moment.', 'I’m watching a film at the moment.', 'I’m watching a movie at the moment.'], 'Действие в момент речи → Present Continuous: am watching.', { s: 'grammar', t: 'present_tense', d: 2 }),
+                order(['We', 'are', 'going', 'to', 'buy', 'a', 'new', 'car'], 'Мы собираемся купить новую машину.', 'be going to + глагол — заранее принятое намерение.', { s: 'grammar', t: 'future_tense', d: 2 }),
+                dialogue(
+                  [
+                    ['A', 'Oh no, I’ve forgotten my wallet!', 'Ой, я забыл кошелёк!'],
+                    ['B', null],
+                  ],
+                  ['Don’t worry, I’ll pay for you.', 'Don’t worry, I’m going to pay for you.', 'Don’t worry, I pay for you.'],
+                  0,
+                  'Решение принято в момент речи → will: I’ll pay. be going to — для заранее обдуманных планов, Present Simple здесь не подходит.',
+                  { s: 'grammar', t: 'future_tense', d: 3 },
+                  'Вы с другом в кафе, пора платить.',
+                ),
+              ],
+              test: [
+                fill('I ___ my friends at six tonight — we’ve already booked a table.', ['am meeting'], 'Договорённость с конкретным временем → Present Continuous: am meeting.', { s: 'grammar', t: 'future_tense', d: 2 }, { translation: 'Сегодня в шесть я встречаюсь с друзьями — мы уже забронировали столик.', options: ['am meeting', 'meet', 'will meeting'] }),
+                choice('Как сказать «Думаю, завтра будет солнечно»?', ['I think it will be sunny tomorrow.', 'I think it is being sunny tomorrow.', 'I think it is sunny tomorrow.'], 0, 'Прогноз-мнение (I think…) → will.', { s: 'grammar', t: 'future_tense', d: 2 }),
+                errorSpot('Listen! Somebody sings in the next room.', 'sings', 'is singing', 'Listen! указывает, что действие идёт сейчас → Present Continuous: is singing.', { t: 'present_tense', d: 2 }, 'Послушай! Кто-то поёт в соседней комнате.'),
+                translate('Что ты делаешь в эти выходные?', ['What are you doing this weekend?', 'What are you doing at the weekend?', 'What are you doing on the weekend?', 'What are you going to do this weekend?', 'What are you going to do at the weekend?', 'What are you going to do on the weekend?', 'What will you do this weekend?', 'What are your plans for this weekend?', 'What are your plans for the weekend?'], 'Планы на ближайшее будущее — Present Continuous или be going to.', { s: 'grammar', t: 'future_tense', d: 2 }),
+                cloze('Next year my sister [is going to|will to|goes to] study in Seoul. She [is learning|learns|learn] Korean at the moment, and she [thinks|is thinking|think] it’s a beautiful language.', 'Намерение → is going to; at the moment → is learning; think в значении «считать» — глагол состояния: thinks.', { s: 'grammar', t: 'present_tense', d: 3 }, 'В следующем году моя сестра собирается учиться в Сеуле. Сейчас она учит корейский и считает, что это красивый язык.'),
+              ],
+            },
           ],
         },
       ],
@@ -739,7 +824,7 @@ export const english: LanguageSpec = {
       modules: [
         {
           title: 'Своё мнение',
-          description: 'Аргументация и связность речи.',
+          description: 'Аргументация, связность речи и рассказ о прошлом.',
           lessons: [
             {
               key: 'en-b1-opinions',
@@ -772,15 +857,15 @@ export const english: LanguageSpec = {
               exercises: [
                 fill('___ it was raining, we went for a walk.', ['Although'], 'Уступка: although — «хотя».', { s: 'grammar', t: 'conjunctions', d: 2 }, { options: ['Although', 'However', 'Because'] }),
                 fill('The flat is small. ___, it is very cheap.', ['However'], 'However начинает новое предложение и противопоставляет его предыдущему.', { s: 'grammar', t: 'conjunctions', d: 2 }, { options: ['Although', 'However', 'Because'] }),
-                choice('Как вежливо возразить?', ['I see your point, but I think it’s too expensive.', 'You are wrong.', 'No.'], 0, 'I see your point, but … — признаём аргумент собеседника и предлагаем свой.', { s: 'reading', c: 'comprehension' }),
+                choice('Как вежливо возразить?', ['I see your point, but I think it’s too expensive.', 'I am not agree, it’s too expensive.', 'I see your point, but I think it’s too much expensive.'], 0, 'I see your point, but … — признаём аргумент собеседника и предлагаем свой.', { s: 'reading', c: 'comprehension' }),
                 choiceRu('Что означает это слово?', 'disadvantage', ['недостаток', 'преимущество', 'мнение'], 0, 'Приставка dis- придаёт противоположный смысл: advantage — «преимущество», disadvantage — «недостаток».'),
-                translate('По-моему, это хорошая идея.', ['In my opinion, it’s a good idea.', 'In my opinion, it is a good idea.', 'In my opinion, this is a good idea.', 'I think it’s a good idea.', 'I think it is a good idea.'], 'In my opinion, … — нейтральное введение мнения.', { d: 2 }),
+                translate('По-моему, это хорошая идея.', ['In my opinion, it’s a good idea.', 'In my opinion, it is a good idea.', 'In my opinion, this is a good idea.', 'I think it’s a good idea.', 'I think it is a good idea.', 'In my view, it’s a good idea.', 'In my view, this is a good idea.', 'I believe it’s a good idea.', 'I think that it’s a good idea.', 'I think this is a good idea.'], 'In my opinion, … — нейтральное введение мнения.', { d: 2 }),
                 dialogue(
                   [
                     ['A', 'I think working from home is better.', 'Я думаю, работать из дома лучше.'],
                     ['B', null],
                   ],
-                  ['I agree, because you save time on travel.', 'I agree, because of you save time.', 'Working is home.'],
+                  ['I agree, because you save time on travel.', 'I agree, because of you save time.', 'I agree, because you saving time on travel.'],
                   0,
                   'because + полное предложение (подлежащее и сказуемое).',
                   { t: 'conjunctions', d: 2 },
@@ -804,17 +889,101 @@ export const english: LanguageSpec = {
               test: [
                 fill('We stayed at home ___ it was raining.', ['because'], 'Причина — because: «потому что шёл дождь».', { s: 'grammar', t: 'conjunctions', d: 2 }, { translation: 'Мы остались дома, потому что шёл дождь.', options: ['because', 'although', 'however'] }),
                 choice('Какое предложение построено правильно?', ['The hotel was expensive. However, the rooms were great.', 'However the hotel was expensive, the rooms were great.', 'The hotel was expensive, although, the rooms were great.'], 0, 'However начинает новое предложение и отделяется запятой; although вводит придаточное без запятых вокруг себя.', { s: 'grammar', t: 'conjunctions', d: 2 }),
-                translate('Я с тобой не согласен.', ['I don’t agree with you.', 'I disagree with you.'], 'agree with someone — «соглашаться с кем-то»; отрицание — don’t agree или disagree.', { d: 2 }),
+                translate('Я с тобой не согласен.', ['I don’t agree with you.', 'I disagree with you.', 'I can’t agree with you.', 'I do not agree with you.'], 'agree with someone — «соглашаться с кем-то»; отрицание — don’t agree или disagree.', { d: 2 }),
                 translateBack('As far as I’m concerned, the main advantage is the price.', ['Что касается меня, главное преимущество — цена', 'По-моему, главное преимущество — цена', 'На мой взгляд, главное преимущество — цена', 'По моему мнению, главное преимущество — цена', 'Что касается меня, главное преимущество это цена', 'По-моему, главное преимущество это цена'], 'As far as I’m concerned — «что касается меня, на мой взгляд»; advantage — «преимущество».', { d: 2 }),
                 dialogue(
                   [
                     ['A', 'I think social networks are a waste of time.', 'Я думаю, соцсети — пустая трата времени.'],
                     ['B', null],
                   ],
-                  ['I see your point, but they also help people keep in touch.', 'I see your point, because of they help people.', 'However I see, they are waste.'],
+                  ['I see your point, but they also help people keep in touch.', 'I see your point, because of they help people.', 'I see your point, however they also help people keep in touch.'],
                   0,
                   'I see your point, but … — вежливое несогласие: признаём мысль собеседника и приводим свой аргумент.',
                   { d: 2 },
+                ),
+              ],
+            },
+            {
+              key: 'en-b1-past-stories',
+              title: 'Что случилось?',
+              objective: 'Рассказывать истории с Past Continuous и Past Simple и выбирать между Present Perfect и Past Simple.',
+              topic: 'past_events',
+              minutes: 13,
+              theory: [
+                {
+                  title: 'Past Continuous: фон и процесс',
+                  body: 'В русском процесс в прошлом передаёт несовершенный вид: «я шёл», «мы ужинали». В английском для этого есть Past Continuous (was/were + -ing), а законченное короткое событие — Past Simple: I was walking home when it started to rain. Длительное действие обычно вводится словом while, короткое — словом when. Два параллельных процесса — оба в Past Continuous: While I was cooking, my husband was watching TV. Но цепочка событий подряд — Past Simple: I came home, had dinner and went to bed.',
+                  examples: [
+                    ['I was having dinner when you called.', 'Я ужинал, когда ты позвонил.'],
+                    ['While we were driving, the kids were sleeping.', 'Пока мы ехали, дети спали.'],
+                    ['What were you doing at 8 pm yesterday?', 'Что ты делал вчера в восемь вечера?'],
+                  ],
+                },
+                {
+                  title: 'Present Perfect или Past Simple',
+                  body: 'По-русски «Я потерял ключи» может быть и новостью с результатом сейчас, и частью рассказа о прошлом. В английском различают: если важен результат сейчас и время не названо — Present Perfect (I’ve lost my keys — ключей нет; Have you ever…? — опыт; just, already, yet). Если время указано или подразумевается, или мы рассказываем историю шаг за шагом — Past Simple: I lost my keys yesterday. Вопрос с When всегда в Past Simple: When did it happen? Типичная схема новости: первое предложение в Present Perfect, подробности — в Past Simple.',
+                  examples: [
+                    ['I’ve just finished my report.', 'Я только что закончил отчёт.'],
+                    ['Have you seen the new Bond film? — Yes, I saw it last week.', 'Ты смотрел новый фильм о Бонде? — Да, на прошлой неделе.'],
+                    ['A fire has broken out in the city centre. It started at midnight.', 'В центре города вспыхнул пожар. Он начался в полночь.'],
+                  ],
+                },
+              ],
+              words: [
+                ['accident', 'авария, несчастный случай', 'noun', 'He saw the accident on his way to work.', 'Он видел аварию по дороге на работу.'],
+                ['happen', 'случаться, происходить', 'verb', 'When did it happen?', 'Когда это случилось?'],
+                ['suddenly', 'вдруг, внезапно', 'adverb', 'Suddenly the lights went out.', 'Вдруг погас свет.'],
+                ['while', 'пока, в то время как', 'conjunction', 'I fell asleep while I was reading.', 'Я заснул, пока читал.'],
+                ['already', 'уже', 'adverb', 'I have already booked the tickets.', 'Я уже забронировал билеты.'],
+                ['yet', 'ещё (не); уже (в вопросе)', 'adverb', 'Have you finished yet?', 'Ты уже закончил?'],
+                ['witness', 'свидетель; быть свидетелем', 'noun', 'The police are looking for witnesses.', 'Полиция ищет свидетелей.'],
+                ['lose', 'терять', 'verb', 'I always lose my umbrella.', 'Я всё время теряю зонт.'],
+              ],
+              exercises: [
+                fill('I ___ a shower when the lights went out.', ['was having'], 'Процесс, который прервало короткое событие, → Past Continuous: was having.', { s: 'grammar', t: 'past_tense', d: 2 }, { translation: 'Я принимал душ, когда погас свет.', options: ['was having', 'had', 'have had'] }),
+                fill('While she ___ to work, she saw an accident.', ['was driving'], 'while + длительное действие → Past Continuous; короткое событие saw — Past Simple.', { s: 'grammar', t: 'past_tense', d: 2 }, { translation: 'Когда она ехала на работу, она увидела аварию.', options: ['was driving', 'drove', 'has driven'] }),
+                choice('Как сказать «Я уже прочитал эту книгу»?', ['I have already read this book.', 'I already have read this book yesterday.', 'I was already reading this book.'], 0, 'already + результат сейчас → Present Perfect. С yesterday Present Perfect невозможен, а Past Continuous означал бы «читал (процесс)».', { s: 'grammar', t: 'present_tense', d: 2 }),
+                errorSpot('I haven’t finished my report already.', 'already', 'yet', 'В отрицаниях «ещё не» — yet, а не already: I haven’t finished it yet. already — в утверждениях.', { t: 'present_tense', d: 2 }, 'Я ещё не закончил отчёт.'),
+                categorize(
+                  ['Present Perfect', 'Past Simple'],
+                  [['just', 0], ['already', 0], ['ever', 0], ['yet', 0], ['yesterday', 1], ['two days ago', 1], ['in 2015', 1], ['last night', 1]],
+                  'just, already, ever, yet — время не названо, важен результат или опыт → Present Perfect. yesterday, ago, in 2015, last night — конкретный момент в прошлом → Past Simple.',
+                  { s: 'grammar', t: 'past_tense', d: 2 },
+                ),
+                cloze(
+                  'Last night I [was walking|walked|have walked] home when I suddenly [heard|was hearing|have heard] a loud noise. A car [had|has had|was having] an accident near the bridge. While I [was calling|have called|call] the police, a witness [ran|has run|runs] to help the driver. Luckily, he wasn’t hurt.',
+                  'Фон — Past Continuous (was walking, was calling); короткие события на этом фоне — Past Simple (heard, had, ran). Last night — конкретное время, поэтому Present Perfect не подходит.',
+                  { s: 'grammar', t: 'past_tense', d: 3 },
+                  'Вчера вечером я шёл домой, как вдруг услышал громкий шум. У моста попала в аварию машина. Пока я звонил в полицию, один из свидетелей подбежал помочь водителю. К счастью, он не пострадал.',
+                ),
+                chat(
+                  [
+                    ['Hi! Where were you at 10? We were waiting for you.', 'Привет! Где ты был в 10? Мы тебя ждали.', ['Sorry! I was sitting in a traffic jam for an hour.', 'Sorry! I have sat in a traffic jam for an hour.', 'Sorry! I sit in a traffic jam for an hour.'], 0],
+                    ['Oh no. Have you read the new report yet?', 'Вот беда. Ты уже прочитал новый отчёт?', ['Not yet, but I’ve just downloaded it.', 'Not yet, but I just have downloaded it yesterday.', 'Not already, but I downloaded it.'], 0],
+                    ['OK. Did the client call you?', 'Ясно. Клиент тебе звонил?', ['Yes, he called me while I was driving to the office.', 'Yes, he has called me while I drove to the office.', 'Yes, he was calling me while I have driven to the office.'], 0],
+                  ],
+                  'Процесс в момент в прошлом — Past Continuous (was sitting, was driving); just + результат — Present Perfect; «ещё нет» — not yet, а не not already.',
+                  { s: 'grammar', d: 2 },
+                  'Коллега пишет вам после совещания, на которое вы опоздали.',
+                ),
+                translate('Я только что потерял ключи.', ['I have just lost my keys.', 'I’ve just lost my keys.', 'I have just lost my key.', 'I’ve just lost my key.', 'I just lost my keys.', 'I have just lost the keys.', 'I’ve just lost the keys.'], 'just + результат сейчас → Present Perfect: have just lost (в американском варианте допустимо и I just lost).', { s: 'grammar', t: 'present_tense', d: 2 }),
+                order(['What', 'were', 'you', 'doing', 'at', 'eight', 'last', 'night'], 'Что ты делал вчера в восемь вечера?', 'Вопрос в Past Continuous: вопросительное слово + were + подлежащее + -ing.', { s: 'grammar', t: 'questions', d: 2 }),
+                translateBack('Have you ever witnessed an accident?', ['Ты когда-нибудь был свидетелем аварии?', 'Вы когда-нибудь были свидетелем аварии?', 'Ты когда-нибудь становился свидетелем аварии?', 'Вы когда-нибудь становились свидетелем аварии?', 'Ты когда-нибудь видел аварию?', 'Вы когда-нибудь видели аварию?', 'Вы когда-нибудь были свидетелем несчастного случая?', 'Ты когда-нибудь был свидетелем несчастного случая?'], 'Have you ever…? — вопрос об опыте в Present Perfect; witness — «быть свидетелем».', { d: 2 }),
+              ],
+              test: [
+                fill('Have you finished your essay ___?', ['yet'], 'В вопросах «уже?» с Present Perfect обычно ставят yet в конце.', { s: 'grammar', t: 'present_tense', d: 2 }, { translation: 'Ты уже закончил эссе?', options: ['yet', 'already', 'still'] }),
+                errorSpot('The children were playing in the garden when it start to rain.', 'start', 'started', 'Короткое событие, прервавшее процесс, — Past Simple: started.', { t: 'past_tense', d: 2 }, 'Дети играли в саду, когда начался дождь.'),
+                choice('Выберите правильный вариант.', ['I saw this film last week.', 'I have seen this film last week.', 'I was seeing this film last week.'], 0, 'last week — конкретное время → Past Simple. Present Perfect с ним невозможен, а see в значении «посмотреть» в Continuous не ставят.', { s: 'grammar', t: 'past_tense', d: 2 }),
+                translate('Когда я пришёл, они ужинали.', ['When I arrived, they were having dinner.', 'When I came, they were having dinner.', 'When I came in, they were having dinner.', 'When I got there, they were having dinner.', 'They were having dinner when I arrived.', 'They were having dinner when I came.', 'When I arrived, they were eating dinner.', 'When I came, they were eating dinner.', 'They were eating dinner when I arrived.', 'They were eating dinner when I came.', 'When I arrived, they were having supper.', 'They were having supper when I arrived.'], 'Процесс («ужинали») — Past Continuous, короткое событие («пришёл») — Past Simple.', { s: 'grammar', t: 'past_tense', d: 3 }),
+                dialogue(
+                  [
+                    ['A', 'Why is your hand bandaged?', 'Почему у тебя забинтована рука?'],
+                    ['B', null],
+                  ],
+                  ['I’ve hurt it. I fell while I was running in the park.', 'I hurt it. I was falling while I ran in the park.', 'I’ve hurt it. I have fallen while I was running in the park yesterday.'],
+                  0,
+                  'Новость с результатом сейчас — Present Perfect (I’ve hurt it), подробности истории — Past Simple (fell) на фоне Past Continuous (was running).',
+                  { s: 'grammar', t: 'past_tense', d: 3 },
                 ),
               ],
             },
@@ -863,7 +1032,7 @@ export const english: LanguageSpec = {
                 fill('She has been a teacher ___ 2019.', ['since'], 'Точка начала (с какого момента) → since.', { s: 'grammar', t: 'present_tense', d: 2 }, { translation: 'Она работает учителем с 2019 года.', options: ['for', 'since', 'from'] }),
                 choice('Какое предложение правильное?', ['I worked in a bank in 2018.', 'I have worked in a bank in 2018.', 'I have work in a bank in 2018.'], 0, 'С конкретной датой в прошлом (in 2018) нужен Past Simple, а не Present Perfect.', { s: 'grammar', t: 'past_tense', d: 2 }),
                 choiceRu('Что означает это слово?', 'salary', ['зарплата', 'собеседование', 'коллега'], 0, 'salary — зарплата (обычно месячная или годовая); собеседование — job interview, коллега — colleague.'),
-                translate('Я работаю в этой компании с 2020 года.', ['I have worked for this company since 2020.', 'I have worked at this company since 2020.', 'I have worked in this company since 2020.', 'I have been working for this company since 2020.', 'I have been working at this company since 2020.', 'I have been working in this company since 2020.'], 'Русское настоящее время + «с …» → Present Perfect + since.', { s: 'grammar', t: 'present_tense', d: 3 }),
+                translate('Я работаю в этой компании с 2020 года.', ['I have worked for this company since 2020.', 'I have worked at this company since 2020.', 'I have worked in this company since 2020.', 'I have been working for this company since 2020.', 'I have been working at this company since 2020.', 'I have been working in this company since 2020.', 'I’ve worked for this company since 2020.', 'I’ve been working for this company since 2020.', 'I have worked with this company since 2020.'], 'Русское настоящее время + «с …» → Present Perfect + since.', { s: 'grammar', t: 'present_tense', d: 3 }),
                 order(['Have', 'you', 'ever', 'had', 'a', 'job', 'interview'], 'Ты когда-нибудь был на собеседовании?', 'Вопрос в Present Perfect: Have + подлежащее + ever + V3.', { s: 'grammar', t: 'questions', d: 2 }),
                 dialogue(
                   [
@@ -897,7 +1066,7 @@ export const english: LanguageSpec = {
               test: [
                 fill('They have known each other ___ they were children.', ['since'], 'since может вводить целое придаточное — точку начала: since they were children.', { s: 'grammar', t: 'present_tense', d: 3 }, { translation: 'Они знают друг друга с детства.', options: ['since', 'for', 'from'] }),
                 choice('Как сказать «Он ни разу не был в Лондоне»?', ['He has never been to London.', 'He has never went to London.', 'He didn’t never be in London.'], 0, 'Опыт → Present Perfect: has never been to … (V3 от be — been).', { s: 'grammar', t: 'present_tense', d: 2 }),
-                translate('Она работает здесь два года.', ['She has worked here for two years.', 'She has been working here for two years.'], 'Действие продолжается до сих пор → Present Perfect + for.', { s: 'grammar', t: 'present_tense', d: 3 }),
+                translate('Она работает здесь два года.', ['She has worked here for two years.', 'She has been working here for two years.', 'She has worked here for 2 years.', 'She has been working here for 2 years.', 'She’s been working here for two years.'], 'Действие продолжается до сих пор → Present Perfect + for.', { s: 'grammar', t: 'present_tense', d: 3 }),
                 choiceRu('Что означает эта фраза?', 'I have a job interview on Monday.', ['В понедельник у меня собеседование.', 'В понедельник у меня выходной.', 'В понедельник я начинаю новую работу.'], 0, 'job interview — «собеседование при приёме на работу».'),
                 dialogue(
                   [
@@ -952,7 +1121,7 @@ export const english: LanguageSpec = {
                 fill('That’s the library ___ I usually study.', ['where'], 'О месте, где что-то происходит, — where.', { s: 'grammar', d: 2 }, { translation: 'Это библиотека, где я обычно занимаюсь.', options: ['where', 'which', 'who'] }),
                 choice('В каком предложении that можно опустить?', ['The lecture that we attended was boring.', 'The professor that teaches us is from Oxford.', 'The exam that starts at nine is in room 5.'], 0, 'Местоимение можно опустить, если оно не подлежащее придаточного: в «that we attended» подлежащее — we. В двух других that — подлежащее, без него предложение развалится.', { s: 'grammar', d: 3 }),
                 choiceRu('Что означает это слово?', 'scholarship', ['стипендия', 'школьная программа', 'учёная степень'], 0, 'scholarship — стипендия (часто за успехи в учёбе); учёная степень — degree.', { t: 'education' }),
-                translate('Это университет, где учится моя сестра.', ['This is the university where my sister studies.', 'This is the university my sister studies at.', 'This is the university that my sister studies at.', 'This is the university which my sister studies at.', 'It is the university where my sister studies.'], 'О месте — where; другой вариант — без местоимения, с предлогом at в конце.', { s: 'grammar', d: 3 }),
+                translate('Это университет, где учится моя сестра.', ['This is the university where my sister studies.', 'This is the university my sister studies at.', 'This is the university that my sister studies at.', 'This is the university which my sister studies at.', 'It is the university where my sister studies.', 'This is the university at which my sister studies.', 'That is the university where my sister studies.', 'This is the university where my sister is studying.'], 'О месте — where; другой вариант — без местоимения, с предлогом at в конце.', { s: 'grammar', d: 3 }),
                 order(['The', 'teacher', 'who', 'taught', 'us', 'English', 'was', 'from', 'Canada'], 'Учитель, который преподавал нам английский, был из Канады.', 'Придаточное с who стоит сразу после слова, которое оно определяет.', { s: 'grammar', d: 2 }),
                 dialogue(
                   [
@@ -984,7 +1153,7 @@ export const english: LanguageSpec = {
               test: [
                 fill('I have a friend ___ speaks five languages.', ['who', 'that'], 'О человеке — who (или that); здесь местоимение — подлежащее придаточного, опустить его нельзя.', { s: 'grammar', d: 2 }, { translation: 'У меня есть друг, который говорит на пяти языках.', options: ['who', 'which', 'where'] }),
                 choice('Выберите правильное предложение.', ['The exam I passed was easy.', 'The exam who I passed was easy.', 'The exam I passed it was easy.'], 0, 'Местоимение-дополнение можно опустить; who о предметах не используют, а лишнее it после глагола — ошибка.', { s: 'grammar', d: 3 }),
-                translate('Это предмет, который мне нравится больше всего.', ['This is the subject that I like most.', 'This is the subject which I like most.', 'This is the subject I like most.', 'This is the subject that I like the most.', 'This is the subject which I like the most.', 'This is the subject I like the most.', 'It is the subject I like the most.', 'It is the subject I like most.'], 'О предмете — that/which, а можно и без местоимения: the subject I like most.', { s: 'grammar', d: 3 }),
+                translate('Это предмет, который мне нравится больше всего.', ['This is the subject that I like most.', 'This is the subject which I like most.', 'This is the subject I like most.', 'This is the subject that I like the most.', 'This is the subject which I like the most.', 'This is the subject I like the most.', 'It is the subject I like the most.', 'It is the subject I like most.', 'That is the subject I like most.', 'This is the subject I like best.', 'This is the subject that I like best.', 'This is the subject which I like best.'], 'О предмете — that/which, а можно и без местоимения: the subject I like most.', { s: 'grammar', d: 3 }),
                 order(['This', 'is', 'the', 'room', 'where', 'we', 'have', 'lectures'], 'Это аудитория, где у нас проходят лекции.', 'О месте — where + подлежащее + сказуемое.', { s: 'grammar', d: 2 }),
                 choiceRu('Что означает эта фраза?', 'Did you pass your history exam?', ['Ты сдал экзамен по истории?', 'Ты провалил экзамен по истории?', 'Ты пропустил экзамен по истории?'], 0, 'pass an exam — «сдать экзамен», а не «пропустить». «Провалить» — fail, «пропустить» — miss.', { t: 'education' }),
               ],
@@ -1032,7 +1201,7 @@ export const english: LanguageSpec = {
                 fill('If I ___ more money, I would buy a car.', ['had'], 'Второй тип: if + Past Simple.', { s: 'grammar', t: 'conditionals', d: 3 }, { options: ['have', 'had', 'would have'] }),
                 fill('If I had known, I ___ have come.', ['would'], 'Третий тип: would have + V3.', { s: 'grammar', t: 'conditionals', d: 3 }, { options: ['will', 'would', 'had'] }),
                 choice('Какое предложение говорит о прошлом, которое нельзя изменить?', ['If you had called me, I would have helped.', 'If you call me, I will help.', 'If you called me, I would help.'], 0, 'had called … would have helped — третий тип.', { s: 'grammar', t: 'conditionals', d: 3 }),
-                translate('На твоём месте я бы подождал.', ['If I were you, I would wait.', 'If I were you, I’d wait.', 'If I was you, I would wait.'], 'If I were you, … — устойчивая форма совета.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                translate('На твоём месте я бы подождал.', ['If I were you, I would wait.', 'If I were you, I’d wait.', 'If I was you, I would wait.', 'If I were you, I would have waited.', 'In your place, I would wait.', 'If I were in your place, I would wait.', 'If I were in your shoes, I would wait.'], 'If I were you, … — устойчивая форма совета.', { s: 'grammar', t: 'conditionals', d: 3 }),
                 order(['I', 'wish', 'I', 'had', 'more', 'free', 'time'], 'Жаль, что у меня нет больше свободного времени.', 'wish + Past Simple — сожаление о настоящем.', { s: 'grammar', t: 'conditionals', d: 3 }),
                 translateBack('If we had left earlier, we would have caught the train.', ['Если бы мы вышли раньше, мы бы успели на поезд'], 'had left … would have caught — нереальное прошлое.', { d: 3 }),
                 errorSpot(
@@ -1053,7 +1222,7 @@ export const english: LanguageSpec = {
               test: [
                 fill('If I ___ you, I would talk to her.', ['were', 'was'], 'If I were you — устойчивая форма совета; в разговоре допустимо и was.', { s: 'grammar', t: 'conditionals', d: 2 }, { translation: 'На твоём месте я бы с ней поговорил.', options: ['were', 'am', 'would be'] }),
                 choice('Выберите правильное предложение.', ['If he had left earlier, he wouldn’t have missed the bus.', 'If he would have left earlier, he wouldn’t miss the bus.', 'If he had left earlier, he won’t miss the bus.'], 0, 'Третий тип: if + Past Perfect, would have + V3. Would в части с if не ставится.', { s: 'grammar', t: 'conditionals', d: 3 }),
-                translate('Если бы у меня было больше времени, я бы выучил испанский.', ['If I had more time, I would learn Spanish.', 'I would learn Spanish if I had more time.'], 'Второй тип: if + Past Simple, would + глагол. Части можно менять местами.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                translate('Если бы у меня было больше времени, я бы выучил испанский.', ['If I had more time, I would learn Spanish.', 'I would learn Spanish if I had more time.', 'If I had more time, I would have learnt Spanish.', 'If I had had more time, I would have learnt Spanish.', 'If I had had more time, I would have learned Spanish.', 'If I had more time, I’d learn Spanish.'], 'Второй тип: if + Past Simple, would + глагол. Части можно менять местами.', { s: 'grammar', t: 'conditionals', d: 3 }),
                 order(['I', 'wish', 'I', 'lived', 'closer', 'to', 'the', 'sea'], 'Жаль, что я не живу ближе к морю.', 'wish + Past Simple — сожаление о настоящем: по-русски «жаль, что не …».', { s: 'grammar', t: 'conditionals', d: 3 }),
                 translateBack('If you hadn’t helped me, I would have failed the exam.', ['Если бы ты мне не помог, я бы провалил экзамен', 'Если бы ты не помог мне, я бы провалил экзамен', 'Если бы вы мне не помогли, я бы провалил экзамен', 'Если бы ты мне не помог, я бы не сдал экзамен', 'Если бы вы мне не помогли, я бы не сдал экзамен', 'Если бы не твоя помощь, я бы провалил экзамен', 'Если бы не твоя помощь, я бы не сдал экзамен'], 'hadn’t helped … would have failed — нереальное прошлое.', { d: 3 }),
               ],
@@ -1104,7 +1273,7 @@ export const english: LanguageSpec = {
                 fill('Plastic straws have ___ banned in many cafés.', ['been'], 'Present Perfect Passive: have been + V3.', { s: 'grammar', d: 3 }, { translation: 'Во многих кафе запретили пластиковые трубочки.', options: ['been', 'be', 'being'] }),
                 choice('Как сказать «С отходами нужно что-то делать»?', ['Something must be done about waste.', 'Something must do about waste.', 'Something must been done about waste.'], 0, 'После модального глагола — be + V3: must be done.', { s: 'grammar', d: 3 }),
                 choiceRu('Что означает это слово?', 'endangered', ['находящийся под угрозой исчезновения', 'опасный', 'загрязнённый'], 0, 'endangered — «находящийся под угрозой»: endangered species — вымирающие виды. «Опасный» — dangerous, «загрязнённый» — polluted.', { t: 'environment' }),
-                translate('Эту бумагу можно переработать.', ['This paper can be recycled.'], 'Модальный глагол + be + V3: can be recycled.', { s: 'grammar', d: 2 }),
+                translate('Эту бумагу можно переработать.', ['This paper can be recycled.', 'This paper is recyclable.', 'It is possible to recycle this paper.', 'You can recycle this paper.'], 'Модальный глагол + be + V3: can be recycled.', { s: 'grammar', d: 2 }),
                 order(['It', 'is', 'believed', 'that', 'the', 'lake', 'is', 'polluted'], 'Считается, что озеро загрязнено.', 'It is believed that … — «считается, что…».', { s: 'grammar', d: 3 }),
                 translateBack('A new recycling centre will be opened next year.', ['В следующем году откроют новый центр переработки', 'В следующем году будет открыт новый центр переработки', 'Новый центр переработки откроют в следующем году', 'Новый центр переработки будет открыт в следующем году', 'В следующем году откроется новый центр переработки', 'В следующем году откроют новый центр переработки отходов', 'В следующем году будет открыт новый центр переработки отходов', 'В следующем году откроют новый центр по переработке отходов'], 'will be opened — пассив в будущем времени; по-русски естественнее «откроют».', { d: 3 }),
                 dialogue(
@@ -1137,7 +1306,7 @@ export const english: LanguageSpec = {
               test: [
                 fill('The bridge ___ being repaired at the moment.', ['is'], 'Present Continuous Passive: is being + V3; at the moment — «сейчас».', { s: 'grammar', d: 3 }, { translation: 'Мост сейчас ремонтируют.', options: ['is', 'was', 'has'] }),
                 choice('Как сказать «Этот дом построили в 1905 году»?', ['This house was built in 1905.', 'This house has been built in 1905.', 'This house built in 1905.'], 0, 'Конкретная дата → Past Simple Passive: was built. Без was получится «дом построил».', { s: 'grammar', d: 2 }),
-                translate('Здесь говорят по-английски.', ['English is spoken here.'], 'Неопределённо-личный оборот «говорят» → пассив: is spoken.', { s: 'grammar', d: 2 }),
+                translate('Здесь говорят по-английски.', ['English is spoken here.', 'People speak English here.', 'They speak English here.', 'Here people speak English.'], 'Неопределённо-личный оборот «говорят» → пассив: is spoken.', { s: 'grammar', d: 2 }),
                 order(['More', 'solar', 'panels', 'will', 'be', 'installed', 'next', 'year'], 'В следующем году установят больше солнечных панелей.', 'Будущее время в пассиве: will be + V3.', { s: 'grammar', d: 2 }, { alternatives: [['Next', 'year', 'more', 'solar', 'panels', 'will', 'be', 'installed']] }),
                 choiceRu('Что означает эта фраза?', 'It is said that the river is cleaner now.', ['Говорят, что река теперь стала чище.', 'Он сказал, что река теперь чище.', 'Нужно сделать реку чище.'], 0, 'It is said that … — «говорят, что…», безличная конструкция без конкретного автора.', { t: 'environment', d: 2 }),
               ],
@@ -1215,7 +1384,7 @@ export const english: LanguageSpec = {
               test: [
                 fill('My boss told me ___ be late again.', ['not to'], 'Отрицательная просьба или указание: told me not to + глагол.', { s: 'grammar', d: 3 }, { translation: 'Начальник велел мне больше не опаздывать.', options: ['not to', 'don’t', 'didn’t'] }),
                 choice('Вчера коллега сказал: «I will call you tomorrow». Как передать это сегодня?', ['He said he would call me today.', 'He said he will call me tomorrow.', 'He said he would call me yesterday.'], 0, 'will → would, а «завтра» вчерашнего дня — это сегодня, поэтому today.', { s: 'grammar', d: 3 }),
-                translate('Она сказала, что не доверяет этому источнику.', ['She said that she didn’t trust this source.', 'She said she didn’t trust this source.', 'She said that she didn’t trust that source.', 'She said she didn’t trust that source.', 'She said that she didn’t trust the source.', 'She said she didn’t trust the source.'], 'Согласование времён: «не доверяет» после said → didn’t trust.', { s: 'grammar', d: 3 }),
+                translate('Она сказала, что не доверяет этому источнику.', ['She said that she didn’t trust this source.', 'She said she didn’t trust this source.', 'She said that she didn’t trust that source.', 'She said she didn’t trust that source.', 'She said that she didn’t trust the source.', 'She said she didn’t trust the source.', 'She said she doesn’t trust this source.', 'She said that she doesn’t trust this source.', 'She said she did not trust this source.'], 'Согласование времён: «не доверяет» после said → didn’t trust.', { s: 'grammar', d: 3 }),
                 order(['They', 'asked', 'me', 'where', 'I', 'had', 'found', 'the', 'information'], 'Они спросили меня, где я нашёл информацию.', 'В косвенном вопросе прямой порядок слов: where I had found.', { s: 'grammar', d: 3 }),
                 choiceRu('Что означает эта фраза?', 'The article claims that coffee is good for your health.', ['В статье утверждается, что кофе полезен для здоровья.', 'Статья опровергает, что кофе полезен для здоровья.', 'В статье спрашивают, полезен ли кофе для здоровья.'], 0, 'claim — «утверждать» (часто без доказательств). «Опровергать» — deny.', { t: 'media', d: 2 }),
               ],
@@ -1289,9 +1458,9 @@ export const english: LanguageSpec = {
                   [
                     ['So, what was it that attracted you to this artist?', 'Итак, что же привлекло вас в этой художнице?', ['What struck me was the way she uses light.', 'That what struck me was her light.', 'What struck me it was the way she uses light.'], 0],
                     ['Many critics ignored her early work. Why do you think that was?', 'Многие критики не замечали её ранних работ. Как вы думаете, почему?', ['It was only after her death that her talent was recognised.', 'It was only after her death when her talent recognised.', 'Only after her death her talent was recognised.'], 0],
-                    ['Would you recommend the exhibition to our listeners?', 'Вы бы порекомендовали выставку нашим слушателям?', ['Absolutely. Rarely have I seen such a powerful collection.', 'Absolutely. Rarely I have seen such a powerful collection.', 'Yeah, it’s cool, whatever.'], 0],
+                    ['Would you recommend the exhibition to our listeners?', 'Вы бы порекомендовали выставку нашим слушателям?', ['Absolutely. Rarely have I seen such a powerful collection.', 'Absolutely. Rarely I have seen such a powerful collection.', 'Absolutely. Never I have seen such a powerful collection.'], 0],
                   ],
-                  'What … was и It was … that — расщеплённые предложения; после only after… и rarely в начале нужна инверсия. «Yeah, it’s cool, whatever» — неуместно разговорно для интервью.',
+                  'What … was и It was … that — расщеплённые предложения; после only after… и rarely в начале нужна инверсия. «Never I have seen» — ошибка: после never в начале нужна инверсия (Never have I seen).',
                   { t: 'culture', d: 3 },
                   'Вы — искусствовед, у вас берут интервью на радио о новой выставке.',
                 ),
@@ -1304,7 +1473,7 @@ export const english: LanguageSpec = {
                 fill('Seldom ___ he admit that he is wrong.', ['does'], 'Seldom в начале → инверсия; в Present Simple — does + глагол в начальной форме (admit).', { s: 'grammar', d: 2 }, { translation: 'Он редко признаёт, что неправ.', options: ['does', 'is', 'has'] }),
                 errorSpot('It was my grandmother which taught me to paint.', 'which', 'who', 'В расщеплённом предложении о человеке — who (или that), а не which.', { d: 2 }, 'Именно бабушка научила меня рисовать.'),
                 choice('Выберите предложение без ошибок.', ['Only later did I realise what had happened.', 'Only later I did realise what had happened.', 'Only later realised I what had happened.'], 0, 'Only later в начале → инверсия с did: did I realise.', { s: 'grammar', d: 3 }),
-                translate('Что меня удивило, так это его реакция.', ['What surprised me was his reaction.', 'What surprised me was his response.', 'What really surprised me was his reaction.'], '«Что…, так это…» → What … was …; лишнее it не нужно.', { s: 'grammar', d: 3 }),
+                translate('Что меня удивило, так это его реакция.', ['What surprised me was his reaction.', 'What surprised me was his response.', 'What really surprised me was his reaction.', 'What surprised me was the way he reacted.', 'What surprised me most was his reaction.'], '«Что…, так это…» → What … was …; лишнее it не нужно.', { s: 'grammar', d: 3 }),
                 cloze('No sooner [had|did|have] the curtain gone up [than|when|that] the lights went out. Not until an hour later [did|had|was] the performance continue.', 'No sooner had … than — «не успел … как»; Not until … в начале → инверсия с did + начальная форма (continue).', { s: 'grammar', t: 'culture', d: 3 }, 'Не успел подняться занавес, как погас свет. Спектакль продолжился только через час.'),
               ],
             },
@@ -1371,11 +1540,11 @@ export const english: LanguageSpec = {
                 ),
                 chat(
                   [
-                    ['Your CV shows you started in finance. Why did you switch to data science?', 'По резюме вы начинали в финансах. Почему перешли в анализ данных?', ['In hindsight, it was a turning point: if I hadn’t taken an online course, I wouldn’t be here today.', 'If I didn’t take an online course, I won’t be here today.', 'Finance was boring, you know, so whatever.'], 0],
-                    ['Do you have any regrets about that decision?', 'Вы не жалеете об этом решении?', ['Not really. Had I stayed in finance, I might be earning more, but I wouldn’t enjoy my work.', 'Not really. If I would stay in finance, I earn more.', 'Yes, I regret to stay.'], 0],
-                    ['Should you get the position, when could you start?', 'Если вы получите эту должность, когда сможете приступить?', ['Provided that I give my current employer a month’s notice, I could start in early March.', 'Provided I will give notice, I start March.', 'Whenever you want, no problem, mate.'], 0],
+                    ['Your CV shows you started in finance. Why did you switch to data science?', 'По резюме вы начинали в финансах. Почему перешли в анализ данных?', ['In hindsight, it was a turning point: if I hadn’t taken an online course, I wouldn’t be here today.', 'If I didn’t take an online course, I won’t be here today.', 'In hindsight, if I hadn’t taken an online course, I wouldn’t have been here today.'], 0],
+                    ['Do you have any regrets about that decision?', 'Вы не жалеете об этом решении?', ['Not really. Had I stayed in finance, I might be earning more, but I wouldn’t enjoy my work.', 'Not really. If I would stay in finance, I earn more.', 'Not really. Had I stayed in finance, I would have earned more now, but I wouldn’t enjoy my work.'], 0],
+                    ['Should you get the position, when could you start?', 'Если вы получите эту должность, когда сможете приступить?', ['Provided that I give my current employer a month’s notice, I could start in early March.', 'Provided I will give notice, I start March.', 'Provided that I will give my current employer a month’s notice, I could start in early March.'], 0],
                   ],
-                  'Смешанный тип: hadn’t taken → wouldn’t be (сейчас); Had I stayed = If I had stayed; после provided that будущее выражается Present Simple. Фамильярные ответы неуместны на собеседовании.',
+                  'Смешанный тип: hadn’t taken → wouldn’t be (сейчас); Had I stayed = If I had stayed; после provided that будущее выражается Present Simple. «wouldn’t have been here today» — ошибка: результат в настоящем требует wouldn’t be.',
                   { t: 'work', d: 3 },
                   'Собеседование в исследовательском центре: менеджер по персоналу расспрашивает о вашей карьере.',
                 ),
@@ -1435,7 +1604,7 @@ export const english: LanguageSpec = {
                 ['peer review', 'рецензирование', 'noun', 'All articles undergo peer review before publication.', 'Все статьи перед публикацией проходят рецензирование.'],
               ],
               exercises: [
-                choice('Какая формулировка подходит для научной статьи?', ['The results suggest that the method may be effective.', 'The results prove that the method is 100% effective.', 'The method is totally awesome.'], 0, 'В академическом стиле выводы смягчают: suggest вместо prove, may вместо категоричного is. Awesome — разговорное слово.', { s: 'vocabulary', t: 'science', d: 2 }),
+                choice('Какая формулировка подходит для научной статьи?', ['The results suggest that the method may be effective.', 'The results prove that the method is 100% effective.', 'The results show that the method is undoubtedly effective in all cases.'], 0, 'В академическом стиле выводы смягчают: suggest вместо prove, may вместо категоричного is. undoubtedly … in all cases — слишком категорично для научного текста.', { s: 'vocabulary', t: 'science', d: 2 }),
                 fill('The bridge is thought ___ built in the 12th century.', ['to have been'], 'Действие в прошлом + пассив (мост построили) → перфектный пассивный инфинитив: to have been built.', { s: 'grammar', t: 'passive', d: 3 }, { translation: 'Считается, что мост построили в XII веке.', options: ['to have been', 'to be', 'being'] }),
                 errorSpot('The suspect is believed to have leave the country last night.', 'leave', 'left', 'После to have нужна форма V3: to have left — перфектный инфинитив для действия в прошлом.', { t: 'passive', d: 3 }, 'Считается, что подозреваемый покинул страну прошлой ночью.'),
                 categorize(
@@ -1452,15 +1621,15 @@ export const english: LanguageSpec = {
                 ),
                 chat(
                   [
-                    ['So, does your study prove that coffee prevents heart disease?', 'Итак, ваше исследование доказывает, что кофе предотвращает болезни сердца?', ['Not quite. Our findings suggest that moderate consumption may lower the risk, but further research is needed.', 'Yes, it proves it 100%, everybody should drink coffee!', 'Not quite. Our findings are suggesting that coffee must lower the risk.'], 0],
-                    ['How was the research carried out?', 'Как проводилось исследование?', ['The study was conducted over ten years and involved around 5,000 participants.', 'The study conducted over ten years with participants.', 'We just asked some guys, basically.'], 0],
-                    ['Has the paper been published yet?', 'Статья уже опубликована?', ['It’s currently undergoing peer review, so the results are still tentative.', 'It’s currently undergo peer review, so the results are definite.', 'Nope, dunno when.'], 0],
+                    ['So, does your study prove that coffee prevents heart disease?', 'Итак, ваше исследование доказывает, что кофе предотвращает болезни сердца?', ['Not quite. Our findings suggest that moderate consumption may lower the risk, but further research is needed.', 'Yes. Our findings prove that coffee prevents heart disease in all cases.', 'Not quite. Our findings are suggesting that coffee must lower the risk.'], 0],
+                    ['How was the research carried out?', 'Как проводилось исследование?', ['The study was conducted over ten years and involved around 5,000 participants.', 'The study conducted over ten years with participants.', 'The study was conducting over ten years and involved around 5,000 participants.'], 0],
+                    ['Has the paper been published yet?', 'Статья уже опубликована?', ['It’s currently undergoing peer review, so the results are still tentative.', 'It’s currently undergo peer review, so the results are definite.', 'It’s currently undergoing peer review, so the results are already proven.'], 0],
                   ],
-                  'Учёный говорит осторожно (suggest, may), использует пассив (was conducted) и нейтрально-формальный регистр; «Nope, dunno» и «some guys» — слишком разговорно.',
+                  'Учёный говорит осторожно (suggest, may), использует пассив (was conducted) и нейтрально-формальный регистр; Ошибочные варианты либо слишком категоричны (prove, already proven), либо грамматически неверны (was conducting вместо пассива was conducted).',
                   { t: 'science', d: 3 },
                   'Журналист научно-популярного журнала берёт у вас интервью о вашем исследовании.',
                 ),
-                translate('Считается, что эта картина стоит миллионы.', ['This painting is believed to be worth millions.', 'This painting is thought to be worth millions.', 'This painting is considered to be worth millions.', 'This painting is said to be worth millions.', 'The painting is believed to be worth millions.', 'The painting is thought to be worth millions.', 'It is believed that this painting is worth millions.', 'It is thought that this painting is worth millions.', 'It is said that this painting is worth millions.', 'It is believed this painting is worth millions.'], 'Личный пассив: подлежащее + is believed/thought + to be; или безличное It is believed that…', { s: 'grammar', t: 'passive', d: 3 }),
+                translate('Считается, что эта картина стоит миллионы.', ['This painting is believed to be worth millions.', 'This painting is thought to be worth millions.', 'This painting is considered to be worth millions.', 'This painting is said to be worth millions.', 'The painting is believed to be worth millions.', 'The painting is thought to be worth millions.', 'It is believed that this painting is worth millions.', 'It is thought that this painting is worth millions.', 'It is said that this painting is worth millions.', 'It is believed this painting is worth millions.', 'This painting is supposed to be worth millions.', 'This picture is believed to be worth millions.', 'This picture is thought to be worth millions.'], 'Личный пассив: подлежащее + is believed/thought + to be; или безличное It is believed that…', { s: 'grammar', t: 'passive', d: 3 }),
                 order(['I', 'had', 'my', 'article', 'checked', 'by', 'a', 'native', 'speaker'], 'Мою статью проверил носитель языка (по моей просьбе).', 'Каузатив: have + объект + V3 (+ by + исполнитель). Сам я статью не проверял.', { s: 'grammar', t: 'passive', d: 3 }),
                 translateBack('There is little evidence to support this hypothesis.', ['Существует мало доказательств в пользу этой гипотезы', 'Существует мало данных в пользу этой гипотезы', 'Мало доказательств в пользу этой гипотезы', 'Мало данных в пользу этой гипотезы', 'Существует мало данных, подтверждающих эту гипотезу', 'Существует мало доказательств, подтверждающих эту гипотезу', 'Почти нет доказательств в пользу этой гипотезы', 'Почти нет данных, подтверждающих эту гипотезу', 'Эту гипотезу подтверждает мало данных', 'Мало что подтверждает эту гипотезу'], 'little evidence — «мало (почти нет) доказательств»; evidence — неисчисляемое существительное.', { t: 'science', d: 3 }),
                 choiceRu('Что означает слово tentative в этом предложении?', 'These are tentative conclusions.', ['предварительные, неокончательные', 'окончательные, доказанные', 'ошибочные'], 0, 'tentative — «предварительный, осторожный»: автор не настаивает на выводах.', { t: 'science', d: 2 }),
@@ -1532,12 +1701,12 @@ export const english: LanguageSpec = {
                 ),
                 chat(
                   [
-                    ['Banning cars from the centre will kill local businesses. How do you respond?', 'Запрет машин в центре погубит местный бизнес. Что вы ответите?', ['I see your point. Nevertheless, evidence from other cities suggests that the number of shoppers actually increases.', 'That’s rubbish, you have no idea what you’re talking about.', 'I see your point. Despite, evidence shows shoppers increase.'], 0],
-                    ['But can you back up that claim?', 'Но можете ли вы это подтвердить?', ['Certainly. In Oslo, for instance, shop revenues rose after the centre went car-free.', 'Certainly. In Oslo, for instance, shop revenues have rose after the ban.', 'Well, everybody knows it, so I don’t need to.'], 0],
-                    ['Isn’t this just the tip of the iceberg? Next you’ll ban motorbikes.', 'Не верхушка ли это айсберга? Следующим шагом запретите мотоциклы.', ['Not at all. We are not putting forward a total ban, merely a pedestrian zone in the historic centre.', 'Not at all. We are not putting a total ban forward of motorbikes ever.', 'Maybe. Who cares about motorbikes?'], 0],
-                    ['So, what is your conclusion?', 'Итак, ваш вывод?', ['On balance, the benefits for health and the environment far outweigh the drawbacks.', 'On the other hand, benefits outweigh.', 'In conclusion, I’m right and you’re wrong.'], 0],
+                    ['Banning cars from the centre will kill local businesses. How do you respond?', 'Запрет машин в центре погубит местный бизнес. Что вы ответите?', ['I see your point. Nevertheless, evidence from other cities suggests that the number of shoppers actually increases.', 'I see your point. Although, evidence from other cities suggests that shoppers actually increase.', 'I see your point. Despite, evidence shows shoppers increase.'], 0],
+                    ['But can you back up that claim?', 'Но можете ли вы это подтвердить?', ['Certainly. In Oslo, for instance, shop revenues rose after the centre went car-free.', 'Certainly. In Oslo, for instance, shop revenues have rose after the ban.', 'Certainly. In Oslo, for instance, shop revenues had risen after the centre has gone car-free.'], 0],
+                    ['Isn’t this just the tip of the iceberg? Next you’ll ban motorbikes.', 'Не верхушка ли это айсберга? Следующим шагом запретите мотоциклы.', ['Not at all. We are not putting forward a total ban, merely a pedestrian zone in the historic centre.', 'Not at all. We are not putting a total ban forward of motorbikes ever.', 'Not at all. We are not putting up a total ban, merely a pedestrian zone in the historic centre.'], 0],
+                    ['So, what is your conclusion?', 'Итак, ваш вывод?', ['On balance, the benefits for health and the environment far outweigh the drawbacks.', 'On the other hand, benefits outweigh.', 'On the contrary, the benefits for health and the environment far outweigh the drawbacks.'], 0],
                   ],
-                  'В дебатах возражают вежливо (I see your point. Nevertheless…), подкрепляют тезис примером, уточняют позицию (put forward) и подводят итог (On balance…). Грубость и голословность проигрывают.',
+                  'В дебатах возражают вежливо (I see your point. Nevertheless…), подкрепляют тезис примером, уточняют позицию (put forward) и подводят итог (On balance…). Although не ставится с запятой в начало предложения; on the contrary не вводит вывод; put up a ban — неверный фразовый глагол (нужно put forward).',
                   { t: 'argumentation', d: 3 },
                   'Телевизионные дебаты о запрете автомобилей в историческом центре. Вы выступаете за запрет.',
                 ),
@@ -1554,7 +1723,7 @@ export const english: LanguageSpec = {
                   { s: 'grammar', t: 'conjunctions', d: 3 },
                   'Дискуссия о городском бюджете.',
                 ),
-                choice('Как сказать о концертном зале «яблоку негде было упасть»?', ['The hall was packed to the rafters.', 'There was no place for an apple to fall.', 'The hall was full of apples.'], 0, 'Русские идиомы не переводят дословно: «яблоку негде упасть» — packed to the rafters (или packed out).', { t: 'idioms', d: 2 }),
+                choice('Как сказать о концертном зале «яблоку негде было упасть»?', ['The hall was packed to the rafters.', 'There was no place for an apple to fall.', 'The hall was packed to the ceilings.'], 0, 'Русские идиомы не переводят дословно: «яблоку негде упасть» — packed to the rafters (или packed out).', { t: 'idioms', d: 2 }),
               ],
               test: [
                 choice('The first study found a strong link; the second, ___, found no effect at all.', ['on the other hand', 'moreover', 'therefore'], 0, 'Сравниваются две стороны: on the other hand — «с другой стороны». Moreover добавляет, therefore выражает следствие.', { s: 'grammar', t: 'conjunctions', d: 2 }),
