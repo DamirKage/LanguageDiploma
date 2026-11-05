@@ -12,3 +12,4 @@ demo-data/
 .vitest/
 tools/audio/.work/
 .venv-audio/
+__pycache__/
