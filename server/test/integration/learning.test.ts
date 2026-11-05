@@ -43,7 +43,7 @@ describe('catalogue', () => {
     await enroll(u.auth, 'de');
     const res = await request(app).get('/api/languages/de/path').set(u.auth);
     const path = res.body as LearningPathDTO;
-    expect(path.levels).toHaveLength(4);
+    expect(path.levels).toHaveLength(5);
     expect(path.levels[0]!.modules[0]!.lessons[0]).toMatchObject({ status: 'not_started', key: 'de-a1-greetings' });
     expect(path.levels[0]!.modules[0]!.test).not.toBeNull();
   });
