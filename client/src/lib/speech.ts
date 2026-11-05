@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { audioKey, type AudioManifest, type AudioVoice } from '@linguapath/shared';
+import { playback } from './playback';
 
 /** Voices load asynchronously in most browsers; this hook re-renders when they arrive. */
 export function useVoices(): SpeechSynthesisVoice[] {
@@ -89,7 +90,12 @@ export function useSpeaker(locale: string) {
     (text: string, options: SpeakOptions = {}) => {
       const finish = () => {
         setSpeaking(false);
+        playback.stop();
         options.onEnd?.();
+      };
+      const fail = () => {
+        setSpeaking(false);
+        playback.stop();
       };
       const url = options.audioUrl || recording(text, options.speaker);
       audioRef.current?.pause();
@@ -100,8 +106,9 @@ export function useSpeaker(locale: string) {
         audioRef.current = audio;
         setSpeaking(true);
         audio.onended = finish;
-        audio.onerror = () => setSpeaking(false);
-        void audio.play().catch(() => setSpeaking(false));
+        audio.onerror = fail;
+        playback.startRecording(text, audio);
+        void audio.play().catch(fail);
         return;
       }
       if (!voice || !('speechSynthesis' in window)) return;
@@ -110,7 +117,9 @@ export function useSpeaker(locale: string) {
       utterance.lang = voice.lang;
       utterance.rate = (options.rate ?? 1) * 0.95;
       utterance.onend = finish;
-      utterance.onerror = () => setSpeaking(false);
+      utterance.onerror = fail;
+      utterance.onboundary = (e) => playback.boundary(text, e.charIndex);
+      playback.startSynthesis(text);
       setSpeaking(true);
       window.speechSynthesis.speak(utterance);
     },
@@ -131,6 +140,7 @@ export function useSpeaker(locale: string) {
 
   useEffect(
     () => () => {
+      if (audioRef.current && !audioRef.current.paused) playback.stop();
       audioRef.current?.pause();
       if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
     },

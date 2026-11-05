@@ -33,7 +33,7 @@ function PlanItem({
   const { topicTitle } = useTopics();
   const done = !!item.done;
   return (
-    <li className="plan-item" data-done={done || undefined}>
+    <li className="plan-item" data-done={done || undefined} style={{ '--i': index } as React.CSSProperties}>
       <span className="plan-item__num" aria-hidden>
         {done ? <Check size={16} /> : String(index + 1).padStart(2, '0')}
       </span>

@@ -1,11 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Mic, Square, Turtle, Volume2 } from 'lucide-react';
 import { localize, type AnswerFeedback, type ExerciseAnswer, type PublicExerciseView } from '@linguapath/shared';
 import { Alert, Button } from '../../../components/ui';
 import { useI18n } from '../../../i18n';
+import { prefersReducedMotion } from '../../../lib/motion';
 import { useRecognition, useSpeaker } from '../../../lib/speech';
 import { SpeakButton } from '../SpeakButton';
 import { SelfRecorder } from './SelfRecorder';
+import { AudioRing } from '../../../components/motion/AudioRing';
+import { SpokenText } from '../../../components/motion/SpokenText';
 import { SpecialChars } from './SpecialChars';
 
 export interface LanguageInfo {
@@ -89,7 +92,7 @@ function ChoiceExercise({ exercise, language, answer, onAnswer, locked, feedback
       {exercise.target ? (
         <p className="exercise__target target">
           <SpeakButton text={exercise.target} locale={language.ttsLocale} size="sm" />
-          {exercise.target}
+          <SpokenText text={exercise.target} />
         </p>
       ) : null}
       <OptionList
@@ -201,7 +204,7 @@ function TranslateExercise({ exercise, language, answer, onAnswer, onSubmit, loc
     <div className="exercise">
       <p className={`exercise__source ${toTarget ? '' : 'target'}`}>
         {!toTarget ? <SpeakButton text={exercise.source} locale={language.ttsLocale} size="sm" /> : null}
-        {exercise.source}
+        {toTarget ? exercise.source : <SpokenText text={exercise.source} />}
       </p>
       <TextAnswer
         value={text}
@@ -217,14 +220,31 @@ function TranslateExercise({ exercise, language, answer, onAnswer, onSubmit, loc
   );
 }
 
+/** Moves a tile from where it was to where it is now, so words visibly fly into the sentence. */
+function flyFrom(from: DOMRect | null, to: Element | null | undefined) {
+  if (!from || !to || typeof to.animate !== 'function' || prefersReducedMotion()) return;
+  const r = to.getBoundingClientRect();
+  to.animate(
+    [{ transform: `translate(${from.left - r.left}px, ${from.top - r.top}px) scale(1.06)` }, { transform: 'translate(0, 0) scale(1)' }],
+    { duration: 380, easing: 'cubic-bezier(0.2, 1.3, 0.4, 1)' },
+  );
+}
+
 function OrderExercise({ exercise, answer, onAnswer, locked }: ExerciseProps<'order'>) {
   const { t } = useI18n();
   // Tiles are tracked by index because the same word can appear twice.
   const [picked, setPicked] = useState<number[]>([]);
+  const answerArea = useRef<HTMLDivElement>(null);
+  const bankArea = useRef<HTMLDivElement>(null);
+  const flight = useRef<{ from: DOMRect; target: () => Element | null | undefined } | null>(null);
   useEffect(() => setPicked([]), [exercise.key]);
   useEffect(() => {
     if (answer === null) setPicked([]);
   }, [answer]);
+  useLayoutEffect(() => {
+    if (flight.current) flyFrom(flight.current.from, flight.current.target());
+    flight.current = null;
+  }, [picked]);
   const update = (next: number[]) => {
     setPicked(next);
     onAnswer(next.length ? { type: 'order', tokens: next.map((i) => exercise.tiles[i]!) } : null);
@@ -232,16 +252,35 @@ function OrderExercise({ exercise, answer, onAnswer, locked }: ExerciseProps<'or
   return (
     <div className="exercise">
       <p className="exercise__translation exercise__translation--lead">{exercise.translationText}</p>
-      <div className="tiles tiles--answer" aria-label={t('player.tilesArea')}>
+      <div className="tiles tiles--answer" ref={answerArea} aria-label={t('player.tilesArea')}>
         {picked.map((i, pos) => (
-          <button key={`${i}-${pos}`} type="button" className="tile target" disabled={locked} onClick={() => update(picked.filter((_, p) => p !== pos))}>
+          <button
+            key={`${i}-${pos}`}
+            type="button"
+            className="tile target"
+            disabled={locked}
+            onClick={(e) => {
+              flight.current = { from: e.currentTarget.getBoundingClientRect(), target: () => bankArea.current?.children[i] };
+              update(picked.filter((_, p) => p !== pos));
+            }}
+          >
             {exercise.tiles[i]}
           </button>
         ))}
       </div>
-      <div className="tiles" aria-label={t('player.tilesBank')}>
+      <div className="tiles" ref={bankArea} aria-label={t('player.tilesBank')}>
         {exercise.tiles.map((tile, i) => (
-          <button key={i} type="button" className="tile target" disabled={locked || picked.includes(i)} data-used={picked.includes(i) || undefined} onClick={() => update([...picked, i])}>
+          <button
+            key={i}
+            type="button"
+            className="tile target"
+            disabled={locked || picked.includes(i)}
+            data-used={picked.includes(i) || undefined}
+            onClick={(e) => {
+              flight.current = { from: e.currentTarget.getBoundingClientRect(), target: () => answerArea.current?.lastElementChild };
+              update([...picked, i]);
+            }}
+          >
             {tile}
           </button>
         ))}
@@ -287,9 +326,12 @@ function ListenExercise({ exercise, language, answer, onAnswer, onSubmit, locked
   return (
     <div className="exercise">
       <div className="listen">
-        <button type="button" className="listen__play" data-speaking={speaking || undefined} onClick={() => speak(exercise.audioText, { audioUrl: exercise.audioUrl })} aria-label={t('player.play')}>
-          <Volume2 size={32} aria-hidden />
-        </button>
+        <span className="listen__stage">
+          <AudioRing />
+          <button type="button" className="listen__play" data-speaking={speaking || undefined} onClick={() => speak(exercise.audioText, { audioUrl: exercise.audioUrl })} aria-label={t('player.play')}>
+            <Volume2 size={32} aria-hidden />
+          </button>
+        </span>
         <Button variant="ghost" size="sm" onClick={() => speak(exercise.audioText, { audioUrl: exercise.audioUrl, rate: 0.7 })}>
           <Turtle size={16} aria-hidden />
           {t('player.playSlow')}
@@ -344,7 +386,7 @@ function DialogueExercise({ exercise, language, answer, onAnswer, locked, feedba
             </span>
             {line.text ? (
               <span className="dialogue__bubble">
-                <span className="target">{line.text}</span>
+                <SpokenText text={line.text} className="target" />
                 <SpeakButton text={line.text} locale={language.ttsLocale} size="sm" speaker={line.speaker} />
                 {line.translation ? <span className="dialogue__translation">{line.translation}</span> : null}
               </span>
@@ -398,7 +440,7 @@ function SpeakExercise({ exercise, language, answer, onAnswer, onSubmit, locked 
     <div className="exercise">
       <p className="exercise__target exercise__target--large target">
         <SpeakButton text={exercise.text} locale={language.ttsLocale} />
-        {exercise.text}
+        <SpokenText text={exercise.text} />
       </p>
       <p className="exercise__translation">{exercise.translationText}</p>
       <SelfRecorder />

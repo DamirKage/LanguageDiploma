@@ -11,7 +11,7 @@ function LessonRow({ lesson, index }: { lesson: PathLessonDTO; index: number }) 
   const { t, plural } = useI18n();
   const { topicTitle } = useTopics();
   return (
-    <tr data-status={lesson.status}>
+    <tr data-status={lesson.status} style={{ '--i': index } as React.CSSProperties}>
       <td className="syllabus__num">{index}</td>
       <td>
         <Link to={`/lessons/${lesson.id}`} className="syllabus__title">

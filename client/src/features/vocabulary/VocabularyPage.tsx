@@ -7,6 +7,7 @@ import { Alert, Button, EmptyState, ErrorState, errorMessage, PageLoader, Select
 import { useI18n } from '../../i18n';
 import { qk, useActiveLanguage, useTopics } from '../../lib/queries';
 import { SpeakButton } from '../lesson/SpeakButton';
+import { SpokenText } from '../../components/motion/SpokenText';
 import { WordMeta } from './WordMeta';
 
 const STATES: SrsState[] = ['new', 'learning', 'review', 'mastered', 'leech'];
@@ -62,7 +63,7 @@ function WordRow({ word, ttsLocale }: { word: VocabularyItemDTO; ttsLocale: stri
         <span>{word.translation}</span>
         {word.example ? (
           <span className="small muted">
-            <span className="target">{word.example}</span> <SpeakButton text={word.example} locale={ttsLocale} size="sm" recordingOnly /> — {word.exampleTranslation}
+            <SpokenText text={word.example} className="target" /> <SpeakButton text={word.example} locale={ttsLocale} size="sm" recordingOnly /> — {word.exampleTranslation}
           </span>
         ) : null}
         {open ? <Lookup language={word.language} term={word.term} /> : null}

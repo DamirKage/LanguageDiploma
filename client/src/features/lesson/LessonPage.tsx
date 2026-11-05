@@ -7,6 +7,7 @@ import { useI18n } from '../../i18n';
 import { qk, useLanguages } from '../../lib/queries';
 import { useSpeaker } from '../../lib/speech';
 import { SpeakButton } from './SpeakButton';
+import { SpokenText } from '../../components/motion/SpokenText';
 import { WordMeta } from '../vocabulary/WordMeta';
 
 /** Plays all words of the lesson one after another, each followed by its example. */
@@ -89,7 +90,7 @@ export default function LessonPage() {
                       <li key={j}>
                         <span className="row" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
                           <SpeakButton text={ex.target} locale={ttsLocale} size="sm" />
-                          <span className="target examples__target">{ex.target}</span>
+                          <SpokenText text={ex.target} className="target examples__target" />
                         </span>
                         <span className="muted small">{ex.translation}</span>
                       </li>
@@ -126,7 +127,7 @@ export default function LessonPage() {
                   <span>{word.translation}</span>
                   {word.example ? (
                     <span className="small muted">
-                      <span className="target">{word.example}</span> <SpeakButton text={word.example} locale={ttsLocale} size="sm" recordingOnly /> — {word.exampleTranslation}
+                      <SpokenText text={word.example} className="target" /> <SpeakButton text={word.example} locale={ttsLocale} size="sm" recordingOnly /> — {word.exampleTranslation}
                     </span>
                   ) : null}
                 </div>

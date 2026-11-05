@@ -100,8 +100,8 @@ function Overview({ language }: { language: string }) {
           <>
             <p className="small">{t('progress.planSummary', { done: items.length - open.length, total: items.length, minutes: plural('common.minutes', plan.data!.plannedMinutes) })}</p>
             <ol className="cabinet__plan">
-              {items.map((item) => (
-                <li key={item.key} data-done={item.done || undefined}>
+              {items.map((item, i) => (
+                <li key={item.key} data-done={item.done || undefined} style={{ '--i': i } as React.CSSProperties}>
                   <span className="caption">{t(`recommendation.type.${item.type}`)}</span>
                   <span>{recommendationTitle(item, i18n, { topicTitle })}</span>
                 </li>

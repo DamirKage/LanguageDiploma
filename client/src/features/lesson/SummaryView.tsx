@@ -6,6 +6,7 @@ import { CEFR_LEVELS, type AttemptSummaryDTO, type CefrLevel } from '@linguapath
 import { meApi } from '../../api/endpoints';
 import { Button, buttonClass, Meter, useToast } from '../../components/ui';
 import { useI18n } from '../../i18n';
+import { useCountUp } from '../../lib/motion';
 import { LEARNING_KEYS, useTopics } from '../../lib/queries';
 import { reasonText, recommendationTitle } from '../today/recommendationText';
 import { useStartActivity } from '../today/useStartActivity';
@@ -14,6 +15,33 @@ function formatDuration(sec: number, locale: string) {
   const m = Math.floor(sec / 60);
   const s = sec % 60;
   return `${new Intl.NumberFormat(locale).format(m)}:${String(s).padStart(2, '0')}`;
+}
+
+const BAND_POSITION = { low: 0.2, mid: 0.5, high: 0.8 } as const;
+
+/** The four levels as one scale; the marker travels to the estimate, inside the level by sub-level. */
+function LevelScale({ level, band }: { level: CefrLevel; band: keyof typeof BAND_POSITION }) {
+  const index = CEFR_LEVELS.indexOf(level);
+  const position = ((index + BAND_POSITION[band]) / CEFR_LEVELS.length) * 100;
+  return (
+    <div className="level-scale" aria-hidden>
+      <div className="level-scale__track">
+        {CEFR_LEVELS.map((l, i) => (
+          <span key={l} data-reached={i <= index || undefined} />
+        ))}
+      </div>
+      <span className="level-scale__marker" style={{ left: `${position}%` }} />
+      <div className="level-scale__labels">
+        {CEFR_LEVELS.map((l) => (
+          <span key={l}>{l}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Percent({ value }: { value: number }) {
+  return <>{useCountUp(value)}%</>;
 }
 
 function PlacementResult({ summary, placement }: { summary: AttemptSummaryDTO; placement: NonNullable<AttemptSummaryDTO['placement']> }) {
@@ -43,6 +71,7 @@ function PlacementResult({ summary, placement }: { summary: AttemptSummaryDTO; p
             {t(`levels.${placement.estimatedLevel}`)} ·{' '}
             {placement.band === 'high' && next ? t('summary.placement.bandHigh', { next }) : t(`summary.placement.band.${placement.band}`)}
           </p>
+          <LevelScale level={placement.estimatedLevel} band={placement.band} />
           <p className="small">{t(`summary.placement.canDo.${placement.estimatedLevel}`)}</p>
           <p className="small muted">
             {t('summary.placement.basis', { answers: plural('common.answers', placement.answered), self: t(`onboarding.self.${placement.selfAssessment}`) })}
@@ -119,7 +148,9 @@ export function SummaryView({ summary }: { summary: AttemptSummaryDTO }) {
         <PlacementResult summary={summary} placement={summary.placement} />
       ) : (
         <section className="summary__score" aria-label={t('summary.score')}>
-          <p className="summary__big">{summary.percent}%</p>
+          <p className="summary__big">
+            <Percent value={summary.percent} />
+          </p>
           <div className="stack" style={{ '--gap': 'var(--s2)', flex: 1 } as React.CSSProperties}>
             <Meter value={summary.percent} tone={tone} label={t('summary.score')} />
             <p>{t('summary.points', { points: summary.points, max: summary.maxPoints })}</p>
