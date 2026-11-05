@@ -58,5 +58,41 @@ export function toPublicExercise(ex: Exercise, seed: number, locale = 'ru'): Pub
       };
     case 'speak':
       return { ...common, type: 'speak', text: ex.text, translation: ex.translation, translationText: localize(ex.translation, locale) };
+    case 'error_spot':
+      return {
+        ...common,
+        type: 'error_spot',
+        tokens: ex.tokens,
+        translation: ex.translation,
+        translationText: ex.translation ? localize(ex.translation, locale) : undefined,
+      };
+    case 'cloze_text':
+      return {
+        ...common,
+        type: 'cloze_text',
+        text: ex.text,
+        translation: ex.translation,
+        translationText: ex.translation ? localize(ex.translation, locale) : undefined,
+        gaps: ex.gaps.map((g, i) => ({ options: shuffle(g.options, seed + i) })),
+      };
+    case 'chat':
+      return {
+        ...common,
+        type: 'chat',
+        context: ex.context,
+        translationText: ex.context ? localize(ex.context, locale) : undefined,
+        turns: ex.turns.map((t, i) => ({
+          message: t.message,
+          messageTranslation: t.messageTranslation ? localize(t.messageTranslation, locale) : undefined,
+          options: shuffle(t.options, seed + i),
+        })),
+      };
+    case 'categorize':
+      return {
+        ...common,
+        type: 'categorize',
+        categories: ex.categories.map((c) => localize(c, locale)),
+        items: shuffle(ex.items.map((it) => it.text), seed),
+      };
   }
 }

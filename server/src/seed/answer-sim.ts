@@ -27,5 +27,16 @@ export function simulateAnswer(ex: Exercise, correct: boolean): ExerciseAnswer {
     }
     case 'speak':
       return { type: 'speak', transcript: correct ? ex.text : 'abc' };
+    case 'error_spot':
+      return { type: 'error_spot', index: correct ? ex.errorIndex : (ex.errorIndex + 1) % ex.tokens.length };
+    case 'cloze_text':
+      return { type: 'cloze_text', choices: ex.gaps.map((g) => (correct ? g.answer : (g.options.find((o) => o !== g.answer) ?? 'xyz'))) };
+    case 'chat':
+      return { type: 'chat', replies: ex.turns.map((t) => (correct ? t.options[t.correctIndex]! : t.options.find((_, i) => i !== t.correctIndex)!)) };
+    case 'categorize':
+      return {
+        type: 'categorize',
+        placement: ex.items.map((it) => ({ text: it.text, category: correct ? it.category : (it.category + 1) % ex.categories.length })),
+      };
   }
 }

@@ -27,7 +27,33 @@ export function exerciseTemplate(type: ExerciseType, key: string, topic: string)
       return { ...base, skill: 'reading', errorCategory: 'comprehension', type, lines: [], options: ['', ''], correctIndex: 0 };
     case 'speak':
       return { ...base, skill: 'speaking', errorCategory: 'pronunciation', type, text: '', translation: { ru: '' } };
+    case 'error_spot':
+      return { ...base, type, tokens: [], errorIndex: 0, correction: '' };
+    case 'cloze_text':
+      return { ...base, type, text: '', gaps: [] };
+    case 'chat':
+      return { ...base, skill: 'reading', errorCategory: 'comprehension', type, turns: [] };
+    case 'categorize':
+      return { ...base, skill: 'vocabulary', errorCategory: 'vocabulary', type, categories: ['', ''], items: [] };
   }
+}
+
+/** Cloze text in the editor uses the inline form `[answer|option|option]`. */
+function clozeToInline(text: string, gaps: Array<{ options: string[]; answer: string }>) {
+  return text.replace(/\{(\d+)\}/g, (_, n: string) => {
+    const gap = gaps[Number(n)];
+    return gap ? `[${[gap.answer, ...gap.options.filter((o) => o !== gap.answer)].join('|')}]` : '[]';
+  });
+}
+
+function clozeFromInline(source: string) {
+  const gaps: Array<{ options: string[]; answer: string }> = [];
+  const text = source.replace(/\[([^\]]*)\]/g, (_, body: string) => {
+    const options = body.split('|').map((o) => o.trim()).filter(Boolean);
+    gaps.push({ options, answer: options[0] ?? '' });
+    return `{${gaps.length - 1}}`;
+  });
+  return { text, gaps };
 }
 
 export function ExerciseEditor({
@@ -241,6 +267,82 @@ export function ExerciseEditor({
         <>
           {text('text')}
           {localized('translation')}
+        </>
+      );
+      break;
+    case 'error_spot':
+      specific = (
+        <>
+          <Field label={label('spotSentence')}>
+            {(p) => <TextInput {...p} value={value.tokens.join(' ')} onChange={(e) => set({ tokens: e.target.value.split(/\s+/).filter(Boolean) })} />}
+          </Field>
+          <Field label={label('spotIndex')}>
+            {(p) => <TextInput {...p} type="number" min={1} value={value.errorIndex + 1} onChange={(e) => set({ errorIndex: Math.max(0, Number(e.target.value) - 1) })} />}
+          </Field>
+          {text('correction', 'spotCorrection')}
+          {localized('translation')}
+        </>
+      );
+      break;
+    case 'cloze_text':
+      specific = (
+        <>
+          <Field label={label('clozeText')}>
+            {(p) => <Textarea {...p} rows={4} value={clozeToInline(value.text, value.gaps)} onChange={(e) => set(clozeFromInline(e.target.value))} />}
+          </Field>
+          {localized('translation', 'translation', true)}
+        </>
+      );
+      break;
+    case 'chat':
+      specific = (
+        <>
+          {localized('context', 'context', true)}
+          <Field label={label('chatTurns')}>
+            {(p) => (
+              <Textarea
+                {...p}
+                rows={5}
+                value={value.turns.map((tn) => `${tn.message} => ${tn.options.map((o, i) => (i === tn.correctIndex ? `${o}*` : o)).join(' | ')}`).join('\n')}
+                onChange={(e) =>
+                  set({
+                    turns: lines(e.target.value).map((line) => {
+                      const [message = '', rest = ''] = line.split('=>').map((x) => x.trim());
+                      const raw = rest.split('|').map((o) => o.trim()).filter(Boolean);
+                      const correctIndex = Math.max(0, raw.findIndex((o) => o.endsWith('*')));
+                      return { message, options: raw.map((o) => o.replace(/\*$/, '').trim()), correctIndex };
+                    }),
+                  })
+                }
+              />
+            )}
+          </Field>
+        </>
+      );
+      break;
+    case 'categorize':
+      specific = (
+        <>
+          <Field label={label('categories')}>
+            {(p) => <Textarea {...p} rows={3} value={value.categories.map((c) => loc(c)).join('\n')} onChange={(e) => set({ categories: lines(e.target.value) })} />}
+          </Field>
+          <Field label={label('categoryItems')}>
+            {(p) => (
+              <Textarea
+                {...p}
+                rows={5}
+                value={value.items.map((it) => `${it.text} = ${it.category + 1}`).join('\n')}
+                onChange={(e) =>
+                  set({
+                    items: lines(e.target.value).map((line) => {
+                      const [text = '', n = '1'] = line.split('=').map((x) => x.trim());
+                      return { text, category: Math.max(0, Number(n) - 1 || 0) };
+                    }),
+                  })
+                }
+              />
+            )}
+          </Field>
         </>
       );
       break;

@@ -81,6 +81,40 @@ export interface SpeakExercise extends ExerciseBase {
   translation: LocalizedText;
 }
 
+/** "Find the mistake": exactly one word of the sentence is wrong. */
+export interface ErrorSpotExercise extends ExerciseBase {
+  type: 'error_spot';
+  /** Target-language sentence split into words, punctuation attached to its word. */
+  tokens: string[];
+  errorIndex: number;
+  /** The word that should stand at `errorIndex`. */
+  correction: string;
+  translation?: LocalizedText;
+}
+
+/** A short connected text with several gaps, each chosen from options inside the text. */
+export interface ClozeTextExercise extends ExerciseBase {
+  type: 'cloze_text';
+  /** Target-language text; `{0}`, `{1}`, … mark the gaps in order. */
+  text: string;
+  gaps: Array<{ options: string[]; answer: string }>;
+  translation?: LocalizedText;
+}
+
+/** Role-play in a messenger: the learner answers several messages in a row. */
+export interface ChatExercise extends ExerciseBase {
+  type: 'chat';
+  context?: LocalizedText;
+  turns: Array<{ message: string; messageTranslation?: LocalizedText; options: string[]; correctIndex: number }>;
+}
+
+/** Sort words or phrases into groups (e.g. der / die / das, formal / informal). */
+export interface CategorizeExercise extends ExerciseBase {
+  type: 'categorize';
+  categories: Array<string | LocalizedText>;
+  items: Array<{ text: string; category: number }>;
+}
+
 export type Exercise =
   | ChoiceExercise
   | FillBlankExercise
@@ -88,7 +122,11 @@ export type Exercise =
   | OrderExercise
   | ListenExercise
   | DialogueExercise
-  | SpeakExercise;
+  | SpeakExercise
+  | ErrorSpotExercise
+  | ClozeTextExercise
+  | ChatExercise
+  | CategorizeExercise;
 
 /** Answer payloads sent by the client, one per exercise type. */
 export type ExerciseAnswer =
@@ -98,7 +136,11 @@ export type ExerciseAnswer =
   | { type: 'order'; tokens: string[] }
   | { type: 'listen'; text: string; skipped?: boolean }
   | { type: 'dialogue'; option: string }
-  | { type: 'speak'; transcript: string; skipped?: boolean; typed?: boolean };
+  | { type: 'speak'; transcript: string; skipped?: boolean; typed?: boolean }
+  | { type: 'error_spot'; index: number }
+  | { type: 'cloze_text'; choices: string[] }
+  | { type: 'chat'; replies: string[] }
+  | { type: 'categorize'; placement: Array<{ text: string; category: number }> };
 
 /** Exercise as delivered to the learner: no answers, options already shuffled. */
 export type PublicExercise =
@@ -111,7 +153,11 @@ export type PublicExercise =
       lines: Array<{ speaker: 'A' | 'B'; text: string | null; translation?: string }>;
       options: string[];
     })
-  | (Pick<SpeakExercise, 'type' | 'text' | 'translation'>);
+  | (Pick<SpeakExercise, 'type' | 'text' | 'translation'>)
+  | (Pick<ErrorSpotExercise, 'type' | 'tokens' | 'translation'>)
+  | (Pick<ClozeTextExercise, 'type' | 'text' | 'translation'> & { gaps: Array<{ options: string[] }> })
+  | (Pick<ChatExercise, 'type' | 'context'> & { turns: Array<{ message: string; messageTranslation?: string; options: string[] }> })
+  | (Pick<CategorizeExercise, 'type'> & { categories: string[]; items: string[] });
 
 export type PublicExerciseView = PublicExercise & {
   key: string;
@@ -130,5 +176,10 @@ export interface AnswerFeedback {
   explanation: string;
   /** Extra hint, e.g. about diacritics in an otherwise correct answer. */
   note?: { code: 'diacritics' | 'typo' | 'kazakh_letters' | 'alternative'; detail?: string };
+  /**
+   * Multi-part tasks: which parts were right, in the order of the answer (gaps, replies,
+   * placed items). For "find the mistake" — one entry per word, false at the wrong word.
+   */
+  parts?: boolean[];
 }
 

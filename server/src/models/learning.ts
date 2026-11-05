@@ -1,5 +1,5 @@
 import { Schema, model, type HydratedDocument, type InferSchemaType } from 'mongoose';
-import { CEFR_LEVELS, ERROR_CATEGORIES, EXERCISE_TYPES, SKILLS } from '@linguapath/shared';
+import { CEFR_LEVELS, ERROR_CATEGORIES, EXERCISE_TYPES, SELF_ASSESSMENTS, SKILLS } from '@linguapath/shared';
 
 const verdicts = ['correct', 'almost', 'incorrect', 'skipped'];
 
@@ -36,7 +36,7 @@ const attemptSchema = new Schema(
     practiceTopic: { type: String, default: null },
     recommendationKey: { type: String, default: null },
     placement: {
-      selfAssessment: { type: String, enum: ['beginner', 'basics', 'conversational', 'confident'], default: 'beginner' },
+      selfAssessment: { type: String, enum: SELF_ASSESSMENTS, default: 'beginner' },
       estimatedLevel: { type: String, enum: [...CEFR_LEVELS, null], default: null },
       theta: { type: Number, default: null },
       sd: { type: Number, default: null },

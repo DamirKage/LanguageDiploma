@@ -15,7 +15,7 @@ function timezones(): string[] {
 }
 
 /** A retake starts from the current level instead of from zero. */
-const SELF_FROM_LEVEL: Record<CefrLevel, PlacementSelfAssessment> = { A1: 'beginner', A2: 'basics', B1: 'conversational', B2: 'confident' };
+const SELF_FROM_LEVEL: Record<CefrLevel, PlacementSelfAssessment> = { A1: 'beginner', A2: 'basics', B1: 'conversational', B2: 'confident', C1: 'advanced' };
 
 export default function ProfilePage() {
   const i18n = useI18n();

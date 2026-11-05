@@ -7,6 +7,7 @@ import { prefersReducedMotion } from '../../../lib/motion';
 import { useRecognition, useSpeaker } from '../../../lib/speech';
 import { SpeakButton } from '../SpeakButton';
 import { SelfRecorder } from './SelfRecorder';
+import { CategorizeExercise, ChatExercise, ClozeTextExercise, ErrorSpotExercise } from './Interactive';
 import { AudioRing } from '../../../components/motion/AudioRing';
 import { SpokenText } from '../../../components/motion/SpokenText';
 import { SpecialChars } from './SpecialChars';
@@ -492,6 +493,14 @@ export function ExerciseView(props: ExerciseProps) {
       return <DialogueExercise {...(props as ExerciseProps<'dialogue'>)} />;
     case 'speak':
       return <SpeakExercise {...(props as ExerciseProps<'speak'>)} />;
+    case 'error_spot':
+      return <ErrorSpotExercise {...(props as ExerciseProps<'error_spot'>)} />;
+    case 'cloze_text':
+      return <ClozeTextExercise {...(props as ExerciseProps<'cloze_text'>)} />;
+    case 'chat':
+      return <ChatExercise {...(props as ExerciseProps<'chat'>)} />;
+    case 'categorize':
+      return <CategorizeExercise {...(props as ExerciseProps<'categorize'>)} />;
   }
 }
 

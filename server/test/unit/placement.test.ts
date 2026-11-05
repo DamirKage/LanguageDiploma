@@ -46,7 +46,8 @@ describe('adaptive placement', () => {
     expect(levelFromAbility(-0.5)).toEqual({ level: 'A2', band: 'mid' });
     expect(levelFromAbility(0.9).level).toBe('B1');
     expect(levelFromAbility(0.9).band).toBe('high');
-    expect(levelFromAbility(3).level).toBe('B2');
+    expect(levelFromAbility(1.5).level).toBe('B2');
+    expect(levelFromAbility(3).level).toBe('C1');
   });
 
   it('raises the estimate after correct answers and lowers it after mistakes', () => {
@@ -85,7 +86,7 @@ describe('adaptive placement', () => {
     let withinOne = 0;
     let runs = 0;
     for (const level of levels) {
-      for (const self of ['beginner', 'basics', 'conversational', 'confident'] as const) {
+      for (const self of ['beginner', 'basics', 'conversational', 'confident', 'advanced'] as const) {
         for (let k = 0; k < 25; k++) {
           const result = run(PLACEMENT_CONFIG.levelCentre[level], self, random);
           runs++;

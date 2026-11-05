@@ -29,6 +29,10 @@ const DEFAULT_SKILL: Record<ExerciseType, Skill> = {
   listen: 'listening',
   dialogue: 'reading',
   speak: 'speaking',
+  error_spot: 'grammar',
+  cloze_text: 'grammar',
+  chat: 'reading',
+  categorize: 'vocabulary',
 };
 
 const CATEGORY_BY_SKILL: Record<Skill, ErrorCategory> = {
@@ -167,3 +171,60 @@ export function finalizeExercise(draft: Draft, key: string, lessonTopic: string)
 }
 
 export { ru };
+
+/** "Find the mistake": `wrong` is the word as it stands in the sentence, `correction` what it should be. */
+export function errorSpot(sentence: string, wrong: string, correction: string, explanation: string, meta: Meta = {}, translation?: string): Draft {
+  const tokens = sentence.split(/\s+/).filter(Boolean);
+  const bare = (t: string) => t.replace(/^[¿¡«"(]+|[.,!?;:»")]+$/g, '');
+  const errorIndex = tokens.findIndex((t) => bare(t) === wrong);
+  if (errorIndex < 0) throw new Error(`errorSpot: "${wrong}" not found in "${sentence}"`);
+  const fixed = tokens[errorIndex]!.replace(wrong, correction);
+  return {
+    type: 'error_spot',
+    tokens,
+    errorIndex,
+    correction: fixed,
+    explanation: ru(explanation),
+    meta: { c: 'grammar', ...meta },
+    ...(translation ? { translation: ru(translation) } : {}),
+  };
+}
+
+/** Text with gaps written inline: `Gestern [bin|habe|war] ich …` — the first option is the answer. */
+export function cloze(source: string, explanation: string, meta: Meta = {}, translation?: string): Draft {
+  const gaps: Array<{ options: string[]; answer: string }> = [];
+  const text = source.replace(/\[([^\]]+)\]/g, (_, body: string) => {
+    const options = body.split('|').map((o) => o.trim());
+    gaps.push({ options, answer: options[0]! });
+    return `{${gaps.length - 1}}`;
+  });
+  if (gaps.length < 2) throw new Error(`cloze: at least two gaps expected in "${source}"`);
+  return { type: 'cloze_text', text, gaps, explanation: ru(explanation), meta, ...(translation ? { translation: ru(translation) } : {}) };
+}
+
+/** Messenger role-play: [message, its Russian translation, reply options, index of the right reply]. */
+export function chat(
+  turns: Array<[message: string, translation: string, options: string[], correctIndex: number]>,
+  explanation: string,
+  meta: Meta = {},
+  context?: string,
+): Draft {
+  return {
+    type: 'chat',
+    turns: turns.map(([message, translation, options, correctIndex]) => ({ message, messageTranslation: ru(translation), options, correctIndex })),
+    explanation: ru(explanation),
+    meta,
+    ...(context ? { context: ru(context) } : {}),
+  };
+}
+
+/** Sort into groups. Category names in the target language are plain strings; Russian ones go in `{ ru }`. */
+export function categorize(categories: Array<string | { ru: string }>, items: Array<[text: string, category: number]>, explanation: string, meta: Meta = {}): Draft {
+  return {
+    type: 'categorize',
+    categories: categories.map((c) => (typeof c === 'string' ? c : ru(c.ru))),
+    items: items.map(([text, category]) => ({ text, category })),
+    explanation: ru(explanation),
+    meta,
+  };
+}

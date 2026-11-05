@@ -37,7 +37,28 @@ export function expectedAnswer(ex: Exercise, locale = 'ru'): string {
       return ex.answers[0]!;
     case 'speak':
       return ex.text;
+    case 'error_spot':
+      return ex.tokens.map((t, i) => (i === ex.errorIndex ? ex.correction : t)).join(' ');
+    case 'cloze_text':
+      return fillGaps(ex.text, ex.gaps.map((g) => g.answer));
+    case 'chat':
+      return ex.turns.map((t) => t.options[t.correctIndex]!).join(' / ');
+    case 'categorize':
+      return ex.categories
+        .map((c, i) => `${localize(c, locale)}: ${ex.items.filter((it) => it.category === i).map((it) => it.text).join(', ')}`)
+        .join('; ');
   }
+}
+
+/** Replaces `{0}`, `{1}`, … in a cloze text; `___` for gaps without a value. */
+export function fillGaps(text: string, values: Array<string | undefined>): string {
+  return text.replace(/\{(\d+)\}/g, (_, n: string) => values[Number(n)] || '___');
+}
+
+/** Several parts answered at once: all right, all but a small share right, or not. */
+function partsVerdict(correct: number, total: number): Verdict {
+  if (correct === total) return 'correct';
+  return total >= 3 && correct / total >= 0.66 ? 'almost' : 'incorrect';
 }
 
 export function promptText(ex: Exercise, locale = 'ru'): string {
@@ -56,10 +77,18 @@ export function promptText(ex: Exercise, locale = 'ru'): string {
       return ex.lines.map((l) => l.text ?? '…').join(' / ');
     case 'speak':
       return ex.text;
+    case 'error_spot':
+      return ex.tokens.join(' ');
+    case 'cloze_text':
+      return fillGaps(ex.text, []);
+    case 'chat':
+      return ex.turns.map((t) => t.message).join(' / ');
+    case 'categorize':
+      return ex.items.map((it) => it.text).join(', ');
   }
 }
 
-function describeGiven(answer: ExerciseAnswer): string {
+function describeGiven(answer: ExerciseAnswer, ex: Exercise, locale: string): string {
   switch (answer.type) {
     case 'choice':
     case 'dialogue':
@@ -73,6 +102,16 @@ function describeGiven(answer: ExerciseAnswer): string {
       return answer.tokens.join(' ');
     case 'speak':
       return answer.skipped ? '' : answer.transcript;
+    case 'error_spot':
+      return ex.type === 'error_spot' ? (ex.tokens[answer.index] ?? '') : '';
+    case 'cloze_text':
+      return answer.choices.join(', ');
+    case 'chat':
+      return answer.replies.join(' / ');
+    case 'categorize':
+      return ex.type === 'categorize'
+        ? answer.placement.map((p) => `${p.text} → ${localize(ex.categories[p.category] ?? '', locale)}`).join('; ')
+        : '';
   }
 }
 
@@ -90,10 +129,11 @@ export function checkAnswer(ex: Exercise, answer: ExerciseAnswer, language: stri
   if (answer.type !== ex.type) throw new Error('answer_mismatch');
   const expected = expectedAnswer(ex, locale);
   const explanation = localize(ex.explanation, locale);
-  const given = describeGiven(answer);
+  const given = describeGiven(answer, ex, locale);
   let verdict: Verdict = 'incorrect';
   let note: AnswerFeedback['note'];
   let almostCategory: ErrorCategory = 'spelling';
+  let parts: boolean[] | undefined;
 
   switch (ex.type) {
     case 'choice': {
@@ -161,6 +201,38 @@ export function checkAnswer(ex: Exercise, answer: ExerciseAnswer, language: stri
     }
   }
 
+  switch (ex.type) {
+    case 'error_spot': {
+      verdict = (answer as Extract<ExerciseAnswer, { type: 'error_spot' }>).index === ex.errorIndex ? 'correct' : 'incorrect';
+      parts = ex.tokens.map((_, i) => i !== ex.errorIndex);
+      break;
+    }
+    case 'cloze_text': {
+      const choices = (answer as Extract<ExerciseAnswer, { type: 'cloze_text' }>).choices;
+      parts = ex.gaps.map((g, i) => choices[i] !== undefined && strictKey(choices[i]!, language) === strictKey(g.answer, language));
+      verdict = partsVerdict(parts.filter(Boolean).length, ex.gaps.length);
+      almostCategory = ex.errorCategory;
+      break;
+    }
+    case 'chat': {
+      const replies = (answer as Extract<ExerciseAnswer, { type: 'chat' }>).replies;
+      parts = ex.turns.map((t, i) => replies[i] !== undefined && strictKey(replies[i]!, language) === strictKey(t.options[t.correctIndex]!, language));
+      verdict = partsVerdict(parts.filter(Boolean).length, ex.turns.length);
+      almostCategory = ex.errorCategory;
+      break;
+    }
+    case 'categorize': {
+      const placement = (answer as Extract<ExerciseAnswer, { type: 'categorize' }>).placement;
+      parts = placement.map((p) => ex.items.some((it) => strictKey(p.text, language) === strictKey(it.text, language) && p.category === it.category));
+      const right = parts.filter(Boolean).length;
+      verdict = partsVerdict(placement.length === ex.items.length ? right : Math.min(right, ex.items.length - 1), ex.items.length);
+      almostCategory = ex.errorCategory;
+      break;
+    }
+    default:
+      break;
+  }
+
   const { points, category } = verdict === 'skipped' ? { points: 0, category: ex.errorCategory } : byVerdict(verdict, ex, almostCategory);
-  return { verdict, points, category, given, feedback: { verdict, expected, explanation, ...(note ? { note } : {}) } };
+  return { verdict, points, category, given, feedback: { verdict, expected, explanation, ...(note ? { note } : {}), ...(parts ? { parts } : {}) } };
 }

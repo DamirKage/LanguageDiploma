@@ -74,6 +74,14 @@ function emptyAnswer(type: ExerciseType): ExerciseAnswer {
       return { type, tokens: [] };
     case 'speak':
       return { type, transcript: '' };
+    case 'error_spot':
+      return { type, index: 0 };
+    case 'cloze_text':
+      return { type, choices: [] };
+    case 'chat':
+      return { type, replies: [] };
+    case 'categorize':
+      return { type, placement: [] };
     default:
       return { type, text: '' };
   }

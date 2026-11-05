@@ -22,7 +22,7 @@ async function main() {
   }
 
   await seedContent();
-  console.log('Curriculum seeded: 5 languages, A1–B2');
+  console.log('Curriculum seeded: 5 languages, A1–C1');
 
   const adminEmail = process.env.SEED_ADMIN_EMAIL ?? 'admin@linguapath.local';
   if (config.isProd && !process.env.SEED_ADMIN_PASSWORD) throw new Error('SEED_ADMIN_PASSWORD must be set in production');

@@ -65,4 +65,43 @@ describe('exercise components', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Пропустить без штрафа' }));
     expect(onAnswer).toHaveBeenLastCalledWith({ type: 'speak', transcript: '', skipped: true });
   });
+
+  it('finds the mistake by tapping a word', async () => {
+    const onAnswer = vi.fn();
+    render(<Harness exercise={{ ...common, type: 'error_spot', tokens: ['Gestern', 'habe', 'ich', 'gegangen.'] }} onAnswer={onAnswer} />);
+    await userEvent.click(screen.getByRole('radio', { name: 'habe' }));
+    expect(onAnswer).toHaveBeenLastCalledWith({ type: 'error_spot', index: 1 });
+  });
+
+  it('answers a text with gaps only when every gap is chosen', async () => {
+    const onAnswer = vi.fn();
+    render(<Harness exercise={{ ...common, type: 'cloze_text', text: 'Ich {0} müde, {1} es spät ist.', gaps: [{ options: ['bin', 'habe'] }, { options: ['weil', 'dass'] }] }} onAnswer={onAnswer} />);
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Пропуск 1' }), 'bin');
+    expect(onAnswer).toHaveBeenLastCalledWith(null);
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Пропуск 2' }), 'weil');
+    expect(onAnswer).toHaveBeenLastCalledWith({ type: 'cloze_text', choices: ['bin', 'weil'] });
+  });
+
+  it('sorts words into groups by choosing a word and then a group', async () => {
+    const onAnswer = vi.fn();
+    render(<Harness exercise={{ ...common, type: 'categorize', categories: ['der', 'die'], items: ['Tisch', 'Lampe'] }} onAnswer={onAnswer} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Tisch' }));
+    await userEvent.click(screen.getByRole('button', { name: 'der' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Lampe' }));
+    await userEvent.click(screen.getByRole('button', { name: 'die' }));
+    expect(onAnswer).toHaveBeenLastCalledWith({ type: 'categorize', placement: [{ text: 'Tisch', category: 0 }, { text: 'Lampe', category: 1 }] });
+  });
+
+  it('runs a messenger role-play turn by turn', async () => {
+    const onAnswer = vi.fn();
+    render(
+      <Harness
+        exercise={{ ...common, type: 'chat', turns: [{ message: 'Hallo!', options: ['Hallo!', 'Tschüss!'] }, { message: 'Wie geht’s?', options: ['Gut, danke.', 'Ich heiße Anna.'] }] }}
+        onAnswer={onAnswer}
+      />,
+    );
+    await userEvent.click(await screen.findByRole('button', { name: 'Hallo!' }, { timeout: 2000 }));
+    await userEvent.click(await screen.findByRole('button', { name: 'Gut, danke.' }, { timeout: 2000 }));
+    expect(onAnswer).toHaveBeenLastCalledWith({ type: 'chat', replies: ['Hallo!', 'Gut, danke.'] });
+  });
 });

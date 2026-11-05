@@ -24,6 +24,13 @@ function exerciseTexts(ex: Exercise): Array<[string, AudioVoice]> {
       return ex.direction === 'to_target' ? [[expectedAnswer(ex), 'A']] : [[ex.source as string, 'A']];
     case 'listen':
       return [[ex.audioText, 'A']];
+    case 'error_spot':
+    case 'cloze_text':
+      return [[expectedAnswer(ex), 'A']];
+    case 'chat':
+      return ex.turns.flatMap((t) => [[t.message, 'B'], [t.options[t.correctIndex]!, 'A']] as Array<[string, AudioVoice]>);
+    case 'categorize':
+      return ex.items.map((it) => [it.text, 'A'] as [string, AudioVoice]);
     case 'dialogue': {
       const missing = ex.lines.find((l) => l.text === null)?.speaker ?? 'B';
       return [

@@ -17,7 +17,7 @@ export type SelfAssessment = PlacementSelfAssessment;
 
 export const PLACEMENT_CONFIG = {
   /** Centre of each level on the ability scale. */
-  levelCentre: { A1: -1.5, A2: -0.5, B1: 0.5, B2: 1.5 } satisfies Record<CefrLevel, number>,
+  levelCentre: { A1: -1.5, A2: -0.5, B1: 0.5, B2: 1.5, C1: 2.5 } satisfies Record<CefrLevel, number>,
   /**
    * Discrimination: with slope 2 a learner in the middle of a level solves about 88% of the
    * items one level below and 12% of the items one level above (before guessing).
@@ -26,7 +26,7 @@ export const PLACEMENT_CONFIG = {
   /** Shift of an item inside its level per step of difficulty 1–3. */
   difficultyStep: 0.3,
   /** Prior mean for each self-assessment; the prior is deliberately wide. */
-  priorMean: { beginner: -2, basics: -0.8, conversational: 0.3, confident: 1.2 } satisfies Record<SelfAssessment, number>,
+  priorMean: { beginner: -2, basics: -0.8, conversational: 0.3, confident: 1.2, advanced: 2.2 } satisfies Record<SelfAssessment, number>,
   priorSd: 1.25,
   /** Chance of guessing a closed item; "don't know" removes guessing by design. */
   guessing: { closed: 0.2, open: 0 },
@@ -57,7 +57,7 @@ export interface PlacementResponse {
   verdict: Verdict;
 }
 
-const GRID = Array.from({ length: 141 }, (_, i) => -3.5 + i * 0.05);
+const GRID = Array.from({ length: 151 }, (_, i) => -3.5 + i * 0.05);
 
 export function itemDifficulty(item: Pick<PlacementItem, 'level' | 'difficulty'>) {
   return PLACEMENT_CONFIG.levelCentre[item.level] + (item.difficulty - 2) * PLACEMENT_CONFIG.difficultyStep;

@@ -12,6 +12,7 @@ describe('shared helpers', () => {
   it('navigates CEFR levels', () => {
     expect(levelIndex('B1')).toBe(2);
     expect(nextLevel('A2')).toBe('B1');
-    expect(nextLevel('B2')).toBeNull();
+    expect(nextLevel('B2')).toBe('C1');
+    expect(nextLevel('C1')).toBeNull();
   });
 });

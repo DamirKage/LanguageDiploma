@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Exercise } from '@linguapath/shared';
-import { checkAnswer } from '../../src/modules/learning/checker';
+import { categorize, chat, cloze, errorSpot, finalizeExercise } from '../../src/seed/builders';
+import { checkAnswer, expectedAnswer } from '../../src/modules/learning/checker';
 import { toPublicExercise } from '../../src/modules/learning/presenter';
 
 const base = { skill: 'grammar', topic: 'to_be', errorCategory: 'grammar', difficulty: 1, explanation: { ru: 'Пояснение' } } as const;
@@ -99,6 +100,36 @@ describe('checkAnswer', () => {
 
   it('checks dialogue replies', () => {
     expect(checkAnswer(dialogue, { type: 'dialogue', option: 'Ich heiße Anna.' }, 'de').verdict).toBe('correct');
+  });
+
+  it('checks the new interactive types and gives partial credit for multi-part answers', () => {
+    const spot = finalizeExercise(errorSpot('Gestern habe ich ins Kino gegangen.', 'habe', 'bin', 'gehen → sein'), 'e1', 'past_tense');
+    expect(checkAnswer(spot, { type: 'error_spot', index: 1 }, 'de').verdict).toBe('correct');
+    expect(checkAnswer(spot, { type: 'error_spot', index: 0 }, 'de').verdict).toBe('incorrect');
+    expect(expectedAnswer(spot)).toBe('Gestern bin ich ins Kino gegangen.');
+
+    const text = finalizeExercise(cloze('Ich [bin|habe] müde, [weil|dass] ich spät [geschlafen|schlafe] habe.', '…'), 'c1', 'conjunctions');
+    expect(checkAnswer(text, { type: 'cloze_text', choices: ['bin', 'weil', 'geschlafen'] }, 'de').verdict).toBe('correct');
+    expect(checkAnswer(text, { type: 'cloze_text', choices: ['bin', 'weil', 'schlafe'] }, 'de')).toMatchObject({ verdict: 'almost', points: 7 });
+    expect(checkAnswer(text, { type: 'cloze_text', choices: ['habe', 'dass', 'schlafe'] }, 'de').verdict).toBe('incorrect');
+    expect(expectedAnswer(text)).toBe('Ich bin müde, weil ich spät geschlafen habe.');
+
+    const talk = finalizeExercise(
+      chat([['Hallo!', 'Привет!', ['Hallo!', 'Tschüss!'], 0], ['Wie geht’s?', 'Как дела?', ['Gut, danke.', 'Ich heiße Anna.'], 0]], '…'),
+      'h1',
+      'greetings',
+    );
+    expect(checkAnswer(talk, { type: 'chat', replies: ['Hallo!', 'Gut, danke.'] }, 'de').verdict).toBe('correct');
+    expect(checkAnswer(talk, { type: 'chat', replies: ['Hallo!', 'Ich heiße Anna.'] }, 'de').verdict).toBe('incorrect');
+
+    const sort = finalizeExercise(categorize(['der', 'die'], [['Tisch', 0], ['Lampe', 1], ['Stuhl', 0], ['Tür', 1]], '…'), 'g1', 'articles');
+    const right = [{ text: 'Tisch', category: 0 }, { text: 'Lampe', category: 1 }, { text: 'Stuhl', category: 0 }, { text: 'Tür', category: 1 }];
+    expect(checkAnswer(sort, { type: 'categorize', placement: right }, 'de').verdict).toBe('correct');
+    expect(checkAnswer(sort, { type: 'categorize', placement: [...right.slice(0, 3), { text: 'Tür', category: 0 }] }, 'de').verdict).toBe('almost');
+    for (const ex of [spot, text, talk, sort]) {
+      const view = toPublicExercise(ex, 3) as unknown as Record<string, unknown>;
+      expect(JSON.stringify(view)).not.toMatch(/errorIndex|correction|correctIndex|"answer"|"category"/);
+    }
   });
 
   it('rejects an answer of a different exercise type', () => {

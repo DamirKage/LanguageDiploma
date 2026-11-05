@@ -35,7 +35,7 @@ describe('catalogue', () => {
     const res = await request(app).get('/api/languages');
     expect(res.status).toBe(200);
     expect(res.body.map((l: { code: string }) => l.code)).toEqual(['kk', 'en', 'tr', 'de', 'es']);
-    for (const lang of res.body) expect(lang.levels).toEqual(['A1', 'A2', 'B1', 'B2']);
+    for (const lang of res.body) expect(lang.levels).toEqual(['A1', 'A2', 'B1', 'B2', 'C1']);
   });
 
   it('returns the learning path with modules, tests and lesson statuses', async () => {

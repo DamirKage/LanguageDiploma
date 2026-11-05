@@ -42,4 +42,10 @@ export const TOPICS: Array<{ key: string; title: string; kind: 'grammar' | 'voca
   { key: 'relative_clauses', title: 'Относительные придаточные', kind: 'grammar' },
   { key: 'reported_speech', title: 'Косвенная речь', kind: 'grammar' },
   { key: 'participles', title: 'Причастия и деепричастия', kind: 'grammar' },
+  { key: 'idioms', title: 'Идиомы и устойчивые выражения', kind: 'vocabulary' },
+  { key: 'register', title: 'Стиль и регистр речи', kind: 'communication' },
+  { key: 'argumentation', title: 'Аргументация и дискуссия', kind: 'communication' },
+  { key: 'science', title: 'Наука и технологии', kind: 'vocabulary' },
+  { key: 'culture', title: 'Культура и искусство', kind: 'vocabulary' },
+  { key: 'complex_syntax', title: 'Сложный синтаксис и номинализация', kind: 'grammar' },
 ];

@@ -1,4 +1,4 @@
-export const CEFR_LEVELS = ['A1', 'A2', 'B1', 'B2'] as const;
+export const CEFR_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1'] as const;
 export type CefrLevel = (typeof CEFR_LEVELS)[number];
 
 export function levelIndex(level: CefrLevel): number {
@@ -20,6 +20,10 @@ export const EXERCISE_TYPES = [
   'listen',
   'dialogue',
   'speak',
+  'error_spot',
+  'cloze_text',
+  'chat',
+  'categorize',
 ] as const;
 export type ExerciseType = (typeof EXERCISE_TYPES)[number];
 
@@ -52,5 +56,5 @@ export const LESSON_PASS_PERCENT = 70;
 export const TEST_PASS_PERCENT = 70;
 
 /** Self-assessment before the adaptive placement test; it only sets the starting point. */
-export const SELF_ASSESSMENTS = ['beginner', 'basics', 'conversational', 'confident'] as const;
+export const SELF_ASSESSMENTS = ['beginner', 'basics', 'conversational', 'confident', 'advanced'] as const;
 export type PlacementSelfAssessment = (typeof SELF_ASSESSMENTS)[number];

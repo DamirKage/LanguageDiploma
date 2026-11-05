@@ -113,7 +113,52 @@ const speak = z.object({
   translation: localizedText,
 });
 
-export const exerciseSchema = z.union([choice, fillBlank, translate, order, listen, dialogue, speak]);
+const errorSpot = z
+  .object({
+    ...base,
+    type: z.literal('error_spot'),
+    tokens: z.array(nonEmpty).min(3).max(30),
+    errorIndex: z.number().int().min(0),
+    correction: nonEmpty,
+    translation: localizedText.optional(),
+  })
+  .refine((e) => e.errorIndex < e.tokens.length, { message: 'Номер ошибочного слова вне предложения', path: ['errorIndex'] })
+  .refine((e) => e.tokens[e.errorIndex] !== e.correction, { message: 'Исправление должно отличаться от ошибочного слова', path: ['correction'] });
+
+const clozeText = z
+  .object({
+    ...base,
+    type: z.literal('cloze_text'),
+    text: z.string().trim().min(1).max(1200),
+    gaps: z.array(z.object({ options: z.array(nonEmpty).min(2).max(5), answer: nonEmpty })).min(2).max(8),
+    translation: localizedText.optional(),
+  })
+  .refine((e) => e.gaps.every((g) => g.options.includes(g.answer)), { message: 'В каждом пропуске правильный ответ должен быть среди вариантов', path: ['gaps'] })
+  .refine((e) => e.gaps.every((_, i) => e.text.includes(`{${i}}`)), { message: 'В тексте должны быть отмечены все пропуски: {0}, {1}…', path: ['text'] });
+
+const chat = z
+  .object({
+    ...base,
+    type: z.literal('chat'),
+    context: localizedText.optional(),
+    turns: z
+      .array(z.object({ message: nonEmpty, messageTranslation: localizedText.optional(), options: z.array(nonEmpty).min(2).max(4), correctIndex: z.number().int().min(0) }))
+      .min(2)
+      .max(6),
+  })
+  .refine((e) => e.turns.every((t) => t.correctIndex < t.options.length), { message: 'Индекс правильного ответа вне списка', path: ['turns'] });
+
+const categorize = z
+  .object({
+    ...base,
+    type: z.literal('categorize'),
+    categories: z.array(z.union([nonEmpty, localizedText])).min(2).max(4),
+    items: z.array(z.object({ text: nonEmpty, category: z.number().int().min(0) })).min(4).max(12),
+  })
+  .refine((e) => e.items.every((it) => it.category < e.categories.length), { message: 'Номер группы вне списка групп', path: ['items'] })
+  .refine((e) => new Set(e.items.map((it) => it.text)).size === e.items.length, { message: 'Элементы не должны повторяться', path: ['items'] });
+
+export const exerciseSchema = z.union([choice, fillBlank, translate, order, listen, dialogue, speak, errorSpot, clozeText, chat, categorize]);
 
 export const theoryBlockSchema = z.object({
   title: localizedText,

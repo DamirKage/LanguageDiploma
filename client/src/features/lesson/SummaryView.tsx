@@ -24,7 +24,7 @@ function LevelScale({ level, band }: { level: CefrLevel; band: keyof typeof BAND
   const index = CEFR_LEVELS.indexOf(level);
   const position = ((index + BAND_POSITION[band]) / CEFR_LEVELS.length) * 100;
   return (
-    <div className="level-scale" aria-hidden>
+    <div className="level-scale" aria-hidden style={{ '--levels': CEFR_LEVELS.length } as React.CSSProperties}>
       <div className="level-scale__track">
         {CEFR_LEVELS.map((l, i) => (
           <span key={l} data-reached={i <= index || undefined} />
