@@ -4,7 +4,28 @@ import { expect, test, type Page } from '@playwright/test';
 async function answerCurrentTask(page: Page) {
   const task = page.locator('.workspace__task');
   const progress = await page.locator('.focus__progress').textContent();
-  if (await task.getByRole('button', { name: 'Пропустить без штрафа' }).count()) {
+  if (await task.locator('.chat').count()) {
+    for (let turn = 0; turn < 6; turn++) {
+      const option = task.locator('.chat__option').first();
+      const shown = await option.waitFor({ state: 'visible', timeout: 2500 }).then(() => true, () => false);
+      if (!shown) break;
+      await option.click();
+    }
+  } else if (await task.locator('.sorter__pool').count()) {
+    const items = task.locator('.sorter__pool .sorter__item');
+    while (await items.count()) {
+      await items.first().click();
+      await task.locator('.sorter__bin-title').first().click();
+    }
+  } else if (await task.locator('.spot').count()) {
+    await task.locator('.spot__word').first().click();
+  } else if (await task.locator('.cloze').count()) {
+    const gaps = task.locator('.cloze__gap');
+    for (let i = 0; i < (await gaps.count()); i++) {
+      const values = await gaps.nth(i).locator('option:not([disabled])').allTextContents();
+      await gaps.nth(i).selectOption(values[0]!);
+    }
+  } else if (await task.getByRole('button', { name: 'Пропустить без штрафа' }).count()) {
     await task.getByRole('button', { name: 'Пропустить без штрафа' }).click();
   } else if (await task.locator('.tiles:not(.tiles--answer) .tile').count()) {
     const tiles = task.locator('.tiles:not(.tiles--answer) .tile');
