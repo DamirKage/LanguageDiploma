@@ -1,4 +1,4 @@
-import { choice, choiceRu, dialogue, fill, listen, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
+import { categorize, chat, choice, choiceRu, cloze, dialogue, errorSpot, fill, listen, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
 
 export const english: LanguageSpec = {
   code: 'en',
@@ -58,6 +58,22 @@ export const english: LanguageSpec = {
                 listen('Good evening!', 'evening — «вечер», ударение на первый слог.', {}, { options: ['Good evening!', 'Good morning!', 'Good night!'], translation: 'Добрый вечер!' }),
                 order(['What', 'is', 'your', 'name'], 'Как тебя зовут?', 'В вопросе с what глагол is стоит перед подлежащим.', { s: 'grammar', t: 'questions' }),
                 speak('Nice to meet you.', 'Приятно познакомиться.', 'meet и you часто сливаются: [ми:чу].'),
+                categorize(
+                  [{ ru: 'Приветствие' }, { ru: 'Прощание' }],
+                  [['Hello!', 0], ['Good morning!', 0], ['Hi there!', 0], ['Good evening!', 0], ['Goodbye!', 1], ['See you later!', 1], ['Bye!', 1], ['Good night!', 1]],
+                  'Good evening — приветствие («добрый вечер»), а Good night — только прощание («спокойной ночи»). See you later — «увидимся», тоже прощание.',
+                  { d: 2 },
+                ),
+                chat(
+                  [
+                    ['Hi! I’m Jack. I live in room 12.', 'Привет! Я Джек. Я живу в комнате 12.', ['Hi, Jack! I’m Aliya. Nice to meet you.', 'Goodbye, Jack!', 'I’m twelve.'], 0],
+                    ['Nice to meet you too! How are you?', 'Мне тоже приятно познакомиться! Как дела?', ['I’m fine, thanks. And you?', 'My name is Aliya.', 'Good night!'], 0],
+                    ['I’m good, thanks. Well, see you later!', 'Хорошо, спасибо. Ну, увидимся!', ['See you, Jack!', 'Nice to meet you!', 'Good morning!'], 0],
+                  ],
+                  'При знакомстве называют себя и говорят Nice to meet you; на How are you? отвечают I’m fine, thanks; на See you later — See you!',
+                  {},
+                  'Вы знакомитесь с новым соседом в общежитии.',
+                ),
               ],
               test: [
                 choice('Что ответить на «Nice to meet you»?', ['Nice to meet you too.', 'I’m fine, thank you.', 'My name, thank you.'], 0, 'На «Nice to meet you» отвечают «Nice to meet you too» — «Мне тоже приятно познакомиться».'),
@@ -114,6 +130,22 @@ export const english: LanguageSpec = {
                 translateBack('My sister is a doctor.', ['Моя сестра врач', 'Моя сестра — врач', 'Моя сестра работает врачом'], 'В русском переводе глагол «быть» опускается.'),
                 listen('I’m from Kazakhstan.', 'I’m = I am.', {}, { translation: 'Я из Казахстана.', answers: ['I’m from Kazakhstan.', 'I am from Kazakhstan.'] }),
                 speak('I am a student.', 'Я студент.', 'Звук [æ] в слове am — открытый, между «а» и «э».'),
+                categorize(
+                  ['a', 'an'],
+                  [['teacher', 0], ['doctor', 0], ['student', 0], ['university', 0], ['engineer', 1], ['actor', 1], ['artist', 1], ['hour', 1]],
+                  'Выбор зависит от первого звука, а не буквы: an — перед гласным звуком (an actor, an hour — h не читается), a — перед согласным (a university — слово начинается со звука [j]).',
+                  { s: 'grammar', t: 'articles', d: 2 },
+                ),
+                chat(
+                  [
+                    ['Hello! Are you a student here?', 'Здравствуйте! Вы здесь учитесь?', ['No, I’m not. I’m a teacher.', 'No, I not a teacher.', 'Yes, I’m from teacher.'], 0],
+                    ['Oh, nice! Where are you from?', 'О, здорово! Откуда вы?', ['I’m from Kazakhstan. And you?', 'I’m a Kazakhstan.', 'I am teacher from.'], 0],
+                    ['I’m from Canada. Is your city big?', 'Я из Канады. Ваш город большой?', ['Yes, it is. Almaty is a big city.', 'Yes, it are big.', 'Yes, I am big.'], 0],
+                  ],
+                  'В каждом ответе нужен глагол to be в правильной форме: I’m, it is; перед профессией — артикль a.',
+                  { d: 2 },
+                  'Вы на международной конференции, к вам подходит участник.',
+                ),
               ],
               test: [
                 fill('We ___ students.', ['are'], 'С we — are.', { s: 'grammar' }, { translation: 'Мы студенты.', options: ['am', 'is', 'are'] }),
@@ -168,6 +200,22 @@ export const english: LanguageSpec = {
                   'На вопрос о номере называют цифры: It’s …',
                 ),
                 speak('I am twenty-one years old.', 'Мне двадцать один год.', 'twenty-one звучит как [ту́энти уа́н], а years начинается со звука [й].'),
+                categorize(
+                  [{ ru: '1–12' }, { ru: '13–19' }, { ru: 'Десятки' }],
+                  [['eight', 0], ['eleven', 0], ['twelve', 0], ['fourteen', 1], ['sixteen', 1], ['nineteen', 1], ['twenty', 2], ['forty', 2], ['sixty', 2]],
+                  'eleven и twelve — особые слова без -teen; -teen — числа 13–19, -ty — десятки. Обратите внимание: forty пишется без u, хотя four — с u.',
+                  { d: 2 },
+                ),
+                chat(
+                  [
+                    ['Hello! What’s your name, please?', 'Здравствуйте! Как вас зовут?', ['My name is Dana Bekova.', 'I’m twenty-five.', 'It’s 8 707 345 12 90.'], 0],
+                    ['Thank you. And how old are you?', 'Спасибо. А сколько вам лет?', ['I’m twenty-five.', 'I have twenty-five years.', 'I’m fine, thank you.'], 0],
+                    ['What’s your phone number?', 'Какой у вас номер телефона?', ['It’s 8 707 345 12 90.', 'I’m 8 707 345 12 90.', 'It’s my phone.'], 0],
+                  ],
+                  'Возраст — через to be: I’m twenty-five. Номер телефона называют с It’s …',
+                  {},
+                  'Вы записываетесь в спортзал, администратор заполняет анкету.',
+                ),
               ],
               test: [
                 choiceRu('Какое это число?', 'thirteen', ['13', '30', '3'], 0, 'Окончание -teen — это числа 13–19, значит 13. «Тридцать» — thirty.'),
@@ -228,6 +276,22 @@ export const english: LanguageSpec = {
                 translateBack('My parents live in Astana.', ['Мои родители живут в Астане'], 'parents — «родители», live — «жить».'),
                 order(['My', 'brother’s', 'name', 'is', 'Timur'], 'Моего брата зовут Тимур.', 'brother’s name — «имя брата».', { t: 'possessive' }),
                 speak('This is my family.', 'Это моя семья.', 'th в this — звонкий межзубный звук: кончик языка между зубами.'),
+                categorize(
+                  [{ ru: 'Он (he)' }, { ru: 'Она (she)' }, { ru: 'Они (they)' }],
+                  [['father', 0], ['son', 0], ['uncle', 0], ['mother', 1], ['daughter', 1], ['aunt', 1], ['parents', 2], ['children', 2], ['grandparents', 2]],
+                  'parents, children, grandparents — множественное число, их заменяют местоимением they. children — неправильная форма от child.',
+                  { d: 2 },
+                ),
+                chat(
+                  [
+                    ['This is my family. Do you have a big family?', 'Это моя семья. У тебя большая семья?', ['Yes, I have two brothers and a sister.', 'Yes, I has two brothers and a sister.', 'Yes, I am two brothers.'], 0],
+                    ['Cool! What’s your brother’s name?', 'Здорово! Как зовут твоего брата?', ['My brother’s name is Timur.', 'My brother name is Timur.', 'My name is brother Timur.'], 0],
+                    ['Does Timur have children?', 'У Тимура есть дети?', ['Yes, he has a son and a daughter.', 'Yes, he have a son and a daughter.', 'Yes, he is a son and a daughter.'], 0],
+                  ],
+                  'С I — have, с he — has; принадлежность — через ’s: my brother’s name.',
+                  { s: 'grammar', d: 2 },
+                  'Подруга показывает вам семейные фотографии.',
+                ),
               ],
               test: [
                 fill('Tom ___ a big family.', ['has'], 'С he/she и именем человека — has.', { s: 'grammar', t: 'present_tense' }, { translation: 'У Тома большая семья.', options: ['have', 'has', 'is'] }),
@@ -285,6 +349,22 @@ export const english: LanguageSpec = {
                 translate('Можно посмотреть меню, пожалуйста?', ['Can I see the menu, please?', 'Could I see the menu, please?', 'Can I have the menu, please?', 'Could I have the menu, please?', 'Can I see the menu?', 'Could I see the menu?'], 'menu — «меню»; Can/Could I see …? — вежливая просьба.'),
                 listen('Can I have the bill, please?', 'bill — счёт в ресторане (британский вариант).', {}, { translation: 'Можно счёт, пожалуйста?' }),
                 speak('Could I have a coffee, please?', 'Можно мне кофе, пожалуйста?', 'В could буква l не читается: [кʊд].'),
+                categorize(
+                  ['a / an', 'some'],
+                  [['sandwich', 0], ['apple', 0], ['egg', 0], ['biscuit', 0], ['water', 1], ['milk', 1], ['bread', 1], ['rice', 1]],
+                  'a/an — перед исчисляемыми существительными в единственном числе, some — перед неисчисляемыми. Внимание: bread в английском неисчисляемое (some bread, a loaf of bread).',
+                  { s: 'grammar', t: 'articles', d: 2 },
+                ),
+                chat(
+                  [
+                    ['Hello! Are you ready to order?', 'Здравствуйте! Готовы сделать заказ?', ['Yes. Could I have the chicken soup, please?', 'Yes. Give me soup.', 'Yes, I’m ready. Goodbye!'], 0],
+                    ['Of course. Anything to drink?', 'Конечно. Что будете пить?', ['A glass of water, please.', 'A water glass of, please.', 'Some sandwich, please.'], 0],
+                    ['Here you are. Anything else?', 'Пожалуйста. Что-нибудь ещё?', ['No, thank you. Can I have the bill, please?', 'Yes, I’d like goodbye.', 'How old are you?'], 0],
+                  ],
+                  'Could I have … please? — вежливый заказ, «Give me» звучит грубо; a glass of water — «стакан воды».',
+                  {},
+                  'Вы обедаете в кафе.',
+                ),
               ],
               test: [
                 fill('Can I have ___ water, please?', ['some'], 'water — неисчисляемое существительное, поэтому some, а не a.', { s: 'grammar', t: 'articles', d: 2 }, { translation: 'Можно мне воды, пожалуйста?', options: ['some', 'a', 'an'] }),
@@ -350,6 +430,22 @@ export const english: LanguageSpec = {
                 order(['We', 'visited', 'our', 'grandparents', 'last', 'week'], 'На прошлой неделе мы навестили бабушку и дедушку.', 'Обстоятельство времени обычно стоит в конце предложения.', { t: 'word_order' }, { alternatives: [['Last', 'week', 'we', 'visited', 'our', 'grandparents']] }),
                 listen('I saw a great film yesterday.', 'saw — прошедшее время от see.', {}, { translation: 'Вчера я посмотрел отличный фильм.' }),
                 translateBack('She didn’t come to the party.', ['Она не пришла на вечеринку'], 'didn’t come — отрицание в Past Simple.'),
+                chat(
+                  [
+                    ['Hi! How was your weekend?', 'Привет! Как прошли выходные?', ['It was great, thanks! I went to the mountains.', 'It is great! I go to the mountains.', 'It was great. I goed to the mountains.'], 0],
+                    ['Lucky you! Who did you go with?', 'Везёт! С кем ты ездил?', ['I went with my brother and two friends.', 'I did went with my brother.', 'I go with my brother.'], 0],
+                    ['Did you see the lake?', 'Видели озеро?', ['Yes, we did. We had a picnic there.', 'Yes, we saw. We have a picnic there.', 'Yes, we do. It was nice.'], 0],
+                  ],
+                  'О выходных рассказывают в Past Simple: went, had. На вопрос с did кратко отвечают Yes, we did.',
+                  { t: 'past_tense', d: 2 },
+                  'В понедельник коллега спрашивает вас о выходных.',
+                ),
+                cloze(
+                  'Last Saturday I [got|get|getted] up late. Then I [went|go|goed] to the market and [bought|buyed|brought] some fruit. In the evening my friends [came|comed|come] to my place and we [ate|eated|eat] pizza.',
+                  'Все глаголы неправильные: get → got, go → went, buy → bought (brought — от bring), come → came, eat → ate.',
+                  { s: 'grammar', t: 'past_tense', d: 2 },
+                  'В прошлую субботу я встал поздно. Потом сходил на рынок и купил фруктов. Вечером ко мне пришли друзья, и мы ели пиццу.',
+                ),
               ],
               test: [
                 fill('Last week we ___ a new car.', ['bought'], 'buy — неправильный глагол: buy → bought.', { s: 'grammar', t: 'past_tense' }, { translation: 'На прошлой неделе мы купили новую машину.', options: ['bought', 'buyed', 'buy'] }),
@@ -409,6 +505,24 @@ export const english: LanguageSpec = {
                 listen('The train to Oxford leaves from platform four.', 'leaves from platform four — «отходит с четвёртой платформы».', {}, { translation: 'Поезд до Оксфорда отходит с четвёртой платформы.', answers: ['The train to Oxford leaves from platform four.', 'The train to Oxford leaves from platform 4.'] }),
                 order(['Can', 'you', 'help', 'me', 'please'], 'Не могли бы вы мне помочь?', 'В вопросе с can модальный глагол стоит первым.', { t: 'modal_verbs' }),
                 speak('Excuse me, where is the station?', 'Извините, где вокзал?', 'В station «ti» читается как «ш»: [стейшн].'),
+                chat(
+                  [
+                    ['Excuse me, how do I get to the British Museum?', 'Извините, как пройти к Британскому музею?', ['Go straight on and turn left at the bank.', 'Yes, I went to the museum yesterday.', 'It’s ten pounds, please.'], 0],
+                    ['Is it far from here?', 'Это далеко отсюда?', ['No, it’s about five minutes on foot.', 'No, it’s about five minutes on feet.', 'Yes, I’m from here.'], 0],
+                    ['Can I take a bus?', 'А можно доехать на автобусе?', ['Yes, you can, but you have to change at Holborn.', 'Yes, you can to take, but change.', 'Yes, you have take a bus.'], 0],
+                  ],
+                  'Направление: go straight on, turn left. «Пешком» — on foot (не on feet). have to + глагол — «нужно».',
+                  { d: 2 },
+                  'Турист спрашивает у вас дорогу у станции метро.',
+                ),
+                errorSpot(
+                  'You has to change trains at the next station.',
+                  'has',
+                  'have',
+                  'С you — have to, а не has to: has используется только с he/she/it.',
+                  { t: 'modal_verbs', d: 2 },
+                  'Вам нужно пересесть на следующей станции.',
+                ),
               ],
               test: [
                 choiceRu('Что означает эта фраза?', 'Turn right at the bank.', ['Поверните направо у банка.', 'Поверните налево у банка.', 'Идите прямо до банка.'], 0, 'turn right — «повернуть направо», turn left — «налево», straight on — «прямо».'),
@@ -488,6 +602,24 @@ export const english: LanguageSpec = {
                 translateBack('Does your sister work on Saturdays?', ['Твоя сестра работает по субботам?', 'Ваша сестра работает по субботам?', 'Работает ли твоя сестра по субботам?', 'Твоя сестра работает в субботу?'], 'Does … work? — вопрос в Present Simple для 3-го лица; on Saturdays — «по субботам».', { d: 2 }),
                 listen('I usually go to work by bus.', 'by bus — «на автобусе»; usually стоит перед глаголом go.', {}, { translation: 'Обычно я езжу на работу на автобусе.' }),
                 speak('I always have breakfast at eight.', 'Я всегда завтракаю в восемь.', 'В breakfast первая часть читается [брек], а не [брейк]: [ˈbrekfəst].'),
+                chat(
+                  [
+                    ['Hi! What time do you usually get up?', 'Привет! Во сколько ты обычно встаёшь?', ['I usually get up at seven on weekdays.', 'I get usually up at seven.', 'I am usually get up at seven.'], 0],
+                    ['And when do you have a shower?', 'А когда ты принимаешь душ?', ['I always have a shower before breakfast.', 'I have always a shower before breakfast.', 'I always am a shower before breakfast.'], 0],
+                    ['Great. I never get up before nine, so the bathroom is yours in the morning!', 'Отлично. Я никогда не встаю раньше девяти, так что утром ванная твоя!', ['Perfect! Then we never need to wait.', 'Perfect! Then we don’t never wait.', 'Sorry, I’m never.'], 0],
+                  ],
+                  'Наречие частоты стоит перед смысловым глаголом: usually get up, always have. never уже отрицание — don’t never нельзя.',
+                  { s: 'grammar', t: 'word_order', d: 2 },
+                  'Вы договариваетесь с новым соседом по квартире о распорядке.',
+                ),
+                errorSpot(
+                  'She usually finish work at six and then goes to the gym.',
+                  'finish',
+                  'finishes',
+                  'С she глагол в Present Simple получает окончание; после -sh добавляется -es: finish → finishes.',
+                  { t: 'present_tense', d: 2 },
+                  'Обычно она заканчивает работу в шесть, а потом идёт в спортзал.',
+                ),
               ],
               test: [
                 fill('My father ___ to work by car.', ['goes'], 'С he/she/it: go → goes (после o добавляется -es).', { s: 'grammar', t: 'present_tense' }, { translation: 'Мой папа ездит на работу на машине.', options: ['go', 'goes', 'gos'] }),
@@ -562,6 +694,22 @@ export const english: LanguageSpec = {
                 translateBack('Do you have this jacket in a smaller size?', ['У вас есть эта куртка на размер меньше?', 'У вас есть эта куртка меньшего размера?', 'Есть ли у вас эта куртка на размер меньше?', 'У вас есть такая куртка на размер меньше?', 'У вас есть эта куртка размером поменьше?'], 'in a smaller size — «на размер меньше», smaller — сравнительная степень от small.', { t: 'shopping', d: 2 }),
                 listen('Everything is half price in the sale.', 'half price — «за полцены», in the sale — «на распродаже».', { t: 'shopping' }, { translation: 'На распродаже всё за полцены.' }),
                 speak('This one is cheaper than that one.', 'Этот дешевле, чем тот.', 'than произносится безударно, со звонким межзубным th: [ðən].'),
+                chat(
+                  [
+                    ['Hello! Can I help you?', 'Здравствуйте! Вам помочь?', ['Yes, please. I’m looking for a cheap phone.', 'Yes, I’m look a cheap phone.', 'No, I’m more cheap.'], 0],
+                    ['This one is £150 and that one is £200.', 'Этот стоит 150 фунтов, а тот — 200.', ['Is the more expensive one much better?', 'Is the expensiver one gooder?', 'Is the most expensive one better than?'], 0],
+                    ['Yes, it has a bigger screen and a better camera.', 'Да, у него больше экран и лучше камера.', ['Great, I’ll take it. Can I pay by card?', 'Great, it is the bigger in the shop.', 'Great, I bought it yesterday.'], 0],
+                  ],
+                  'expensive — длинное прилагательное: more expensive; good → better. Формы expensiver и gooder не существуют.',
+                  { t: 'shopping', d: 2 },
+                  'Вы выбираете телефон, вам помогает консультант.',
+                ),
+                cloze(
+                  'My old phone was [cheaper|cheapest|more cheap] than my new one, but the new one is much [better|gooder|best]. It has the [biggest|bigger|most big] screen in the shop, and it is [more|most|much] comfortable to use.',
+                  'cheap → cheaper than; good → better (much better — «гораздо лучше»); превосходная степень с the: the biggest; comfortable — длинное слово: more comfortable.',
+                  { s: 'grammar', d: 2 },
+                  'Мой старый телефон был дешевле нового, но новый гораздо лучше. У него самый большой экран в магазине, и им удобнее пользоваться.',
+                ),
               ],
               test: [
                 fill('My new flat is ___ than my old one.', ['bigger'], 'big → bigger: после краткого гласного конечная согласная удваивается.', { s: 'grammar' }, { translation: 'Моя новая квартира больше старой.', options: ['bigger', 'biger', 'more big'] }),
@@ -587,7 +735,7 @@ export const english: LanguageSpec = {
     {
       level: 'B1',
       title: 'Английский B1: мнения и аргументы',
-      description: 'Выражение мнения, связки because, although, however.',
+      description: 'Выражение мнения и связки, Present Perfect в рассказе об опыте работы, относительные придаточные.',
       modules: [
         {
           title: 'Своё мнение',
@@ -638,6 +786,20 @@ export const english: LanguageSpec = {
                   { t: 'conjunctions', d: 2 },
                 ),
                 translateBack('Although the course is difficult, it is very useful.', ['Хотя курс сложный, он очень полезный', 'Хотя курс трудный, он очень полезен'], 'although — «хотя».', { d: 2 }),
+                errorSpot(
+                  'We went to the beach however it was raining.',
+                  'however',
+                  'although',
+                  'however — «однако» — начинает новое предложение. Чтобы соединить две части одного предложения в значении «хотя», нужен although.',
+                  { t: 'conjunctions', d: 2 },
+                  'Мы пошли на пляж, хотя шёл дождь.',
+                ),
+                cloze(
+                  'In my [opinion|opinions|mind], online courses are a great idea. [Although|However|Because] they are not perfect, they save a lot of time. Some people say they are boring. [However|Although|Because], a good teacher can make any course interesting. Still, I [agree|am agree|agreeing] that live lessons are important too.',
+                  'In my opinion — устойчивое выражение; although вводит уступку внутри предложения, however — новое предложение с запятой; agree — глагол, «I am agree» — ошибка.',
+                  { s: 'grammar', t: 'conjunctions', d: 2 },
+                  'По-моему, онлайн-курсы — отличная идея. Хотя они не идеальны, они экономят много времени. Некоторые говорят, что они скучные. Однако хороший преподаватель может сделать интересным любой курс. И всё же я согласен, что живые занятия тоже важны.',
+                ),
               ],
               test: [
                 fill('We stayed at home ___ it was raining.', ['because'], 'Причина — because: «потому что шёл дождь».', { s: 'grammar', t: 'conjunctions', d: 2 }, { translation: 'Мы остались дома, потому что шёл дождь.', options: ['because', 'although', 'however'] }),
@@ -717,6 +879,20 @@ export const english: LanguageSpec = {
                 translateBack('She has just applied for a job in London.', ['Она только что подала заявку на работу в Лондоне', 'Она только что откликнулась на вакансию в Лондоне', 'Она только что подала резюме на работу в Лондоне', 'Она только что подала заявление на работу в Лондоне'], 'has just applied — Present Perfect с just: «только что».', { d: 2 }),
                 listen('I’m responsible for customer service.', 'responsible for — «отвечать за что-то», буквально «быть ответственным за».', {}, { translation: 'Я отвечаю за обслуживание клиентов.', answers: ['I’m responsible for customer service.', 'I am responsible for customer service.'] }),
                 speak('I have five years of experience.', 'У меня пять лет опыта.', 'В experience ударение на второй слог: [ɪkˈspɪəriəns].'),
+                errorSpot(
+                  'I work in this company since 2019.',
+                  'work',
+                  'have worked',
+                  'Действие началось в прошлом и продолжается сейчас (since 2019) → Present Perfect: I have worked. Русское «работаю» здесь вводит в заблуждение.',
+                  { t: 'present_tense', d: 3 },
+                  'Я работаю в этой компании с 2019 года.',
+                ),
+                cloze(
+                  'Dear Ms Brown, I am writing to apply [for|to|on] the position of marketing manager. I [have worked|worked|work] in marketing [for|since|during] six years, and since 2022 I [have been|was|am] responsible [for|of|about] a team of five people. Last year I [launched|have launched|launch] a campaign that doubled our online sales.',
+                  'apply for — «откликаться на»; опыт до сих пор → Present Perfect с for (период) и since (точка начала); responsible for; last year — конкретное время, значит Past Simple.',
+                  { s: 'grammar', d: 3 },
+                  'Уважаемая г-жа Браун, я откликаюсь на вакансию менеджера по маркетингу. Я работаю в маркетинге шесть лет, а с 2022 года руковожу командой из пяти человек. В прошлом году я запустил кампанию, которая удвоила наши онлайн-продажи.',
+                ),
               ],
               test: [
                 fill('They have known each other ___ they were children.', ['since'], 'since может вводить целое придаточное — точку начала: since they were children.', { s: 'grammar', t: 'present_tense', d: 3 }, { translation: 'Они знают друг друга с детства.', options: ['since', 'for', 'from'] }),
@@ -790,6 +966,20 @@ export const english: LanguageSpec = {
                 ),
                 translateBack('The lecture I went to yesterday was about climate change.', ['Лекция, на которую я ходил вчера, была об изменении климата', 'Лекция, на которую я вчера ходил, была об изменении климата', 'Лекция, на которой я был вчера, была об изменении климата', 'Лекция, на которой я вчера был, была об изменении климата', 'Лекция, на которую я ходила вчера, была об изменении климата', 'Лекция, на которую я вчера ходила, была об изменении климата'], 'Местоимение опущено: the lecture (that) I went to, предлог to стоит в конце.', { d: 3 }),
                 speak('She has a degree in economics.', 'У неё диплом экономиста.', 'В degree ударение на второй слог: [dɪˈɡriː]; в economics — на третий: [ˌiːkəˈnɒmɪks].'),
+                errorSpot(
+                  'The university who I applied to has a great library.',
+                  'who',
+                  'which',
+                  'who — только о людях. Об университете — which (или that, или вообще без местоимения: the university I applied to).',
+                  { d: 2 },
+                  'У университета, в который я подавал документы, отличная библиотека.',
+                ),
+                cloze(
+                  'Last year I got a [scholarship|salary|lecture] to study in Edinburgh. The university [where|which|who] I studied is very old. The professor [who|which|where] taught us history was brilliant, and the lectures [that|who|where] she gave were never boring. I finally got my [degree|mark|subject] in June.',
+                  'scholarship — стипендия; о месте — where, о человеке — who, о предмете — that/which; degree — диплом о высшем образовании.',
+                  { s: 'grammar', d: 2 },
+                  'В прошлом году я получил стипендию на учёбу в Эдинбурге. Университет, где я учился, очень старый. Профессор, который преподавал нам историю, был блестящим, а лекции, которые она читала, никогда не были скучными. В июне я наконец получил диплом.',
+                ),
               ],
               test: [
                 fill('I have a friend ___ speaks five languages.', ['who', 'that'], 'О человеке — who (или that); здесь местоимение — подлежащее придаточного, опустить его нельзя.', { s: 'grammar', d: 2 }, { translation: 'У меня есть друг, который говорит на пяти языках.', options: ['who', 'which', 'where'] }),
@@ -806,7 +996,7 @@ export const english: LanguageSpec = {
     {
       level: 'B2',
       title: 'Английский B2: гипотезы',
-      description: 'Второй и третий тип условных предложений, сожаление с wish.',
+      description: 'Условные предложения и wish, страдательный залог и косвенная речь на материале новостей и экологии.',
       modules: [
         {
           title: 'Если бы…',
@@ -845,6 +1035,20 @@ export const english: LanguageSpec = {
                 translate('На твоём месте я бы подождал.', ['If I were you, I would wait.', 'If I were you, I’d wait.', 'If I was you, I would wait.'], 'If I were you, … — устойчивая форма совета.', { s: 'grammar', t: 'conditionals', d: 3 }),
                 order(['I', 'wish', 'I', 'had', 'more', 'free', 'time'], 'Жаль, что у меня нет больше свободного времени.', 'wish + Past Simple — сожаление о настоящем.', { s: 'grammar', t: 'conditionals', d: 3 }),
                 translateBack('If we had left earlier, we would have caught the train.', ['Если бы мы вышли раньше, мы бы успели на поезд'], 'had left … would have caught — нереальное прошлое.', { d: 3 }),
+                errorSpot(
+                  'If she had left home earlier, she wouldn’t miss the flight.',
+                  'miss',
+                  'have missed',
+                  'Речь о прошлом, которое уже не изменить (had left) → третий тип: wouldn’t have missed.',
+                  { t: 'conditionals', d: 3 },
+                  'Если бы она вышла из дома раньше, она бы не опоздала на рейс.',
+                ),
+                cloze(
+                  'Looking back, I [regret|wish|would] not taking that job in London. If I [had accepted|accepted|would accept] the offer, I [would have moved|would move|had moved] abroad five years ago. My friends say that if I [were|am|will be] braver, I would take more risks. I [wish|regret|hope] I could go back in time, but there is no point — I have to make better decisions now, [otherwise|however|unless] I will have even more regrets.',
+                  'regret + -ing — «жалеть о»; третий тип: had accepted → would have moved; второй тип: if I were → would take; wish + could — сожаление о настоящем; otherwise — «иначе».',
+                  { s: 'grammar', t: 'conditionals', d: 3 },
+                  'Оглядываясь назад, я жалею, что не согласился на ту работу в Лондоне. Если бы я принял предложение, я бы переехал за границу пять лет назад. Друзья говорят, что будь я смелее, я бы чаще рисковал. Жаль, что нельзя вернуться в прошлое, но смысла нет — сейчас нужно принимать решения получше, иначе сожалений будет ещё больше.',
+                ),
               ],
               test: [
                 fill('If I ___ you, I would talk to her.', ['were', 'was'], 'If I were you — устойчивая форма совета; в разговоре допустимо и was.', { s: 'grammar', t: 'conditionals', d: 2 }, { translation: 'На твоём месте я бы с ней поговорил.', options: ['were', 'am', 'would be'] }),
@@ -915,6 +1119,20 @@ export const english: LanguageSpec = {
                   'Обсуждение городских новостей.',
                 ),
                 listen('Most of the waste is recycled locally.', 'is recycled — пассив в настоящем времени; locally — «на месте, в этом же районе».', { d: 2 }, { translation: 'Большая часть отходов перерабатывается на месте.' }),
+                errorSpot(
+                  'Millions of tonnes of plastic are throw away every year.',
+                  'throw',
+                  'thrown',
+                  'Пассив = be + V3: are thrown away. throw — неправильный глагол: throw → threw → thrown.',
+                  { d: 3 },
+                  'Каждый год выбрасываются миллионы тонн пластика.',
+                ),
+                cloze(
+                  'A new recycling plant [was opened|opened|has opened] in the city last week. It [is expected|expects|is expecting] to process 50,000 tonnes of waste a year. Until now, most of the city’s rubbish [has been sent|has sent|was sending] to landfill. Plastic bags [will be banned|will ban|are banning] from next January, and more money [is being invested|is investing|has invested] in public transport. It [is believed|believes|is believing] that air pollution will fall by 20 per cent.',
+                  'Во всех пропусках нужен пассив в разных временах: was opened (last week), is expected, has been sent (until now), will be banned, is being invested (процесс сейчас), It is believed that … — «считается, что…».',
+                  { s: 'grammar', t: 'environment', d: 3 },
+                  'На прошлой неделе в городе открыли новый завод по переработке. Ожидается, что он будет перерабатывать 50 000 тонн отходов в год. До сих пор большую часть городского мусора отправляли на свалку. С января запретят пластиковые пакеты, а в общественный транспорт сейчас вкладывают больше денег. Считается, что загрязнение воздуха снизится на 20 процентов.',
+                ),
               ],
               test: [
                 fill('The bridge ___ being repaired at the moment.', ['is'], 'Present Continuous Passive: is being + V3; at the moment — «сейчас».', { s: 'grammar', d: 3 }, { translation: 'Мост сейчас ремонтируют.', options: ['is', 'was', 'has'] }),
@@ -979,6 +1197,20 @@ export const english: LanguageSpec = {
                   { s: 'grammar', d: 3 },
                 ),
                 speak('According to the article, the story isn’t true.', 'Согласно статье, эта история не соответствует действительности.', 'В according ударение на второй слог: [əˈkɔːdɪŋ].'),
+                errorSpot(
+                  'He asked me if I have read the article before.',
+                  'have',
+                  'had',
+                  'После asked время сдвигается назад: Present Perfect → Past Perfect (if I had read).',
+                  { d: 3 },
+                  'Он спросил меня, читал ли я эту статью раньше.',
+                ),
+                cloze(
+                  'Yesterday a journalist interviewed the mayor. She asked him [whether|that|what] the city would build a new metro line. The mayor [told|said|asked] her that the project [had been|has been|is] delayed because of the budget. He also [said|told|asked] that the first station [would|will|can] open the following year. Finally, he asked journalists [not to|don’t|to not] spread rumours.',
+                  'Общий вопрос — whether/if; tell + кому (told her), say — без дополнения; согласование времён: has been → had been, will → would; отрицательная просьба — not to + глагол.',
+                  { s: 'grammar', t: 'media', d: 3 },
+                  'Вчера журналистка взяла интервью у мэра. Она спросила, построит ли город новую линию метро. Мэр сказал ей, что проект отложили из-за бюджета. Он также сказал, что первая станция откроется в следующем году. В конце он попросил журналистов не распространять слухи.',
+                ),
               ],
               test: [
                 fill('My boss told me ___ be late again.', ['not to'], 'Отрицательная просьба или указание: told me not to + глагол.', { s: 'grammar', d: 3 }, { translation: 'Начальник велел мне больше не опаздывать.', options: ['not to', 'don’t', 'didn’t'] }),
@@ -986,6 +1218,350 @@ export const english: LanguageSpec = {
                 translate('Она сказала, что не доверяет этому источнику.', ['She said that she didn’t trust this source.', 'She said she didn’t trust this source.', 'She said that she didn’t trust that source.', 'She said she didn’t trust that source.', 'She said that she didn’t trust the source.', 'She said she didn’t trust the source.'], 'Согласование времён: «не доверяет» после said → didn’t trust.', { s: 'grammar', d: 3 }),
                 order(['They', 'asked', 'me', 'where', 'I', 'had', 'found', 'the', 'information'], 'Они спросили меня, где я нашёл информацию.', 'В косвенном вопросе прямой порядок слов: where I had found.', { s: 'grammar', d: 3 }),
                 choiceRu('Что означает эта фраза?', 'The article claims that coffee is good for your health.', ['В статье утверждается, что кофе полезен для здоровья.', 'Статья опровергает, что кофе полезен для здоровья.', 'В статье спрашивают, полезен ли кофе для здоровья.'], 0, 'claim — «утверждать» (часто без доказательств). «Опровергать» — deny.', { t: 'media', d: 2 }),
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      level: 'C1',
+      title: 'Английский C1: точность и стиль',
+      description: 'Инверсия и расщеплённые предложения, смешанные условные, сложный пассив и каузатив, hedging и формальный регистр, связки для аргументации и идиомы — на материале науки, культуры и общества.',
+      modules: [
+        {
+          title: 'Выразительность и гипотезы',
+          description: 'Инверсия, расщеплённые предложения и смешанные условные.',
+          lessons: [
+            {
+              key: 'en-c1-emphasis',
+              title: 'Never have I…: инверсия и выделение',
+              objective: 'Расставлять смысловые акценты с помощью инверсии после отрицательных наречий и расщеплённых предложений (It is… that, What… is).',
+              topic: 'complex_syntax',
+              minutes: 18,
+              theory: [
+                {
+                  title: 'Инверсия после отрицательных и ограничительных выражений',
+                  body: 'В русском порядок слов свободный, и акцент ставят перестановкой: «Никогда ещё я такого не видел». В английском порядок слов жёсткий, поэтому для эмфазы используют инверсию: если предложение начинается с never, rarely, seldom, hardly … when, no sooner … than, not only … but also, under no circumstances, only then, little, вспомогательный глагол ставится перед подлежащим, как в вопросе: Never have I seen… Если вспомогательного глагола нет, появляется do/does/did, а смысловой глагол возвращается в начальную форму: Rarely does he complain. Это книжный, ораторский приём: в повседневном разговоре он звучит торжественно.',
+                  examples: [
+                    ['Never have I seen such a crowd.', 'Никогда ещё я не видел такой толпы.'],
+                    ['Not only did she win, but she also broke the record.', 'Она не только победила, но и побила рекорд.'],
+                    ['Hardly had we arrived when it started to rain.', 'Едва мы приехали, как пошёл дождь.'],
+                  ],
+                },
+                {
+                  title: 'Расщеплённые предложения: It is… that и What… is',
+                  body: 'Русский выделяет слово интонацией или частицами «именно», «как раз», «вот что»: «Именно Анна предложила эту идею». В английском интонации часто недостаточно, и предложение «расщепляют»: It was Anna who suggested the idea (It is/was + выделяемое + who/that + остальное). Конструкция What … is/was выделяет действие или мысль: What surprised me was his reaction — «Что меня удивило, так это его реакция». Не добавляйте лишнее it: What I need is time, а не What I need it is time.',
+                  examples: [
+                    ['It was in 1991 that Kazakhstan became independent.', 'Именно в 1991 году Казахстан обрёл независимость.'],
+                    ['What we need is a clear plan.', 'Что нам нужно, так это чёткий план.'],
+                    ['It’s not the money that worries me — it’s the time.', 'Меня беспокоят не деньги, а время.'],
+                  ],
+                },
+              ],
+              words: [
+                ['seldom', 'редко (книжн.)', 'adverb', 'Seldom do we get such an opportunity.', 'Такая возможность выпадает редко.'],
+                ['no sooner … than', 'не успел … как', 'phrase', 'No sooner had I sat down than the phone rang.', 'Не успел я сесть, как зазвонил телефон.'],
+                ['under no circumstances', 'ни при каких обстоятельствах', 'phrase', 'Under no circumstances should you open this door.', 'Ни при каких обстоятельствах не открывайте эту дверь.'],
+                ['by no means', 'отнюдь не, вовсе не', 'phrase', 'The result is by no means certain.', 'Результат отнюдь не гарантирован.'],
+                ['remarkable', 'выдающийся, поразительный', 'adjective', 'She gave a remarkable performance.', 'Она блестяще выступила.'],
+                ['unprecedented', 'беспрецедентный', 'adjective', 'The exhibition attracted an unprecedented number of visitors.', 'Выставка привлекла беспрецедентное число посетителей.'],
+                ['masterpiece', 'шедевр', 'noun', 'The novel is considered a masterpiece.', 'Роман считается шедевром.'],
+                ['critical acclaim', 'признание критиков', 'noun', 'The film won critical acclaim.', 'Фильм получил признание критиков.'],
+              ],
+              exercises: [
+                fill('Never ___ I heard such a beautiful voice.', ['have'], 'После never в начале предложения — инверсия: вспомогательный глагол have перед подлежащим. did I heard невозможно: после did нужна начальная форма.', { s: 'grammar', d: 2 }, { translation: 'Никогда ещё я не слышал такого красивого голоса.', options: ['have', 'did', 'was'] }),
+                choice('Выберите правильный вариант с инверсией.', ['Rarely does she miss a concert.', 'Rarely she misses a concert.', 'Rarely misses she a concert.'], 0, 'После rarely в начале нужен вспомогательный глагол перед подлежащим; в Present Simple это does, а смысловой глагол — без -s.', { s: 'grammar', d: 2 }),
+                errorSpot('Hardly had we taken our seats than the concert started.', 'than', 'when', 'Пары фиксированы: hardly … when, no sooner … than. Смешивать их нельзя.', { d: 3 }, 'Едва мы заняли свои места, как начался концерт.'),
+                cloze(
+                  '[What|That|Which] impressed me most about the exhibition was the lighting. [It|This|There] was the young curator [who|which|whom] came up with the idea. Never [had|have|did] the museum attracted so many visitors, and not only [did|was|had] the critics praise it, but the public loved it too.',
+                  'What … was — выделение мысли; It was … who — выделение человека; после never и not only — инверсия: had the museum attracted, did the critics praise.',
+                  { s: 'grammar', t: 'culture', d: 3 },
+                  'Больше всего в выставке меня впечатлило освещение. Именно молодой куратор придумал эту идею. Никогда ещё музей не привлекал столько посетителей, и её не только хвалили критики — она понравилась и публике.',
+                ),
+                categorize(
+                  [{ ru: 'Нужна инверсия' }, { ru: 'Инверсия не нужна' }],
+                  [['Never before …', 0], ['Under no circumstances …', 0], ['Little …', 0], ['Only then …', 0], ['Sometimes …', 1], ['In the end …', 1], ['Every year …', 1], ['Even now …', 1]],
+                  'Инверсию вызывают отрицательные и ограничительные выражения в начале предложения (never, little, only then, under no circumstances). Обычные наречия времени и частоты её не требуют: Sometimes I wonder…',
+                  { s: 'grammar', d: 3 },
+                ),
+                chat(
+                  [
+                    ['So, what was it that attracted you to this artist?', 'Итак, что же привлекло вас в этой художнице?', ['What struck me was the way she uses light.', 'That what struck me was her light.', 'What struck me it was the way she uses light.'], 0],
+                    ['Many critics ignored her early work. Why do you think that was?', 'Многие критики не замечали её ранних работ. Как вы думаете, почему?', ['It was only after her death that her talent was recognised.', 'It was only after her death when her talent recognised.', 'Only after her death her talent was recognised.'], 0],
+                    ['Would you recommend the exhibition to our listeners?', 'Вы бы порекомендовали выставку нашим слушателям?', ['Absolutely. Rarely have I seen such a powerful collection.', 'Absolutely. Rarely I have seen such a powerful collection.', 'Yeah, it’s cool, whatever.'], 0],
+                  ],
+                  'What … was и It was … that — расщеплённые предложения; после only after… и rarely в начале нужна инверсия. «Yeah, it’s cool, whatever» — неуместно разговорно для интервью.',
+                  { t: 'culture', d: 3 },
+                  'Вы — искусствовед, у вас берут интервью на радио о новой выставке.',
+                ),
+                translate('Именно Анна предложила эту идею.', ['It was Anna who suggested this idea.', 'It was Anna who suggested the idea.', 'It was Anna that suggested this idea.', 'It was Anna that suggested the idea.', 'It was Anna who came up with this idea.', 'It was Anna who came up with the idea.', 'It was Anna who proposed this idea.', 'It was Anna who proposed the idea.', 'It was Anna who put forward this idea.', 'It was Anna who put forward the idea.'], '«Именно» передаётся расщеплённым предложением: It was + Anna + who + остальное.', { s: 'grammar', d: 3 }),
+                translateBack('No sooner had the film come out than it won critical acclaim.', ['Не успел фильм выйти, как получил признание критиков', 'Не успел фильм выйти, как он получил признание критиков', 'Едва фильм вышел, как получил признание критиков', 'Едва фильм вышел, как он получил признание критиков', 'Едва фильм вышел, он получил признание критиков', 'Не успел фильм выйти, как его высоко оценили критики', 'Едва фильм вышел, как его высоко оценили критики', 'Сразу после выхода фильм получил признание критиков'], 'No sooner … than — «не успел … как», «едва … как»; critical acclaim — «признание критиков».', { t: 'culture', d: 3 }),
+                order(['Under', 'no', 'circumstances', 'should', 'you', 'share', 'your', 'password'], 'Ни при каких обстоятельствах не сообщайте свой пароль.', 'После under no circumstances — инверсия: should you share. Отрицание уже есть в no, поэтому not не нужно.', { s: 'grammar', d: 3 }),
+                choiceRu('Что означает это предложение?', 'Little did they know that the painting was a fake.', ['Они и не подозревали, что картина — подделка.', 'Они немного знали о том, что картина — подделка.', 'Они мало что знали об этой картине.'], 0, 'Little did … know — «и не подозревал(и)»: little здесь означает отрицание, а не «немного».', { s: 'reading', t: 'culture', d: 3 }),
+              ],
+              test: [
+                fill('Seldom ___ he admit that he is wrong.', ['does'], 'Seldom в начале → инверсия; в Present Simple — does + глагол в начальной форме (admit).', { s: 'grammar', d: 2 }, { translation: 'Он редко признаёт, что неправ.', options: ['does', 'is', 'has'] }),
+                errorSpot('It was my grandmother which taught me to paint.', 'which', 'who', 'В расщеплённом предложении о человеке — who (или that), а не which.', { d: 2 }, 'Именно бабушка научила меня рисовать.'),
+                choice('Выберите предложение без ошибок.', ['Only later did I realise what had happened.', 'Only later I did realise what had happened.', 'Only later realised I what had happened.'], 0, 'Only later в начале → инверсия с did: did I realise.', { s: 'grammar', d: 3 }),
+                translate('Что меня удивило, так это его реакция.', ['What surprised me was his reaction.', 'What surprised me was his response.', 'What really surprised me was his reaction.'], '«Что…, так это…» → What … was …; лишнее it не нужно.', { s: 'grammar', d: 3 }),
+                cloze('No sooner [had|did|have] the curtain gone up [than|when|that] the lights went out. Not until an hour later [did|had|was] the performance continue.', 'No sooner had … than — «не успел … как»; Not until … в начале → инверсия с did + начальная форма (continue).', { s: 'grammar', t: 'culture', d: 3 }, 'Не успел подняться занавес, как погас свет. Спектакль продолжился только через час.'),
+              ],
+            },
+            {
+              key: 'en-c1-mixed-conditionals',
+              title: 'Если бы тогда…: смешанные условные',
+              objective: 'Говорить о том, как прошлое влияет на настоящее, с помощью смешанных условных, инверсии вместо if и выражений but for, provided that, it’s high time.',
+              topic: 'hypotheticals',
+              minutes: 18,
+              theory: [
+                {
+                  title: 'Смешанные условные предложения',
+                  body: 'В русском одно «если бы» описывает любое нереальное условие, а время понятно из контекста: «Если бы я тогда выучил английский, сейчас бы работал в Лондоне». В английском время каждой части выражается отдельно, и части можно «смешивать». Прошлое условие → настоящий результат: If I had learnt English then, I would be working in London now (had + V3 → would + глагол). Постоянное настоящее условие → прошлый результат: If I were more patient, I wouldn’t have argued with him yesterday (Past Simple/were → would have + V3).',
+                  examples: [
+                    ['If I had taken that job, I would be living in Dubai now.', 'Если бы я тогда согласился на ту работу, сейчас жил бы в Дубае.'],
+                    ['If she weren’t so shy, she would have spoken at the meeting.', 'Не будь она такой застенчивой, она бы выступила на собрании.'],
+                    ['If he hadn’t missed the flight, he would be here by now.', 'Если бы он не опоздал на рейс, он бы уже был здесь.'],
+                  ],
+                },
+                {
+                  title: 'Инверсия вместо if и другие способы выразить гипотезу',
+                  body: 'В официальной речи if опускают и ставят вспомогательный глагол вперёд: Had I known = If I had known, Were it not for = If it weren’t for («если бы не»), Should you need = If you should need («если вам вдруг понадобится»). Русские аналоги — «знай я», «не будь», «случись что». Полезны и другие формы: But for + существительное («если бы не»), Provided (that) — «при условии что», It’s (high) time + Past Simple — «давно пора» (хотя речь о настоящем).',
+                  examples: [
+                    ['Had I known about the problem, I would have acted sooner.', 'Знай я о проблеме, я бы принял меры раньше.'],
+                    ['Were it not for your help, we would still be stuck.', 'Если бы не ваша помощь, мы бы до сих пор топтались на месте.'],
+                    ['Should you have any questions, please contact us.', 'Если у вас возникнут вопросы, пожалуйста, свяжитесь с нами.'],
+                  ],
+                },
+              ],
+              words: [
+                ['in hindsight', 'оглядываясь назад, задним числом', 'phrase', 'In hindsight, it was the right decision.', 'Оглядываясь назад, это было правильное решение.'],
+                ['turning point', 'поворотный момент', 'noun', 'Moving abroad was a turning point in my life.', 'Переезд за границу стал поворотным моментом в моей жизни.'],
+                ['breakthrough', 'прорыв', 'noun', 'The discovery was a major breakthrough in medicine.', 'Это открытие стало крупным прорывом в медицине.'],
+                ['provided that', 'при условии что', 'conjunction', 'You can join the project provided that you meet the deadline.', 'Вы можете участвовать в проекте при условии, что уложитесь в срок.'],
+                ['but for', 'если бы не', 'preposition', 'But for the rain, the match would have finished on time.', 'Если бы не дождь, матч закончился бы вовремя.'],
+                ['pursue', 'заниматься (карьерой), добиваться', 'verb', 'She decided to pursue a career in science.', 'Она решила посвятить себя науке.'],
+                ['outcome', 'результат, исход', 'noun', 'Nobody could predict the outcome of the experiment.', 'Никто не мог предсказать исход эксперимента.'],
+                ['feasible', 'осуществимый, реальный', 'adjective', 'Is the plan financially feasible?', 'Реален ли этот план с финансовой точки зрения?'],
+              ],
+              exercises: [
+                fill('If I had studied medicine, I ___ a doctor now.', ['would be'], 'Прошлое условие (had studied) → результат в настоящем (now): would + глагол.', { s: 'grammar', t: 'conditionals', d: 3 }, { translation: 'Если бы я изучал медицину, я бы сейчас был врачом.', options: ['would be', 'would have been', 'will be'] }),
+                choice('Какое предложение описывает прошлое условие с результатом в настоящем?', ['If she had moved to Canada, she would speak French now.', 'If she moved to Canada, she would speak French.', 'If she had moved to Canada, she would have spoken French.'], 0, 'had moved — прошлое, would speak … now — настоящее. Это смешанный тип.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                errorSpot('If he wasn’t so stubborn, he would accept our offer last week.', 'accept', 'have accepted', 'Условие — постоянная черта (настоящее), результат — в прошлом (last week): would have accepted.', { t: 'conditionals', d: 3 }, 'Не будь он таким упрямым, он бы принял наше предложение на прошлой неделе.'),
+                cloze(
+                  'In hindsight, 2015 was a real turning point. [Had|If|Should] I not received that scholarship, I [wouldn’t be|won’t be|wouldn’t have been] working in a research lab today. [But|Except|Without] for my supervisor’s support, I would [have given|give|had given] up after the first failed experiment. [Were|Was|Had] it not for her constant encouragement, I would still be doubting myself.',
+                  'Had I not received = If I hadn’t received; результат сейчас (today) → wouldn’t be working; But for — «если бы не»; would have given up — прошлое; Were it not for — «если бы не» в настоящем.',
+                  { s: 'grammar', t: 'conditionals', d: 3 },
+                  'Оглядываясь назад, 2015 год стал настоящим поворотным моментом. Не получи я тогда стипендию, я бы сегодня не работал в исследовательской лаборатории. Если бы не поддержка научной руководительницы, я бы сдался после первого неудачного эксперимента. Если бы не её постоянная поддержка, я бы до сих пор в себе сомневался.',
+                ),
+                categorize(
+                  [{ ru: 'Прошлое условие → настоящий результат' }, { ru: 'Настоящее условие → прошлый результат' }],
+                  [
+                    ['If we had booked earlier, we wouldn’t be standing in this queue.', 0],
+                    ['If she hadn’t broken her leg, she would be skiing with us.', 0],
+                    ['Had I taken the job, I would be living abroad.', 0],
+                    ['If I had saved more, I would own a flat by now.', 0],
+                    ['If I were braver, I would have asked her out.', 1],
+                    ['If he spoke Spanish, he would have got the job in Madrid.', 1],
+                    ['If you weren’t so busy, you would have come to the party.', 1],
+                    ['If they were more careful, they wouldn’t have lost the files.', 1],
+                  ],
+                  'Смотрите на формы: had + V3 в условии и would + глагол в результате — прошлое влияет на настоящее; Past Simple/were в условии и would have + V3 в результате — постоянная черта объясняет прошлое событие.',
+                  { s: 'grammar', t: 'conditionals', d: 3 },
+                ),
+                chat(
+                  [
+                    ['Your CV shows you started in finance. Why did you switch to data science?', 'По резюме вы начинали в финансах. Почему перешли в анализ данных?', ['In hindsight, it was a turning point: if I hadn’t taken an online course, I wouldn’t be here today.', 'If I didn’t take an online course, I won’t be here today.', 'Finance was boring, you know, so whatever.'], 0],
+                    ['Do you have any regrets about that decision?', 'Вы не жалеете об этом решении?', ['Not really. Had I stayed in finance, I might be earning more, but I wouldn’t enjoy my work.', 'Not really. If I would stay in finance, I earn more.', 'Yes, I regret to stay.'], 0],
+                    ['Should you get the position, when could you start?', 'Если вы получите эту должность, когда сможете приступить?', ['Provided that I give my current employer a month’s notice, I could start in early March.', 'Provided I will give notice, I start March.', 'Whenever you want, no problem, mate.'], 0],
+                  ],
+                  'Смешанный тип: hadn’t taken → wouldn’t be (сейчас); Had I stayed = If I had stayed; после provided that будущее выражается Present Simple. Фамильярные ответы неуместны на собеседовании.',
+                  { t: 'work', d: 3 },
+                  'Собеседование в исследовательском центре: менеджер по персоналу расспрашивает о вашей карьере.',
+                ),
+                translate('Знай я об этом раньше, я бы не согласился.', ['Had I known about this earlier, I wouldn’t have agreed.', 'Had I known about it earlier, I wouldn’t have agreed.', 'Had I known this earlier, I wouldn’t have agreed.', 'Had I known that earlier, I wouldn’t have agreed.', 'Had I known about this before, I wouldn’t have agreed.', 'Had I known about it before, I wouldn’t have agreed.', 'If I had known about this earlier, I wouldn’t have agreed.', 'If I had known about it earlier, I wouldn’t have agreed.', 'If I had known this earlier, I wouldn’t have agreed.', 'If I had known that earlier, I wouldn’t have agreed.', 'If I had known about it before, I wouldn’t have agreed.'], '«Знай я» — книжная инверсия Had I known = If I had known; результат в прошлом — wouldn’t have agreed.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                translateBack('But for the new vaccine, the outcome would have been much worse.', ['Если бы не новая вакцина, исход был бы гораздо хуже', 'Если бы не новая вакцина, результат был бы гораздо хуже', 'Если бы не новая вакцина, последствия были бы гораздо хуже', 'Если бы не новая вакцина, исход был бы намного хуже', 'Если бы не новая вакцина, результат был бы намного хуже', 'Если бы не новая вакцина, всё закончилось бы гораздо хуже', 'Не будь новой вакцины, исход был бы гораздо хуже', 'Без новой вакцины исход был бы гораздо хуже'], 'But for + существительное — «если бы не»; outcome — «исход, результат».', { t: 'science', d: 3 }),
+                order(['Were', 'it', 'not', 'for', 'the', 'rain', 'we', 'would', 'be', 'on', 'the', 'beach', 'now'], 'Если бы не дождь, мы бы сейчас были на пляже.', 'Were it not for … = If it weren’t for … — «если бы не»; результат в настоящем — would be.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                choiceRu('Что означает это предложение?', 'It’s high time we found a feasible solution.', ['Нам давно пора найти осуществимое решение.', 'У нас было много времени, чтобы найти решение.', 'Наконец пришло время, когда мы нашли решение.'], 0, 'It’s high time + Past Simple — «давно пора», хотя речь о настоящем; feasible — «осуществимый».', { s: 'reading', d: 3 }),
+              ],
+              test: [
+                fill('If I hadn’t missed the train, I ___ at the office now.', ['would be'], 'Прошлое условие (hadn’t missed) → настоящий результат (now): would be.', { s: 'grammar', t: 'conditionals', d: 3 }, { translation: 'Если бы я не опоздал на поезд, я бы сейчас был в офисе.', options: ['would be', 'would have been', 'will be'] }),
+                errorSpot('Had I knew about the strike, I would have taken a taxi.', 'knew', 'known', 'Had I known = If I had known: после had нужна форма V3 — known.', { t: 'conditionals', d: 2 }, 'Знай я о забастовке, я бы взял такси.'),
+                choice('Выберите правильное продолжение: If she were more organised, …', ['she wouldn’t have missed the deadline yesterday.', 'she won’t miss the deadline yesterday.', 'she hadn’t missed the deadline yesterday.'], 0, 'Постоянная черта (were more organised) → результат в прошлом (yesterday): wouldn’t have missed.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                translate('Если бы не твоя помощь, я бы не справился.', ['But for your help, I wouldn’t have managed.', 'But for your help, I couldn’t have managed.', 'If it hadn’t been for your help, I wouldn’t have managed.', 'Had it not been for your help, I wouldn’t have managed.', 'If it weren’t for your help, I wouldn’t have managed.', 'If not for your help, I wouldn’t have managed.', 'Without your help, I wouldn’t have managed.', 'Without your help, I couldn’t have managed.', 'Without your help, I couldn’t have done it.', 'Without your help, I wouldn’t have coped.', 'If it hadn’t been for your help, I wouldn’t have coped.', 'But for your help, I wouldn’t have coped.'], '«Если бы не» — but for / if it hadn’t been for / without; результат в прошлом — wouldn’t have managed.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                cloze('[Provided|Unless|Despite] that the funding is approved, the project will start in May. [Were|Was|Had] the results less convincing, the committee would never have supported it. Still, it’s high time we [started|start|will start] planning the next stage.', 'Provided that — «при условии что»; Were the results… = If the results were…; It’s high time + Past Simple.', { s: 'grammar', t: 'science', d: 3 }, 'При условии, что финансирование одобрят, проект стартует в мае. Будь результаты менее убедительными, комитет никогда бы его не поддержал. И всё же нам давно пора начать планировать следующий этап.'),
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Академический стиль и дискуссия',
+          description: 'Hedging, сложный пассив и каузатив, связки для аргументации и идиомы.',
+          lessons: [
+            {
+              key: 'en-c1-hedging',
+              title: 'Как пишут учёные: hedging и пассив',
+              objective: 'Формулировать выводы осторожно и формально: hedging, номинализация, личный пассив (is thought to have…) и каузатив have something done.',
+              topic: 'register',
+              minutes: 20,
+              theory: [
+                {
+                  title: 'Hedging: осторожные формулировки',
+                  body: 'В русском научном тексте категоричность смягчают словами «по-видимому», «вероятно», «можно предположить». В английском академическом и деловом стиле это ещё важнее: прямое This proves… звучит самоуверенно. Используют модальные глаголы (may, might, could), глаголы seem/appear/tend to, выражения it is likely that, to some extent, arguably и безличные обороты: The results suggest that… вместо «Результаты доказывают». Формальный регистр также предпочитает однословные глаголы латинского происхождения фразовым: investigate, а не look into; increase, а не go up.',
+                  examples: [
+                    ['The data suggest that the drug may reduce the risk.', 'Данные позволяют предположить, что препарат может снижать риск.'],
+                    ['Arguably, this is the most significant finding.', 'Пожалуй, это самый значимый результат.'],
+                    ['Prices tend to rise in winter.', 'Цены, как правило, растут зимой.'],
+                  ],
+                },
+                {
+                  title: 'Личный пассив и каузатив',
+                  body: 'Русским «считается, что он…», «говорят, что она…» в английском соответствует личный пассив: He is considered to be… / She is said to have… После be said/believed/thought/known — инфинитив: простой (to be) для одновременного действия, перфектный (to have + V3) для предшествующего: The virus is thought to have originated in bats — «Считается, что вирус возник у летучих мышей». Каузатив have/get something done означает, что действие для вас выполняет кто-то другой: I had my laptop repaired — «Мне починили ноутбук». В русском это различие часто теряется: «Я подстригся» = I had my hair cut.',
+                  examples: [
+                    ['The painting is believed to be worth millions.', 'Считается, что картина стоит миллионы.'],
+                    ['The ancient city is thought to have been destroyed by an earthquake.', 'Считается, что древний город был разрушен землетрясением.'],
+                    ['We are having the results checked by an independent lab.', 'Результаты для нас проверяет независимая лаборатория.'],
+                  ],
+                },
+              ],
+              words: [
+                ['evidence', 'доказательства, данные', 'noun', 'There is growing evidence that sleep affects memory.', 'Появляется всё больше данных о том, что сон влияет на память.'],
+                ['findings', 'результаты (исследования)', 'noun', 'The findings were published in a leading journal.', 'Результаты опубликовали в ведущем журнале.'],
+                ['hypothesis', 'гипотеза', 'noun', 'The experiment confirmed the hypothesis.', 'Эксперимент подтвердил гипотезу.'],
+                ['significant', 'значительный, значимый', 'adjective', 'The study found a significant difference between the groups.', 'Исследование выявило значимую разницу между группами.'],
+                ['tentative', 'предварительный, осторожный', 'adjective', 'These are only tentative conclusions.', 'Это лишь предварительные выводы.'],
+                ['arguably', 'пожалуй, можно утверждать', 'adverb', 'It is arguably the best book on the subject.', 'Это, пожалуй, лучшая книга по этой теме.'],
+                ['conduct', 'проводить (исследование)', 'verb', 'The study was conducted in five countries.', 'Исследование проводилось в пяти странах.'],
+                ['peer review', 'рецензирование', 'noun', 'All articles undergo peer review before publication.', 'Все статьи перед публикацией проходят рецензирование.'],
+              ],
+              exercises: [
+                choice('Какая формулировка подходит для научной статьи?', ['The results suggest that the method may be effective.', 'The results prove that the method is 100% effective.', 'The method is totally awesome.'], 0, 'В академическом стиле выводы смягчают: suggest вместо prove, may вместо категоричного is. Awesome — разговорное слово.', { s: 'vocabulary', t: 'science', d: 2 }),
+                fill('The bridge is thought ___ built in the 12th century.', ['to have been'], 'Действие в прошлом + пассив (мост построили) → перфектный пассивный инфинитив: to have been built.', { s: 'grammar', t: 'passive', d: 3 }, { translation: 'Считается, что мост построили в XII веке.', options: ['to have been', 'to be', 'being'] }),
+                errorSpot('The suspect is believed to have leave the country last night.', 'leave', 'left', 'После to have нужна форма V3: to have left — перфектный инфинитив для действия в прошлом.', { t: 'passive', d: 3 }, 'Считается, что подозреваемый покинул страну прошлой ночью.'),
+                categorize(
+                  [{ ru: 'Нейтральный / разговорный' }, { ru: 'Формальный / академический' }],
+                  [['look into', 0], ['go up', 0], ['get rid of', 0], ['find out', 0], ['a lot of', 0], ['about', 0], ['investigate', 1], ['increase', 1], ['eliminate', 1], ['determine', 1], ['a considerable number of', 1], ['approximately', 1]],
+                  'Пары синонимов: look into — investigate, go up — increase, get rid of — eliminate, find out — determine, a lot of — a considerable number of, about — approximately. В статье и официальном письме выбирайте правую колонку.',
+                  { d: 2 },
+                ),
+                cloze(
+                  'This study [was conducted|conducted|was conducting] among 2,000 adults in three countries. The findings [suggest|prove|are suggesting] that regular exercise [may|must|will] reduce the risk of depression. However, the sample was relatively small, so these conclusions should be regarded as [tentative|definite|careless]. Further research [is needed|needs|is needing] to confirm the hypothesis.',
+                  'Исследование проводят (пассив: was conducted); suggest и may смягчают вывод; tentative — «предварительный»; is needed — пассив, типичный для научного стиля.',
+                  { s: 'grammar', t: 'science', d: 3 },
+                  'Исследование проводилось среди 2000 взрослых в трёх странах. Результаты позволяют предположить, что регулярные физические упражнения могут снижать риск депрессии. Однако выборка была относительно небольшой, поэтому выводы следует считать предварительными. Для подтверждения гипотезы нужны дальнейшие исследования.',
+                ),
+                chat(
+                  [
+                    ['So, does your study prove that coffee prevents heart disease?', 'Итак, ваше исследование доказывает, что кофе предотвращает болезни сердца?', ['Not quite. Our findings suggest that moderate consumption may lower the risk, but further research is needed.', 'Yes, it proves it 100%, everybody should drink coffee!', 'Not quite. Our findings are suggesting that coffee must lower the risk.'], 0],
+                    ['How was the research carried out?', 'Как проводилось исследование?', ['The study was conducted over ten years and involved around 5,000 participants.', 'The study conducted over ten years with participants.', 'We just asked some guys, basically.'], 0],
+                    ['Has the paper been published yet?', 'Статья уже опубликована?', ['It’s currently undergoing peer review, so the results are still tentative.', 'It’s currently undergo peer review, so the results are definite.', 'Nope, dunno when.'], 0],
+                  ],
+                  'Учёный говорит осторожно (suggest, may), использует пассив (was conducted) и нейтрально-формальный регистр; «Nope, dunno» и «some guys» — слишком разговорно.',
+                  { t: 'science', d: 3 },
+                  'Журналист научно-популярного журнала берёт у вас интервью о вашем исследовании.',
+                ),
+                translate('Считается, что эта картина стоит миллионы.', ['This painting is believed to be worth millions.', 'This painting is thought to be worth millions.', 'This painting is considered to be worth millions.', 'This painting is said to be worth millions.', 'The painting is believed to be worth millions.', 'The painting is thought to be worth millions.', 'It is believed that this painting is worth millions.', 'It is thought that this painting is worth millions.', 'It is said that this painting is worth millions.', 'It is believed this painting is worth millions.'], 'Личный пассив: подлежащее + is believed/thought + to be; или безличное It is believed that…', { s: 'grammar', t: 'passive', d: 3 }),
+                order(['I', 'had', 'my', 'article', 'checked', 'by', 'a', 'native', 'speaker'], 'Мою статью проверил носитель языка (по моей просьбе).', 'Каузатив: have + объект + V3 (+ by + исполнитель). Сам я статью не проверял.', { s: 'grammar', t: 'passive', d: 3 }),
+                translateBack('There is little evidence to support this hypothesis.', ['Существует мало доказательств в пользу этой гипотезы', 'Существует мало данных в пользу этой гипотезы', 'Мало доказательств в пользу этой гипотезы', 'Мало данных в пользу этой гипотезы', 'Существует мало данных, подтверждающих эту гипотезу', 'Существует мало доказательств, подтверждающих эту гипотезу', 'Почти нет доказательств в пользу этой гипотезы', 'Почти нет данных, подтверждающих эту гипотезу', 'Эту гипотезу подтверждает мало данных', 'Мало что подтверждает эту гипотезу'], 'little evidence — «мало (почти нет) доказательств»; evidence — неисчисляемое существительное.', { t: 'science', d: 3 }),
+                choiceRu('Что означает слово tentative в этом предложении?', 'These are tentative conclusions.', ['предварительные, неокончательные', 'окончательные, доказанные', 'ошибочные'], 0, 'tentative — «предварительный, осторожный»: автор не настаивает на выводах.', { t: 'science', d: 2 }),
+              ],
+              test: [
+                fill('She is said ___ three books on the subject.', ['to have written'], 'Действие предшествует моменту речи → перфектный инфинитив: to have written.', { s: 'grammar', t: 'passive', d: 3 }, { translation: 'Говорят, она написала на эту тему три книги.', options: ['to have written', 'to write', 'writing'] }),
+                errorSpot('I need to have my eyes test before I start the new job.', 'test', 'tested', 'Каузатив: have + объект + V3 — have my eyes tested («проверить зрение у врача»).', { t: 'passive', d: 2 }, 'Перед новой работой мне нужно проверить зрение.'),
+                choice('Какой вариант звучит наиболее формально?', ['The company intends to investigate the matter.', 'The company is going to look into it.', 'They’ll check it out.'], 0, 'intend и investigate — формальная лексика; look into и check out — разговорные фразовые глаголы.', { s: 'vocabulary', d: 2 }),
+                categorize(
+                  [{ ru: 'Смягчает утверждение' }, { ru: 'Делает утверждение категоричным' }],
+                  [['may', 0], ['it appears that', 0], ['tends to', 0], ['arguably', 0], ['undoubtedly', 1], ['clearly', 1], ['it is certain that', 1], ['always', 1]],
+                  'may, it appears that, tends to, arguably — средства hedging; undoubtedly, clearly, it is certain that, always делают вывод категоричным.',
+                  { d: 2 },
+                ),
+                translateBack('The vaccine is thought to have saved millions of lives.', ['Считается, что вакцина спасла миллионы жизней', 'Считается, что эта вакцина спасла миллионы жизней', 'Полагают, что вакцина спасла миллионы жизней', 'Считается, что вакцина спасла жизни миллионов людей', 'Как считается, вакцина спасла миллионы жизней', 'Считается, что вакцина спасла миллионы людей'], 'is thought to have saved — «считается, что спасла»: перфектный инфинитив указывает на прошлое.', { t: 'science', d: 3 }),
+              ],
+            },
+            {
+              key: 'en-c1-argumentation',
+              title: 'Аргументы, связки и идиомы',
+              objective: 'Строить аргументацию в эссе и дискуссии: связки для уступки, противопоставления и вывода, фразовые глаголы и идиомы.',
+              topic: 'argumentation',
+              minutes: 20,
+              theory: [
+                {
+                  title: 'Связки для аргументации',
+                  body: 'В русском эссе мы пишем «во-первых», «более того», «тем не менее», «таким образом». Английские связки строго делятся по функциям: добавление (moreover, furthermore, in addition), противопоставление (nevertheless, nonetheless, on the other hand, whereas), уступка (admittedly, granted, even though), следствие (consequently, therefore, as a result), вывод (all things considered, on balance). Внимание: on the other hand вводит вторую сторону сравнения, а не просто «однако»; whereas соединяет две части одного предложения; despite и in spite of требуют существительного или -ing, а не придаточного: despite the cost, despite being expensive.',
+                  examples: [
+                    ['Admittedly, the plan is expensive. Nevertheless, it will pay off in the long run.', 'Надо признать, план дорогой. Тем не менее в долгосрочной перспективе он окупится.'],
+                    ['Despite having little funding, the museum attracts thousands of visitors.', 'Несмотря на скудное финансирование, музей привлекает тысячи посетителей.'],
+                    ['On balance, the benefits outweigh the drawbacks.', 'В целом преимущества перевешивают недостатки.'],
+                  ],
+                },
+                {
+                  title: 'Фразовые глаголы и идиомы в дискуссии',
+                  body: 'Многие идиомы похожи на русские, но совпадают не всегда. The tip of the iceberg — «верхушка айсберга» (совпадает), а «палка о двух концах» — a double-edged sword, «яблоку негде упасть» — packed to the rafters. Дословный перевод русской идиомы почти всегда звучит странно. В споре полезны фразовые глаголы: put forward (an argument) — выдвинуть, back up (a claim) — подкрепить, rule out — исключить, come up against — столкнуться (с трудностями). В устной дискуссии они звучат естественно, а в формальном эссе их часто заменяют однословными синонимами: put forward → propose, back up → support.',
+                  examples: [
+                    ['Social media is a double-edged sword.', 'Соцсети — палка о двух концах.'],
+                    ['Can you back up your claim with evidence?', 'Можете подкрепить своё утверждение доказательствами?'],
+                    ['We can’t rule out the possibility of a delay.', 'Мы не можем исключить возможность задержки.'],
+                  ],
+                },
+              ],
+              words: [
+                ['nevertheless', 'тем не менее', 'adverb', 'The task was difficult; nevertheless, we finished on time.', 'Задача была трудной; тем не менее мы закончили вовремя.'],
+                ['whereas', 'тогда как, в то время как', 'conjunction', 'Some prefer theatre, whereas others prefer cinema.', 'Одни предпочитают театр, тогда как другие — кино.'],
+                ['admittedly', 'надо признать', 'adverb', 'Admittedly, the evidence is limited.', 'Надо признать, данных немного.'],
+                ['outweigh', 'перевешивать', 'verb', 'The advantages outweigh the risks.', 'Преимущества перевешивают риски.'],
+                ['drawback', 'недостаток, минус', 'noun', 'The main drawback is the cost.', 'Главный минус — стоимость.'],
+                ['put forward', 'выдвигать (идею, аргумент)', 'phrasal verb', 'She put forward a convincing argument.', 'Она выдвинула убедительный аргумент.'],
+                ['back up', 'подкреплять, подтверждать', 'phrasal verb', 'Can you back up your claim with data?', 'Можете подкрепить своё утверждение данными?'],
+                ['a double-edged sword', 'палка о двух концах', 'idiom', 'Fame can be a double-edged sword.', 'Слава может быть палкой о двух концах.'],
+              ],
+              exercises: [
+                fill('___ the high cost, the project was a success.', ['Despite'], 'Despite + существительное (the high cost). Although требовал бы придаточного: Although it was expensive…', { s: 'grammar', t: 'conjunctions', d: 2 }, { translation: 'Несмотря на высокую стоимость, проект оказался успешным.', options: ['Despite', 'Although', 'However'] }),
+                choiceRu('Что означает это предложение?', 'Tourism is a double-edged sword for small towns.', ['Туризм для маленьких городов — палка о двух концах.', 'Туризм — главная угроза для маленьких городов.', 'Туризм приносит маленьким городам только пользу.'], 0, 'a double-edged sword — «палка о двух концах»: у явления есть и плюсы, и минусы.', { t: 'idioms', d: 2 }),
+                errorSpot('Despite it was raining, thousands of people came to the festival.', 'Despite', 'Although', 'После despite не может стоять придаточное с подлежащим и сказуемым. Нужно Although it was raining… или Despite the rain…', { t: 'conjunctions', d: 3 }, 'Хотя шёл дождь, на фестиваль пришли тысячи людей.'),
+                categorize(
+                  [{ ru: 'Добавление' }, { ru: 'Противопоставление' }, { ru: 'Следствие' }],
+                  [['moreover', 0], ['furthermore', 0], ['in addition', 0], ['nevertheless', 1], ['whereas', 1], ['on the other hand', 1], ['nonetheless', 1], ['consequently', 2], ['therefore', 2], ['as a result', 2]],
+                  'Добавление — moreover, furthermore, in addition («более того»); противопоставление — nevertheless/nonetheless («тем не менее»), whereas, on the other hand; следствие — consequently, therefore, as a result («следовательно»).',
+                  { s: 'vocabulary', t: 'conjunctions', d: 2 },
+                ),
+                cloze(
+                  'Many people believe that museums should be free. [Admittedly|Consequently|Moreover], free entry would cost the state a great deal. [Nevertheless|Therefore|Whereas], it would make culture accessible to everyone, [whereas|moreover|despite] high ticket prices exclude poorer families. [Furthermore|However|Although], studies show that free museums attract more young visitors. [On balance|On the other hand|In addition], the benefits clearly outweigh the drawbacks.',
+                  'Admittedly — уступка («надо признать»); Nevertheless — возражение; whereas — противопоставление внутри предложения; Furthermore — ещё один аргумент; On balance — вывод.',
+                  { s: 'grammar', t: 'culture', d: 3 },
+                  'Многие считают, что музеи должны быть бесплатными. Надо признать, бесплатный вход обойдётся государству очень дорого. Тем не менее он сделал бы культуру доступной для всех, тогда как высокие цены на билеты отсекают малообеспеченные семьи. Более того, исследования показывают, что бесплатные музеи привлекают больше молодёжи. В целом преимущества явно перевешивают недостатки.',
+                ),
+                chat(
+                  [
+                    ['Banning cars from the centre will kill local businesses. How do you respond?', 'Запрет машин в центре погубит местный бизнес. Что вы ответите?', ['I see your point. Nevertheless, evidence from other cities suggests that the number of shoppers actually increases.', 'That’s rubbish, you have no idea what you’re talking about.', 'I see your point. Despite, evidence shows shoppers increase.'], 0],
+                    ['But can you back up that claim?', 'Но можете ли вы это подтвердить?', ['Certainly. In Oslo, for instance, shop revenues rose after the centre went car-free.', 'Certainly. In Oslo, for instance, shop revenues have rose after the ban.', 'Well, everybody knows it, so I don’t need to.'], 0],
+                    ['Isn’t this just the tip of the iceberg? Next you’ll ban motorbikes.', 'Не верхушка ли это айсберга? Следующим шагом запретите мотоциклы.', ['Not at all. We are not putting forward a total ban, merely a pedestrian zone in the historic centre.', 'Not at all. We are not putting a total ban forward of motorbikes ever.', 'Maybe. Who cares about motorbikes?'], 0],
+                    ['So, what is your conclusion?', 'Итак, ваш вывод?', ['On balance, the benefits for health and the environment far outweigh the drawbacks.', 'On the other hand, benefits outweigh.', 'In conclusion, I’m right and you’re wrong.'], 0],
+                  ],
+                  'В дебатах возражают вежливо (I see your point. Nevertheless…), подкрепляют тезис примером, уточняют позицию (put forward) и подводят итог (On balance…). Грубость и голословность проигрывают.',
+                  { t: 'argumentation', d: 3 },
+                  'Телевизионные дебаты о запрете автомобилей в историческом центре. Вы выступаете за запрет.',
+                ),
+                translate('Надо признать, у этого решения есть недостатки.', ['Admittedly, this solution has drawbacks.', 'Admittedly, this solution has some drawbacks.', 'Admittedly, this solution has its drawbacks.', 'Admittedly, this decision has drawbacks.', 'Admittedly, this decision has some drawbacks.', 'Admittedly, this decision has its drawbacks.', 'Admittedly, the solution has drawbacks.', 'Admittedly, the decision has drawbacks.', 'Admittedly, this solution has disadvantages.', 'Admittedly, this decision has disadvantages.', 'Admittedly, there are drawbacks to this solution.', 'Admittedly, there are drawbacks to this decision.'], 'Admittedly — «надо признать», вводит уступку; drawback — «недостаток».', { d: 3 }),
+                order(['The', 'author', 'puts', 'forward', 'a', 'convincing', 'argument'], 'Автор выдвигает убедительный аргумент.', 'put forward — «выдвигать»; частица forward стоит сразу после глагола, перед длинным дополнением.', { t: 'idioms', d: 2 }, { alternatives: [['The', 'author', 'puts', 'a', 'convincing', 'argument', 'forward']] }),
+                dialogue(
+                  [
+                    ['A', 'We should cut the arts budget to fund hospitals.', 'Нужно урезать бюджет на искусство, чтобы финансировать больницы.'],
+                    ['B', null],
+                  ],
+                  ['Healthcare is vital, whereas the arts budget is tiny — cutting it would hardly make a difference.', 'Healthcare is vital, whereas the arts budget it is tiny.', 'Healthcare is vital. Whereas, the arts is tiny budget.'],
+                  0,
+                  'whereas соединяет две части одного предложения; в отличие от however, его не ставят в начало отдельного предложения с запятой.',
+                  { s: 'grammar', t: 'conjunctions', d: 3 },
+                  'Дискуссия о городском бюджете.',
+                ),
+                choice('Как сказать о концертном зале «яблоку негде было упасть»?', ['The hall was packed to the rafters.', 'There was no place for an apple to fall.', 'The hall was full of apples.'], 0, 'Русские идиомы не переводят дословно: «яблоку негде упасть» — packed to the rafters (или packed out).', { t: 'idioms', d: 2 }),
+              ],
+              test: [
+                choice('The first study found a strong link; the second, ___, found no effect at all.', ['on the other hand', 'moreover', 'therefore'], 0, 'Сравниваются две стороны: on the other hand — «с другой стороны». Moreover добавляет, therefore выражает следствие.', { s: 'grammar', t: 'conjunctions', d: 2 }),
+                errorSpot('The results were disappointing. Whereas, the team decided to continue the research.', 'Whereas', 'Nevertheless', 'whereas не начинает отдельное предложение. Для «тем не менее» нужно Nevertheless (или However).', { t: 'conjunctions', d: 3 }, 'Результаты разочаровали. Тем не менее команда решила продолжить исследование.'),
+                fill('We cannot ___ out the possibility that the data are incomplete.', ['rule'], 'rule out — «исключить (возможность)».', { t: 'idioms', d: 2 }, { translation: 'Мы не можем исключить, что данные неполные.', options: ['rule', 'put', 'back'] }),
+                cloze('The new policy has its benefits. [However|Moreover|Therefore], it has been criticised by experts. [Consequently|Whereas|Despite], the government has decided to review it. [All things considered|On the other hand|In addition], it may simply have been introduced too early.', 'However — противопоставление; Consequently — следствие; All things considered — итоговый вывод.', { s: 'grammar', t: 'conjunctions', d: 3 }, 'У новой политики есть преимущества. Однако её раскритиковали эксперты. Поэтому правительство решило её пересмотреть. С учётом всего, возможно, её просто ввели слишком рано.'),
+                translateBack('Admittedly, the evidence is limited; nevertheless, the argument is convincing.', ['Надо признать, доказательств немного; тем не менее аргумент убедителен', 'Надо признать, доказательств мало; тем не менее аргумент убедителен', 'Надо признать, данных мало; тем не менее аргумент убедителен', 'Надо признать, данных немного; тем не менее аргумент убедителен', 'Надо признать, доказательства ограничены; тем не менее аргумент убедителен', 'Надо признать, доказательств немного, но аргумент тем не менее убедителен', 'Надо признать, доказательств немного; тем не менее аргумент убедительный', 'Надо признать, доказательства ограничены; однако аргумент убедителен'], 'Admittedly — «надо признать» (уступка), nevertheless — «тем не менее» (возражение).', { d: 3 }),
               ],
             },
           ],
@@ -1033,5 +1609,15 @@ export const english: LanguageSpec = {
     { level: 'B2', exercise: choice('Food prices have risen ___ over the past year.', ['sharply', 'strongly', 'heavily'], 0, 'Устойчивое сочетание: rise/fall sharply — «резко вырасти/упасть». Strongly и heavily с rise не сочетаются.', { s: 'vocabulary', t: 'media', d: 3 }) },
     { level: 'B2', exercise: choiceRu('Прочитайте текст. Что, по словам представителя компании, будет с сотрудниками?', 'The factory, which was opened in 2010, is to be closed next spring. A spokesperson told reporters that the decision had been made because demand had fallen, but insisted that no jobs would be lost.', ['Никто не потеряет работу', 'Часть сотрудников уволят', 'Их уволят, потому что упал спрос'], 0, 'insisted that no jobs would be lost — «настаивал, что ни одно рабочее место не будет потеряно». Спрос упал — это причина закрытия, а не увольнений.', { s: 'reading', t: 'media', d: 2 }) },
     { level: 'B2', exercise: listen('She said she’d have helped if I’d asked her.', 'she’d have helped = she would have helped, I’d asked = I had asked — косвенная речь и третий тип условных.', { s: 'listening', t: 'reported_speech', d: 3 }, { options: ['She said she’d have helped if I’d asked her.', 'She said she’d helped if I asked her.', 'She said she’ll help if I ask her.'], translation: 'Она сказала, что помогла бы, если бы я её попросил.' }) },
+
+    // C1: inversion, mixed conditionals, advanced passive; idioms, academic vocabulary.
+    { level: 'C1', exercise: choice('The study was ___ out by a team of independent researchers.', ['carried', 'made', 'done'], 0, 'carry out a study/research — «проводить исследование». Make и do с study так не сочетаются.', { s: 'vocabulary', t: 'science', d: 1 }) },
+    { level: 'C1', exercise: choice('Social media can be a double-___ sword: it connects people but also spreads misinformation.', ['edged', 'sided', 'bladed'], 0, 'a double-edged sword — «палка о двух концах».', { s: 'vocabulary', t: 'idioms', d: 2 }) },
+    { level: 'C1', exercise: choice('On balance, the benefits of the reform far ___ its drawbacks.', ['outweigh', 'overcome', 'overtake'], 0, 'outweigh — «перевешивать». Overcome — «преодолевать», overtake — «обгонять».', { s: 'vocabulary', t: 'argumentation', d: 3 }) },
+    { level: 'C1', exercise: choice('Never ___ such a convincing performance.', ['have I seen', 'I have seen', 'I saw'], 0, 'После never в начале предложения — инверсия: вспомогательный глагол перед подлежащим.', { s: 'grammar', t: 'complex_syntax', d: 1 }) },
+    { level: 'C1', exercise: fill('If I had accepted that offer, I ___ in London now.', ['would be living'], 'Смешанный тип: прошлое условие (had accepted) → результат в настоящем (now): would be living.', { s: 'grammar', t: 'conditionals', d: 2 }, { translation: 'Если бы я тогда принял то предложение, я бы сейчас жил в Лондоне.', options: ['would be living', 'would have lived', 'will live'] }) },
+    { level: 'C1', exercise: choice('The temple is believed ___ in the 5th century.', ['to have been built', 'to build', 'to be building'], 0, 'Храм построили (пассив) в прошлом → перфектный пассивный инфинитив: to have been built.', { s: 'grammar', t: 'passive', d: 3 }) },
+    { level: 'C1', exercise: choiceRu('Прочитайте текст. Как автор оценивает результаты исследования?', 'A recent study claims that reading fiction makes people more empathetic. The findings are certainly intriguing. However, the sample was small and all the participants were university students, so the conclusions should be treated with caution. Further research is clearly needed.', ['Считает их интересными, но предварительными', 'Считает их окончательно доказанными', 'Считает их полностью ошибочными'], 0, 'Автор называет результаты intriguing («любопытными»), но призывает относиться к выводам with caution («с осторожностью») из-за маленькой выборки.', { s: 'reading', t: 'science', d: 2 }) },
+    { level: 'C1', exercise: listen('Had I known about the delay, I would have taken an earlier train.', 'Had I known = If I had known — инверсия вместо if; would have taken — результат в прошлом.', { s: 'listening', t: 'conditionals', d: 3 }, { options: ['Had I known about the delay, I would have taken an earlier train.', 'If I knew about the delay, I would take an earlier train.', 'I had known about the delay, so I took an earlier train.'], translation: 'Знай я о задержке, я бы поехал более ранним поездом.' }) },
   ],
 };
