@@ -233,6 +233,10 @@ export function checkAnswer(ex: Exercise, answer: ExerciseAnswer, language: stri
       break;
   }
 
-  const { points, category } = verdict === 'skipped' ? { points: 0, category: ex.errorCategory } : byVerdict(verdict, ex, almostCategory);
+  const { points: base, category } = verdict === 'skipped' ? { points: 0, category: ex.errorCategory } : byVerdict(verdict, ex, almostCategory);
+  // Multi-part tasks (gaps, chat turns, groups) earn a share of the points even when the verdict is "incorrect":
+  // 4 of 8 items sorted correctly is not the same as none.
+  const share = parts && parts.length ? parts.filter(Boolean).length / parts.length : 0;
+  const points = verdict === 'incorrect' && share > 0 ? Math.floor(POINTS.correct * share) : base;
   return { verdict, points, category, given, feedback: { verdict, expected, explanation, ...(note ? { note } : {}), ...(parts ? { parts } : {}) } };
 }

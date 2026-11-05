@@ -88,7 +88,7 @@ function PlacementResult({ summary, placement }: { summary: AttemptSummaryDTO; p
               {placement.perLevel.map((row) => (
                 <tr key={row.level}>
                   <td>{row.level}</td>
-                  <td className="small">{t('summary.correctOf', row)}</td>
+                  <td className="small">{t('summary.correctOf', { correct: row.correct.toLocaleString('ru-RU'), total: row.total })}</td>
                   <td className="small">{pct(row)}%</td>
                 </tr>
               ))}
@@ -102,7 +102,7 @@ function PlacementResult({ summary, placement }: { summary: AttemptSummaryDTO; p
               {placement.perSkill.map((row) => (
                 <tr key={row.skill}>
                   <td>{t(`skills.${row.skill}`)}</td>
-                  <td className="small">{t('summary.correctOf', row)}</td>
+                  <td className="small">{t('summary.correctOf', { correct: row.correct.toLocaleString('ru-RU'), total: row.total })}</td>
                   <td className="small">{pct(row)}%</td>
                 </tr>
               ))}
@@ -183,7 +183,7 @@ export function SummaryView({ summary }: { summary: AttemptSummaryDTO }) {
                 {summary.byTopic.map((row) => (
                   <tr key={row.topic}>
                     <td>{topicTitle(row.topic)}</td>
-                    <td className="small">{t('summary.correctOf', { correct: row.correct, total: row.total })}</td>
+                    <td className="small">{t('summary.correctOf', { correct: row.correct.toLocaleString('ru-RU'), total: row.total })}</td>
                     <td className="small">{row.percent}%</td>
                     <td className="small">
                       {summary.weaknesses.includes(row.topic) ? (

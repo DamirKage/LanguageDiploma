@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { ArrowLeft, ArrowRight, Volume2 } from 'lucide-react';
 import { catalogApi, learningApi } from '../../api/endpoints';
@@ -25,6 +25,8 @@ function PlayAllWords({ words, locale }: { words: Array<{ term: string; example?
 
 export default function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
+  // Set when the learner came from a plan item, so finishing the lesson ticks that item off.
+  const recommendationKey = useSearchParams()[0].get('rec') ?? undefined;
   const i18n = useI18n();
   const { t, plural } = i18n;
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ export default function LessonPage() {
   useTitle(null, lesson.data?.title);
 
   const start = useMutation({
-    mutationFn: (kind: 'lesson' | 'test') => (kind === 'lesson' ? learningApi.startLesson(lessonId!) : learningApi.startTest(lesson.data!.testId!)),
+    mutationFn: (kind: 'lesson' | 'test') => (kind === 'lesson' ? learningApi.startLesson(lessonId!, recommendationKey) : learningApi.startTest(lesson.data!.testId!)),
     onSuccess: (attempt) => navigate(`/learn/${attempt.id}`),
     onError: (err) => toast(errorMessage(err, i18n), 'bad'),
   });

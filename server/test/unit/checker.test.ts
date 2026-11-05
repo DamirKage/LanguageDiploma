@@ -126,6 +126,9 @@ describe('checkAnswer', () => {
     const right = [{ text: 'Tisch', category: 0 }, { text: 'Lampe', category: 1 }, { text: 'Stuhl', category: 0 }, { text: 'Tür', category: 1 }];
     expect(checkAnswer(sort, { type: 'categorize', placement: right }, 'de').verdict).toBe('correct');
     expect(checkAnswer(sort, { type: 'categorize', placement: [...right.slice(0, 3), { text: 'Tür', category: 0 }] }, 'de').verdict).toBe('almost');
+    const half = checkAnswer(sort, { type: 'categorize', placement: [right[0]!, right[1]!, { text: 'Stuhl', category: 1 }, { text: 'Tür', category: 0 }] }, 'de');
+    expect(half.verdict).toBe('incorrect');
+    expect(half.points).toBe(5);
     for (const ex of [spot, text, talk, sort]) {
       const view = toPublicExercise(ex, 3) as unknown as Record<string, unknown>;
       expect(JSON.stringify(view)).not.toMatch(/errorIndex|correction|correctIndex|"answer"|"category"/);

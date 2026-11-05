@@ -24,6 +24,8 @@ export function useStartActivity(language: string) {
         case 'resume':
           return { route: `/learn/${item.target.attemptId}` };
         case 'next_lesson':
+          // A new lesson opens on its theory and words first: teach, then ask.
+          return { route: `/lessons/${item.target.lessonId}?rec=${encodeURIComponent(key)}` };
         case 'retry_lesson':
           return { attempt: await learningApi.startLesson(item.target.lessonId!, key) };
         case 'module_test':

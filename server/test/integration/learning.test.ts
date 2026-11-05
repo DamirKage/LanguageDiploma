@@ -114,6 +114,20 @@ describe('lesson attempt', () => {
     expect(path.body.levels[0].modules[0].lessons[0].status).toBe('completed');
   });
 
+  it('keeps a lesson open until its pass mark is reached', async () => {
+    const u = await registerUser();
+    await enroll(u.auth, 'de');
+    const lesson = await Lesson.findOne({ key: 'de-a1-greetings' }).lean();
+    const start = await request(app).post(`/api/lessons/${lesson!._id}/attempts`).set(u.auth).send({});
+    const state = await playThrough(u.auth, start.body as AttemptStateDTO, () => false);
+    const summary = await request(app).post(`/api/attempts/${state.id}/complete`).set(u.auth);
+    expect(summary.body.passed).toBe(false);
+    const progress = await LessonProgress.findOne({ user: u.user.id, lesson: lesson!._id }).lean();
+    expect(progress).toMatchObject({ status: 'in_progress', completedAt: null, attempts: 1 });
+    const path = await request(app).get('/api/languages/de/path').set(u.auth);
+    expect(path.body.levels[0].modules[0].lessons[0].status).toBe('in_progress');
+  });
+
   it('refuses to complete an unfinished attempt and hides attempts of other users', async () => {
     const a = await registerUser();
     const b = await registerUser();
@@ -172,6 +186,8 @@ describe('tests and placement', () => {
     expect(['low', 'mid', 'high']).toContain(summary.body.placement.band);
     const enrollments = await request(app).get('/api/me/enrollments').set(u.auth);
     expect(enrollments.body[0]).toMatchObject({ language: 'de', level: 'A2', placementLevel: 'A2' });
+    // A level test is not practice: it must not feed accuracy, trends or weak topics.
+    expect(await AnswerEvent.countDocuments({ user: u.user.id })).toBe(0);
   });
 
   it('reaches B2 for a strong learner and A1 for a beginner who answers "don\'t know"', async () => {

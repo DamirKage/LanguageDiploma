@@ -290,7 +290,8 @@ export async function submitAnswer(
   item.timeMs = timeMs;
   item.answeredAt = now;
 
-  await AnswerEvent.create({
+  // Placement answers stay in the attempt only: a level test is not practice, so it must not move accuracy, trends or weak topics.
+  if (attempt.kind !== 'placement') await AnswerEvent.create({
     user: userId,
     language: attempt.language,
     attempt: attempt._id,
@@ -389,16 +390,18 @@ export async function completeAttempt(userId: string, attemptId: string, locale 
     const lesson = await Lesson.findById(attempt.lesson).select('words').lean();
     const progress = await LessonProgress.findOne({ user: userId, lesson: attempt.lesson });
     const best = Math.max(progress?.bestPercent ?? 0, score.percent);
+    // A lesson counts as mastered only once its pass mark has been reached; a weak attempt keeps it open.
+    const mastered = best >= LESSON_PASS_PERCENT;
     await LessonProgress.updateOne(
       { user: userId, lesson: attempt.lesson },
       {
         $set: {
           language: attempt.language,
-          status: 'completed',
+          status: mastered ? 'completed' : 'in_progress',
           bestPercent: best,
           lastPercent: score.percent,
           lastAttemptAt: now,
-          completedAt: progress?.completedAt ?? now,
+          completedAt: progress?.completedAt ?? (mastered ? now : null),
         },
         $inc: { attempts: 1 },
       },

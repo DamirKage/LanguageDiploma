@@ -66,7 +66,8 @@ function Card({
         {card.mode === 'typed' ? (
           <>
             <p className="review-card__prompt">{card.translation}</p>
-            <WordMeta word={card} />
+            {/* The gender of the target word would give away the article the learner has to recall. */}
+            <WordMeta word={{ partOfSpeech: card.partOfSpeech, gender: result ? card.gender : null }} />
           </>
         ) : (
           <>
