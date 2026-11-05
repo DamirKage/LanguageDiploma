@@ -106,6 +106,24 @@ describe('recommendations react to performance', () => {
     expect(after.items.find((i: { key: string }) => i.key === first.key).done).toBe(true);
     expect(after.upcoming[0].lessonId).not.toBe(first.target.lessonId);
   });
+
+  it('recomposes the open part of the plan after each session and keeps finished items', async () => {
+    const u = await registerUser();
+    await enroll(u.auth, 'es');
+    await request(app).patch('/api/me').set(u.auth).send({ dailyMinutes: 30 });
+    await request(app).post('/api/placement/es/skip').set(u.auth).send({ level: 'A1' });
+    const plan = (await request(app).get('/api/me/plan/es').set(u.auth)).body;
+    const first = plan.items.find((i: { type: string }) => i.type === 'next_lesson');
+    const lesson = await Lesson.findById(first.target.lessonId).lean();
+    await completeLesson(u.auth, lesson!.key, () => false);
+    const after = (await request(app).get('/api/me/plan/es').set(u.auth)).body;
+    // The failed lesson's topic becomes remedial work in today's plan without a manual rebuild.
+    expect(after.items.some((i: { type: string; target: { topic?: string } }) => i.type === 'weak_topic' && i.target.topic === lesson!.topic)).toBe(true);
+    const rebuilt = (await request(app).post('/api/me/plan/es/rebuild').set(u.auth)).body;
+    expect(rebuilt.items.filter((i: { done: boolean }) => i.done).map((i: { key: string }) => i.key)).toEqual(
+      after.items.filter((i: { done: boolean }) => i.done).map((i: { key: string }) => i.key),
+    );
+  });
 });
 
 describe('analytics', () => {

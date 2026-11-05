@@ -438,6 +438,8 @@ export const ru = {
     chatTyping: 'печатает…',
     chatYou: 'Вы',
     chatPick: 'Выберите ответ',
+    chatHideTranslation: 'Скрыть перевод',
+    chatShowTranslation: 'Показать перевод',
     categorizeHint: 'Выберите слово, затем группу. Или перетащите слово в группу.',
     categorizeLeft: 'Осталось разложить: {n}',
     categorizeBack: 'Вернуть',

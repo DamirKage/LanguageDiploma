@@ -89,6 +89,8 @@ export function ChatExercise({ exercise, language, answer, onAnswer, locked, fee
   const { speak, hasRecording } = useSpeaker(language.ttsLocale);
   const [replies, setReplies] = useState<string[]>(() => (answer?.type === 'chat' ? answer.replies : []));
   const [typing, setTyping] = useState(true);
+  const [showTranslation, setShowTranslation] = useState(true);
+  const hasTranslations = exercise.turns.some((tn) => tn.messageTranslation);
   const end = useRef<HTMLDivElement>(null);
   const step = replies.length;
   const turn = exercise.turns[step];
@@ -126,6 +128,13 @@ export function ChatExercise({ exercise, language, answer, onAnswer, locked, fee
           <span className="eyebrow">{t('player.contextLabel')}</span> {exercise.translationText}
         </p>
       ) : null}
+      {hasTranslations ? (
+        <div>
+          <Button variant="ghost" size="sm" aria-pressed={!showTranslation} onClick={() => setShowTranslation((v) => !v)}>
+            {showTranslation ? t('player.chatHideTranslation') : t('player.chatShowTranslation')}
+          </Button>
+        </div>
+      ) : null}
       <div className="chat" aria-live="polite">
         {exercise.turns.slice(0, step + 1).map((tn, i) => {
           const shown = i < step || !typing || !!feedback;
@@ -136,7 +145,7 @@ export function ChatExercise({ exercise, language, answer, onAnswer, locked, fee
                   <>
                     <SpokenText text={tn.message} className="target" />
                     <SpeakButton text={tn.message} locale={language.ttsLocale} size="sm" speaker="B" recordingOnly />
-                    {tn.messageTranslation ? <span className="chat__translation">{tn.messageTranslation}</span> : null}
+                    {tn.messageTranslation && showTranslation ? <span className="chat__translation">{tn.messageTranslation}</span> : null}
                   </>
                 ) : (
                   <span className="chat__typing" aria-label={t('player.chatTyping')}>

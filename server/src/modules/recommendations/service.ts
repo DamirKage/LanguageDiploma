@@ -265,8 +265,6 @@ export async function getTodayPlan(userId: string, language: string, options: { 
   if (!user) throw errors.notFound();
   const now = new Date();
   const date = localDateKey(now, user.timezone);
-  if (options.rebuild) await DailyPlan.deleteOne({ user: userId, language, date });
-
   let plan = await DailyPlan.findOne({ user: userId, language, date }).lean();
   if (!plan) {
     const result = await getRecommendations(userId, language, locale);
@@ -281,8 +279,26 @@ export async function getTodayPlan(userId: string, language: string, options: { 
     }
   }
   const since = (plan!.createdAt as Date) ?? startOfLocalDay(now, user.timezone);
-  const items = plan!.items as Recommendation[];
-  const done = await Promise.all(items.map((i) => isPlanItemDone(userId, language, i, since, user.timezone, now)));
+  let items = plan!.items as Recommendation[];
+  let done = await Promise.all(items.map((i) => isPlanItemDone(userId, language, i, since, user.timezone, now)));
+
+  // The plan follows the learner through the day: after any finished activity (or on request) the open items are
+  // recomposed from fresh recommendations, while completed items stay in the plan as done.
+  const refreshedAt = (plan!.updatedAt as Date) ?? since;
+  const activitySince =
+    options.rebuild ||
+    !!(await Attempt.exists({ user: userId, language, status: 'completed', completedAt: { $gt: refreshedAt } })) ||
+    !!(await ReviewLog.exists({ user: userId, language, at: { $gt: refreshedAt } }));
+  if (activitySince) {
+    const kept = items.filter((_, i) => done[i]);
+    const usedMinutes = kept.reduce((sum, i) => sum + i.estimatedMinutes, 0);
+    const result = await getRecommendations(userId, language, locale);
+    const remaining = Math.max(0, plan!.budgetMinutes - usedMinutes);
+    const fresh = remaining > 0 ? composePlan({ ...result, items: result.items.filter((r) => !kept.some((k) => k.key === r.key)) }, remaining) : [];
+    items = [...kept, ...fresh];
+    done = [...kept.map(() => true), ...(await Promise.all(fresh.map((i) => isPlanItemDone(userId, language, i, since, user.timezone, now))))];
+    await DailyPlan.updateOne({ _id: plan!._id }, { $set: { items, engineVersion: ENGINE_VERSION } });
+  }
 
   const snapshot = await buildSnapshot(userId, language, now, locale);
   const catalog = await loadCatalog(language);
