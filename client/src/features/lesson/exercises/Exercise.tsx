@@ -5,6 +5,7 @@ import { Alert, Button } from '../../../components/ui';
 import { useI18n } from '../../../i18n';
 import { useRecognition, useSpeaker } from '../../../lib/speech';
 import { SpeakButton } from '../SpeakButton';
+import { SelfRecorder } from './SelfRecorder';
 import { SpecialChars } from './SpecialChars';
 
 export interface LanguageInfo {
@@ -256,8 +257,8 @@ function OrderExercise({ exercise, answer, onAnswer, locked }: ExerciseProps<'or
 
 function ListenExercise({ exercise, language, answer, onAnswer, onSubmit, locked, feedback }: ExerciseProps<'listen'>) {
   const { t } = useI18n();
-  const { speak, available, speaking } = useSpeaker(language.ttsLocale);
-  const canPlay = available || !!exercise.audioUrl;
+  const { speak, canSpeak, speaking } = useSpeaker(language.ttsLocale);
+  const canPlay = canSpeak(exercise.audioText) || !!exercise.audioUrl;
   const played = useRef(false);
   useEffect(() => {
     played.current = false;
@@ -289,7 +290,7 @@ function ListenExercise({ exercise, language, answer, onAnswer, onSubmit, locked
         <button type="button" className="listen__play" data-speaking={speaking || undefined} onClick={() => speak(exercise.audioText, { audioUrl: exercise.audioUrl })} aria-label={t('player.play')}>
           <Volume2 size={32} aria-hidden />
         </button>
-        <Button variant="ghost" size="sm" onClick={() => speak(exercise.audioText, { audioUrl: exercise.audioUrl, rate: 0.6 })}>
+        <Button variant="ghost" size="sm" onClick={() => speak(exercise.audioText, { audioUrl: exercise.audioUrl, rate: 0.7 })}>
           <Turtle size={16} aria-hidden />
           {t('player.playSlow')}
         </Button>
@@ -313,9 +314,23 @@ function ListenExercise({ exercise, language, answer, onAnswer, onSubmit, locked
 
 function DialogueExercise({ exercise, language, answer, onAnswer, locked, feedback }: ExerciseProps<'dialogue'>) {
   const { t } = useI18n();
+  const { speakSequence, hasRecording, speaking } = useSpeaker(language.ttsLocale);
   const chosen = answer?.type === 'dialogue' ? answer.option : undefined;
+  // Before the answer the gap is skipped; afterwards the whole dialogue is played with the right reply.
+  const lines = exercise.lines
+    .map((l) => ({ text: l.text ?? (feedback ? feedback.expected : null), speaker: l.speaker }))
+    .filter((l): l is { text: string; speaker: 'A' | 'B' } => !!l.text);
+  const playable = lines.some((l) => hasRecording(l.text, l.speaker));
   return (
     <div className="exercise">
+      {playable ? (
+        <div>
+          <Button variant="ghost" size="sm" onClick={() => speakSequence(lines)} data-speaking={speaking || undefined}>
+            <Volume2 size={16} aria-hidden />
+            {feedback ? t('player.playDialogueFull') : t('player.playDialogue')}
+          </Button>
+        </div>
+      ) : null}
       {exercise.translationText ? (
         <p className="exercise__context">
           <span className="eyebrow">{t('player.contextLabel')}</span> {exercise.translationText}
@@ -330,7 +345,7 @@ function DialogueExercise({ exercise, language, answer, onAnswer, locked, feedba
             {line.text ? (
               <span className="dialogue__bubble">
                 <span className="target">{line.text}</span>
-                <SpeakButton text={line.text} locale={language.ttsLocale} size="sm" />
+                <SpeakButton text={line.text} locale={language.ttsLocale} size="sm" speaker={line.speaker} />
                 {line.translation ? <span className="dialogue__translation">{line.translation}</span> : null}
               </span>
             ) : (
@@ -370,6 +385,7 @@ function SpeakExercise({ exercise, language, answer, onAnswer, onSubmit, locked 
           placeholder={t('player.typeHereTarget')}
           useTarget
         />
+        {locked ? <SelfRecorder /> : null}
         <div>
           <Button variant="ghost" size="sm" disabled={locked} aria-pressed={!!skipped} onClick={() => onAnswer({ type: 'speak', transcript: '', skipped: true })}>
             {t('player.skipNoPenalty')}
@@ -385,6 +401,7 @@ function SpeakExercise({ exercise, language, answer, onAnswer, onSubmit, locked 
         {exercise.text}
       </p>
       <p className="exercise__translation">{exercise.translationText}</p>
+      <SelfRecorder />
       <div className="stack" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
         <div className="row">
           {recognition.status === 'listening' ? (

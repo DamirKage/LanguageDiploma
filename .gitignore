@@ -10,3 +10,5 @@ test-results/
 playwright-report/
 demo-data/
 .vitest/
+tools/audio/.work/
+.venv-audio/

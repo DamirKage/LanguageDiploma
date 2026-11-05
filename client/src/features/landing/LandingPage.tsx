@@ -2,11 +2,21 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Brand } from '../../components/layout/AppShell';
 import { ThemeSwitch } from '../../components/theme/ThemePicker';
+import { SpeakButton } from '../lesson/SpeakButton';
 import { buttonClass, LanguageMark, useTitle } from '../../components/ui';
 import { useI18n } from '../../i18n';
 import { useLanguages } from '../../lib/queries';
 
-const PRINCIPLES = ['why', 'mistakes', 'memory', 'time', 'honest'] as const;
+const PRINCIPLES = ['why', 'placement', 'voices', 'mistakes', 'memory', 'time', 'honest'] as const;
+
+/** A greeting with a prepared recording, so a visitor can hear each voice before signing up. */
+const SAMPLE: Record<string, { text: string; locale: string }> = {
+  kk: { text: 'Сәлеметсіз бе!', locale: 'kk-KZ' },
+  en: { text: 'Good evening!', locale: 'en-US' },
+  tr: { text: 'Günaydın!', locale: 'tr-TR' },
+  de: { text: 'Guten Tag!', locale: 'de-DE' },
+  es: { text: 'Buenos días.', locale: 'es-ES' },
+};
 
 export function LandingPage() {
   const { t, plural } = useI18n();
@@ -62,6 +72,7 @@ export function LandingPage() {
             {(languages ?? []).map((lang) => (
               <li key={lang.code}>
                 <LanguageMark code={lang.code} size="lg" />
+                {SAMPLE[lang.code] ? <SpeakButton text={SAMPLE[lang.code]!.text} locale={SAMPLE[lang.code]!.locale} size="sm" recordingOnly /> : null}
                 <div>
                   <p className="landing__lang-native target">{lang.nativeName}</p>
                   <p className="muted small">

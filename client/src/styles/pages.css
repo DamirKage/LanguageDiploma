@@ -1367,3 +1367,20 @@ a.syllabus__title:hover {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: var(--s6);
 }
+
+.word-row__translation .speak-btn,
+.feedback .speak-btn {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  vertical-align: middle;
+}
+
+.self-recorder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s3) var(--s4);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+}

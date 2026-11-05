@@ -3,3 +3,4 @@ export * from './localized';
 export * from './content';
 export * from './recommendations';
 export * from './api';
+export * from './audio';

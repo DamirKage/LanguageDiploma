@@ -1,12 +1,26 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Volume2 } from 'lucide-react';
 import { catalogApi, learningApi } from '../../api/endpoints';
 import { Button, ErrorState, errorMessage, PageLoader, Section, useTitle, useToast } from '../../components/ui';
 import { useI18n } from '../../i18n';
 import { qk, useLanguages } from '../../lib/queries';
+import { useSpeaker } from '../../lib/speech';
 import { SpeakButton } from './SpeakButton';
 import { WordMeta } from '../vocabulary/WordMeta';
+
+/** Plays all words of the lesson one after another, each followed by its example. */
+function PlayAllWords({ words, locale }: { words: Array<{ term: string; example?: string | null }>; locale: string }) {
+  const { t } = useI18n();
+  const { speakSequence, hasRecording, speaking } = useSpeaker(locale);
+  if (!words.some((w) => hasRecording(w.term))) return null;
+  return (
+    <Button variant="ghost" size="sm" data-speaking={speaking || undefined} onClick={() => speakSequence(words.map((w) => ({ text: w.term })))}>
+      <Volume2 size={14} aria-hidden />
+      {t('lesson.playAll')}
+    </Button>
+  );
+}
 
 export default function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -89,7 +103,15 @@ export default function LessonPage() {
       ) : null}
 
       {data.words.length > 0 ? (
-        <Section title={t('lesson.words')} aside={<span className="small muted">{plural('common.words', data.words.length)}</span>}>
+        <Section
+          title={t('lesson.words')}
+          aside={
+            <div className="row" style={{ '--gap': 'var(--s2)' } as React.CSSProperties}>
+              <PlayAllWords words={data.words} locale={ttsLocale} />
+              <span className="small muted">{plural('common.words', data.words.length)}</span>
+            </div>
+          }
+        >
           <ul className="word-list">
             {data.words.map((word) => (
               <li key={word.id} className="word-row">
@@ -104,7 +126,7 @@ export default function LessonPage() {
                   <span>{word.translation}</span>
                   {word.example ? (
                     <span className="small muted">
-                      <span className="target">{word.example}</span> — {word.exampleTranslation}
+                      <span className="target">{word.example}</span> <SpeakButton text={word.example} locale={ttsLocale} size="sm" recordingOnly /> — {word.exampleTranslation}
                     </span>
                   ) : null}
                 </div>

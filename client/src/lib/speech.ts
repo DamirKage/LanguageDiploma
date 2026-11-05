@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { audioKey, type AudioManifest, type AudioVoice } from '@linguapath/shared';
 
 /** Voices load asynchronously in most browsers; this hook re-renders when they arrive. */
 export function useVoices(): SpeechSynthesisVoice[] {
@@ -25,41 +26,107 @@ export function findVoice(voices: SpeechSynthesisVoice[], locale: string): Speec
   );
 }
 
+const manifests = new Map<string, Promise<AudioManifest>>();
+const loaded = new Map<string, AudioManifest>();
+
+function loadManifest(language: string): Promise<AudioManifest> {
+  let pending = manifests.get(language);
+  if (!pending) {
+    pending = fetch(`/audio/${language}/manifest.json`)
+      .then((r) => (r.ok ? (r.json() as Promise<AudioManifest>) : {}))
+      .catch(() => ({}))
+      .then((m) => {
+        loaded.set(language, m);
+        return m;
+      });
+    manifests.set(language, pending);
+  }
+  return pending;
+}
+
+/** Recordings prepared for the curriculum (neural voices, generated ahead of time; see tools/audio). */
+export function useAudioManifest(language: string): AudioManifest | null {
+  const [manifest, setManifest] = useState<AudioManifest | null>(() => loaded.get(language) ?? null);
+  useEffect(() => {
+    let live = true;
+    void loadManifest(language).then((m) => live && setManifest(m));
+    return () => {
+      live = false;
+    };
+  }, [language]);
+  return manifest;
+}
+
+export interface SpeakOptions {
+  audioUrl?: string | null;
+  rate?: number;
+  /** Second voice for the other speaker in a dialogue. */
+  speaker?: AudioVoice;
+  onEnd?: () => void;
+}
+
 /**
- * Plays an uploaded recording when available, otherwise uses the browser's speech
- * synthesis. `available` is false when neither source can play this language.
+ * Plays, in order of preference: a recording uploaded by the administrator, the prepared
+ * recording of the phrase, or the browser's speech synthesis.
  */
 export function useSpeaker(locale: string) {
+  const language = locale.split('-')[0]!.toLowerCase();
+  const manifest = useAudioManifest(language);
   const voices = useVoices();
   const voice = findVoice(voices, locale);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [speaking, setSpeaking] = useState(false);
 
+  const recording = useCallback(
+    (text: string, speaker: AudioVoice = 'A') => {
+      const file = manifest?.[audioKey(text, speaker)];
+      return file ? `/audio/${language}/${file}` : null;
+    },
+    [manifest, language],
+  );
+
   const speak = useCallback(
-    (text: string, options: { audioUrl?: string | null; rate?: number } = {}) => {
-      if (options.audioUrl) {
-        audioRef.current?.pause();
-        const audio = new Audio(options.audioUrl);
+    (text: string, options: SpeakOptions = {}) => {
+      const finish = () => {
+        setSpeaking(false);
+        options.onEnd?.();
+      };
+      const url = options.audioUrl || recording(text, options.speaker);
+      audioRef.current?.pause();
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+      if (url) {
+        const audio = new Audio(url);
         audio.playbackRate = options.rate ?? 1;
         audioRef.current = audio;
         setSpeaking(true);
-        audio.onended = () => setSpeaking(false);
+        audio.onended = finish;
         audio.onerror = () => setSpeaking(false);
         void audio.play().catch(() => setSpeaking(false));
         return;
       }
       if (!voice || !('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.voice = voice;
       utterance.lang = voice.lang;
-      utterance.rate = options.rate ?? 0.95;
-      utterance.onend = () => setSpeaking(false);
+      utterance.rate = (options.rate ?? 1) * 0.95;
+      utterance.onend = finish;
       utterance.onerror = () => setSpeaking(false);
       setSpeaking(true);
       window.speechSynthesis.speak(utterance);
     },
-    [voice],
+    [voice, recording],
+  );
+
+  /** Plays phrases one after another, e.g. the lines of a dialogue with two voices. */
+  const speakSequence = useCallback(
+    (lines: Array<{ text: string; speaker?: AudioVoice }>) => {
+      const play = (i: number) => {
+        const line = lines[i];
+        if (line) speak(line.text, { speaker: line.speaker, onEnd: () => setTimeout(() => play(i + 1), 250) });
+      };
+      play(0);
+    },
+    [speak],
   );
 
   useEffect(
@@ -70,7 +137,16 @@ export function useSpeaker(locale: string) {
     [],
   );
 
-  return { speak, speaking, available: !!voice, voice };
+  return {
+    speak,
+    speakSequence,
+    speaking,
+    /** A recording exists for this phrase. */
+    hasRecording: (text: string, speaker?: AudioVoice) => !!recording(text, speaker),
+    /** The phrase can be played: a recording exists or the browser has a voice for the language. */
+    canSpeak: (text: string) => !!recording(text) || !!voice,
+    voice,
+  };
 }
 
 interface RecognitionResultEvent {

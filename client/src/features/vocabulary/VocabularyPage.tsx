@@ -62,7 +62,7 @@ function WordRow({ word, ttsLocale }: { word: VocabularyItemDTO; ttsLocale: stri
         <span>{word.translation}</span>
         {word.example ? (
           <span className="small muted">
-            <span className="target">{word.example}</span> — {word.exampleTranslation}
+            <span className="target">{word.example}</span> <SpeakButton text={word.example} locale={ttsLocale} size="sm" recordingOnly /> — {word.exampleTranslation}
           </span>
         ) : null}
         {open ? <Lookup language={word.language} term={word.term} /> : null}

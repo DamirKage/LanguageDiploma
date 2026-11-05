@@ -8,9 +8,10 @@ import { Alert, Button, ErrorState, errorMessage, PageLoader, useTitle } from '.
 import { useI18n } from '../../i18n';
 import { LEARNING_KEYS, useLanguageName, useLanguages, useTopics } from '../../lib/queries';
 import { ExerciseView, useInstruction, type LanguageInfo } from './exercises/Exercise';
+import { SpeakButton } from './SpeakButton';
 import { SummaryView } from './SummaryView';
 
-function FeedbackPanel({ feedback, onNext, last }: { feedback: AnswerFeedback; onNext: () => void; last: boolean }) {
+function FeedbackPanel({ feedback, onNext, last, locale }: { feedback: AnswerFeedback; onNext: () => void; last: boolean; locale: string }) {
   const { t } = useI18n();
   const ref = useRef<HTMLButtonElement>(null);
   useEffect(() => ref.current?.focus(), []);
@@ -22,10 +23,12 @@ function FeedbackPanel({ feedback, onNext, last }: { feedback: AnswerFeedback; o
           <p className="feedback__verdict">
             <Icon size={22} aria-hidden />
             {t(`player.verdict.${feedback.verdict}`)}
+            {feedback.verdict === 'correct' ? <SpeakButton text={feedback.expected} locale={locale} size="sm" recordingOnly /> : null}
           </p>
           {feedback.verdict !== 'correct' && feedback.verdict !== 'skipped' ? (
             <p>
-              <span className="feedback__label">{t('player.expected')}:</span> <span className="target">{feedback.expected}</span>
+              <span className="feedback__label">{t('player.expected')}:</span> <span className="target">{feedback.expected}</span>{' '}
+              <SpeakButton text={feedback.expected} locale={locale} size="sm" recordingOnly />
             </p>
           ) : null}
           {feedback.note ? <p>{t(`player.note.${feedback.note.code}`, { detail: feedback.note.detail ?? '' })}</p> : null}
@@ -144,7 +147,7 @@ function ExerciseStage({
           <ExerciseView exercise={current} language={language} answer={answer} onAnswer={onAnswer} onSubmit={check} locked={!!feedback || submit.isPending} feedback={feedback} />
           {submit.error ? <Alert tone="bad">{errorMessage(submit.error, i18n)}</Alert> : null}
           {feedback ? (
-            <FeedbackPanel feedback={feedback} onNext={proceed} last={!nextState?.current} />
+            <FeedbackPanel feedback={feedback} onNext={proceed} last={!nextState?.current} locale={language.ttsLocale} />
           ) : (
             <div className="task-actions">
               <span className="caption task-actions__hint">{t('player.keyboardHint')}</span>

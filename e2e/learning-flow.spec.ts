@@ -23,7 +23,7 @@ async function answerCurrentTask(page: Page) {
 async function playUntilSummary(page: Page) {
   for (let step = 0; step < 80; step++) {
     if (await page.locator('.summary').count()) return;
-    const next = page.locator('.feedback').getByRole('button');
+    const next = page.locator('.feedback .btn--primary');
     if (await next.count()) {
       await next.click();
       continue;
@@ -68,6 +68,10 @@ test('a new learner registers, takes the placement test, completes a lesson and 
   await expect(page.getByRole('heading', { name: 'Программа курса' })).toBeVisible();
   await page.locator('a.syllabus__title').first().click();
   await page.waitForURL('**/lessons/**');
+  // Words are voiced by prepared recordings, so this works even in a browser without speech voices.
+  const recording = page.waitForRequest((r) => /\/audio\/de\/[0-9a-f]+\.mp3$/.test(r.url()));
+  await page.locator('.word-row .speak-btn').first().click();
+  await recording;
   await page.locator('.lesson-head .btn--primary').click();
   await page.waitForURL('**/learn/**');
   await expect(page.locator('.workspace__task')).toBeVisible();
@@ -94,5 +98,5 @@ test('the administrator opens the dashboard and the lesson list', async ({ page 
   await page.waitForURL('**/admin');
   await expect(page.getByRole('heading', { name: 'Управление платформой' })).toBeVisible();
   await page.getByRole('link', { name: 'Курсы и уроки' }).click();
-  await expect(page.locator('table')).toBeVisible();
+  await expect(page.locator('table').first()).toBeVisible();
 });
