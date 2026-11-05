@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Exercise } from '@linguapath/shared';
-import { categorize, chat, cloze, errorSpot, finalizeExercise } from '../../src/seed/builders';
-import { checkAnswer, expectedAnswer } from '../../src/modules/learning/checker';
+import { categorize, chat, cloze, errorSpot, finalizeExercise, reading, writing } from '../../src/seed/builders';
+import { checkAnswer, containsForm, countWords, expectedAnswer } from '../../src/modules/learning/checker';
 import { toPublicExercise } from '../../src/modules/learning/presenter';
 
 const base = { skill: 'grammar', topic: 'to_be', errorCategory: 'grammar', difficulty: 1, explanation: { ru: 'Пояснение' } } as const;
@@ -133,6 +133,67 @@ describe('checkAnswer', () => {
       const view = toPublicExercise(ex, 3) as unknown as Record<string, unknown>;
       expect(JSON.stringify(view)).not.toMatch(/errorIndex|correction|correctIndex|"answer"|"category"/);
     }
+  });
+
+  it('checks reading questions part by part and hides nothing the learner needs', () => {
+    const text = finalizeExercise(
+      reading(
+        {
+          passage: ['Anna wohnt in Berlin.', 'Sie arbeitet in einer Bäckerei.'],
+          translation: 'Анна живёт в Берлине. Она работает в пекарне.',
+          questions: [
+            ['Где живёт Анна?', ['в Берлине', 'в Мюнхене', 'в Вене'], 0],
+            ['Где она работает?', ['в банке', 'в пекарне'], 1],
+            ['Wer arbeitet in der Bäckerei?', ['Anna', 'Paul'], 0, true],
+          ],
+        },
+        '…',
+      ),
+      'r1',
+      'work',
+    );
+    expect(text.skill).toBe('reading');
+    const all = checkAnswer(text, { type: 'reading', choices: ['в Берлине', 'в пекарне', 'Anna'] }, 'de');
+    expect(all.verdict).toBe('correct');
+    expect(all.feedback.translation).toContain('Анна');
+    const two = checkAnswer(text, { type: 'reading', choices: ['в Берлине', 'в банке', 'Anna'] }, 'de');
+    expect(two.feedback.parts).toEqual([true, false, true]);
+    expect(two.verdict).toBe('almost');
+    const view = toPublicExercise(text, 1) as unknown as { passage: unknown[]; questions: Array<{ options: string[] }> };
+    expect(view.passage).toHaveLength(2);
+    expect(JSON.stringify(view)).not.toMatch(/correctIndex|translation/);
+    expect(finalizeExercise(reading({ mode: 'listen', passage: [['A', 'Hallo!'], ['B', 'Hi!']], questions: [['?', ['a', 'b'], 0]] }, '…'), 'r2', 'x').skill).toBe('listening');
+  });
+
+  it('checks free writing for length and required constructions and returns the model answer with a checklist', () => {
+    const task = finalizeExercise(
+      writing(
+        {
+          task: 'Напишите, что вы делали вчера.',
+          minWords: 8,
+          required: [
+            ['Perfekt', ['habe', 'bin']],
+            ['Слово-связка', ['dann', 'danach']],
+          ],
+          model: 'Gestern habe ich lange geschlafen. Dann bin ich ins Kino gegangen.',
+          checklist: ['Глагол на втором месте', 'Причастие в конце'],
+        },
+        '…',
+      ),
+      'w1',
+      'past_tense',
+    );
+    const good = checkAnswer(task, { type: 'writing', text: 'Am Morgen habe ich gefrühstückt und danach bin ich gelaufen.' }, 'de');
+    expect(good.verdict).toBe('correct');
+    expect(good.feedback.expected).toContain('Gestern');
+    expect(good.feedback.checklist).toHaveLength(2);
+    const short = checkAnswer(task, { type: 'writing', text: 'Ich habe gegessen.' }, 'de');
+    expect(short.feedback.parts).toEqual([false, true, false]);
+    expect(short.verdict).toBe('incorrect');
+    expect(short.points).toBe(3);
+    expect(containsForm('Мен кітап оқыдым', '-дым', 'kk')).toBe(true);
+    expect(containsForm('Ich wohne hier', 'ohne', 'de')).toBe(false);
+    expect(countWords('Hallo,  wie geht – es?')).toBe(4);
   });
 
   it('rejects an answer of a different exercise type', () => {

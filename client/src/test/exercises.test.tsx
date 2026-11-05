@@ -104,4 +104,42 @@ describe('exercise components', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Gut, danke.' }, { timeout: 2000 }));
     expect(onAnswer).toHaveBeenLastCalledWith({ type: 'chat', replies: ['Hallo!', 'Gut, danke.'] });
   });
+
+  it('answers every question of a reading text before the answer counts', async () => {
+    const onAnswer = vi.fn();
+    render(
+      <Harness
+        exercise={{
+          ...common,
+          type: 'reading',
+          mode: 'read',
+          passage: [{ text: 'Anna wohnt in Berlin.' }],
+          questions: [
+            { question: 'Где живёт Анна?', options: ['в Берлине', 'в Вене'] },
+            { question: 'Кто живёт в Берлине?', options: ['Анна', 'Пауль'] },
+          ],
+        }}
+        onAnswer={onAnswer}
+      />,
+    );
+    expect(screen.getByText(/Berlin/)).toBeTruthy();
+    await userEvent.click(screen.getByRole('radio', { name: 'в Берлине' }));
+    expect(onAnswer).toHaveBeenLastCalledWith(null);
+    await userEvent.click(screen.getByRole('radio', { name: 'Анна' }));
+    expect(onAnswer).toHaveBeenLastCalledWith({ type: 'reading', choices: ['в Берлине', 'Анна'] });
+  });
+
+  it('counts words while the learner writes', async () => {
+    const onAnswer = vi.fn();
+    render(
+      <Harness
+        exercise={{ ...common, type: 'writing', task: 'Напишите о себе.', minWords: 3, requirements: ['Глагол sein'] }}
+        onAnswer={onAnswer}
+      />,
+    );
+    await userEvent.type(screen.getByPlaceholderText('Пишите здесь…'), 'Ich bin Anna');
+    expect(onAnswer).toHaveBeenLastCalledWith({ type: 'writing', text: 'Ich bin Anna' });
+    expect(screen.getByText(/Слов: 3 из 3/)).toBeTruthy();
+    expect(screen.getByText('Глагол sein')).toBeTruthy();
+  });
 });

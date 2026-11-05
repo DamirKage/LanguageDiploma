@@ -9,7 +9,7 @@ export function nextLevel(level: CefrLevel): CefrLevel | null {
   return CEFR_LEVELS[levelIndex(level) + 1] ?? null;
 }
 
-export const SKILLS = ['vocabulary', 'grammar', 'listening', 'reading', 'speaking'] as const;
+export const SKILLS = ['vocabulary', 'grammar', 'listening', 'reading', 'speaking', 'writing'] as const;
 export type Skill = (typeof SKILLS)[number];
 
 export const EXERCISE_TYPES = [
@@ -24,6 +24,8 @@ export const EXERCISE_TYPES = [
   'cloze_text',
   'chat',
   'categorize',
+  'reading',
+  'writing',
 ] as const;
 export type ExerciseType = (typeof EXERCISE_TYPES)[number];
 

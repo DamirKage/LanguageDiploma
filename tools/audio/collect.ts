@@ -31,6 +31,10 @@ function exerciseTexts(ex: Exercise): Array<[string, AudioVoice]> {
       return ex.turns.flatMap((t) => [[t.message, 'B'], [t.options[t.correctIndex]!, 'A']] as Array<[string, AudioVoice]>);
     case 'categorize':
       return ex.items.map((it) => [it.text, 'A'] as [string, AudioVoice]);
+    case 'reading':
+      return ex.passage.map((p) => [p.text, p.speaker ?? 'A'] as [string, AudioVoice]);
+    case 'writing':
+      return [[ex.modelAnswer, 'A']];
     case 'dialogue': {
       const missing = ex.lines.find((l) => l.text === null)?.speaker ?? 'B';
       return [

@@ -82,6 +82,10 @@ function emptyAnswer(type: ExerciseType): ExerciseAnswer {
       return { type, replies: [] };
     case 'categorize':
       return { type, placement: [] };
+    case 'reading':
+      return { type, choices: [] };
+    case 'writing':
+      return { type, text: '' };
     default:
       return { type, text: '' };
   }

@@ -38,5 +38,12 @@ export function simulateAnswer(ex: Exercise, correct: boolean): ExerciseAnswer {
         type: 'categorize',
         placement: ex.items.map((it) => ({ text: it.text, category: correct ? it.category : (it.category + 1) % ex.categories.length })),
       };
+    case 'reading':
+      return {
+        type: 'reading',
+        choices: ex.questions.map((q) => localize(q.options[correct ? q.correctIndex : (q.correctIndex + 1) % q.options.length], 'ru')),
+      };
+    case 'writing':
+      return { type: 'writing', text: correct ? ex.modelAnswer : 'abc' };
   }
 }

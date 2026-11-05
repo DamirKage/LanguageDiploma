@@ -94,5 +94,23 @@ export function toPublicExercise(ex: Exercise, seed: number, locale = 'ru'): Pub
         categories: ex.categories.map((c) => localize(c, locale)),
         items: shuffle(ex.items.map((it) => it.text), seed),
       };
+    case 'reading':
+      return {
+        ...common,
+        type: 'reading',
+        mode: ex.mode,
+        title: ex.title,
+        passage: ex.passage,
+        questions: ex.questions.map((q, i) => ({ question: localize(q.question, locale), options: shuffle(q.options.map((o) => localize(o, locale)), seed + i) })),
+      };
+    case 'writing':
+      return {
+        ...common,
+        type: 'writing',
+        task: localize(ex.task, locale),
+        minWords: ex.minWords,
+        maxWords: ex.maxWords,
+        requirements: ex.required.map((r) => localize(r.label, locale)),
+      };
   }
 }

@@ -28,6 +28,8 @@ const answerSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('error_spot'), index: z.number().int().min(0).max(60) }),
   z.object({ type: z.literal('cloze_text'), choices: z.array(text).max(10) }),
   z.object({ type: z.literal('chat'), replies: z.array(text).max(10) }),
+  z.object({ type: z.literal('reading'), choices: z.array(text).max(10) }),
+  z.object({ type: z.literal('writing'), text: z.string().max(4000) }),
   z.object({ type: z.literal('categorize'), placement: z.array(z.object({ text, category: z.number().int().min(0).max(10) })).max(20) }),
 ]);
 

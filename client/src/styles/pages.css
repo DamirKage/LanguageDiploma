@@ -1720,3 +1720,162 @@ a.syllabus__title:hover {
     max-width: 90%;
   }
 }
+
+/* ---------- Connected text with questions ---------- */
+.reading__title {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+.reading__audio {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.reading__passage {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s4) var(--s5);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  font-family: var(--font-literata);
+  font-size: var(--text-lg);
+  line-height: 1.7;
+  max-height: 46vh;
+  overflow-y: auto;
+}
+.reading__passage p {
+  margin: 0;
+}
+.reading__passage--dialogue p[data-speaker='B'] {
+  padding-left: var(--s4);
+  color: var(--ink-2);
+}
+.reading__speaker {
+  margin-right: var(--s2);
+  color: var(--accent);
+}
+.reading__translation summary,
+.writing__review summary {
+  cursor: pointer;
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+}
+.reading__translation p,
+.writing__review details p {
+  margin: var(--s2) 0 0;
+  color: var(--ink-2);
+}
+.reading__questions {
+  display: grid;
+  gap: var(--s4);
+  margin: 0;
+  padding-left: var(--s5);
+}
+.reading__question-text {
+  margin: 0 0 var(--s2);
+  font-weight: 600;
+}
+
+/* ---------- Free writing ---------- */
+.writing__task {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+.writing__needs ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin: var(--s2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.writing__needs li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  padding: 2px var(--s3);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: var(--text-sm);
+}
+.writing__needs li[data-state='correct'] {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+}
+.writing__needs li[data-state='wrong'] {
+  border-color: var(--bad);
+}
+.writing__input {
+  width: 100%;
+  min-height: 9em;
+  resize: vertical;
+  font-size: var(--text-md);
+  line-height: var(--leading);
+}
+.writing__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+.writing__meta [data-state='correct'] {
+  color: var(--ok);
+}
+.writing__meta [data-state='wrong'] {
+  color: var(--bad);
+}
+.writing__ok {
+  color: var(--ok);
+  vertical-align: -2px;
+  margin-right: 4px;
+}
+.writing__miss {
+  color: var(--bad);
+  vertical-align: -2px;
+  margin-right: 4px;
+}
+.writing__review {
+  display: grid;
+  gap: var(--s3);
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--paper-2);
+  animation: fade-up 480ms var(--ease-out) both;
+}
+.writing__review .eyebrow {
+  margin: 0;
+}
+.writing__model {
+  display: flex;
+  gap: var(--s2);
+  align-items: flex-start;
+  margin: 0;
+  font-family: var(--font-literata);
+  font-size: var(--text-lg);
+  line-height: 1.6;
+}
+.writing__checklist {
+  display: grid;
+  gap: var(--s2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.writing__check {
+  display: flex;
+  gap: var(--s2);
+  align-items: flex-start;
+  cursor: pointer;
+}
+.writing__check input {
+  margin-top: 4px;
+  accent-color: var(--accent);
+}
+.writing__check:has(input:checked) span {
+  color: var(--ink-3);
+  text-decoration: line-through;
+}

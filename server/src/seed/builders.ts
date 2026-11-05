@@ -33,6 +33,8 @@ const DEFAULT_SKILL: Record<ExerciseType, Skill> = {
   cloze_text: 'grammar',
   chat: 'reading',
   categorize: 'vocabulary',
+  reading: 'reading',
+  writing: 'writing',
 };
 
 const CATEGORY_BY_SKILL: Record<Skill, ErrorCategory> = {
@@ -41,6 +43,7 @@ const CATEGORY_BY_SKILL: Record<Skill, ErrorCategory> = {
   listening: 'listening',
   reading: 'comprehension',
   speaking: 'pronunciation',
+  writing: 'grammar',
 };
 
 export function choice(question: string, options: string[], correctIndex: number, explanation: string, meta: Meta = {}, target?: string): Draft {
@@ -226,5 +229,69 @@ export function categorize(categories: Array<string | { ru: string }>, items: Ar
     items: items.map(([text, category]) => ({ text, category })),
     explanation: ru(explanation),
     meta,
+  };
+}
+
+/**
+ * Connected text with questions. `passage` holds paragraphs, or `[speaker, line]` pairs for a dialogue.
+ * Questions are in Russian; their options are Russian too unless `optionsInTarget` is set.
+ * In `listen` mode the learner hears the text first and reads it only after answering.
+ */
+export function reading(
+  spec: {
+    mode?: 'read' | 'listen';
+    title?: string;
+    passage: Array<string | [speaker: 'A' | 'B', text: string]>;
+    translation?: string;
+    questions: Array<[question: string, options: string[], correctIndex: number, optionsInTarget?: boolean]>;
+  },
+  explanation: string,
+  meta: Meta = {},
+): Draft {
+  const mode = spec.mode ?? 'read';
+  return {
+    type: 'reading',
+    mode,
+    ...(spec.title ? { title: spec.title } : {}),
+    passage: spec.passage.map((p) => (typeof p === 'string' ? { text: p } : { speaker: p[0], text: p[1] })),
+    ...(spec.translation ? { translation: ru(spec.translation) } : {}),
+    questions: spec.questions.map(([question, options, correctIndex, inTarget]) => ({
+      question: ru(question),
+      options: inTarget ? options : options.map((o) => ru(o)),
+      correctIndex,
+    })),
+    explanation: ru(explanation),
+    meta: { s: mode === 'listen' ? 'listening' : 'reading', c: mode === 'listen' ? 'listening' : 'comprehension', ...meta },
+  };
+}
+
+/**
+ * Free writing. `required` lists constructions as `[label, forms]`: the requirement is met when any form occurs
+ * in the text (a form starting with "-" may stand inside a word). The model answer must satisfy every requirement.
+ */
+export function writing(
+  spec: {
+    task: string;
+    minWords: number;
+    maxWords?: number;
+    required: Array<[label: string, forms: string[]]>;
+    model: string;
+    modelTranslation?: string;
+    checklist: string[];
+  },
+  explanation: string,
+  meta: Meta = {},
+): Draft {
+  return {
+    type: 'writing',
+    task: ru(spec.task),
+    minWords: spec.minWords,
+    ...(spec.maxWords ? { maxWords: spec.maxWords } : {}),
+    required: spec.required.map(([label, forms]) => ({ label: ru(label), forms })),
+    modelAnswer: spec.model,
+    ...(spec.modelTranslation ? { modelTranslation: ru(spec.modelTranslation) } : {}),
+    checklist: spec.checklist.map((c) => ru(c)),
+    explanation: ru(explanation),
+    meta: { s: 'writing', c: 'grammar', ...meta },
   };
 }

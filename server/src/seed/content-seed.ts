@@ -2,6 +2,7 @@ import type { Types } from 'mongoose';
 import type { Exercise } from '@linguapath/shared';
 import { Course, CourseModule, Language, Lesson, Test, Topic, Word } from '../models/content';
 import { exerciseSchema } from '../modules/content/schemas';
+import { checkAnswer, countWords } from '../modules/learning/checker';
 import { finalizeExercise, ru, type LanguageSpec, type LessonSpec } from './builders';
 import { english } from './content/en';
 import { german } from './content/de';
@@ -16,12 +17,20 @@ export const LANGUAGES: LanguageSpec[] = [kazakh, english, turkish, german, span
 const MODULE_TEST_PER_LESSON = 3;
 
 const TOPIC_KEYS = new Set(TOPICS.map((t) => t.key));
+const languageOf = (key: string) => /^([a-z]{2})-/.exec(key)?.[1];
 
 function validate(exercise: Exercise, context: string): Exercise {
   if (exercise.topic !== 'placement' && !TOPIC_KEYS.has(exercise.topic)) throw new Error(`Unknown topic "${exercise.topic}" in ${exercise.key} (${context})`);
   const result = exerciseSchema.safeParse(exercise);
   if (!result.success) {
     throw new Error(`Invalid exercise ${exercise.key} in ${context}: ${result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')}`);
+  }
+  if (exercise.type === 'writing' && languageOf(exercise.key)) {
+    // The model answer must pass the task's own automatic checks, or the requirements are mis-specified.
+    const check = checkAnswer(exercise, { type: 'writing', text: exercise.modelAnswer }, languageOf(exercise.key)!);
+    if (check.verdict !== 'correct') {
+      throw new Error(`Model answer of ${exercise.key} fails its own checks: ${JSON.stringify(check.feedback.parts)} (words: ${countWords(exercise.modelAnswer)})`);
+    }
   }
   return exercise;
 }
@@ -33,7 +42,7 @@ function lessonTest(lesson: LessonSpec): Exercise[] {
 
 /** Spreads selected exercises across types and avoids speaking tasks, which may be unsupported. */
 function pickForTest(exercises: Exercise[], count: number): Exercise[] {
-  const eligible = exercises.filter((e) => e.type !== 'speak' && e.type !== 'listen');
+  const eligible = exercises.filter((e) => e.type !== 'speak' && e.type !== 'listen' && e.type !== 'writing');
   const byType = new Map<string, Exercise[]>();
   for (const e of eligible) byType.set(e.type, [...(byType.get(e.type) ?? []), e]);
   const picked: Exercise[] = [];

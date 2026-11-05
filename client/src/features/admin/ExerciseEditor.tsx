@@ -35,6 +35,10 @@ export function exerciseTemplate(type: ExerciseType, key: string, topic: string)
       return { ...base, skill: 'reading', errorCategory: 'comprehension', type, turns: [] };
     case 'categorize':
       return { ...base, skill: 'vocabulary', errorCategory: 'vocabulary', type, categories: ['', ''], items: [] };
+    case 'reading':
+      return { ...base, skill: 'reading', errorCategory: 'comprehension', type, mode: 'read', passage: [], questions: [] };
+    case 'writing':
+      return { ...base, skill: 'writing', type, task: { ru: '' }, minWords: 30, required: [], modelAnswer: '', checklist: [{ ru: '' }] };
   }
 }
 
@@ -341,6 +345,95 @@ export function ExerciseEditor({
                   })
                 }
               />
+            )}
+          </Field>
+        </>
+      );
+      break;
+    case 'reading':
+      specific = (
+        <>
+          <Field label={label('readingMode')}>
+            {(p) => (
+              <Select {...p} value={value.mode} onChange={(e) => set({ mode: e.target.value, skill: e.target.value === 'listen' ? 'listening' : 'reading' })}>
+                <option value="read">{label('readingModeRead')}</option>
+                <option value="listen">{label('readingModeListen')}</option>
+              </Select>
+            )}
+          </Field>
+          {text('title', 'readingTitle')}
+          <Field label={label('readingPassage')}>
+            {(p) => (
+              <Textarea
+                {...p}
+                rows={6}
+                value={value.passage.map((l) => (l.speaker ? `${l.speaker}: ${l.text}` : l.text)).join('\n')}
+                onChange={(e) =>
+                  set({
+                    passage: lines(e.target.value).map((line) => {
+                      const m = /^([AB]):\s*(.*)$/.exec(line);
+                      return m ? { speaker: m[1], text: m[2] } : { text: line };
+                    }),
+                  })
+                }
+              />
+            )}
+          </Field>
+          {localized('translation', 'translation', true)}
+          <Field label={label('readingQuestions')}>
+            {(p) => (
+              <Textarea
+                {...p}
+                rows={5}
+                value={value.questions.map((q) => `${loc(q.question)} => ${q.options.map((o, i) => (i === q.correctIndex ? `${loc(o)}*` : loc(o))).join(' | ')}`).join('\n')}
+                onChange={(e) =>
+                  set({
+                    questions: lines(e.target.value).map((line) => {
+                      const [question = '', rest = ''] = line.split('=>').map((x) => x.trim());
+                      const raw = rest.split('|').map((o) => o.trim()).filter(Boolean);
+                      const correctIndex = Math.max(0, raw.findIndex((o) => o.endsWith('*')));
+                      return { question: { ru: question }, options: raw.map((o) => ({ ru: o.replace(/\*$/, '').trim() })), correctIndex };
+                    }),
+                  })
+                }
+              />
+            )}
+          </Field>
+        </>
+      );
+      break;
+    case 'writing':
+      specific = (
+        <>
+          {localized('task', 'writingTask')}
+          <Field label={label('writingMinWords')}>
+            {(p) => <TextInput {...p} type="number" min={3} value={value.minWords} onChange={(e) => set({ minWords: Math.max(3, Number(e.target.value) || 3) })} />}
+          </Field>
+          <Field label={label('writingMaxWords')}>
+            {(p) => <TextInput {...p} type="number" min={0} value={value.maxWords ?? ''} onChange={(e) => set({ maxWords: Number(e.target.value) || undefined })} />}
+          </Field>
+          <Field label={label('writingRequired')}>
+            {(p) => (
+              <Textarea
+                {...p}
+                rows={3}
+                value={value.required.map((r) => `${loc(r.label)} = ${r.forms.join(' | ')}`).join('\n')}
+                onChange={(e) =>
+                  set({
+                    required: lines(e.target.value).map((line) => {
+                      const [name = '', forms = ''] = line.split('=').map((x) => x.trim());
+                      return { label: { ru: name }, forms: forms.split('|').map((f) => f.trim()).filter(Boolean) };
+                    }),
+                  })
+                }
+              />
+            )}
+          </Field>
+          {text('modelAnswer', 'writingModel', true)}
+          {localized('modelTranslation', 'writingModelTranslation', true)}
+          <Field label={label('writingChecklist')}>
+            {(p) => (
+              <Textarea {...p} rows={3} value={value.checklist.map((c) => loc(c)).join('\n')} onChange={(e) => set({ checklist: lines(e.target.value).map((c) => ({ ru: c })) })} />
             )}
           </Field>
         </>

@@ -158,7 +158,36 @@ const categorize = z
   .refine((e) => e.items.every((it) => it.category < e.categories.length), { message: 'Номер группы вне списка групп', path: ['items'] })
   .refine((e) => new Set(e.items.map((it) => it.text)).size === e.items.length, { message: 'Элементы не должны повторяться', path: ['items'] });
 
-export const exerciseSchema = z.union([choice, fillBlank, translate, order, listen, dialogue, speak, errorSpot, clozeText, chat, categorize]);
+const reading = z
+  .object({
+    ...base,
+    type: z.literal('reading'),
+    mode: z.enum(['read', 'listen']),
+    title: z.string().trim().max(200).optional(),
+    passage: z.array(z.object({ speaker: z.enum(['A', 'B']).optional(), text: z.string().trim().min(1).max(1500) })).min(1).max(16),
+    translation: localizedText.optional(),
+    questions: z
+      .array(z.object({ question: localizedText, options: z.array(z.union([nonEmpty, localizedText])).min(2).max(4), correctIndex: z.number().int().min(0) }))
+      .min(1)
+      .max(6),
+  })
+  .refine((e) => e.questions.every((q) => q.correctIndex < q.options.length), { message: 'Индекс правильного ответа вне списка', path: ['questions'] });
+
+const writing = z
+  .object({
+    ...base,
+    type: z.literal('writing'),
+    task: localizedText,
+    minWords: z.number().int().min(3).max(400),
+    maxWords: z.number().int().min(5).max(600).optional(),
+    required: z.array(z.object({ label: localizedText, forms: z.array(nonEmpty).min(1).max(12) })).max(6),
+    modelAnswer: z.string().trim().min(1).max(3000),
+    modelTranslation: localizedText.optional(),
+    checklist: z.array(localizedText).min(1).max(8),
+  })
+  .refine((e) => !e.maxWords || e.maxWords >= e.minWords, { message: 'Максимум слов меньше минимума', path: ['maxWords'] });
+
+export const exerciseSchema = z.union([choice, fillBlank, translate, order, listen, dialogue, speak, errorSpot, clozeText, chat, categorize, reading, writing]);
 
 export const theoryBlockSchema = z.object({
   title: localizedText,

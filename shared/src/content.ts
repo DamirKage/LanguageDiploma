@@ -115,6 +115,37 @@ export interface CategorizeExercise extends ExerciseBase {
   items: Array<{ text: string; category: number }>;
 }
 
+/**
+ * A connected text with comprehension questions. In `listen` mode the text is a recording (a monologue or a
+ * dialogue of two voices): the learner hears it first and sees the transcript only after answering.
+ */
+export interface ReadingExercise extends ExerciseBase {
+  type: 'reading';
+  mode: 'read' | 'listen';
+  title?: string;
+  /** Paragraphs, or dialogue lines with a speaker, in the target language. */
+  passage: Array<{ speaker?: 'A' | 'B'; text: string }>;
+  /** Translation of the whole text, shown after the answer. */
+  translation?: LocalizedText;
+  questions: Array<{ question: LocalizedText; options: Array<string | LocalizedText>; correctIndex: number }>;
+}
+
+/**
+ * Free writing on a task. The text is checked automatically for length and for the constructions the task
+ * asks for; afterwards the learner sees a model answer and a checklist for self-review.
+ */
+export interface WritingExercise extends ExerciseBase {
+  type: 'writing';
+  task: LocalizedText;
+  minWords: number;
+  maxWords?: number;
+  /** Constructions the text has to use. A requirement is met when any of its forms occurs in the text. */
+  required: Array<{ label: LocalizedText; forms: string[] }>;
+  modelAnswer: string;
+  modelTranslation?: LocalizedText;
+  checklist: LocalizedText[];
+}
+
 export type Exercise =
   | ChoiceExercise
   | FillBlankExercise
@@ -126,7 +157,9 @@ export type Exercise =
   | ErrorSpotExercise
   | ClozeTextExercise
   | ChatExercise
-  | CategorizeExercise;
+  | CategorizeExercise
+  | ReadingExercise
+  | WritingExercise;
 
 /** Answer payloads sent by the client, one per exercise type. */
 export type ExerciseAnswer =
@@ -140,7 +173,9 @@ export type ExerciseAnswer =
   | { type: 'error_spot'; index: number }
   | { type: 'cloze_text'; choices: string[] }
   | { type: 'chat'; replies: string[] }
-  | { type: 'categorize'; placement: Array<{ text: string; category: number }> };
+  | { type: 'categorize'; placement: Array<{ text: string; category: number }> }
+  | { type: 'reading'; choices: string[] }
+  | { type: 'writing'; text: string };
 
 /** Exercise as delivered to the learner: no answers, options already shuffled. */
 export type PublicExercise =
@@ -157,7 +192,12 @@ export type PublicExercise =
   | (Pick<ErrorSpotExercise, 'type' | 'tokens' | 'translation'>)
   | (Pick<ClozeTextExercise, 'type' | 'text' | 'translation'> & { gaps: Array<{ options: string[] }> })
   | (Pick<ChatExercise, 'type' | 'context'> & { turns: Array<{ message: string; messageTranslation?: string; options: string[] }> })
-  | (Pick<CategorizeExercise, 'type'> & { categories: string[]; items: string[] });
+  | (Pick<CategorizeExercise, 'type'> & { categories: string[]; items: string[] })
+  | (Pick<ReadingExercise, 'type' | 'mode' | 'title' | 'passage'> & {
+      /** In listen mode the client plays the passage and shows it only after the answer, like `listen.audioText`. */
+      questions: Array<{ question: string; options: string[] }>;
+    })
+  | (Pick<WritingExercise, 'type' | 'minWords' | 'maxWords'> & { task: string; requirements: string[] });
 
 export type PublicExerciseView = PublicExercise & {
   key: string;
@@ -181,5 +221,9 @@ export interface AnswerFeedback {
    * placed items). For "find the mistake" — one entry per word, false at the wrong word.
    */
   parts?: boolean[];
+  /** Writing: points for self-review next to the model answer. */
+  checklist?: string[];
+  /** Reading and writing: translation of the text or the model answer. */
+  translation?: string;
 }
 

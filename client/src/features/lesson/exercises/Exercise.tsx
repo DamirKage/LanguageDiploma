@@ -8,6 +8,7 @@ import { useRecognition, useSpeaker } from '../../../lib/speech';
 import { SpeakButton } from '../SpeakButton';
 import { SelfRecorder } from './SelfRecorder';
 import { CategorizeExercise, ChatExercise, ClozeTextExercise, ErrorSpotExercise } from './Interactive';
+import { ReadingExercise, WritingExercise } from './Extended';
 import { AudioRing } from '../../../components/motion/AudioRing';
 import { SpokenText } from '../../../components/motion/SpokenText';
 import { SpecialChars } from './SpecialChars';
@@ -501,6 +502,10 @@ export function ExerciseView(props: ExerciseProps) {
       return <ChatExercise {...(props as ExerciseProps<'chat'>)} />;
     case 'categorize':
       return <CategorizeExercise {...(props as ExerciseProps<'categorize'>)} />;
+    case 'reading':
+      return <ReadingExercise {...(props as ExerciseProps<'reading'>)} />;
+    case 'writing':
+      return <WritingExercise {...(props as ExerciseProps<'writing'>)} />;
   }
 }
 
@@ -515,6 +520,8 @@ export function useInstruction(exercise: PublicExerciseView, language: LanguageI
           : t('player.instruction.translate_to_ui');
       case 'listen':
         return exercise.mode === 'choice' ? t('player.instruction.listen_choice') : t('player.instruction.listen');
+      case 'reading':
+        return exercise.mode === 'listen' ? t('player.instruction.reading_listen') : t('player.instruction.reading');
       default:
         return t(`player.instruction.${exercise.type}`);
     }

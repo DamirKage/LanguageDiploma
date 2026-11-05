@@ -47,12 +47,30 @@ export function expectedAnswer(ex: Exercise, locale = 'ru'): string {
       return ex.categories
         .map((c, i) => `${localize(c, locale)}: ${ex.items.filter((it) => it.category === i).map((it) => it.text).join(', ')}`)
         .join('; ');
+    case 'reading':
+      return ex.questions.map((q) => localize(q.options[q.correctIndex], locale)).join(' / ');
+    case 'writing':
+      return ex.modelAnswer;
   }
 }
 
 /** Replaces `{0}`, `{1}`, … in a cloze text; `___` for gaps without a value. */
 export function fillGaps(text: string, values: Array<string | undefined>): string {
   return text.replace(/\{(\d+)\}/g, (_, n: string) => values[Number(n)] || '___');
+}
+
+export function countWords(text: string): number {
+  return text.split(/\s+/).filter((w) => /\p{L}/u.test(w)).length;
+}
+
+/**
+ * Whether a construction occurs in a free text. A form starting with "-" is a suffix and may stand inside a word
+ * (agglutinative languages); any other form has to start at a word boundary.
+ */
+export function containsForm(text: string, form: string, language: string): boolean {
+  const hay = ` ${looseKey(text, language)} `;
+  if (form.startsWith('-')) return hay.includes(looseKey(form.slice(1), language));
+  return hay.includes(` ${looseKey(form, language)}`);
 }
 
 /** Several parts answered at once: all right, all but a small share right, or not. */
@@ -85,6 +103,10 @@ export function promptText(ex: Exercise, locale = 'ru'): string {
       return ex.turns.map((t) => t.message).join(' / ');
     case 'categorize':
       return ex.items.map((it) => it.text).join(', ');
+    case 'reading':
+      return ex.title ?? ex.passage[0]?.text ?? '';
+    case 'writing':
+      return localize(ex.task, locale);
   }
 }
 
@@ -112,6 +134,10 @@ function describeGiven(answer: ExerciseAnswer, ex: Exercise, locale: string): st
       return ex.type === 'categorize'
         ? answer.placement.map((p) => `${p.text} → ${localize(ex.categories[p.category] ?? '', locale)}`).join('; ')
         : '';
+    case 'reading':
+      return answer.choices.join(' / ');
+    case 'writing':
+      return answer.text;
   }
 }
 
@@ -229,6 +255,22 @@ export function checkAnswer(ex: Exercise, answer: ExerciseAnswer, language: stri
       almostCategory = ex.errorCategory;
       break;
     }
+    case 'reading': {
+      const choices = (answer as Extract<ExerciseAnswer, { type: 'reading' }>).choices;
+      parts = ex.questions.map((q, i) => choices[i] !== undefined && strictKey(choices[i]!, language) === strictKey(localize(q.options[q.correctIndex], locale), language));
+      verdict = partsVerdict(parts.filter(Boolean).length, ex.questions.length);
+      almostCategory = ex.errorCategory;
+      break;
+    }
+    case 'writing': {
+      const text = (answer as Extract<ExerciseAnswer, { type: 'writing' }>).text;
+      const words = countWords(text);
+      const lengthOk = words >= ex.minWords && (!ex.maxWords || words <= Math.ceil(ex.maxWords * 1.25));
+      parts = [lengthOk, ...ex.required.map((r) => words >= 3 && r.forms.some((f) => containsForm(text, f, language)))];
+      verdict = partsVerdict(parts.filter(Boolean).length, parts.length);
+      almostCategory = ex.errorCategory;
+      break;
+    }
     default:
       break;
   }
@@ -238,5 +280,11 @@ export function checkAnswer(ex: Exercise, answer: ExerciseAnswer, language: stri
   // 4 of 8 items sorted correctly is not the same as none.
   const share = parts && parts.length ? parts.filter(Boolean).length / parts.length : 0;
   const points = verdict === 'incorrect' && share > 0 ? Math.floor(POINTS.correct * share) : base;
-  return { verdict, points, category, given, feedback: { verdict, expected, explanation, ...(note ? { note } : {}), ...(parts ? { parts } : {}) } };
+  const extra: Pick<AnswerFeedback, 'checklist' | 'translation'> = {};
+  if (ex.type === 'writing') {
+    extra.checklist = ex.checklist.map((c) => localize(c, locale));
+    if (ex.modelTranslation) extra.translation = localize(ex.modelTranslation, locale);
+  }
+  if (ex.type === 'reading' && ex.translation) extra.translation = localize(ex.translation, locale);
+  return { verdict, points, category, given, feedback: { verdict, expected, explanation, ...(note ? { note } : {}), ...(parts ? { parts } : {}), ...extra } };
 }
