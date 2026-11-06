@@ -1,4 +1,4 @@
-import { categorize, chat, choice, choiceRu, cloze, dialogue, errorSpot, fill, listen, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
+import { categorize, chat, choice, choiceRu, cloze, dialogue, errorSpot, fill, listen, order, reading, speak, translate, translateBack, writing, type LanguageSpec } from '../builders';
 
 export const spanish: LanguageSpec = {
   code: 'es',
@@ -277,6 +277,20 @@ export const spanish: LanguageSpec = {
                   { d: 2 },
                   'Подруга смотрит фотографии в вашем телефоне.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Mi familia',
+                    passage: ['Me llamo Dana y tengo diecinueve años. Mi familia es grande. Mis padres viven en Taraz: mi madre es profesora y mi padre es médico. Tengo un hermano y una hermana. Mi hermano se llama Timur y tiene quince años. Mi hermana tiene diez años.'],
+                    translation: 'Меня зовут Дана, мне девятнадцать лет. У меня большая семья. Мои родители живут в Таразе: мама — учительница, а папа — врач. У меня есть брат и сестра. Брата зовут Тимур, ему пятнадцать лет. Сестре десять лет.',
+                    questions: [
+                      ['Кем работает мама Даны?', ['Учительницей', 'Врачом', 'Она студентка'], 0],
+                      ['Сколько лет Тимуру?', ['Пятнадцать', 'Десять', 'Девятнадцать'], 0],
+                    ],
+                  },
+                  'mi madre es profesora — «мама — учительница», врач — папа (médico). Тимуру quince años — 15; десять лет (diez) — сестре, девятнадцать (diecinueve) — самой Дане.',
+                  { d: 1 },
+                ),
               ],
               test: [
                 fill('___ hijos se llaman Ali y Timur.', ['Mis'], 'hijos — множественное число, поэтому mis.', { s: 'grammar', t: 'possessive' }, { translation: 'Моих сыновей зовут Али и Тимур.', options: ['Mi', 'Mis'] }),
@@ -341,6 +355,28 @@ export const spanish: LanguageSpec = {
                   'Вежливый заказ — Quisiera …; café, zumo — мужского рода, tostada и cuenta — женского. Счёт — la cuenta (la carta — меню). Расплачиваясь, говорят Aquí tiene («вот, пожалуйста»); цену уже назвали, переспрашивать ¿Cuánto es? незачем.',
                   { d: 2 },
                   'Вы в кафе в Севилье. Официант обращается к вам на «Вы».',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'En la cafetería',
+                    passage: [
+                      ['A', 'Buenos días, señora. ¿Qué desea tomar?'],
+                      ['B', 'Quisiera un café con leche, por favor.'],
+                      ['A', 'Muy bien. ¿Algo para comer?'],
+                      ['B', 'Sí, una tostada con tomate. ¿Cuánto es?'],
+                      ['A', 'Son tres euros con cincuenta.'],
+                      ['B', 'Aquí tiene. Gracias.'],
+                      ['A', 'Gracias a usted. ¡Adiós!'],
+                    ],
+                    translation: '— Доброе утро, сеньора. Что желаете выпить? — Кофе с молоком, пожалуйста. — Хорошо. Что-нибудь поесть? — Да, тост с помидором. Сколько с меня? — Три евро пятьдесят. — Вот, пожалуйста. Спасибо. — Вам спасибо. До свидания!',
+                    questions: [
+                      ['Что посетительница заказала выпить?', ['Кофе с молоком', 'Тост с помидором', 'Ничего, только еду'], 0],
+                      ['Сколько она заплатила?', ['3,50 евро', '5,30 евро', '3 евро'], 0],
+                    ],
+                  },
+                  'Пить — un café con leche, есть — una tostada con tomate. Son tres euros con cincuenta — «три евро пятьдесят».',
+                  { d: 1 },
                 ),
               ],
               test: [
@@ -418,6 +454,37 @@ export const spanish: LanguageSpec = {
                   'Понедельник. Коллега спрашивает, как прошли ваши выходные.',
                 ),
                 cloze('El sábado pasado [fui|voy|iré] al mercado con mi hermana. Allí [compramos|compraron|compro] fruta y después [comimos|comemos|comieron] en un bar. Por la tarde mi hermana [hizo|hice|hace] una tarta y yo [hablé|habló|hablo] por teléfono con mis padres.', 'Законченные действия в прошлом (el sábado pasado) — indefinido: fui, compramos, comimos; hacer → ella hizo; hablar → yo hablé (ударение на -é, без него habló — «он поговорил»).', { s: 'grammar', t: 'past_tense', d: 2 }, 'В прошлую субботу я ходила на рынок с сестрой. Там мы купили фрукты, а потом поели в баре. Вечером сестра испекла торт, а я поговорила по телефону с родителями.'),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Un mensaje de Marta',
+                    passage: ['¡Hola, Ana! ¿Qué tal? El fin de semana pasado fui a Toledo con mis amigos Pablo y Lucía. El sábado por la mañana visitamos la catedral y después comimos en un restaurante típico. Pablo pidió cordero y yo comí una ensalada. Por la tarde Lucía compró unos regalos para su familia. El domingo por la noche volvimos a Madrid en tren. ¡Fue un fin de semana genial! Un beso, Marta.'],
+                    translation: 'Привет, Ана! Как дела? В прошлые выходные я ездила в Толедо с друзьями Пабло и Лусией. В субботу утром мы посетили собор, а потом пообедали в типичном ресторане. Пабло заказал баранину, а я съела салат. Вечером Лусия купила подарки для своей семьи. В воскресенье вечером мы вернулись в Мадрид на поезде. Это были отличные выходные! Целую, Марта.',
+                    questions: [
+                      ['Что они делали в субботу утром?', ['Посетили собор', 'Купили подарки', 'Вернулись в Мадрид'], 0],
+                      ['Кто купил подарки?', ['Лусия', 'Пабло', 'Марта'], 0],
+                      ['Как и когда они вернулись в Мадрид?', ['На поезде, в воскресенье вечером', 'На поезде, в субботу вечером', 'На машине Пабло, в воскресенье'], 0],
+                    ],
+                  },
+                  'visitamos la catedral — утром в субботу; regalos купила Lucía; volvimos en tren el domingo por la noche. Все события — в pretérito indefinido.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите подруге сообщение о том, как вы провели прошлые выходные: куда ездили или ходили и что делали.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Глаголы в pretérito indefinido', ['fui', 'fuimos', 'visité', 'visitamos', 'comí', 'comimos', 'compré', 'compramos', 'hice', 'hicimos', 'volví', 'volvimos']],
+                      ['Указание на прошлое', ['ayer', 'pasado', 'pasada', 'el sábado', 'el domingo']],
+                    ],
+                    model: '¡Hola, Ana! El fin de semana pasado fui a Sevilla con mi hermano. El sábado visitamos la catedral y comimos en un bar bonito. El domingo compré unos regalos y volví a casa en tren. ¿Y tú qué hiciste?',
+                    modelTranslation: 'Привет, Ана! В прошлые выходные я ездил в Севилью с братом. В субботу мы посетили собор и пообедали в симпатичном баре. В воскресенье я купил подарки и вернулся домой на поезде. А ты что делала?',
+                    checklist: ['Есть приветствие и вопрос к подруге', 'Законченные действия стоят в indefinido: fui, visitamos, comí', 'Указано, когда это было: el sábado, el fin de semana pasado', 'Окончания -é / -ó стоят с ударением'],
+                  },
+                  'Рассказ о выходных — цепочка законченных событий, поэтому indefinido. Неправильные формы: ir → fui, hacer → hice.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('Ayer mis amigos ___ paella.', ['comieron'], 'comer → ellos comieron.', { s: 'grammar', t: 'past_tense', d: 2 }, { translation: 'Вчера мои друзья ели паэлью.', options: ['comieron', 'comen', 'comió'] }),
@@ -487,6 +554,46 @@ export const spanish: LanguageSpec = {
                   'Вы в Барселоне и не можете найти музей. К вам подходит прохожая.',
                 ),
                 errorSpot('La farmacia es al lado del hotel.', 'es', 'está', 'Местоположение выражается глаголом estar: La farmacia está al lado del hotel.', { t: 'ser_estar', d: 2 }, 'Аптека рядом с гостиницей.'),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: '¿Dónde está la estación?',
+                    passage: [
+                      ['A', 'Perdone, ¿dónde está la estación de tren?'],
+                      ['B', 'Está un poco lejos. Siga todo recto hasta la plaza y después gire a la derecha.'],
+                      ['A', '¿Y el museo? ¿Está cerca de la estación?'],
+                      ['B', 'Sí, el museo está al lado de la estación, a la izquierda.'],
+                      ['A', '¿Puedo ir a pie?'],
+                      ['B', 'Sí, son unos quince minutos. Pero si tiene prisa, el autobús número tres para aquí.'],
+                      ['A', 'Muchas gracias, es usted muy amable.'],
+                      ['B', 'De nada. ¡Buen viaje!'],
+                    ],
+                    translation: '— Простите, где железнодорожный вокзал? — Немного далеко. Идите прямо до площади, а потом поверните направо. — А музей? Он рядом с вокзалом? — Да, музей рядом с вокзалом, слева. — Можно дойти пешком? — Да, минут пятнадцать. Но если вы спешите, здесь останавливается автобус номер три. — Большое спасибо, вы очень любезны. — Не за что. Счастливого пути!',
+                    questions: [
+                      ['Куда нужно повернуть после площади?', ['Направо', 'Налево', 'Никуда, идти прямо до музея'], 0],
+                      ['Где находится музей?', ['Рядом с вокзалом, слева', 'Рядом с вокзалом, справа', 'На площади'], 0],
+                      ['Сколько идти пешком?', ['Около пятнадцати минут', 'Около трёх минут', 'Пешком дойти нельзя, нужен автобус'], 0],
+                    ],
+                  },
+                  'gire a la derecha — «поверните направо»; el museo está al lado de la estación, a la izquierda; son unos quince minutos a pie. Автобус número tres — только если спешите.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Друг едет к вам в гостиницу с вокзала. Напишите ему сообщение: где находится гостиница и как до неё дойти.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['estar для местоположения', ['está en', 'está a', 'está al', 'está cerca', 'está lejos', 'está enfrente', 'están']],
+                      ['Указание направления', ['derecha', 'izquierda', 'recto', 'cerca', 'al lado']],
+                    ],
+                    model: 'Hola, Daniyar: el hotel está muy cerca de la estación. Tienes que seguir todo recto hasta la plaza y girar a la izquierda. El hotel está al lado del museo. ¡Te espero en la puerta!',
+                    modelTranslation: 'Привет, Данияр! Гостиница совсем рядом с вокзалом. Тебе нужно идти прямо до площади и повернуть налево. Гостиница рядом с музеем. Жду тебя у входа!',
+                    checklist: ['Местоположение выражено через estar, а не ser', 'Есть направления: todo recto, a la derecha / izquierda', 'Есть ориентир (plaza, museo, estación)'],
+                  },
+                  'Где находится — estar (está cerca, está al lado de); маршрут — tener que + инфинитив или вежливый imperativo (siga, gire).',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('El banco ___ al lado del hotel.', ['está'], 'Местоположение — estar.', { s: 'grammar', t: 'ser_estar', d: 2 }, { translation: 'Банк рядом с гостиницей.', options: ['es', 'está'] }),
@@ -572,6 +679,37 @@ export const spanish: LanguageSpec = {
                   { d: 2 },
                 ),
                 translateBack('Mientras leía, de repente se fue la luz.', ['Пока я читал, вдруг отключили свет', 'Пока я читала, вдруг отключили свет', 'Когда я читал, вдруг отключили свет', 'Когда я читала, вдруг отключили свет', 'Пока я читал, вдруг погас свет', 'Пока я читала, вдруг погас свет', 'Пока я читал, вдруг пропал свет', 'Пока я читала, вдруг пропал свет', 'Когда я читал, вдруг пропал свет', 'Когда я читала, вдруг пропал свет', 'Пока я читал, внезапно отключили свет', 'Пока я читала, внезапно отключили свет', 'Пока я читал, вдруг выключился свет', 'Пока я читала, вдруг выключился свет'], 'mientras + imperfecto — фон; se fue la luz (indefinido) — внезапное событие: «отключили свет».', { d: 2 }),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Aquel verano',
+                    passage: ['Cuando era pequeña, vivía con mis abuelos en un pueblo cerca del mar. Todas las mañanas mi abuelo iba al mercado y yo lo acompañaba. Mi abuela hacía pan y siempre cantaba en la cocina. Por las tardes jugaba en la playa con mis primos. Un día, mientras jugábamos, empezó una tormenta enorme. Mi abuelo vino a buscarnos y volvimos a casa corriendo. Nunca olvidaré aquel verano.'],
+                    translation: 'Когда я была маленькой, я жила с бабушкой и дедушкой в деревне у моря. Каждое утро дедушка ходил на рынок, и я ходила с ним. Бабушка пекла хлеб и всегда пела на кухне. По вечерам я играла на пляже с двоюродными братьями. Однажды, когда мы играли, началась сильная гроза. Дедушка пришёл за нами, и мы бегом вернулись домой. Я никогда не забуду то лето.',
+                    questions: [
+                      ['Что дедушка делал каждое утро?', ['Ходил на рынок', 'Пёк хлеб', 'Играл на пляже'], 0],
+                      ['Что случилось однажды?', ['Началась сильная гроза', 'Бабушка запела на кухне', 'Дедушка ушёл на рынок один'], 0],
+                      ['С кем жила рассказчица в детстве?', ['С бабушкой и дедушкой, в деревне у моря', 'С родителями, в деревне у моря', 'С двоюродными братьями, в городе'], 0],
+                    ],
+                  },
+                  'Привычки и фон — imperfecto (iba, hacía, cantaba, jugaba); однократное событие — indefinido (empezó una tormenta, vino, volvimos).',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Расскажите коротко о своём детстве: где вы жили, что обычно делали и одно событие, которое запомнилось.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Imperfecto для описания и привычек', ['era', 'vivía', 'vivíamos', 'iba', 'íbamos', 'jugaba', 'jugábamos', 'tenía', 'teníamos', 'estaba', 'hacía']],
+                      ['Indefinido для однократного события', ['un día', 'una vez', 'fue', 'fui', 'pasó', 'empezó', 'vino', 'regaló', 'llegó', 'conocí', 'me perdí', 'rompí']],
+                    ],
+                    model: 'De niño vivía en un pueblo cerca de Shymkent. Todos los días jugaba al fútbol con mis amigos. Un verano mi padre me regaló una bicicleta. ¡Fue el mejor día de mi infancia!',
+                    modelTranslation: 'В детстве я жил в деревне под Шымкентом. Каждый день я играл в футбол с друзьями. Однажды летом папа подарил мне велосипед. Это был лучший день моего детства!',
+                    checklist: ['Описание и привычки стоят в imperfecto: vivía, jugaba', 'Одно конкретное событие — в indefinido: me regaló, fue', 'Есть маркеры: de niño, todos los días, un día'],
+                  },
+                  'Фон и привычки — imperfecto, событие на этом фоне — indefinido.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('Antes mi padre ___ mucho, pero ahora no fuma.', ['fumaba'], 'Привычка в прошлом (antes) — imperfecto: fumaba.', { s: 'grammar', d: 2 }, { translation: 'Раньше мой отец много курил, а теперь не курит.', options: ['fumaba', 'fumó', 'fuma'] }),
@@ -654,6 +792,44 @@ export const spanish: LanguageSpec = {
                   'Новая подруга по переписке из Мексики спрашивает о вашем обычном дне.',
                 ),
                 cloze('Mi hermano Pablo [se|me|te] levanta a las seis. Primero [se ducha|se duchan|me ducho] y luego desayuna. Trabaja todo el día y por la noche está tan cansado que [nunca|siempre|normalmente] ve la tele. Normalmente [se acuesta|se acosta|se acuestan] a las diez.', 'О брате (él) — se levanta, se ducha, se acuesta; acostarse меняет o → ue. Он так устал, что телевизор не смотрит никогда: nunca.', { s: 'grammar', t: 'reflexive', d: 2 }, 'Мой брат Пабло встаёт в шесть. Сначала он принимает душ, а потом завтракает. Он работает весь день, а вечером так устаёт, что никогда не смотрит телевизор. Обычно он ложится спать в десять.'),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Un día de Carmen',
+                    passage: [
+                      ['A', '¿A qué hora te levantas normalmente, Carmen?'],
+                      ['B', 'Entre semana me levanto a las seis y media, porque empiezo a trabajar a las ocho.'],
+                      ['A', '¡Qué temprano! ¿Desayunas en casa?'],
+                      ['B', 'No, solo me ducho y me visto. Desayuno un café con tostadas en el bar de la oficina.'],
+                      ['A', '¿Y por la noche?'],
+                      ['B', 'Ceno a las nueve y me acuesto a las once. Los sábados, en cambio, me despierto tarde, a las diez.'],
+                    ],
+                    translation: '— Во сколько ты обычно встаёшь, Кармен? — По будням я встаю в половине седьмого, потому что начинаю работать в восемь. — Как рано! Ты завтракаешь дома? — Нет, я только принимаю душ и одеваюсь. Завтракаю кофе с тостами в баре в офисе. — А вечером? — Ужинаю в девять и ложусь спать в одиннадцать. А вот по субботам просыпаюсь поздно, в десять.',
+                    questions: [
+                      ['Во сколько Кармен встаёт по будням?', ['В половине седьмого', 'В восемь', 'В десять'], 0],
+                      ['Где она завтракает?', ['В баре в офисе', 'Дома', 'Она не завтракает'], 0],
+                      ['Во сколько она ложится спать?', ['В одиннадцать', 'В девять', 'В десять'], 0],
+                    ],
+                  },
+                  'me levanto a las seis y media — в 6:30; a las ocho она начинает работать. Desayuno en el bar de la oficina. Me acuesto a las once; a las nueve — ужин, a las diez — подъём по субботам.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите новому другу по переписке, как проходит ваш обычный будний день.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Возвратные глаголы', ['me levanto', 'me ducho', 'me acuesto', 'me despierto', 'me visto', 'me lavo', 'nos levantamos', 'nos acostamos']],
+                      ['Время: a las …', ['a las', 'a la una']],
+                    ],
+                    model: 'Normalmente me levanto a las siete. Me ducho, desayuno y voy a la universidad en autobús. Por la tarde estudio en la biblioteca. Ceno con mi familia a las nueve y me acuesto a las once. ¿Y tú?',
+                    modelTranslation: 'Обычно я встаю в семь. Принимаю душ, завтракаю и еду в университет на автобусе. Днём занимаюсь в библиотеке. Ужинаю с семьёй в девять и ложусь спать в одиннадцать. А ты?',
+                    checklist: ['Возвратное местоимение стоит перед глаголом: me levanto, me acuesto', 'Время указано с артиклем: a las siete', 'Есть слова частотности: normalmente, siempre, a veces'],
+                  },
+                  'Распорядок дня — presente; возвратные глаголы меняют местоимение по лицам, у acostarse o → ue.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('Mi madre ___ despierta a las cinco.', ['se'], 'ella → se despierta.', { s: 'grammar', t: 'reflexive' }, { translation: 'Моя мама просыпается в пять.', options: ['me', 'se', 'te'] }),
@@ -731,6 +907,37 @@ export const spanish: LanguageSpec = {
                   'Вы в магазине одежды в Мадриде. Продавщица обращается к вам на «Вы».',
                 ),
                 errorSpot('Mi hermana es tan alta que mi madre.', 'que', 'como', 'Равенство выражается конструкцией tan … como; que используется после más и menos.', { t: 'comparatives', d: 2 }, 'Моя сестра такая же высокая, как моя мама.'),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Mensaje desde el centro comercial',
+                    passage: ['Hola, Lucía: necesito tu opinión. Estoy en el centro comercial y hay dos abrigos que me gustan. El negro cuesta ochenta euros y el gris, sesenta. El negro es más elegante que el gris, pero el gris es más cómodo y tan bonito como el negro. Además, la talla M del negro es un poco pequeña. Creo que voy a comprar el gris, porque es más barato. ¿Tú qué piensas? Te mando fotos. Besos, Sara.'],
+                    translation: 'Привет, Лусия! Мне нужно твоё мнение. Я в торговом центре, и мне нравятся два пальто. Чёрное стоит восемьдесят евро, а серое — шестьдесят. Чёрное элегантнее серого, но серое удобнее и такое же красивое, как чёрное. К тому же размер M у чёрного маловат. Думаю, я куплю серое, потому что оно дешевле. Как ты думаешь? Посылаю фото. Целую, Сара.',
+                    questions: [
+                      ['Сколько стоит серое пальто?', ['60 евро', '80 евро', '70 евро'], 0],
+                      ['Какое пальто элегантнее?', ['Чёрное', 'Серое', 'Они одинаково элегантны'], 0],
+                      ['Почему Сара хочет купить серое?', ['Оно дешевле', 'Оно элегантнее', 'У него маленький размер M'], 0],
+                    ],
+                  },
+                  'el gris cuesta sesenta (60); el negro es más elegante; tan bonito como — «такое же красивое» (о красоте, а не об элегантности). Сара выбирает серое, porque es más barato.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Вы выбираете между двумя телефонами. Напишите другу, чем они отличаются и какой вы купите.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Сравнение', ['más', 'menos', 'tan', 'mejor', 'peor']],
+                      ['Цена', ['cuesta', 'cuestan', 'euros', 'caro', 'cara', 'barato', 'barata']],
+                    ],
+                    model: 'Hola, Timur: el móvil negro cuesta trescientos euros y el blanco, doscientos. El negro es más rápido, pero el blanco es más barato y tan bonito como el negro. Creo que voy a comprar el blanco.',
+                    modelTranslation: 'Привет, Тимур! Чёрный телефон стоит триста евро, а белый — двести. Чёрный быстрее, но белый дешевле и такой же красивый, как чёрный. Думаю, я куплю белый.',
+                    checklist: ['Есть сравнение с más / menos … que или tan … como', 'Прилагательные согласуются с существительным', 'Названа цена: cuesta … euros', 'Есть вывод: какой телефон вы купите'],
+                  },
+                  'Сравнение: más / menos + прилагательное + que, равенство — tan … como; bueno → mejor.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('El café es ___ caro que el té.', ['menos'], 'menos … que — «менее …, чем».', { s: 'grammar', t: 'comparatives' }, { translation: 'Кофе дешевле (менее дорогой), чем чай.', options: ['menos', 'tan', 'como'] }),
@@ -800,6 +1007,47 @@ export const spanish: LanguageSpec = {
                 translateBack('Aunque es difícil, me gusta mucho.', ['Хотя это сложно, мне очень нравится', 'Хотя это трудно, мне очень нравится'], 'aunque — «хотя».', { d: 2 }),
                 errorSpot('No creo que el examen es muy difícil.', 'es', 'sea', 'После no creo que (сомнение, отрицание мнения) нужен subjuntivo: sea.', { t: 'subjunctive', d: 2 }, 'Не думаю, что экзамен очень трудный.'),
                 cloze('En mi opinión, estudiar en el extranjero [es|sea|ser] una experiencia muy útil, [aunque|porque|para que] cuesta bastante dinero. Mis padres no creen que [sea|es|son] necesario; [sin embargo|además|porque], yo creo que [tienen|tengan|tener] que pensarlo mejor.', 'En mi opinión и creo que — утверждение мнения, indicativo (es, tienen). No creo que — сомнение, subjuntivo (sea). aunque — уступка («хотя»), sin embargo — противопоставление («однако»).', { s: 'grammar', t: 'subjunctive', d: 2 }, 'По-моему, учёба за границей — очень полезный опыт, хотя это стоит довольно дорого. Мои родители не считают, что это нужно; однако я думаю, что им стоит ещё раз подумать.'),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'El horario de la biblioteca',
+                    passage: [
+                      ['A', 'Oye, Marta, ¿qué opinas del nuevo horario de la biblioteca? Ahora cierra a las ocho.'],
+                      ['B', 'Creo que es una mala idea. Muchos estudiantes trabajan por la mañana y solo pueden estudiar por la noche.'],
+                      ['A', 'Ya, pero la universidad dice que así ahorra dinero.'],
+                      ['B', 'No creo que ahorre tanto. Además, en época de exámenes la biblioteca siempre está llena.'],
+                      ['A', 'En eso tienes razón. Aunque yo prefiero estudiar en casa, entiendo el problema.'],
+                      ['B', 'Por eso vamos a escribir una carta al rector. ¿Quieres firmarla?'],
+                      ['A', 'Sí, claro, estoy de acuerdo contigo. Pero no creo que cambien el horario este año.'],
+                      ['B', 'Bueno, por lo menos lo intentamos.'],
+                    ],
+                    translation: '— Слушай, Марта, что ты думаешь о новом расписании библиотеки? Теперь она закрывается в восемь. — По-моему, это плохая идея. Многие студенты работают утром и могут заниматься только вечером. — Да, но университет говорит, что так экономит деньги. — Не думаю, что экономия такая уж большая. К тому же во время сессии библиотека всегда переполнена. — Тут ты права. Хотя я предпочитаю заниматься дома, я понимаю проблему. — Поэтому мы напишем письмо ректору. Подпишешь? — Да, конечно, я с тобой согласен. Но не думаю, что расписание изменят в этом году. — Ну, по крайней мере попробуем.',
+                    questions: [
+                      ['Почему Марта против нового расписания?', ['Многие студенты работают утром и занимаются вечером', 'Университет хочет сэкономить деньги', 'Ей больше нравится заниматься дома'], 0],
+                      ['Что думает её собеседник?', ['Согласен с ней, но не верит, что расписание изменят в этом году', 'Не согласен и не будет подписывать письмо', 'Считает, что университет сэкономит много денег'], 0],
+                      ['Что собирается сделать Марта?', ['Написать письмо ректору', 'Заниматься дома', 'Найти работу на утро'], 0],
+                    ],
+                  },
+                  'Аргумент Марты — muchos estudiantes trabajan por la mañana. Собеседник: estoy de acuerdo contigo, pero no creo que cambien el horario. Плохая экономия и учёба дома — детали из диалога, но не ответы на вопросы.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'На форуме университета спрашивают: «Нужно ли запретить телефоны на занятиях?» Напишите своё мнение и аргументируйте его.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Мнение: creo que / en mi opinión', ['creo que', 'en mi opinión', 'pienso que', 'para mí', 'me parece que']],
+                      ['Сомнение: no creo que + subjuntivo', ['no creo que', 'no pienso que', 'no me parece que']],
+                      ['Связки', ['porque', 'aunque', 'sin embargo', 'además', 'por eso']],
+                    ],
+                    model: 'En mi opinión, no es necesario prohibir los móviles en clase. Creo que el teléfono es útil, porque podemos buscar palabras o información rápidamente. Sin embargo, no creo que sea buena idea usarlo para las redes sociales durante la clase. Por eso, cada profesor debe decidir las normas con sus estudiantes.',
+                    modelTranslation: 'По-моему, запрещать телефоны на занятиях не нужно. Я думаю, что телефон полезен, потому что мы можем быстро найти слова или информацию. Однако не думаю, что пользоваться соцсетями во время занятия — хорошая идея. Поэтому каждый преподаватель должен определить правила вместе со студентами.',
+                    checklist: ['Мнение выражено через creo que / en mi opinión + indicativo', 'После no creo que стоит subjuntivo (sea, tenga)', 'Есть хотя бы два аргумента и связки porque, sin embargo', 'Есть вывод в конце'],
+                  },
+                  'Утверждение мнения — indicativo, сомнение (no creo que) — subjuntivo. Связки делают аргумент понятным.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('No creo que mi hermano ___ razón.', ['tenga'], 'После no creo que — subjuntivo: tener → tenga.', { s: 'grammar', t: 'subjunctive', d: 3 }, { translation: 'Не думаю, что мой брат прав.', options: ['tiene', 'tenga'] }),
@@ -873,6 +1121,37 @@ export const spanish: LanguageSpec = {
                   ['A mí me encantó, pero a Juan no le gustó nada.', 'Yo encanté, pero Juan no gustó nada.', 'A mí me encantó, pero a Juan no lo gustó nada.'],
                   0,
                   'С gustar и encantar человек стоит в дательном падеже: a mí me…, a Juan le… (не lo).',
+                  { d: 2 },
+                ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Gracias por el regalo',
+                    passage: ['Querida Elena: ¡muchas gracias por el regalo! Me encantan los libros de cocina y este es precioso. Ayer lo leí entero y esta mañana preparé una de las recetas para mis padres. A mi madre le gustó muchísimo, pero a mi padre no le gustan las verduras, así que no la probó. ¿Te acuerdas del jersey azul que me prestaste en verano? Todavía lo tengo. Te lo devuelvo la semana que viene, cuando vaya a Madrid. Por cierto, mi hermano quiere tu número de teléfono. ¿Se lo puedo dar? Le interesa mucho tu trabajo en la radio. Un abrazo, Clara.'],
+                    translation: 'Дорогая Елена! Огромное спасибо за подарок! Я обожаю кулинарные книги, а эта просто чудесная. Вчера я прочитала её целиком, а сегодня утром приготовила по одному из рецептов для родителей. Маме очень понравилось, но папа не любит овощи, так что он не попробовал. Помнишь синий свитер, который ты одолжила мне летом? Он всё ещё у меня. Верну тебе его на следующей неделе, когда приеду в Мадрид. Кстати, мой брат хочет твой номер телефона. Можно ему его дать? Его очень интересует твоя работа на радио. Обнимаю, Клара.',
+                    questions: [
+                      ['Что подарила Елена?', ['Кулинарную книгу', 'Синий свитер', 'Билет в Мадрид'], 0],
+                      ['Почему папа Клары не попробовал блюдо?', ['Он не любит овощи', 'Он был в Мадриде', 'Ему не понравилась книга'], 0],
+                      ['О чём Клара спрашивает Елену?', ['Можно ли дать её номер телефона брату', 'Можно ли оставить себе свитер', 'Можно ли приехать к ней на радио'], 0],
+                    ],
+                  },
+                  'el regalo — libro de cocina (lo leí entero); a mi padre no le gustan las verduras, así que no la probó; ¿Se lo puedo dar? — «можно мне дать его (номер) ему?». Свитер Клара вернёт сама: te lo devuelvo.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Друг спрашивает в мессенджере, что вам нравится делать в свободное время, и просит одолжить ему книгу. Ответьте ему.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['gustar / encantar / interesar', ['me gusta', 'me gustan', 'me encanta', 'me encantan', 'me interesa', 'me interesan', 'le gusta', 'le gustan']],
+                      ['Два местоимения вместе: te lo, se la…', ['te lo', 'te la', 'te los', 'te las', 'se lo', 'se la', 'se los', 'se las', 'devuélvemelo', 'devuélvemela', 'prestártelo', 'prestártela']],
+                    ],
+                    model: '¡Hola, Pablo! En mi tiempo libre me encanta leer y me gustan mucho los videojuegos. A mi hermana, en cambio, le gusta más el cine. Sobre el libro de Zafón: claro, te lo presto. Te lo llevo el viernes a clase, pero devuélvemelo antes de las vacaciones, porque mi madre también quiere leerlo.',
+                    modelTranslation: 'Привет, Пабло! В свободное время я обожаю читать, и мне очень нравятся видеоигры. А моей сестре больше нравится кино. Насчёт книги Сафона: конечно, одолжу. Принесу её тебе в пятницу на занятия, но верни до каникул, потому что мама тоже хочет её прочитать.',
+                    checklist: ['gustar согласуется с тем, что нравится: me gusta leer, me gustan los videojuegos', 'Местоимения стоят перед спрягаемым глаголом: te lo presto', 'К утвердительному imperativo и инфинитиву они присоединяются: devuélvemelo, leerlo', 'Есть ответ на просьбу друга'],
+                  },
+                  'С gustar человек — в дательном падеже (me, le). Два местоимения: сначала «кому», потом «что»; le + lo → se lo.',
                   { d: 2 },
                 ),
               ],
@@ -955,6 +1234,48 @@ export const spanish: LanguageSpec = {
                 listen('Enviaré mi currículum a tres empresas.', 'enviaré — «отправлю», futuro от enviar.', { d: 2 }, { translation: 'Я отправлю резюме в три компании.' }),
                 errorSpot('El año que viene teneré más experiencia.', 'teneré', 'tendré', 'У tener в futuro неправильная основа: tendr- + -é = tendré.', { t: 'future_tense', d: 2 }, 'В следующем году у меня будет больше опыта.'),
                 cloze('Querida Ana: la semana que viene [tendré|teneré|tenía] una entrevista en una empresa de Valencia. Si me contratan, [me mudaré|me mudé|me mudaba] en septiembre. Mi jefa actual todavía no lo sabe; se lo [diré|deciré|dije] después de la entrevista. ¿Y tú qué [harás|hacerás|hiciste] este verano?', 'Futuro simple: tener → tendré, decir → diré, hacer → harás — неправильные основы. После si + presente в главной части — futuro: me mudaré.', { s: 'grammar', t: 'future_tense', d: 2 }, 'Дорогая Ана! На следующей неделе у меня будет собеседование в компании в Валенсии. Если меня возьмут, я перееду в сентябре. Моя нынешняя начальница ещё не знает; я скажу ей после собеседования. А ты что будешь делать этим летом?'),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Planes de futuro',
+                    passage: [
+                      ['A', 'Entonces, Laura, ¿ya sabes qué harás después del máster?'],
+                      ['B', 'Sí. En septiembre empezaré a trabajar en una empresa de energía solar en Valencia.'],
+                      ['A', '¡Enhorabuena! ¿Y cómo conseguiste el puesto?'],
+                      ['B', 'Envié mi currículum en mayo y la semana pasada tuve la entrevista. Me llamaron ayer.'],
+                      ['A', '¿Te mudarás a Valencia?'],
+                      ['B', 'Sí, ya estoy buscando piso. Al principio viviré con una compañera de trabajo. El sueldo no es muy alto, pero aprenderé mucho.'],
+                      ['A', '¿Y tu familia qué dice?'],
+      ['B', 'Mis padres están un poco tristes, pero vendrán a visitarme en Navidad.'],
+      ['A', '¿Y dentro de cinco años? ¿Dónde te ves?'],
+                      ['B', 'Espero dirigir un equipo. Y algún día tendré mi propia empresa.'],
+                    ],
+                    translation: '— Ну что, Лаура, ты уже знаешь, чем займёшься после магистратуры? — Да. В сентябре я начну работать в компании солнечной энергетики в Валенсии. — Поздравляю! А как ты получила эту должность? — Я отправила резюме в мае, а на прошлой неделе было собеседование. Мне позвонили вчера. — Переедешь в Валенсию? — Да, уже ищу квартиру. Сначала буду жить с коллегой. Зарплата не очень высокая, но я многому научусь. — А что говорит семья? — Родители немного грустят, но приедут ко мне в гости на Рождество. — А через пять лет? Какой ты себя видишь? — Надеюсь руководить командой. А когда-нибудь у меня будет своя компания.',
+                    questions: [
+                      ['Где Лаура будет работать?', ['В компании солнечной энергетики в Валенсии', 'В собственной компании в Валенсии', 'В университете, где учится в магистратуре'], 0],
+                      ['Когда ей сообщили, что её взяли?', ['Вчера', 'В мае', 'На прошлой неделе'], 0],
+                      ['Как она оценивает работу?', ['Зарплата невысокая, но она многому научится', 'Зарплата высокая, но придётся переехать', 'Ей не нравится, что надо жить с коллегой'], 0],
+                    ],
+                  },
+                  'empezaré a trabajar en una empresa de energía solar; me llamaron ayer (в мае — резюме, на прошлой неделе — собеседование); el sueldo no es muy alto, pero aprenderé mucho. Своя компания — мечта на будущее.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Вы подаёте заявку на стажировку в испанской компании. Напишите короткий текст о своих планах на ближайшие годы.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Futuro simple', ['trabajaré', 'estudiaré', 'tendré', 'haré', 'podré', 'seré', 'viviré', 'aprenderé', 'terminaré', 'buscaré', 'iré', 'empezaré']],
+                      ['ir a + инфинитив', ['voy a', 'vamos a']],
+                    ],
+                    model: 'Este año voy a terminar la carrera de Economía. Después buscaré unas prácticas en una empresa internacional, porque quiero mejorar mi español y mi inglés. Dentro de dos años tendré más experiencia y podré trabajar en un equipo de marketing. Algún día me gustaría tener mi propia empresa.',
+                    modelTranslation: 'В этом году я собираюсь окончить экономический факультет. Потом я поищу стажировку в международной компании, потому что хочу улучшить свой испанский и английский. Через два года у меня будет больше опыта, и я смогу работать в команде маркетинга. Когда-нибудь мне хотелось бы открыть свою компанию.',
+                    checklist: ['Решённые планы — ir a + инфинитив', 'Более далёкое будущее — futuro simple: buscaré, tendré, podré', 'Неправильные основы написаны верно: tendr-, podr-, har-', 'Есть указания времени: este año, dentro de dos años'],
+                  },
+                  'ir a + инфинитив — ближайший план, futuro simple — прогноз и более далёкое будущее.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('Mis compañeros ___ la próxima semana.', ['vendrán'], 'venir → vendrán: основа vendr-.', { s: 'grammar', t: 'future_tense', d: 3 }, { translation: 'Мои коллеги приедут на следующей неделе.', options: ['vendrán', 'venirán', 'vinieron'] }),
@@ -1030,6 +1351,44 @@ export const spanish: LanguageSpec = {
                 speak('Pase, por favor, y siéntese.', 'Проходите, пожалуйста, и садитесь.', 'В siéntese ударение падает на первый слог, поэтому нужен знак: sién-te-se.'),
                 errorSpot('Señora, siéntese aquí y espera un momento, por favor.', 'espera', 'espere', 'Обращение на usted (señora, siéntese) нужно выдержать до конца: espere. espera — форма для tú.', { t: 'imperative', d: 2 }, 'Сеньора, садитесь сюда и подождите минутку, пожалуйста.'),
                 cloze('Consejos para tu primer día de trabajo: [llega|llegas|llegues] diez minutos antes, [no olvides|no olvidas|no olvida] tu tarjeta de acceso y [pregunta|preguntas|preguntes] todo lo que no entiendas. Y, sobre todo, [no te preocupes|no te preocupas|no preocúpate] si al principio cometes errores.', 'Утвердительный imperativo для tú совпадает с 3-м лицом настоящего времени (llega, pregunta); отрицательный строится на subjuntivo, местоимение стоит перед глаголом (no olvides, no te preocupes).', { s: 'grammar', t: 'imperative', d: 2 }, 'Советы на первый рабочий день: приходи на десять минут раньше, не забудь пропуск и спрашивай обо всём, чего не понимаешь. И главное — не переживай, если поначалу будешь ошибаться.'),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Seis consejos para tu primera entrevista de trabajo',
+                    passage: [
+                      '1. Infórmate sobre la empresa. Lee su página web y piensa en preguntas interesantes.',
+                      '2. Llega diez minutos antes. No llegues tarde nunca: es la peor primera impresión.',
+                      '3. Apaga el móvil antes de entrar y no lo mires durante la entrevista.',
+                      '4. Vístete de forma adecuada: no hace falta llevar traje, pero no vayas en chanclas ni con ropa de deporte.',
+      '5. Escucha con atención y no interrumpas al entrevistador. Si no entiendes una pregunta, pide que la repita.',
+                      '6. Al final, da las gracias y pregunta cuándo tendrás una respuesta. Y sobre todo, no te preocupes demasiado: ¡todos nos ponemos nerviosos!',
+                    ],
+                    translation: 'Шесть советов для первого собеседования. 1. Узнай о компании. Прочитай её сайт и подумай над интересными вопросами. 2. Приходи за десять минут. Никогда не опаздывай: это худшее первое впечатление. 3. Выключи телефон перед тем, как войти, и не смотри в него во время собеседования. 4. Одевайся уместно: костюм не обязателен, но не приходи в шлёпанцах или спортивной одежде. 5. Внимательно слушай и не перебивай собеседника. Если не понимаешь вопрос, попроси повторить его. 6. В конце поблагодари и спроси, когда будет ответ. И главное — не волнуйся слишком сильно: все нервничают!',
+                    questions: [
+                      ['Когда нужно прийти на собеседование?', ['За десять минут до начала', 'Ровно к назначенному времени', 'После того как изучишь сайт компании'], 0],
+                      ['Что советуют сделать, если вопрос непонятен?', ['Попросить повторить его', 'Перебить собеседника', 'Посмотреть сайт компании в телефоне'], 0],
+                      ['Что советуют сделать в конце?', ['Поблагодарить и спросить, когда будет ответ', 'Включить телефон', 'Задать вопросы о сайте компании'], 0],
+                    ],
+                  },
+                  'llega diez minutos antes; si no entiendes una pregunta, pide que la repita; al final, da las gracias y pregunta cuándo tendrás una respuesta. Утвердительные советы — imperativo (lee, apaga), запреты — no + subjuntivo (no llegues, no interrumpas).',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Ваш друг впервые едет в ваш город. Напишите ему советы: что обязательно сделать и чего лучше не делать.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Утвердительный imperativo для tú', ['visita', 'come', 'prueba', 've', 'toma', 'lleva', 'haz', 'pasea', 'sube', 'compra', 'camina']],
+                      ['Отрицательный imperativo', ['no olvides', 'no vayas', 'no tomes', 'no comas', 'no compres', 'no pierdas', 'no te preocupes', 'no salgas', 'no lleves', 'no uses', 'no cojas']],
+                    ],
+                    model: '¡Hola, Marco! Aquí tienes mis consejos para Almaty. Sube a Kok-Tobe en teleférico y prueba el beshbarmak en un restaurante tradicional. Si tienes tiempo, visita el lago Issyk. No vayas al centro en coche, porque hay mucho tráfico: toma el metro. Y no olvides una chaqueta, que por la noche hace frío. ¡Nos vemos pronto!',
+                    modelTranslation: 'Привет, Марко! Вот мои советы для Алматы. Поднимись на Кок-Тобе на канатной дороге и попробуй бешбармак в традиционном ресторане. Если будет время, съезди на озеро Иссык. Не езди в центр на машине, там большие пробки: садись на метро. И не забудь куртку — вечером холодно. До скорой встречи!',
+                    checklist: ['Утвердительные советы — в imperativo для tú: sube, prueba, toma', 'Запреты — no + subjuntivo: no vayas, no olvides', 'Есть объяснение хотя бы одного совета (porque…)', 'Обращение на «ты» выдержано во всём тексте'],
+                  },
+                  'Утвердительный imperativo для tú совпадает с 3-м лицом presente (prueba, toma; неправильные — ve, haz, sal); отрицательный строится на subjuntivo.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('___ aquí, por favor, quiero enseñarte algo.', ['Ven'], 'venir → ven (неправильная форма для tú). Venga — форма для usted, а enseñarte показывает обращение на «ты».', { s: 'grammar', d: 2 }, { translation: 'Иди сюда, пожалуйста, хочу тебе кое-что показать.', options: ['Ven', 'Vienes', 'Venga'] }),
@@ -1084,6 +1443,48 @@ export const spanish: LanguageSpec = {
                 translateBack('Si tuviera dinero, viajaría por todo el mundo.', ['Если бы у меня были деньги, я бы путешествовал по всему миру', 'Если бы у меня были деньги, я бы объездил весь мир'], 'tuviera … viajaría — нереальное условие.', { d: 3 }),
                 errorSpot('Si tendría más tiempo, aprendería a tocar la guitarra.', 'tendría', 'tuviera', 'После si в нереальном условии condicional не употребляется — только imperfecto de subjuntivo: Si tuviera … В русском «бы» стоит в обеих частях, в испанском — нет.', { t: 'conditionals', d: 3 }, 'Если бы у меня было больше времени, я бы научился играть на гитаре.'),
                 cloze('Muchas veces me pregunto qué haría si [ganara|ganaría|gano] la lotería. Creo que no [dejaría|dejara|dejo] mi trabajo, porque me gusta, pero sí [viajaría|viajara|viajaré] mucho más. Si [tuviera|tendría|tenga] una casa grande, invitaría a toda mi familia a vivir conmigo. Mi hermano dice que, si él [fuera|sería|es] millonario, se [compraría|comprara|compre] un barco.', 'Схема нереального условия: si + imperfecto de subjuntivo (ganara, tuviera, fuera), в главной части — condicional (dejaría, viajaría, compraría). После si condicional не ставится, а в главной части не ставится subjuntivo.', { s: 'grammar', t: 'conditionals', d: 3 }, 'Я часто спрашиваю себя, что бы я сделал, если бы выиграл в лотерею. Думаю, я бы не ушёл с работы, потому что она мне нравится, но путешествовал бы гораздо больше. Если бы у меня был большой дом, я бы пригласил всю семью жить со мной. Брат говорит, что, если бы он был миллионером, он бы купил себе яхту.'),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Si nos tocara la lotería',
+                    passage: [
+                      ['A', 'Oye, Sergio, si te tocara la lotería, ¿qué harías con el dinero?'],
+                      ['B', 'Pues no lo sé... Primero pagaría la hipoteca de mis padres. Llevan veinte años pagándola.'],
+                      ['A', '¡Qué generoso! ¿Y no dejarías el trabajo?'],
+                      ['B', 'No creo. Si no trabajara, me aburriría muchísimo. Pero sí trabajaría menos horas y viajaría más.'],
+                      ['A', '¿Adónde irías primero?'],
+                      ['B', 'A Japón. Siempre he querido ver los cerezos en flor. Y después recorrería América del Sur con mi hermano, si él pudiera pedir vacaciones. ¿Y tú? ¿Qué harías?'],
+                      ['A', 'Yo me compraría una casa en el campo y abriría un pequeño hotel rural.'],
+                      ['B', '¿Un hotel? Si tuvieras un hotel, no tendrías tiempo para nada.'],
+                      ['A', 'Ya, pero sería mi propia jefa y viviría tranquila, lejos del ruido de la ciudad. Bueno, de momento no tengo ni billete de lotería.'],
+                    ],
+                    translation: '— Слушай, Серхио, если бы ты выиграл в лотерею, что бы ты сделал с деньгами? — Даже не знаю… Сначала я бы выплатил ипотеку родителей. Они платят её уже двадцать лет. — Какой щедрый! А с работы бы не ушёл? — Не думаю. Если бы я не работал, мне было бы ужасно скучно. Но работал бы меньше и больше путешествовал. — Куда бы ты поехал сначала? — В Японию. Всегда хотел увидеть цветущую сакуру. А потом объехал бы Южную Америку с братом, если бы он смог взять отпуск. А ты? Что бы ты сделала? — Я бы купила дом в деревне и открыла маленький сельский отель. — Отель? Если бы у тебя был отель, у тебя ни на что не было бы времени. — Да, но я была бы сама себе начальницей и жила бы спокойно, вдали от городского шума. Ну, пока у меня даже лотерейного билета нет.',
+                    questions: [
+                      ['Что Серхио сделал бы в первую очередь?', ['Выплатил бы ипотеку родителей', 'Поехал бы в Японию', 'Купил бы дом в деревне'], 0],
+                      ['Почему он не ушёл бы с работы?', ['Без работы ему было бы скучно', 'Он хочет работать меньше часов', 'Ему нравится его начальник'], 0],
+                      ['Что сделала бы его собеседница?', ['Открыла бы маленький сельский отель', 'Поехала бы смотреть цветущую сакуру', 'Стала бы меньше работать и больше путешествовать'], 0],
+                      ['Как Серхио относится к её плану?', ['Считает, что у неё не осталось бы свободного времени', 'Считает, что ей не хватило бы денег', 'Хочет работать в её отеле'], 0],
+                    ],
+                  },
+                  'Все гипотезы построены по схеме si + imperfecto de subjuntivo (tocara, trabajara, tuvieras) + condicional (pagaría, me aburriría, tendrías). Япония и меньше часов — это тоже планы Серхио, но не ответы на вопросы.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Городской журнал проводит конкурс эссе «Если бы я мог изменить одну вещь в своём городе…». Напишите свой текст.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['si + imperfecto de subjuntivo', ['si pudiera', 'si tuviera', 'si fuera', 'si fuese', 'si pudiese', 'si tuviese', 'si estuviera', 'si viviera', 'si hubiera']],
+                      ['Condicional в главной части', ['cambiaría', 'haría', 'construiría', 'pondría', 'crearía', 'sería', 'habría', 'podría', 'tendría', 'abriría', 'prohibiría']],
+                    ],
+                    model: 'Si pudiera cambiar una sola cosa en mi ciudad, construiría más parques y zonas verdes. Ahora en el centro casi no hay árboles y en verano hace un calor insoportable. Si tuviéramos más parques, el aire sería más limpio y la gente pasaría más tiempo al aire libre. Además, prohibiría los coches en algunas calles del casco antiguo y crearía carriles bici seguros. Sé que muchos conductores protestarían, pero estoy convencido de que, a largo plazo, todos viviríamos mejor. Ojalá el ayuntamiento escuchara más a los ciudadanos.',
+                    modelTranslation: 'Если бы я мог изменить в своём городе одну-единственную вещь, я бы построил больше парков и зелёных зон. Сейчас в центре почти нет деревьев, а летом невыносимая жара. Если бы у нас было больше парков, воздух был бы чище, а люди больше времени проводили бы на свежем воздухе. Кроме того, я бы запретил машины на некоторых улицах старого города и сделал безопасные велодорожки. Я знаю, что многие водители протестовали бы, но уверен, что в долгосрочной перспективе мы все жили бы лучше. Хорошо бы мэрия больше прислушивалась к горожанам.',
+                    checklist: ['После si стоит imperfecto de subjuntivo (pudiera, tuviéramos), а не condicional', 'В главной части — condicional: construiría, sería', 'Описана нынешняя ситуация в presente', 'Есть хотя бы два последствия изменения'],
+                  },
+                  'Нереальное условие: si + imperfecto de subjuntivo, в главной части — condicional; после si condicional не ставится.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('Si ___ en Madrid, iría al Prado cada semana.', ['viviera', 'viviese'], 'Нереальное условие: si + imperfecto de subjuntivo (viviera / viviese).', { s: 'grammar', t: 'conditionals', d: 3 }, { translation: 'Если бы я жил в Мадриде, я бы ходил в Прадо каждую неделю.', options: ['viviera', 'vivo', 'viviría'] }),
@@ -1165,6 +1566,43 @@ export const spanish: LanguageSpec = {
                 listen('Según fuentes oficiales, la noticia es falsa.', 'según — «по данным», fuentes oficiales — «официальные источники».', { d: 2 }, { translation: 'По данным официальных источников, новость ложная.' }),
                 errorSpot('Me pidió que le envío el artículo antes del lunes.', 'envío', 'enviara', 'Просьба в прошлом (me pidió que) требует imperfecto de subjuntivo: enviara (или enviase).', { t: 'reported_speech', d: 3 }, 'Он попросил меня отправить ему статью до понедельника.'),
                 cloze('Ayer la alcaldesa ofreció una rueda de prensa. Afirmó que la ciudad [tenía|tuviera|tendrá] problemas de tráfico desde hacía años y anunció que al año siguiente se [construirían|construyeran|construyen] dos nuevas líneas de metro. Un periodista le preguntó [si|que|qué] el proyecto ya tenía financiación, y ella respondió que el Gobierno [había aprobado|aprobara|aprobará] el presupuesto la semana anterior. Al final, pidió a los vecinos que [tuvieran|tenían|tendrían] paciencia durante las obras.', 'После вводящего глагола в прошедшем: presente → imperfecto (tenía), futuro → condicional (construirían), indefinido → pluscuamperfecto (había aprobado). Общий вопрос — через si, просьба — pedir que + imperfecto de subjuntivo (tuvieran).', { s: 'grammar', t: 'reported_speech', d: 3 }, 'Вчера мэр провела пресс-конференцию. Она заявила, что у города уже много лет проблемы с транспортом, и объявила, что в следующем году построят две новые линии метро. Журналист спросил, есть ли уже у проекта финансирование, и она ответила, что правительство утвердило бюджет неделей ранее. В конце она попросила жителей проявить терпение во время работ.'),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'La alcaldesa anuncia un nuevo plan de transporte',
+                    passage: [
+                      'La alcaldesa de Valencia, Laura Martín, presentó ayer un plan para reducir el tráfico en el centro. Según explicó en rueda de prensa, a partir de enero los coches más contaminantes no podrían entrar en el casco histórico y el ayuntamiento ampliaría la red de carriles bici.',
+                      'Martín afirmó que la medida era necesaria porque la contaminación había aumentado un 15 % en los últimos cinco años. Además, anunció que el autobús sería gratuito para los menores de veinticinco años.',
+                      'Sin embargo, no todos están de acuerdo. La asociación de comerciantes declaró que el plan perjudicaría a las tiendas del centro y pidió al ayuntamiento que retrasara la medida un año. Un periodista preguntó a la alcaldesa si estaba dispuesta a negociar, y ella respondió que escucharía a todos, pero que no cambiaría la fecha.',
+                    ],
+                    translation: 'Мэр Валенсии Лаура Мартин вчера представила план по сокращению движения в центре. Как она объяснила на пресс-конференции, с января самые загрязняющие машины не смогут въезжать в исторический центр, а мэрия расширит сеть велодорожек. Мартин заявила, что эта мера необходима, потому что за последние пять лет загрязнение выросло на 15 %. Кроме того, она объявила, что автобус будет бесплатным для тех, кому меньше двадцати пяти лет. Однако согласны не все. Ассоциация торговцев заявила, что план навредит магазинам в центре, и попросила мэрию отложить меру на год. Журналист спросил мэра, готова ли она к переговорам, и она ответила, что выслушает всех, но дату не изменит.',
+                    questions: [
+                      ['Что произойдёт с января?', ['Los coches más contaminantes no podrán entrar en el casco histórico.', 'Ningún coche podrá entrar en el centro de la ciudad.', 'El autobús será gratuito para todos los vecinos.'], 0, true],
+                      ['Почему, по словам мэра, мера необходима?', ['Загрязнение выросло на 15 % за пять лет', 'Магазины в центре теряют покупателей', 'Молодёжь мало пользуется автобусами'], 0],
+                      ['О чём попросили торговцы?', ['Отложить меру на год', 'Отменить бесплатный автобус', 'Построить больше велодорожек'], 0],
+                      ['Что ответила мэр журналисту?', ['Выслушает всех, но дату не изменит', 'Готова перенести дату на год', 'Не будет разговаривать с торговцами'], 0],
+                    ],
+                  },
+                  'В статье слова мэра переданы косвенной речью со сдвигом времён: podrán → podrían, será → sería, ha aumentado → había aumentado. Бесплатный автобус — только для младше 25 лет; просьба торговцев — pidió que retrasara.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Вчера в вашем университете выступал ректор. Напишите другу, который пропустил встречу, что сказал ректор и о чём его спрашивали студенты.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['Глагол речи в прошедшем + que', ['dijo que', 'explicó que', 'afirmó que', 'anunció que', 'aseguró que', 'comentó que', 'contó que', 'respondió que']],
+                      ['Сдвиг времён: imperfecto / condicional / pluscuamperfecto', ['era', 'estaba', 'había', 'tenía', 'sería', 'habría', 'podría', 'iba', 'iban', 'tendría', 'abrirían']],
+                      ['Косвенный вопрос или просьба', ['preguntó si', 'preguntó cuándo', 'preguntó qué', 'preguntó cómo', 'preguntó dónde', 'pidió que', 'nos pidió que', 'le preguntó si']],
+                    ],
+                    model: '¡Hola, Asel! Te cuento lo que pasó ayer en la reunión con el rector. Primero dijo que la universidad tenía problemas económicos y que el año siguiente habría menos becas. Luego anunció que abrirían una nueva biblioteca en septiembre. Un estudiante le preguntó si iban a subir las tasas, y el rector respondió que todavía no lo sabía. Al final nos pidió que participáramos en una encuesta sobre los horarios. Si quieres, mañana te enseño mis apuntes.',
+                    modelTranslation: 'Привет, Асель! Рассказываю, что было вчера на встрече с ректором. Сначала он сказал, что у университета финансовые проблемы и что в следующем году стипендий будет меньше. Потом объявил, что в сентябре откроют новую библиотеку. Один студент спросил его, поднимут ли плату за обучение, и ректор ответил, что пока не знает. В конце он попросил нас принять участие в опросе о расписании. Если хочешь, завтра покажу свои записи.',
+                    checklist: ['После dijo, anunció, respondió время сдвинуто: tiene → tenía, habrá → habría', 'Общий вопрос передан через si, специальный — с вопросительным словом', 'Просьба передана через pidió que + imperfecto de subjuntivo', 'Слова «завтра», «в следующем году» заменены: al día siguiente, el año siguiente'],
+                  },
+                  'Косвенная речь после глагола в прошедшем: presente → imperfecto, futuro → condicional, indefinido → pluscuamperfecto; просьбы — que + imperfecto de subjuntivo.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('«Vivo en Lima». → Me contó que ___ en Lima.', ['vivía'], 'presente → imperfecto: vivo → vivía.', { s: 'grammar', t: 'reported_speech', d: 2 }, { options: ['vivía', 'vivió', 'viviera'] }),
@@ -1232,6 +1670,47 @@ export const spanish: LanguageSpec = {
                 translateBack('La sequía será más frecuente si no cambiamos nuestros hábitos.', ['Засуха будет чаще, если мы не изменим свои привычки', 'Засуха будет чаще, если мы не изменим наши привычки', 'Засухи будут чаще, если мы не изменим свои привычки', 'Засухи будут чаще, если мы не изменим наши привычки', 'Засухи станут чаще, если мы не изменим свои привычки', 'Засухи станут чаще, если мы не изменим наши привычки', 'Засухи будут случаться чаще, если мы не изменим свои привычки', 'Засухи будут случаться чаще, если мы не изменим наши привычки', 'Засуха станет более частой, если мы не изменим свои привычки', 'Засуха станет более частой, если мы не изменим наши привычки'], 'В реальном условии после si — presente, хотя по-русски «если не изменим»: si no cambiamos.', { d: 2 }),
                 errorSpot('Es necesario que el Gobierno invierte más en energías renovables.', 'invierte', 'invierta', 'После es necesario que (необходимость) с новым подлежащим нужен subjuntivo: invierta.', { t: 'subjunctive', d: 3 }, 'Необходимо, чтобы правительство больше вкладывало в возобновляемую энергетику.'),
                 cloze('Los expertos coinciden en que es urgente [actuar|actúen|actuamos]. Es evidente que las temperaturas [están|estén|estuvieran] subiendo y es fundamental que los gobiernos [reduzcan|reducen|reducirán] las emisiones. Sin embargo, no basta con las leyes: hace falta que cada uno de nosotros [cambie|cambia|cambiar] sus hábitos. Por eso, muchas ciudades han creado carriles bici para que la gente [use|usa|usar] menos el coche.', 'Без своего подлежащего — инфинитив (es urgente actuar). Уверенность (es evidente que) — indicativo: están. Необходимость и цель с другим подлежащим (es fundamental que, hace falta que, para que) — subjuntivo: reduzcan, cambie, use.', { s: 'grammar', t: 'subjunctive', d: 3 }, 'Эксперты сходятся во мнении, что действовать нужно срочно. Очевидно, что температура растёт, и крайне важно, чтобы правительства сократили выбросы. Однако одних законов недостаточно: нужно, чтобы каждый из нас изменил свои привычки. Поэтому многие города построили велодорожки, чтобы люди меньше пользовались машиной.'),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Un huerto en la azotea',
+                    passage: [
+                      ['A', 'Hola, Javier. ¿Vienes mañana a la reunión de vecinos? Vamos a hablar del huerto en la azotea.'],
+                      ['B', 'Sí, claro. Me parece una idea estupenda, pero es necesario que participen todos los vecinos.'],
+                      ['A', 'Por eso es importante que vengas. Algunos dicen que costará demasiado.'],
+                      ['B', 'Es verdad que hay que invertir al principio, pero con el agua de lluvia gastaremos menos. Y es evidente que ahora la azotea está abandonada.'],
+                      ['A', 'También propongo que pongamos contenedores para separar los residuos orgánicos.'],
+                      ['B', 'Buena idea. Así podremos hacer compost para el huerto. Lo importante es que los niños aprendan a cuidar las plantas.'],
+                      ['A', '¿Y quién se va a encargar del riego?'],
+                      ['B', 'Yo puedo hacerlo, siempre que alguien me ayude en agosto, cuando estoy de vacaciones.'],
+                    ],
+                    translation: '— Привет, Хавьер. Придёшь завтра на собрание жильцов? Будем обсуждать огород на крыше. — Да, конечно. По-моему, отличная идея, но нужно, чтобы участвовали все соседи. — Поэтому важно, чтобы ты пришёл. Некоторые говорят, что это будет стоить слишком дорого. — Правда, сначала нужно вложиться, но с дождевой водой мы будем тратить меньше. И очевидно, что сейчас крыша заброшена. — Ещё я предлагаю поставить контейнеры для органических отходов. — Хорошая идея. Так мы сможем делать компост для огорода. Главное, чтобы дети научились ухаживать за растениями. — А кто займётся поливом? — Я могу, при условии что кто-нибудь поможет мне в августе, когда я в отпуске.',
+                    questions: [
+                      ['Что будут обсуждать на собрании?', ['Огород на крыше дома', 'Отпуск в августе', 'Покупку воды для полива'], 0],
+                      ['Какое возражение есть у некоторых соседей?', ['Это будет стоить слишком дорого', 'Крыша заброшена', 'Дети не умеют ухаживать за растениями'], 0],
+                      ['Что предлагает собеседница Хавьера?', ['Поставить контейнеры для органических отходов', 'Собирать дождевую воду в контейнеры', 'Нанять садовника на август'], 0],
+                      ['При каком условии Хавьер возьмёт на себя полив?', ['Если кто-то поможет ему в августе', 'Если на собрание придут все соседи', 'Если огород будет недорогим'], 0],
+                    ],
+                  },
+                  'Безличные выражения с subjuntivo: es necesario que participen, es importante que vengas; уверенность — indicativo: es evidente que está. siempre que + subjuntivo — «при условии что»: siempre que alguien me ayude.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите официальное обращение в мэрию: какая экологическая проблема вашего района вас беспокоит и что, по-вашему, нужно сделать.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['Безличное выражение + subjuntivo', ['es necesario que', 'es importante que', 'es fundamental que', 'hace falta que', 'es urgente que', 'es imprescindible que', 'es preciso que']],
+                      ['para que + subjuntivo', ['para que']],
+                    ],
+                    model: 'Estimados señores: Les escribo como vecina del barrio de Samal para expresar mi preocupación por la contaminación del aire. En invierno, el humo de las calefacciones y el tráfico hacen que el aire sea casi irrespirable. Creo que es fundamental que el ayuntamiento amplíe la red de autobuses eléctricos y que construya carriles bici seguros. También es necesario que se planten más árboles en las avenidas principales. Además, propongo campañas informativas para que los ciudadanos conozcan las ventajas del transporte público. Espero que tengan en cuenta mi propuesta. Atentamente, Dana Seitova.',
+                    modelTranslation: 'Уважаемые господа! Пишу вам как жительница района Самал, чтобы выразить беспокойство по поводу загрязнения воздуха. Зимой из-за дыма от отопления и транспорта воздухом почти невозможно дышать. Я считаю крайне важным, чтобы мэрия расширила сеть электробусов и построила безопасные велодорожки. Также нужно посадить больше деревьев на главных проспектах. Кроме того, я предлагаю информационные кампании, чтобы горожане узнали о преимуществах общественного транспорта. Надеюсь, что вы учтёте моё предложение. С уважением, Дана Сеитова.',
+                    checklist: ['Есть официальное обращение и завершение (Estimados señores, Atentamente)', 'После es fundamental / es necesario que стоит subjuntivo', 'Цель с другим подлежащим — para que + subjuntivo', 'Проблема описана конкретно, предложено хотя бы два решения'],
+                  },
+                  'Необходимость и цель с новым подлежащим требуют subjuntivo; без подлежащего — инфинитив (es necesario reducir…).',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('Es fundamental que la gente ___ menos plástico.', ['use', 'utilice'], 'Es fundamental que + subjuntivo: usar → use.', { s: 'grammar', t: 'subjunctive', d: 2 }, { translation: 'Крайне важно, чтобы люди использовали меньше пластика.', options: ['use', 'usa', 'usar'] }),
@@ -1328,6 +1807,43 @@ export const spanish: LanguageSpec = {
                   { t: 'subjunctive', d: 3 },
                 ),
                 translateBack('Ojalá hubieran escuchado a los expertos.', ['Жаль, что они не послушали экспертов', 'Жаль, что не послушали экспертов', 'Если бы они послушали экспертов', 'Если бы только они послушали экспертов', 'Лучше бы они послушали экспертов', 'Жаль, что они не прислушались к экспертам', 'Если бы они прислушались к экспертам'], 'ojalá + pluscuamperfecto de subjuntivo — сожаление о прошлом: «жаль, что не…», «если бы только…».', { d: 3 }),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'El hallazgo que llegó demasiado tarde',
+                    passage: [
+                      'En 1928, Alexander Fleming observó que un hongo había impedido el crecimiento de unas bacterias en su laboratorio. Aquel hallazgo, que más tarde daría lugar a la penicilina, apenas despertó interés al principio: a muchos colegas de Fleming les parecía improbable que una sustancia tan inestable pudiera usarse como medicamento.',
+                      'Fleming publicó sus resultados en una revista especializada, pero no logró producir el compuesto en cantidades suficientes. Faltaba financiación y faltaban químicos que supieran purificarlo. Fue necesario que, una década después, un equipo de Oxford retomara la investigación para que el antibiótico llegara a fabricarse a gran escala.',
+                      'Muchos historiadores sostienen que, si la penicilina se hubiera desarrollado antes, se habrían salvado miles de vidas. Otros matizan esta hipótesis: aunque Fleming hubiera contado con más medios, la tecnología de la época quizá no lo habría permitido. En cualquier caso, la historia demuestra que un avance científico depende tanto del talento como de la inversión.',
+                    ],
+                    translation: 'В 1928 году Александр Флеминг заметил, что плесневый грибок остановил рост бактерий в его лаборатории. Это открытие, которое позже привело к созданию пенициллина, поначалу почти не вызвало интереса: многим коллегам Флеминга казалось маловероятным, что такое нестабильное вещество можно использовать как лекарство. Флеминг опубликовал результаты в специализированном журнале, но не сумел получить вещество в достаточном количестве. Не хватало финансирования и химиков, которые умели бы его очищать. Понадобилось, чтобы десятилетие спустя команда из Оксфорда возобновила исследование, — только тогда антибиотик начали производить в больших масштабах. Многие историки утверждают, что, если бы пенициллин разработали раньше, удалось бы спасти тысячи жизней. Другие уточняют эту гипотезу: даже если бы у Флеминга было больше средств, технологии того времени, возможно, не позволили бы этого. Так или иначе, история показывает, что научный прогресс зависит как от таланта, так и от инвестиций.',
+                    questions: [
+                      ['Почему открытие сначала не вызвало интереса?', ['Коллеги сомневались, что нестабильное вещество можно использовать как лекарство', 'Флеминг не опубликовал результаты', 'Грибок уничтожил бактерии во всей лаборатории'], 0],
+                      ['Чего не хватало Флемингу?', ['Финансирования и химиков, умевших очищать вещество', 'Лаборатории и образцов бактерий', 'Поддержки историков'], 0],
+                      ['В чём состоит возражение части историков?', ['Даже с большими средствами технологии того времени могли этого не позволить', 'Пенициллин и так спас тысячи жизней', 'Команда из Оксфорда работала медленнее Флеминга'], 0],
+                      ['Какой вывод делает автор?', ['Научный прогресс зависит и от таланта, и от инвестиций', 'Главное в науке — талант учёного', 'Без команды из Оксфорда пенициллин открыли бы раньше'], 0],
+                    ],
+                  },
+                  'Согласование времён: les parecía improbable que pudiera, faltaban químicos que supieran, fue necesario que retomara. Гипотеза о прошлом: si se hubiera desarrollado… se habrían salvado; уступка: aunque hubiera contado… no lo habría permitido.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Научно-популярный журнал просит читателей написать текст «Открытие, которое могло бы изменить историю». Опишите реальное или воображаемое открытие и порассуждайте, что было бы, если бы оно произошло раньше или не произошло вовсе.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Нереальное прошлое: pluscuamperfecto de subjuntivo', ['hubiera', 'hubieran', 'hubiese', 'hubiesen', 'hubiéramos', 'se hubiera', 'si hubiera']],
+                      ['Condicional (simple или compuesto) в результате', ['habría', 'habrían', 'habríamos', 'sería', 'serían', 'tendríamos', 'existiría', 'podríamos']],
+                      ['Imperfecto de subjuntivo после прошедшего', ['pudiera', 'pudieran', 'tuviera', 'fuera', 'supiera', 'permitiera', 'aceptara', 'financiara', 'descubriera', 'lograra', 'creyera']],
+                    ],
+                    model: 'Pocas veces pensamos en lo frágil que es el progreso científico. Hace casi un siglo, Alexander Fleming descubrió la penicilina, pero durante años nadie creyó que aquella sustancia pudiera convertirse en un medicamento útil. Si el descubrimiento se hubiera tomado en serio desde el principio, los antibióticos habrían llegado antes a los hospitales y se habrían salvado miles de vidas. Del mismo modo, me pregunto qué habría pasado si los gobiernos hubieran financiado la investigación sobre energías renovables en los años setenta. Probablemente hoy el cambio climático no sería un problema tan grave. Estos ejemplos demuestran que no basta con tener buenas ideas: es necesario que alguien confíe en ellas y las financie a tiempo.',
+                    modelTranslation: 'Мы редко задумываемся о том, насколько хрупок научный прогресс. Почти сто лет назад Александр Флеминг открыл пенициллин, но годами никто не верил, что это вещество может стать полезным лекарством. Если бы к открытию с самого начала отнеслись серьёзно, антибиотики попали бы в больницы раньше и удалось бы спасти тысячи жизней. Точно так же я задаюсь вопросом, что было бы, если бы правительства финансировали исследования возобновляемой энергетики в семидесятые годы. Вероятно, сегодня изменение климата не было бы такой серьёзной проблемой. Эти примеры показывают, что хороших идей недостаточно: нужно, чтобы кто-то в них поверил и вовремя их профинансировал.',
+                    checklist: ['После si в нереальном прошлом стоит hubiera + participio, а не habría', 'Результат выражен condicional compuesto (habría llegado) или, для настоящего, condicional simple (sería)', 'После главного глагола в прошедшем — imperfecto de subjuntivo (creyó que pudiera)', 'Есть вывод, обобщающий пример'],
+                  },
+                  'Нереальное прошлое: si + pluscuamperfecto de subjuntivo → condicional compuesto; смешанный тип — результат в настоящем через condicional simple.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('Me sorprendió que el estudio no ___ en cuenta la edad de los pacientes.', ['tuviera', 'tuviese'], 'Эмоция в прошедшем (me sorprendió) → imperfecto de subjuntivo: tuviera.', { s: 'grammar', t: 'subjunctive', d: 3 }, { translation: 'Меня удивило, что в исследовании не учитывался возраст пациентов.', options: ['tuviera', 'tenga', 'tenía'] }),
@@ -1402,6 +1918,48 @@ export const spanish: LanguageSpec = {
                   { t: 'subjunctive', d: 3 },
                 ),
                 translateBack('Por mucho que se esfuercen, no lograrán rebatir nuestros argumentos.', ['Как бы они ни старались, им не удастся опровергнуть наши аргументы', 'Сколько бы они ни старались, им не удастся опровергнуть наши аргументы', 'Как бы они ни старались, они не смогут опровергнуть наши аргументы', 'Сколько бы они ни старались, они не смогут опровергнуть наши аргументы', 'Как бы они ни старались, им не удастся опровергнуть наши доводы', 'Как бы они ни старались, они не смогут опровергнуть наши доводы', 'Сколько бы они ни старались, им не удастся опровергнуть наши доводы', 'Сколько бы они ни старались, они не смогут опровергнуть наши доводы'], 'por mucho que + subjuntivo — «как бы ни…, сколько бы ни…»; rebatir — «опровергать».', { d: 3 }),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Debate en la radio: la tasa turística',
+                    passage: [
+                      ['A', 'Señora Ruiz, usted defiende la nueva tasa turística. Sin embargo, muchos hoteleros sostienen que ahuyentará a los visitantes.'],
+                      ['B', 'Entiendo su preocupación, pero los datos no la respaldan. Si bien es cierto que la tasa encarece un poco la estancia, en otras ciudades europeas el número de turistas no ha disminuido.'],
+                      ['A', 'Aun así, por pequeña que sea, es un coste más para las familias.'],
+                      ['B', 'Hablamos de dos euros por noche. Por mucho que se insista en lo contrario, nadie va a cancelar sus vacaciones por esa cantidad.'],
+                      ['A', '¿Y a qué se destinaría el dinero?'],
+                      ['B', 'A conservar el patrimonio histórico y a mejorar la limpieza de las calles. Por consiguiente, los propios turistas saldrían beneficiados.'],
+                      ['A', 'Pero, aunque la medida sea razonable, los vecinos se quejan de que nunca ven esos beneficios.'],
+                      ['B', 'En eso le doy la razón, con un matiz: por eso proponemos publicar cada año un informe detallado sobre el uso de los fondos.'],
+                    ],
+                    translation: '— Госпожа Руис, вы выступаете за новый туристический налог. Однако многие владельцы отелей утверждают, что он отпугнёт туристов. — Я понимаю их беспокойство, но данные этого не подтверждают. Хотя налог действительно немного удорожает пребывание, в других европейских городах число туристов не уменьшилось. — И всё же, каким бы маленьким он ни был, это лишние расходы для семей. — Речь идёт о двух евро за ночь. Как бы ни утверждали обратное, никто не отменит отпуск из-за такой суммы. — А на что пойдут деньги? — На сохранение исторического наследия и на уборку улиц. Следовательно, выиграют сами туристы. — Но даже если мера разумная, жители жалуются, что никогда не видят этой пользы. — Тут я с вами соглашусь, с одной оговоркой: именно поэтому мы предлагаем каждый год публиковать подробный отчёт о расходовании средств.',
+                    questions: [
+                      ['Какой аргумент приводят владельцы отелей?', ['Налог отпугнёт туристов', 'Налог слишком мал, чтобы помочь городу', 'Деньги уйдут на уборку улиц'], 0],
+                      ['Как Руис отвечает на этот аргумент?', ['В других европейских городах число туристов не уменьшилось', 'Налог будет временным', 'Семьи с детьми будут освобождены от налога'], 0],
+                      ['На что пойдут деньги?', ['На сохранение исторического наследия и уборку улиц', 'На скидки для семей', 'На ежегодный отчёт о расходах'], 0],
+                      ['С чем Руис соглашается?', ['Жители не видят пользы от налога', 'Налог — лишние расходы для семей', 'Два евро за ночь — это много'], 0],
+                    ],
+                  },
+                  'Уступительные конструкции: si bien es cierto que + indicativo, por pequeña que sea, por mucho que se insista, aunque la medida sea razonable. Руис соглашается только с жалобой жителей (en eso le doy la razón).',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите письмо в редакцию газеты: вы не согласны со статьёй, автор которой предлагает запретить в городе электросамокаты. Признайте сильные стороны его позиции, но приведите контраргументы.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Уступка: aunque / si bien / a pesar de que', ['aunque', 'si bien', 'a pesar de que', 'pese a que']],
+                      ['por mucho que / por + прилагательное + que', ['por mucho que', 'por más que', 'por muy', 'por mucha', 'por muchos', 'por muchas']],
+                      ['Связки аргументации', ['no obstante', 'sin embargo', 'por consiguiente', 'en cambio', 'por tanto', 'por lo tanto']],
+                    ],
+                    model: 'Estimado director: Le escribo en relación con el artículo «Patinetes: un peligro sobre ruedas», publicado el pasado domingo. Si bien es cierto que algunos usuarios circulan de manera irresponsable, prohibir los patinetes eléctricos me parece una medida desproporcionada. En primer lugar, son un medio de transporte barato y poco contaminante, que permite a muchos jóvenes desplazarse sin coche. En segundo lugar, por mucho que se endurezcan las prohibiciones, el problema de fondo seguirá siendo la falta de carriles adecuados. No obstante, comparto la preocupación del autor por la seguridad de los peatones. Por consiguiente, propongo regular su uso, limitar la velocidad y multar a quienes circulen por las aceras, aunque eso suponga un mayor esfuerzo para la policía municipal. Atentamente, Asel Nurlanova.',
+                    modelTranslation: 'Уважаемый главный редактор! Пишу вам по поводу статьи «Самокаты: опасность на колёсах», опубликованной в прошлое воскресенье. Хотя некоторые пользователи действительно ездят безответственно, запрет электросамокатов кажется мне несоразмерной мерой. Во-первых, это дешёвый и малозагрязняющий вид транспорта, который позволяет многим молодым людям передвигаться без машины. Во-вторых, как бы ни ужесточали запреты, корень проблемы останется прежним — нехватка подходящих дорожек. Тем не менее я разделяю беспокойство автора о безопасности пешеходов. Поэтому я предлагаю регулировать их использование, ограничить скорость и штрафовать тех, кто ездит по тротуарам, даже если это потребует от муниципальной полиции больших усилий. С уважением, Асель Нурланова.',
+                    checklist: ['Признана сильная сторона позиции автора (si bien / aunque + indicativo)', 'Есть por mucho que / por + прилагательное + que с subjuntivo', 'Аргументы связаны: en primer lugar, no obstante, por consiguiente', 'Выдержан формальный регистр письма в редакцию'],
+                  },
+                  'Факт — si bien / aunque + indicativo, допущение — aunque / por mucho que + subjuntivo. Не путайте с калькой «хотя…, но»: после aunque pero не ставится.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('Aunque ___ mañana, el partido se jugará.', ['llueva'], 'Допущение о будущем — aunque + subjuntivo («даже если пойдёт дождь»).', { s: 'grammar', t: 'subjunctive', d: 2 }, { translation: 'Даже если завтра пойдёт дождь, матч состоится.', options: ['llueva', 'llueve', 'lloverá'] }),
@@ -1473,6 +2031,45 @@ export const spanish: LanguageSpec = {
                 translate('Я жду ответа уже две недели.', ['Llevo dos semanas esperando una respuesta.', 'Llevo dos semanas esperando respuesta.', 'Llevo dos semanas esperando la respuesta.', 'Espero una respuesta desde hace dos semanas.', 'Espero respuesta desde hace dos semanas.', 'Hace dos semanas que espero una respuesta.', 'Hace dos semanas que espero respuesta.', 'Llevo dos semanas esperando una contestación.'], 'llevar + срок + gerundio — «уже … делаю»; синонимы: desde hace, hace … que.', { s: 'grammar', t: 'participles', d: 2 }),
                 order(['Le', 'adjunto', 'el', 'documento', 'que', 'me', 'solicitó'], 'Прилагаю документ, который Вы у меня запросили.', 'Типичная формула письма: le adjunto (прилагаю Вам) … que me solicitó (usted).', { s: 'grammar', d: 2 }),
                 translateBack('Después de la operación, mi padre dejó de fumar y volvió a hacer deporte.', ['После операции мой отец бросил курить и снова начал заниматься спортом', 'После операции мой отец перестал курить и снова начал заниматься спортом', 'После операции мой отец бросил курить и снова стал заниматься спортом', 'После операции мой отец перестал курить и снова стал заниматься спортом', 'После операции отец бросил курить и снова начал заниматься спортом', 'После операции отец перестал курить и снова стал заниматься спортом', 'После операции мой отец бросил курить и вернулся к спорту', 'После операции отец бросил курить и вернулся к спорту'], 'dejar de + инфинитив — «перестать», volver a + инфинитив — «снова (делать)».', { d: 2 }),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Reclamación',
+                    passage: [
+                      'Estimado señor Navarro:',
+                      'Me dirijo a usted en relación con la solicitud de beca que presenté el pasado 3 de marzo (número de expediente 4512). Llevo más de dos meses esperando una respuesta y, a pesar de haber llamado en varias ocasiones a la secretaría, nadie ha sabido informarme sobre el estado de mi solicitud. Le recuerdo que la convocatoria establecía un plazo máximo de resolución de cuarenta y cinco días.',
+                      'Acabo de recibir un correo automático en el que se me comunica que falta un documento, aunque lo adjunté en su momento. Le adjunto de nuevo el certificado de notas, así como el justificante de envío de la solicitud original, en el que figura la fecha de entrega.',
+                      'Dado que el plazo de matrícula finaliza el próximo 15 de mayo, le agradecería que revisaran mi expediente con la mayor brevedad posible. Quedo a la espera de su pronta respuesta.',
+                      'Atentamente,',
+                      'Daniyar Seitov',
+                    ],
+                    translation: 'Уважаемый господин Наварро! Обращаюсь к вам по поводу заявки на стипендию, которую я подал 3 марта (номер дела 4512). Я жду ответа уже больше двух месяцев, и, хотя я несколько раз звонил в секретариат, никто не смог сообщить мне, в каком состоянии моя заявка. Напоминаю, что в положении о конкурсе был указан максимальный срок рассмотрения — сорок пять дней. Только что я получил автоматическое письмо, в котором говорится, что не хватает одного документа, хотя я своевременно его приложил. Прилагаю повторно выписку с оценками, а также подтверждение отправки первоначальной заявки, где указана дата подачи. Поскольку срок зачисления истекает 15 мая, буду признателен, если вы рассмотрите моё дело в кратчайшие сроки. Жду вашего скорого ответа. С уважением, Данияр Сеитов.',
+                    questions: [
+                      ['Сколько времени автор ждёт ответа?', ['Больше двух месяцев', 'Около двух недель', 'С 15 мая'], 0],
+                      ['Что сообщило автоматическое письмо?', ['Что не хватает одного документа', 'Что в стипендии отказано', 'Что срок зачисления истёк'], 0],
+                      ['Почему автор просит ускорить рассмотрение?', ['15 мая истекает срок зачисления', '15 мая истекает срок подачи заявок на стипендию', 'Секретариат не отвечает на звонки'], 0],
+                    ],
+                  },
+                  'llevo más de dos meses esperando — «уже больше двух месяцев жду»; acabo de recibir un correo… falta un documento; dado que el plazo de matrícula finaliza el 15 de mayo — именно срок зачисления, а не подачи заявок. Обратите внимание на формулы: me dirijo a usted, le agradecería que, quedo a la espera.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Вы заказали в интернет-магазине ноутбук, и он пришёл с разбитым экраном. Напишите официальное письмо-жалобу в службу поддержки.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Официальное обращение и завершение', ['estimado', 'estimada', 'estimados', 'atentamente', 'un cordial saludo', 'reciban un cordial saludo']],
+                      ['Вежливая просьба: le agradecería que + subjuntivo', ['le agradecería que', 'les agradecería que', 'agradecería que', 'les ruego que', 'le ruego que']],
+                      ['Перифраза: llevar + gerundio, acabar de, volver a', ['llevo', 'llevamos', 'acabo de', 'acabamos de', 'volver a', 'vuelvo a', 'he vuelto a']],
+                    ],
+                    model: 'Estimados señores: Me dirijo a ustedes para presentar una reclamación sobre el pedido número 78213, que recibí el pasado lunes. Al abrir el paquete comprobé que la pantalla del ordenador portátil estaba rota, a pesar de que la caja no presentaba daños visibles. Adjunto varias fotografías como prueba. Desde entonces llevo cuatro días intentando contactar con el servicio de atención al cliente, pero nadie responde a mis correos ni a mis llamadas. Acabo de leer en su página web que disponen de un plazo de catorce días para sustituir los productos defectuosos. Por ello, les agradecería que me enviaran un ordenador nuevo o, en su defecto, que me devolvieran el importe íntegro. Quedo a la espera de su respuesta. Atentamente, Daniyar Seitov.',
+                    modelTranslation: 'Уважаемые господа! Обращаюсь к вам с жалобой по заказу номер 78213, который я получил в прошлый понедельник. Открыв посылку, я обнаружил, что экран ноутбука разбит, хотя на коробке не было видимых повреждений. Прилагаю несколько фотографий в качестве доказательства. С тех пор я уже четыре дня пытаюсь связаться со службой поддержки, но никто не отвечает ни на мои письма, ни на звонки. Только что я прочитал на вашем сайте, что у вас есть срок в четырнадцать дней на замену бракованных товаров. Поэтому буду признателен, если вы пришлёте мне новый ноутбук или, в противном случае, вернёте полную стоимость. Жду вашего ответа. С уважением, Данияр Сеитов.',
+                    checklist: ['Есть официальное обращение с двоеточием и завершение Atentamente', 'Просьба выражена через les agradecería que + imperfecto de subjuntivo', 'Есть хотя бы одна перифраза (llevo … intentando, acabo de leer)', 'Нет разговорных слов; использованы solicitar, adjuntar, por ello'],
+                  },
+                  'Официальный регистр строится на usted/ustedes, смягчённых просьбах и нейтральной лексике; перифразы точно передают длительность и недавность действия.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('___ media hora esperando al técnico.', ['Llevamos'], 'llevar + срок + gerundio — «уже … ждём».', { s: 'grammar', t: 'participles', d: 2 }, { translation: 'Мы уже полчаса ждём мастера.', options: ['Llevamos', 'Acabamos', 'Volvemos'] }),
@@ -1547,6 +2144,48 @@ export const spanish: LanguageSpec = {
                   { d: 3 },
                 ),
                 speak('No tiene pelos en la lengua.', 'Он говорит без обиняков.', 'В lengua сочетание gu перед a читается как [гуа]: [ле́нгуа]; ударение в pelos — на первый слог.'),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Después de la inauguración',
+                    passage: [
+                      ['A', '¿Qué tal ayer en la inauguración de la exposición de Sorolla?'],
+                      ['B', 'Fenomenal, aunque metí la pata nada más llegar: le pregunté al director del museo si era el camarero.'],
+                      ['A', '¡No me tomes el pelo! ¿En serio?'],
+                      ['B', 'Te lo juro. Menos mal que tiene sentido del humor y se rió mucho. Por cierto, la exposición es una maravilla: hay cuadros que nunca se habían expuesto en España.'],
+                      ['A', '¿Y las entradas? Me han dicho que cuestan un ojo de la cara.'],
+                      ['B', 'Quince euros, pero los miércoles por la tarde la entrada es gratuita. Ve un miércoles, aunque habrá bastante gente.'],
+                      ['A', 'Buena idea. Oye, ¿y qué opinaba Paula? Ella también fue, ¿no?'],
+                      ['B', 'Sí. Ya sabes que no tiene pelos en la lengua. Dijo que el montaje era precioso, pero que faltaban explicaciones. Y la verdad, dio en el clavo.'],
+                      ['A', 'Pues el miércoles voy. A ver si no estoy en las nubes y me acuerdo.'],
+                    ],
+                    translation: '— Ну как вчера на открытии выставки Сорольи? — Великолепно, хотя я сел в лужу сразу по приходе: спросил директора музея, не официант ли он. — Да ладно, разыгрываешь! Серьёзно? — Клянусь. Хорошо, что у него есть чувство юмора и он долго смеялся. Кстати, выставка чудесная: там есть картины, которые никогда раньше не выставлялись в Испании. — А билеты? Мне сказали, что они стоят бешеных денег. — Пятнадцать евро, но по средам вечером вход бесплатный. Сходи в среду, хотя народу будет много. — Хорошая идея. Слушай, а что думает Паула? Она ведь тоже ходила? — Да. Ты же знаешь, она говорит без обиняков. Сказала, что оформление прекрасное, но не хватает пояснений. И честно говоря, попала в точку. — Тогда в среду пойду. Только бы не забыть, а то я вечно витаю в облаках.',
+                    questions: [
+                      ['Какую оплошность допустил говорящий на открытии?', ['Принял директора музея за официанта', 'Принял официанта за директора музея', 'Пришёл в среду, когда вход бесплатный'], 0],
+                      ['Сколько стоит вход по средам вечером?', ['Нисколько, он бесплатный', 'Пятнадцать евро', 'Половину цены'], 0],
+                      ['Что сказала Паула о выставке?', ['Оформление прекрасное, но не хватает пояснений', 'Билеты стоят слишком дорого', 'Картины уже выставлялись в Испании'], 0],
+                      ['Что значит, что Паула «no tiene pelos en la lengua»?', ['Она говорит прямо то, что думает', 'Она очень рассеянная', 'Она часто попадает в неловкие ситуации'], 0],
+                    ],
+                  },
+                  'meter la pata — «сесть в лужу» (спросил директора, не официант ли он); costar un ojo de la cara — «стоить бешеных денег», но по средам вход бесплатный; no tener pelos en la lengua — «говорить без обиняков»; dar en el clavo — «попасть в точку».',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите другу неформальное сообщение о культурном событии (концерт, выставка, фильм), на котором вы недавно были. Используйте 2–3 идиомы, но не перегружайте текст, и посоветуйте, стоит ли туда идти.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Идиомы урока', ['meter la pata', 'metí la pata', 'metiste la pata', 'tomar el pelo', 'tomando el pelo', 'un ojo de la cara', 'en las nubes', 'pelos en la lengua', 'en el clavo', 'pan comido']],
+                      ['Лексика культуры', ['exposición', 'obra maestra', 'obras maestras', 'concierto', 'película', 'museo', 'cuadro', 'cuadros', 'patrimonio', 'escenario', 'actriz', 'actor']],
+                    ],
+                    model: '¡Hola, Marta! El sábado por fin fui al concierto de Rosalía y todavía estoy en las nubes. Las entradas costaron un ojo de la cara, pero valió la pena: el sonido era increíble y el escenario parecía una obra de arte. Eso sí, metí la pata nada más llegar: me puse en la cola equivocada y estuve media hora esperando para comprar camisetas en vez de entrar. Mi hermano, que no tiene pelos en la lengua, se rió de mí toda la noche. Si te gusta la música en directo, no te lo pierdas: vuelve a tocar en Madrid en diciembre. ¡Ya me contarás qué te parece! Un abrazo.',
+                    modelTranslation: 'Привет, Марта! В субботу я наконец сходил на концерт Розалии и до сих пор на седьмом небе. Билеты стоили бешеных денег, но оно того стоило: звук был невероятный, а сцена выглядела как произведение искусства. Правда, я опростоволосился сразу по приходе: встал не в ту очередь и полчаса простоял, чтобы купить футболки, вместо того чтобы войти. Мой брат, который за словом в карман не лезет, смеялся надо мной весь вечер. Если ты любишь живую музыку, не пропусти: в декабре она снова выступает в Мадриде. Потом расскажешь, как тебе! Обнимаю.',
+                    checklist: ['Использованы 2–3 идиомы, и каждая уместна по смыслу', 'Идиомы спрягаются как обычные глаголы: metí la pata, costaron un ojo de la cara', 'Есть лексика культуры и конкретные детали события', 'Есть совет другу и неформальное прощание'],
+                  },
+                  'Идиомы делают неформальный текст живым, но их смысл не выводится из слов. В официальном письме их заменяют нейтральными выражениями.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 choiceRu('Что означает эта идиома?', 'estar en las nubes', ['витать в облаках', 'быть на седьмом небе', 'попасть впросак'], 0, 'estar en las nubes — «быть рассеянным, витать в облаках». «Быть на седьмом небе» — estar en el séptimo cielo, «попасть впросак» — meter la pata.', { d: 2 }),
