@@ -1,4 +1,4 @@
-import { categorize, chat, choice, choiceRu, cloze, dialogue, errorSpot, fill, listen, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
+import { categorize, chat, choice, choiceRu, cloze, dialogue, errorSpot, fill, listen, order, reading, speak, translate, translateBack, writing, type LanguageSpec } from '../builders';
 
 export const german: LanguageSpec = {
   code: 'de',
@@ -342,6 +342,22 @@ export const german: LanguageSpec = {
                   { s: 'reading', t: 'possessive', d: 2 },
                   'Новая знакомая в чате расспрашивает о вашей семье.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Meine Familie',
+                    passage: [
+                      'Hallo! Ich heiße Timur und bin zwanzig Jahre alt. Meine Familie ist groß. Mein Vater ist Ingenieur, meine Mutter ist Lehrerin. Ich habe einen Bruder und eine Schwester. Mein Bruder heißt Arman, er ist zwölf. Meine Schwester wohnt in Köln. Meine Eltern wohnen in Almaty.',
+                    ],
+                    translation: 'Привет! Меня зовут Тимур, мне двадцать лет. У меня большая семья. Мой отец — инженер, моя мама — учительница. У меня есть брат и сестра. Моего брата зовут Арман, ему двенадцать. Моя сестра живёт в Кёльне. Мои родители живут в Алматы.',
+                    questions: [
+                      ['Кем работает мама Тимура?', ['учительницей', 'инженером', 'врачом'], 0],
+                      ['Где живёт сестра Тимура?', ['в Кёльне', 'в Алматы', 'вместе с братом'], 0],
+                    ],
+                  },
+                  'Ищите в тексте ключевые слова: meine Mutter ist Lehrerin, meine Schwester wohnt in Köln. Инженер — это отец, а в Алматы живут родители.',
+                  { d: 1 },
+                ),
               ],
               test: [
                 fill('Das ist ___ Kind.', ['mein'], 'Kind — среднего рода (das), поэтому mein, как и в мужском роде.', { s: 'grammar', t: 'possessive' }, { options: ['mein', 'meine'] }),
@@ -427,6 +443,27 @@ export const german: LanguageSpec = {
                   'Ich hätte gern … bitte — вежливый заказ; Tee — мужского рода (einen), Suppe — женского (eine). На «Sonst noch etwas?» отвечают: Nein, danke, das ist alles — «Нет, спасибо, это всё». alle — это «все (люди)», а «нет, спасибо» — nein, danke, не bitte.',
                   { s: 'reading', d: 2 },
                   'Вы делаете заказ в кафе через чат на столике.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Im Café',
+                    passage: [
+                      ['A', 'Guten Tag! Was möchten Sie trinken?'],
+                      ['B', 'Ich hätte gern einen Kaffee, bitte.'],
+                      ['A', 'Gern. Möchten Sie auch etwas essen?'],
+                      ['B', 'Ja, eine Suppe, bitte. Was kostet die Suppe?'],
+                      ['A', 'Fünf Euro fünfzig.'],
+                      ['B', 'Gut. Und ein Wasser ohne Kohlensäure, bitte.'],
+                    ],
+                    translation: 'А: Добрый день! Что Вы будете пить? — Б: Я бы хотел кофе, пожалуйста. — А: Хорошо. Вы будете что-нибудь есть? — Б: Да, суп, пожалуйста. Сколько стоит суп? — А: Пять евро пятьдесят. — Б: Хорошо. И воду без газа, пожалуйста.',
+                    questions: [
+                      ['Что гость заказывает из еды?', ['суп', 'пирог', 'хлеб'], 0],
+                      ['Сколько стоит суп?', ['5,50 евро', '5 евро', '3,50 евро'], 0],
+                    ],
+                  },
+                  'Гость заказывает eine Suppe, а цена — fünf Euro fünfzig, то есть 5,50 €. Сначала называют евро, потом центы.',
+                  { d: 1 },
                 ),
               ],
               test: [
@@ -522,6 +559,42 @@ export const german: LanguageSpec = {
                   { s: 'grammar', t: 'past_tense', d: 2 },
                   'В воскресенье я долго спал. Потом я поехал к сестре. Мы вместе позавтракали, а после обеда пошли в парк. Вечером я читал книгу.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Eine E-Mail von Lena',
+                    passage: [
+                      'Liebe Anna,',
+                      'wie geht es dir? Mein Wochenende war toll! Am Samstag bin ich mit meinem Bruder nach Hamburg gefahren. Wir haben den Hafen besichtigt und Fisch gegessen. Am Abend sind wir ins Kino gegangen, aber der Film war leider langweilig. Am Sonntag habe ich lange geschlafen und dann ein Buch gelesen.',
+                      'Und du? Was hast du am Wochenende gemacht? Schreib mir bald!',
+                      'Viele Grüße, Lena',
+                    ],
+                    translation: 'Дорогая Анна, как у тебя дела? Мои выходные были отличными! В субботу я ездила с братом в Гамбург. Мы осмотрели порт и ели рыбу. Вечером мы пошли в кино, но фильм, к сожалению, был скучным. В воскресенье я долго спала, а потом читала книгу. А ты? Что ты делала на выходных? Напиши мне поскорее! С приветом, Лена.',
+                    questions: [
+                      ['С кем Лена ездила в Гамбург?', ['с братом', 'с Анной', 'одна'], 0],
+                      ['Что Лене не понравилось?', ['фильм в кино', 'рыба', 'порт'], 0],
+                      ['Что Лена делала в воскресенье?', ['долго спала и читала книгу', 'осматривала порт', 'ходила в кино'], 0],
+                    ],
+                  },
+                  'Все события в письме — в Perfekt: bin gefahren, haben besichtigt, habe geschlafen. Скучным (langweilig) был фильм, а порт и кино относятся к субботе.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите другу сообщение о том, что вы делали на прошлых выходных: 3–4 действия.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Perfekt с haben', ['habe', 'hast', 'hat', 'haben', 'habt']],
+                      ['Perfekt с sein', ['bin', 'bist', 'ist', 'sind', 'seid']],
+                    ],
+                    model: 'Hallo Tom! Am Samstag bin ich in die Stadt gefahren und habe eine Jacke gekauft. Am Abend habe ich mit Freunden Pizza gegessen. Am Sonntag bin ich lange im Bett geblieben. Und du? Viele Grüße, Aigerim',
+                    modelTranslation: 'Привет, Том! В субботу я ездила в город и купила куртку. Вечером я ела пиццу с друзьями. В воскресенье я долго валялась в постели. А ты? С приветом, Айгерим.',
+                    checklist: ['Вспомогательный глагол стоит на втором месте', 'Причастие (Partizip II) стоит в конце предложения', 'Глаголы движения — с sein, остальные — с haben', 'Есть приветствие и прощание'],
+                  },
+                  'О прошлом в разговоре и в личных сообщениях рассказывают в Perfekt. Следите за «рамкой»: haben или sein на втором месте, причастие в конце.',
+                  { t: 'past_tense', d: 2 },
+                ),
               ],
               test: [
                 fill('Er ___ einen Brief geschrieben.', ['hat'], 'schreiben образует Perfekt с haben; с er — hat.', { s: 'grammar', t: 'past_tense' }, { translation: 'Он написал письмо.', options: ['hat', 'ist', 'habe'] }),
@@ -589,6 +662,46 @@ export const german: LanguageSpec = {
                   'После модального глагола (kann) основной глагол стоит в конце в форме инфинитива: kaufen.',
                   { s: 'grammar', t: 'modal_verbs', d: 2 },
                   'Извините, где я могу купить билет?',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Am Fahrkartenschalter',
+                    passage: [
+                      ['A', 'Guten Tag! Eine Fahrkarte nach München, bitte.'],
+                      ['B', 'Gern. Einfach oder hin und zurück?'],
+                      ['A', 'Hin und zurück, bitte. Wann fährt der nächste Zug?'],
+                      ['B', 'Um zehn Uhr fünfzehn. Sie müssen aber in Nürnberg umsteigen.'],
+                      ['A', 'Oh. Kann ich nicht direkt fahren?'],
+                      ['B', 'Doch, der Zug um elf Uhr fährt direkt, aber er ist teurer.'],
+                      ['A', 'Dann nehme ich den Zug um zehn Uhr fünfzehn. Von welchem Gleis fährt er ab?'],
+                      ['B', 'Von Gleis sieben. Das macht neunundachtzig Euro.'],
+                    ],
+                    translation: 'А: Добрый день! Билет до Мюнхена, пожалуйста. — Б: Хорошо. В одну сторону или туда и обратно? — А: Туда и обратно, пожалуйста. Когда идёт следующий поезд? — Б: В десять пятнадцать. Но Вам нужно сделать пересадку в Нюрнберге. — А: О. А напрямую я не могу поехать? — Б: Можете, поезд в одиннадцать идёт без пересадок, но он дороже. — А: Тогда я возьму поезд в десять пятнадцать. С какого пути он отправляется? — Б: С седьмого пути. С Вас восемьдесят девять евро.',
+                    questions: [
+                      ['Почему пассажир выбирает поезд в 10:15?', ['он дешевле', 'он идёт без пересадок', 'он быстрее'], 0],
+                      ['Где нужно сделать пересадку?', ['в Нюрнберге', 'в Мюнхене', 'на седьмом пути'], 0],
+                      ['С какого пути отправляется поезд?', ['с седьмого', 'с одиннадцатого', 'с десятого'], 0],
+                    ],
+                  },
+                  'Прямой поезд в 11:00 дороже (teurer), поэтому пассажир берёт поезд в 10:15 с пересадкой в Нюрнберге (in Nürnberg umsteigen). Gleis sieben — седьмой путь.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Вы едете к подруге в другой город. Поезд опаздывает, и нужно сделать пересадку. Напишите ей сообщение: что случилось, когда вы приедете, о чём вы её просите.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Модальный глагол', ['muss', 'musst', 'müssen', 'kann', 'kannst', 'können', 'möchte']],
+                      ['Слова о поездке', ['Zug', 'Bahnhof', 'umsteigen', 'Fahrkarte', 'Verspätung', 'Gleis']],
+                    ],
+                    model: 'Hallo Sara! Mein Zug hat leider Verspätung. Ich muss in Köln umsteigen und komme erst um sieben Uhr an. Kannst du mich vom Bahnhof abholen? Bis später, Daniyar',
+                    modelTranslation: 'Привет, Сара! Мой поезд, к сожалению, опаздывает. Мне нужно пересесть в Кёльне, и я приеду только в семь часов. Можешь встретить меня на вокзале? До встречи, Данияр.',
+                    checklist: ['Модальный глагол стоит на втором месте, инфинитив — в конце', 'Указано время прибытия (um … Uhr)', 'Есть просьба (Kannst du …?)', 'Есть приветствие и прощание'],
+                  },
+                  'Модальные глаголы müssen и können помогают объяснить ситуацию и попросить о помощи. Отделяемая приставка (ankommen, abholen) уходит в конец.',
+                  { t: 'modal_verbs', d: 2 },
                 ),
               ],
               test: [
@@ -703,6 +816,40 @@ export const german: LanguageSpec = {
                   'Вы переехали в общую квартиру, сосед помогает расставить вещи.',
                 ),
                 order(['Wir', 'gehen', 'heute', 'Abend', 'ins', 'Kino'], 'Сегодня вечером мы идём в кино.', 'ins = in das: направление «куда?», поэтому Akkusativ. Глагол gehen — на втором месте.', { s: 'grammar', t: 'word_order', d: 1 }),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Eine Nachricht von Mia',
+                    passage: [
+                      'Hallo Jonas, ich bin heute bis zum Abend bei meinen Eltern. Der Schlüssel für den Keller liegt auf dem Tisch in der Küche. Bitte stell die Milch in den Kühlschrank, sie steht noch neben dem Herd. Dein Paket ist im Flur, unter dem Regal. Und kannst du mir helfen? Meine Pflanze steht am Fenster, gib ihr bitte ein bisschen Wasser.',
+                      'Danke dir! Bis heute Abend, Mia',
+                    ],
+                    translation: 'Привет, Йонас, я сегодня до вечера у родителей. Ключ от подвала лежит на столе на кухне. Пожалуйста, поставь молоко в холодильник, оно ещё стоит рядом с плитой. Твоя посылка в коридоре, под полкой. И можешь мне помочь? Мой цветок стоит у окна, полей его, пожалуйста, немного. Спасибо! До вечера, Мия.',
+                    questions: [
+                      ['Где лежит ключ от подвала?', ['на столе на кухне', 'под полкой в коридоре', 'у окна'], 0],
+                      ['Что Йонас должен сделать с молоком?', ['поставить в холодильник', 'оставить рядом с плитой', 'отнести в подвал'], 0],
+                      ['Где Мия будет до вечера?', ['у родителей', 'в подвале', 'на кухне'], 0],
+                    ],
+                  },
+                  'Где? — Dativ: auf dem Tisch, neben dem Herd, unter dem Regal. Куда? — Akkusativ: in den Kühlschrank. bei meinen Eltern — «у моих родителей».',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Вы уезжаете на выходные. Напишите соседу по квартире записку: где лежат ключи и вещи и что нужно куда положить или поставить.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Где? — Dativ', ['im', 'am', 'dem', 'der', 'meiner', 'meinem']],
+                      ['Куда? — Akkusativ', ['ins', 'den', 'die', 'das']],
+                    ],
+                    model: 'Hallo Paul! Ich bin am Wochenende bei meiner Schwester. Der Schlüssel liegt auf dem Regal im Flur. Bitte leg die Post auf den Tisch und stell den Müll vor die Tür. Danke! Lena',
+                    modelTranslation: 'Привет, Пауль! На выходных я у сестры. Ключ лежит на полке в коридоре. Пожалуйста, положи почту на стол и выстави мусор за дверь. Спасибо! Лена.',
+                    checklist: ['Где? — Dativ: auf dem Regal, im Flur', 'Куда? — Akkusativ: auf den Tisch, vor die Tür', 'liegen / stehen — для места, legen / stellen — для действия', 'Есть приветствие и благодарность'],
+                  },
+                  'Опишите места с Dativ (liegt auf dem …) и действия с Akkusativ (leg … auf den …). Предлоги mit, bei, nach, zu всегда требуют Dativ.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('Ich wohne noch bei ___ Eltern.', ['meinen'], 'bei всегда требует Dativ; во множественном числе — meinen (и существительное с -n, у Eltern оно уже есть).', { s: 'grammar', d: 2 }, { translation: 'Я ещё живу у родителей.', options: ['meinen', 'meine', 'meiner'] }),
@@ -807,6 +954,45 @@ export const german: LanguageSpec = {
                   { s: 'grammar', t: 'comparatives', d: 2 },
                   'Пальто красивое, но оно дороже куртки. Куртка дешевле и к тому же теплее. Но больше всего мне нравится свитер.',
                 ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Im Kleidungsgeschäft',
+                    passage: [
+                      ['A', 'Guten Tag! Kann ich Ihnen helfen?'],
+                      ['B', 'Ja, ich suche einen Pullover. Der graue hier ist schön, aber er kostet neunzig Euro.'],
+                      ['A', 'Wir haben auch einen blauen. Der ist billiger, nur sechzig Euro.'],
+                      ['B', 'Hm, der graue gefällt mir besser. Haben Sie ihn in Größe M?'],
+                      ['A', 'Leider nur in L. Aber der blaue ist genauso warm wie der graue.'],
+                      ['B', 'Gut, dann probiere ich den blauen an.'],
+                      ['A', 'Die Kabine ist dort rechts.'],
+                    ],
+                    translation: 'А: Добрый день! Вам помочь? — Б: Да, я ищу свитер. Вот этот серый красивый, но он стоит девяносто евро. — А: У нас есть ещё синий. Он дешевле, всего шестьдесят евро. — Б: Хм, серый мне нравится больше. У Вас есть он в размере M? — А: К сожалению, только L. Но синий такой же тёплый, как серый. — Б: Хорошо, тогда я примерю синий. — А: Примерочная вон там справа.',
+                    questions: [
+                      ['Почему покупатель примеряет синий свитер?', ['серого нет в нужном размере', 'синий красивее', 'серый не такой тёплый'], 0],
+                      ['Сколько стоит синий свитер?', ['60 евро', '90 евро', '50 евро'], 0],
+                      ['Какой свитер больше нравится покупателю?', ['серый', 'синий', 'оба одинаково'], 0],
+                    ],
+                  },
+                  'Серый нравится больше (gefällt mir besser), но его есть только в L. Синий дешевле (billiger) и genauso warm wie — «такой же тёплый, как» серый.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Вы выбираете между двумя телефонами. Напишите другу сообщение: какой дешевле, какой лучше и какой вы берёте.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Сравнительная степень', ['billiger', 'teurer', 'besser', 'bessere', 'größer', 'kleiner', 'schneller', 'leichter', 'schöner']],
+                      ['als или am …sten', ['als', 'am']],
+                    ],
+                    model: 'Hallo Max! Ich habe zwei Handys gesehen. Das schwarze ist billiger als das weiße, aber das weiße ist schneller und hat eine bessere Kamera. Am besten gefällt mir das weiße. Ich nehme es! Viele Grüße, Asel',
+                    modelTranslation: 'Привет, Макс! Я посмотрела два телефона. Чёрный дешевле белого, но белый быстрее, и у него камера лучше. Больше всего мне нравится белый. Беру его! С приветом, Асель.',
+                    checklist: ['Сравнительная степень образована с -er (умлаут, где нужно)', '«Чем» передано словом als, а не wie', 'Превосходная степень — am …sten (am besten)', 'Есть вывод: какой телефон вы берёте'],
+                  },
+                  'Сравнивайте с -er + als, а самое лучшее называйте через am …sten. Неправильные формы: gut → besser → am besten.',
+                  { t: 'comparatives', d: 2 },
+                ),
               ],
               test: [
                 fill('Im Sommer ist es ___ als im Frühling.', ['wärmer'], 'warm — односложное прилагательное, в сравнительной степени получает умлаут: wärmer.', { s: 'grammar', t: 'comparatives', d: 2 }, { translation: 'Летом теплее, чем весной.', options: ['wärmer', 'warmer', 'am wärmsten'] }),
@@ -900,6 +1086,40 @@ export const german: LanguageSpec = {
                   { s: 'grammar', t: 'reflexive', d: 2 },
                   'Утром я умываюсь и одеваюсь.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Mein Tag',
+                    passage: [
+                      'Mein Tag beginnt früh. Ich stehe um sechs Uhr auf, wasche mich und ziehe mich schnell an. Zum Frühstück esse ich Müsli und trinke Tee. Um halb acht fahre ich mit dem Bus zur Arbeit. Ich arbeite bis vier Uhr. Danach kaufe ich ein und koche das Abendessen.',
+                      'Am Abend ruhe ich mich aus: Ich lese ein Buch oder sehe fern. Um elf Uhr gehe ich ins Bett. Am Wochenende stehe ich erst um neun Uhr auf!',
+                    ],
+                    translation: 'Мой день начинается рано. Я встаю в шесть часов, умываюсь и быстро одеваюсь. На завтрак я ем мюсли и пью чай. В половине восьмого я еду на автобусе на работу. Я работаю до четырёх. Потом я хожу за покупками и готовлю ужин. Вечером я отдыхаю: читаю книгу или смотрю телевизор. В одиннадцать я ложусь спать. А на выходных я встаю только в девять!',
+                    questions: [
+                      ['Во сколько автор едет на работу?', ['в 7:30', 'в 6:00', 'в 8:30'], 0],
+                      ['Что автор делает сразу после работы?', ['ходит за покупками и готовит ужин', 'читает книгу или смотрит телевизор', 'ложится спать'], 0],
+                      ['Когда автор встаёт на выходных?', ['в девять', 'в шесть', 'в одиннадцать'], 0],
+                    ],
+                  },
+                  'halb acht — 7:30 (половина восьмого). После работы: kaufe ein und koche; отдыхает автор позже, am Abend. На выходных — erst um neun Uhr.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Опишите свой обычный будний день: когда вы встаёте, что делаете утром, днём и вечером.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Возвратный глагол', ['mich', 'dich', 'sich', 'uns']],
+                      ['Отделяемая приставка', ['auf', 'an', 'ein', 'aus', 'fern', 'um']],
+                    ],
+                    model: 'Ich stehe um sieben Uhr auf. Dann dusche ich und ziehe mich an. Um acht Uhr frühstücke ich. Ich arbeite von neun bis fünf. Am Abend kaufe ich ein und ruhe mich aus.',
+                    modelTranslation: 'Я встаю в семь часов. Потом принимаю душ и одеваюсь. В восемь я завтракаю. Я работаю с девяти до пяти. Вечером я хожу за покупками и отдыхаю.',
+                    checklist: ['Глагол стоит на втором месте', 'Отделяемая приставка стоит в конце предложения', 'Возвратное местоимение согласовано с ich (mich)', 'Время указано с предлогом um'],
+                  },
+                  'Распорядок дня удобно описывать глаголами с отделяемой приставкой (aufstehen, einkaufen) и возвратными глаголами (sich anziehen, sich ausruhen).',
+                  { t: 'reflexive', d: 2 },
+                ),
               ],
               test: [
                 fill('Du ___ dich schnell an.', ['ziehst'], 'С du глагол получает окончание -st: du ziehst dich an.', { s: 'grammar', t: 'reflexive' }, { translation: 'Ты быстро одеваешься.', options: ['ziehst', 'zieht', 'ziehen'] }),
@@ -980,6 +1200,45 @@ export const german: LanguageSpec = {
                   'После Meiner Meinung nach сразу идёт глагол. Ich finde, dass … — «я считаю, что …». Время без пробок — плюс: der Vorteil. В последнем придаточном глагол fehlt стоит в конце, поэтому weil, а не denn.',
                   { s: 'grammar', t: 'word_order', d: 3 },
                   'По-моему, домашний офис — хорошее решение. Я считаю, что дома можно работать спокойнее. Большое преимущество в том, что не теряешь время в пробках. Тем не менее я не полностью за, потому что мне не хватает общения с коллегами.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Homeoffice oder Büro?',
+                    passage: [
+                      ['A', 'Du, ich habe gelesen, dass viele Firmen das Homeoffice wieder abschaffen wollen. Was hältst du davon?'],
+                      ['B', 'Ehrlich gesagt finde ich das schade. Ich arbeite gern zu Hause, weil ich keine Zeit im Stau verliere.'],
+                      ['A', 'Das verstehe ich. Aber meiner Meinung nach ist der Kontakt zu den Kollegen wichtig. Im Büro kann man Probleme schneller lösen.'],
+                      ['B', 'Das stimmt schon. Ein Nachteil ist auch, dass man zu Hause oft länger arbeitet.'],
+                      ['A', 'Genau! Ich glaube, dass zwei Tage Homeoffice pro Woche ideal sind.'],
+                      ['B', 'Da bin ich dafür. Dann hat man die Vorteile von beiden.'],
+                    ],
+                    translation: 'А: Слушай, я читала, что многие фирмы хотят снова отменить удалённую работу. Что ты об этом думаешь? — Б: Честно говоря, мне жаль. Я люблю работать дома, потому что не теряю время в пробках. — А: Понимаю. Но, по-моему, контакт с коллегами важен. В офисе проблемы можно решать быстрее. — Б: Это правда. Ещё один минус в том, что дома часто работаешь дольше. — А: Именно! Я думаю, что два дня удалёнки в неделю — идеально. — Б: Тут я за. Тогда есть преимущества обоих вариантов.',
+                    questions: [
+                      ['Почему второй собеседник любит работать дома?', ['не теряет время в пробках', 'дома меньше работы', 'дома проще решать проблемы'], 0],
+                      ['Какой недостаток удалёнки называет второй собеседник?', ['дома часто работают дольше', 'из-за пробок теряешь время', 'фирмы её отменяют'], 0],
+                      ['К какому выводу приходят собеседники?', ['два дня удалёнки в неделю — идеально', 'лучше всегда работать в офисе', 'лучше всегда работать дома'], 0],
+                    ],
+                  },
+                  'Аргументы вводятся через weil и dass: weil ich keine Zeit im Stau verliere, dass man zu Hause oft länger arbeitet. Итог: zwei Tage Homeoffice pro Woche sind ideal.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'На форуме спрашивают: «Нужно ли запретить смартфоны в школе?» Напишите своё мнение и обоснуйте его.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Придаточное с dass', ['dass']],
+                      ['Обоснование с weil', ['weil']],
+                      ['Выражение мнения', ['Meinung', 'finde', 'glaube', 'denke']],
+                    ],
+                    model: 'Meiner Meinung nach sollte man Smartphones in der Schule nicht ganz verbieten. Ich finde, dass Schüler lernen müssen, das Handy vernünftig zu benutzen. Im Unterricht sollte es aber in der Tasche bleiben, weil man sich sonst nicht konzentrieren kann. Ein Vorteil ist, dass man im Notfall die Eltern anrufen kann. Deshalb bin ich gegen ein Verbot.',
+                    modelTranslation: 'По-моему, смартфоны в школе не стоит запрещать полностью. Я считаю, что школьники должны научиться разумно пользоваться телефоном. Но на уроке он должен лежать в сумке, потому что иначе невозможно сосредоточиться. Преимущество в том, что в экстренной ситуации можно позвонить родителям. Поэтому я против запрета.',
+                    checklist: ['После dass и weil спрягаемый глагол стоит в конце', 'После «Meiner Meinung nach» сразу идёт глагол', 'Есть хотя бы один аргумент и вывод', 'Текст отвечает на вопрос форума'],
+                  },
+                  'Мнение вводят фразами Meiner Meinung nach …, Ich finde, dass …, а обосновывают через weil. В придаточных глагол уходит в конец.',
+                  { t: 'word_order', d: 2 },
                 ),
               ],
               test: [
@@ -1093,6 +1352,42 @@ export const german: LanguageSpec = {
                   'После глагола sein прилагательное не склоняется: es ist hell. Перед существительным окончание обязательно: ein helles und ruhiges Zimmer.',
                   { s: 'grammar', t: 'cases', d: 2 },
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Meine neue Wohnung',
+                    passage: [
+                      'Liebe Katja,',
+                      'endlich habe ich eine neue Wohnung gefunden! Sie liegt in einer ruhigen Straße, nur zehn Minuten vom Zentrum. Die Wohnung hat zwei helle Zimmer, eine kleine, aber gemütliche Küche und einen großen Balkon. Die Fenster sind groß, deshalb ist es den ganzen Tag hell. Das Wohnzimmer ist möbliert: Es gibt ein bequemes Sofa und einen alten Holztisch. Das Bad ist leider sehr klein und nicht modern.',
+                      'Die Miete ist nicht billig, 780 Euro warm, aber der Vermieter ist sehr nett. Am Samstag mache ich eine kleine Party. Hast du Zeit? Bring bitte gute Laune mit!',
+                      'Liebe Grüße, Olga',
+                    ],
+                    translation: 'Дорогая Катя, наконец-то я нашла новую квартиру! Она на тихой улице, всего в десяти минутах от центра. В квартире две светлые комнаты, маленькая, но уютная кухня и большой балкон. Окна большие, поэтому весь день светло. Гостиная меблирована: там есть удобный диван и старый деревянный стол. Ванная, к сожалению, очень маленькая и несовременная. Аренда недешёвая, 780 евро с коммунальными, но арендодатель очень приятный. В субботу я устраиваю небольшую вечеринку. У тебя есть время? Приноси хорошее настроение! Целую, Ольга.',
+                    questions: [
+                      ['Что Ольге не нравится в квартире?', ['ванная', 'кухня', 'аренда и арендодатель'], 0],
+                      ['Какая мебель есть в гостиной?', ['удобный диван и старый деревянный стол', 'большой балкон и диван', 'маленькая уютная кухня'], 0],
+                      ['Зачем Ольга пишет Кате?', ['приглашает её на вечеринку в субботу', 'просит помочь найти квартиру', 'жалуется на арендодателя'], 0],
+                    ],
+                  },
+                  'Обратите внимание на окончания: in einer ruhigen Straße, zwei helle Zimmer, einen großen Balkon, ein bequemes Sofa. Ванная — leider sehr klein und nicht modern, а арендодатель — sehr nett.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Вы сдаёте свою комнату на лето. Напишите объявление: какая комната, что в ней есть, какая кухня, где она находится и сколько стоит.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Прилагательное после ein / eine', ['helles', 'großes', 'ruhiges', 'kleines', 'bequemes', 'möbliertes', 'großer', 'heller', 'moderne', 'kleine']],
+                      ['Прилагательное в косвенном падеже (-en)', ['ruhigen', 'großen', 'kleinen', 'hellen', 'modernen', 'neuen', 'netten']],
+                    ],
+                    model: 'Ich vermiete im Sommer mein helles, möbliertes Zimmer in einer ruhigen Straße. Das Zimmer hat ein bequemes Bett, einen großen Schreibtisch und einen kleinen Balkon. Die moderne Küche teilt man mit zwei netten Studentinnen. Der Bahnhof ist nur fünf Minuten entfernt. Die Miete beträgt 450 Euro warm. Schreiben Sie mir einfach eine Nachricht!',
+                    modelTranslation: 'Сдаю на лето свою светлую меблированную комнату на тихой улице. В комнате удобная кровать, большой письменный стол и маленький балкон. Современной кухней пользуются вместе с двумя милыми студентками. До вокзала всего пять минут. Аренда — 450 евро с коммунальными. Просто напишите мне сообщение!',
+                    checklist: ['После der / die / das окончание -e или -en', 'После ein в м. и ср. р. прилагательное показывает род (-er, -es)', 'После предлогов с Dativ — окончание -en', 'Названы цена и местоположение'],
+                  },
+                  'Описание жилья — лучший повод для склонения прилагательных: следите, показывает ли артикль род и падеж. Если нет, окончание берёт на себя прилагательное.',
+                  { t: 'cases', d: 3 },
+                ),
               ],
               test: [
                 fill('Ich trinke morgens gern ___ Kaffee.', ['schwarzen'], 'Без артикля прилагательное берёт окончание артикля: den Kaffee → schwarzen Kaffee (Akk. м. р.).', { s: 'grammar', t: 'cases', d: 3 }, { translation: 'По утрам я люблю пить чёрный кофе.', options: ['schwarzen', 'schwarzer', 'schwarze'] }),
@@ -1190,6 +1485,46 @@ export const german: LanguageSpec = {
                   { s: 'grammar', t: 'relative_clauses', d: 3 },
                   'Я ищу работу, которая мне хорошо подходит. Фирма, в которой я сейчас работаю, к сожалению, слишком маленькая. Мой начальник, которого я очень ценю, это понимает. Завтра я отправлю резюме работодателю, который предлагает гибкий график.',
                 ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Das Vorstellungsgespräch',
+                    passage: [
+                      ['A', 'Guten Tag, Frau Petrova. Erzählen Sie uns bitte kurz etwas über sich.'],
+                      ['B', 'Gern. Ich habe Marketing studiert und arbeite seit drei Jahren bei einer Firma, die Sportkleidung verkauft.'],
+                      ['A', 'Warum möchten Sie die Stelle wechseln?'],
+                      ['B', 'Meine jetzige Firma ist sehr klein. Ich suche einen Arbeitgeber, bei dem ich mehr Verantwortung übernehmen kann.'],
+                      ['A', 'Verstehe. Wir suchen jemanden, der auch international arbeiten kann. Sprechen Sie Englisch?'],
+                      ['B', 'Ja, fließend. Außerdem habe ich ein Praktikum in Wien gemacht, deshalb spreche ich auch gut Deutsch.'],
+                      ['A', 'Sehr gut. Und welche Gehaltsvorstellung haben Sie?'],
+                      ['B', 'Ich denke an etwa 3500 Euro brutto im Monat.'],
+                    ],
+                    translation: 'А: Добрый день, госпожа Петрова. Расскажите нам, пожалуйста, коротко о себе. — Б: С удовольствием. Я изучала маркетинг и уже три года работаю в фирме, которая продаёт спортивную одежду. — А: Почему Вы хотите сменить работу? — Б: Моя нынешняя фирма очень маленькая. Я ищу работодателя, у которого смогу взять на себя больше ответственности. — А: Понятно. Мы ищем человека, который может работать и на международном уровне. Вы говорите по-английски? — Б: Да, свободно. Кроме того, я проходила практику в Вене, поэтому хорошо говорю и по-немецки. — А: Очень хорошо. А какую зарплату Вы ожидаете? — Б: Я рассчитываю примерно на 3500 евро брутто в месяц.',
+                    questions: [
+                      ['Почему Петрова хочет сменить работу?', ['хочет больше ответственности', 'не любит спортивную одежду', 'хочет работать в Вене'], 0],
+                      ['Где она проходила практику?', ['в Вене', 'в фирме спортивной одежды', 'за границей в Англии'], 0],
+                      ['Какую зарплату она хочет?', ['около 3500 евро брутто', 'около 3500 евро нетто', 'около 3000 евро брутто'], 0],
+                    ],
+                  },
+                  'Относительные придаточные помогают точно описать работу: eine Firma, die Sportkleidung verkauft; ein Arbeitgeber, bei dem ich mehr Verantwortung übernehmen kann. brutto — до вычета налогов.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Вы увидели вакансию «Mitarbeiter/in im Kundenservice». Напишите короткое сопроводительное письмо: кто вы, какой у вас опыт и почему вам подходит эта работа.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Относительное придаточное', ['der', 'die', 'das', 'den', 'dem', 'denen']],
+                      ['Лексика о работе', ['Erfahrung', 'Stelle', 'Bewerbung', 'Firma', 'Kundenservice']],
+                    ],
+                    model: 'Sehr geehrte Damen und Herren, mit großem Interesse habe ich Ihre Anzeige gelesen. Ich arbeite seit zwei Jahren in einem Hotel, in dem ich täglich mit Gästen spreche. Ich habe also viel Erfahrung im Kundenservice. Ich suche eine Stelle, die mir neue Möglichkeiten bietet. Ich spreche Deutsch, Englisch und Russisch. Über eine Einladung zum Gespräch freue ich mich sehr. Mit freundlichen Grüßen, Aidana Serikova',
+                    modelTranslation: 'Уважаемые дамы и господа, я с большим интересом прочитала Ваше объявление. Уже два года я работаю в отеле, где каждый день общаюсь с гостями. Таким образом, у меня большой опыт работы с клиентами. Я ищу должность, которая даст мне новые возможности. Я говорю по-немецки, по-английски и по-русски. Буду очень рада приглашению на собеседование. С уважением, Айдана Серикова.',
+                    checklist: ['Есть официальное обращение и прощание (Sehr geehrte …, Mit freundlichen Grüßen)', 'В относительных придаточных глагол стоит в конце', 'Назван опыт работы и причина интереса', 'Везде вежливое Sie / Ihre'],
+                  },
+                  'В деловом письме используйте Sie и устойчивые формулы. Относительные придаточные (in dem ich …, die mir … bietet) делают текст связным.',
+                  { t: 'relative_clauses', d: 2 },
+                ),
               ],
               test: [
                 fill('Die Frau, ___ ich geholfen habe, ist meine Chefin.', ['der'], 'helfen требует Dativ; женский род в Dativ — der.', { s: 'grammar', t: 'relative_clauses', d: 3 }, { translation: 'Женщина, которой я помог, — моя начальница.', options: ['der', 'die', 'dem', 'denen'] }),
@@ -1277,6 +1612,42 @@ export const german: LanguageSpec = {
                   { s: 'grammar', t: 'future_tense', d: 3 },
                   'В следующем году я буду проходить практику в Вене. Я уже сейчас коплю деньги, чтобы оплатить поездку. Летом родители навестят меня, и я покажу им город, чтобы они увидели, как я живу.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Pläne nach dem Studium',
+                    passage: [
+                      'Hallo Markus,',
+                      'vielen Dank für deine Nachricht! Du fragst, was ich nach dem Studium vorhabe. Also: Im September werde ich mein Studium abschließen. Danach möchte ich ein Jahr im Ausland arbeiten, um mein Englisch zu verbessern. Ich habe mich schon bei zwei Firmen in Irland beworben.',
+                      'Meine Eltern finden die Idee nicht so gut, weil sie mich vermissen werden. Deshalb besuche ich sie vorher noch einen Monat lang, damit wir viel Zeit zusammen haben. Wenn alles klappt, werde ich im Januar nach Dublin fliegen. Später möchte ich nach Deutschland zurückkommen und eine eigene Firma gründen.',
+                      'Was sind deine Pläne? Liebe Grüße, Sofia',
+                    ],
+                    translation: 'Привет, Маркус, большое спасибо за сообщение! Ты спрашиваешь, что я собираюсь делать после учёбы. Итак: в сентябре я закончу учёбу. Потом я хочу год поработать за границей, чтобы улучшить английский. Я уже отправила резюме в две фирмы в Ирландии. Моим родителям идея не очень нравится, потому что они будут по мне скучать. Поэтому я сначала ещё месяц поживу у них, чтобы мы провели много времени вместе. Если всё получится, в январе я полечу в Дублин. Позже я хочу вернуться в Германию и основать собственную фирму. А какие у тебя планы? С приветом, София.',
+                    questions: [
+                      ['Зачем София хочет поработать за границей?', ['чтобы улучшить английский', 'чтобы основать фирму', 'чтобы быть ближе к родителям'], 0],
+                      ['Почему родители не в восторге от её плана?', ['они будут по ней скучать', 'им не нравится Ирландия', 'она ещё не закончила учёбу'], 0],
+                      ['Когда София планирует лететь в Дублин?', ['в январе', 'в сентябре', 'через месяц'], 0],
+                    ],
+                  },
+                  'Цель передают через um … zu (um mein Englisch zu verbessern) и damit (damit wir viel Zeit zusammen haben), будущее — через werde + инфинитив. В сентябре София заканчивает учёбу, в январе летит в Дублин.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Подруга спрашивает о ваших планах на следующий год. Напишите ей письмо: что вы собираетесь делать и зачем.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Futur I (werden + инфинитив)', ['werde', 'wirst', 'wird', 'werden']],
+                      ['Цель: um … zu или damit', ['um', 'damit']],
+                    ],
+                    model: 'Liebe Mariam, nächstes Jahr wird für mich sehr spannend! Im Frühling werde ich einen Deutschkurs in Leipzig besuchen, um mein Deutsch zu verbessern. Danach werde ich mich um ein Praktikum bewerben. Ich spare schon jetzt Geld, damit ich nicht so viel arbeiten muss. Im Sommer möchte ich mit meiner Schwester ans Meer fahren. Und was hast du vor? Liebe Grüße, Dana',
+                    modelTranslation: 'Дорогая Мариам, следующий год будет для меня очень интересным! Весной я буду ходить на курсы немецкого в Лейпциге, чтобы улучшить свой немецкий. Потом я подам заявку на стажировку. Я уже сейчас коплю деньги, чтобы не приходилось много работать. Летом я хочу поехать с сестрой на море. А что ты планируешь? С приветом, Дана.',
+                    checklist: ['werden стоит на втором месте, инфинитив — в конце', 'um … zu при одном субъекте, damit — при разных', 'Названо хотя бы два плана и цель', 'Есть обращение, вопрос к подруге и прощание'],
+                  },
+                  'О планах говорят в Futur I или в настоящем времени с указанием времени. Цель выражают через um … zu и damit.',
+                  { t: 'future_tense', d: 2 },
+                ),
               ],
               test: [
                 fill('Er ___ nächste Woche ein Praktikum machen.', ['wird'], 'С er — wird; инфинитив machen — в конце.', { s: 'grammar', t: 'future_tense' }, { translation: 'На следующей неделе он будет проходить практику.', options: ['wird', 'werdet', 'wirst'] }),
@@ -1357,6 +1728,46 @@ export const german: LanguageSpec = {
                 ),
                 fill('Wenn ich früher aufgestanden ___, hätte ich den Zug nicht verpasst.', ['wäre'], 'aufstehen образует Perfekt с sein (ich bin aufgestanden), поэтому в нереальном прошлом — wäre aufgestanden.', { s: 'grammar', t: 'conditionals', d: 3 }, { translation: 'Если бы я встал раньше, я бы не опоздал на поезд.', options: ['wäre', 'hätte', 'würde'] }),
                 translate('Мне следовало тебе позвонить.', ['Ich hätte dich anrufen sollen.', 'Ich hätte dich anrufen müssen.'], 'Нереальное прошлое с модальным глаголом: hätte + два инфинитива в конце — anrufen sollen.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Ein Jahr frei',
+                    passage: [
+                      ['A', 'Stell dir vor, du hättest ein Jahr frei und genug Geld. Was würdest du machen?'],
+                      ['B', 'Ich würde sofort nach Südamerika fliegen. Ich wollte schon immer die Anden sehen.'],
+                      ['A', 'Allein? Das wäre mir zu gefährlich.'],
+                      ['B', 'Nein, ich würde meinen Bruder fragen. Wenn er Zeit hätte, käme er bestimmt mit. Und du?'],
+                      ['A', 'Ich bliebe wahrscheinlich in Europa. Ich würde in Italien einen Kochkurs machen und endlich richtig Italienisch lernen.'],
+                      ['B', 'Klingt gut. Weißt du, eigentlich hätte ich nach dem Abitur ein Jahr reisen sollen. Jetzt bereue ich ein bisschen, dass ich direkt angefangen habe zu studieren.'],
+                      ['A', 'An deiner Stelle würde ich nicht so lange warten. Du könntest doch im nächsten Sommer wenigstens vier Wochen Urlaub nehmen.'],
+                      ['B', 'Stimmt, das wäre eine gute Möglichkeit. Vielleicht frage ich gleich morgen meinen Chef.'],
+                    ],
+                    translation: 'А: Представь, что у тебя есть свободный год и достаточно денег. Что бы ты делал? — Б: Я бы сразу полетел в Южную Америку. Я всегда хотел увидеть Анды. — А: Один? Для меня это было бы слишком опасно. — Б: Нет, я бы позвал брата. Если бы у него было время, он бы точно поехал со мной. А ты? — А: Я бы, наверное, остался в Европе. Я бы пошёл на кулинарные курсы в Италии и наконец по-настоящему выучил итальянский. — Б: Звучит здорово. Знаешь, вообще-то мне стоило год попутешествовать после школы. Теперь я немного жалею, что сразу начал учиться в университете. — А: На твоём месте я бы не ждал так долго. Ты же мог бы следующим летом взять хотя бы четыре недели отпуска. — Б: Верно, это была бы хорошая возможность. Может, завтра же спрошу начальника.',
+                    questions: [
+                      ['С кем B поехал бы в Южную Америку?', ['с братом', 'без попутчиков', 'с собеседником'], 0],
+                      ['О чём жалеет B?', ['что не путешествовал после школы', 'что не выучил итальянский', 'что слишком долго ждал с учёбой'], 0],
+                      ['Что советует A?', ['Im nächsten Sommer vier Wochen Urlaub nehmen.', 'Das Studium abbrechen und ein Jahr reisen.', 'Einen Kochkurs in Italien machen.'], 0, true],
+                    ],
+                  },
+                  'hätte … reisen sollen — нереальное прошлое с модальным глаголом: «следовало бы». Совет вводится через An deiner Stelle würde ich … и Du könntest … Кулинарные курсы — мечта самой A.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Конкурс эссе «Если бы у меня был свободный год…»: напишите, что бы вы делали и почему, и упомяните, о чём вы жалеете в прошлом.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['Konjunktiv II', ['würde', 'würdest', 'wäre', 'hätte', 'könnte', 'käme', 'bliebe']],
+                      ['Условие с wenn', ['wenn']],
+                    ],
+                    model: 'Wenn ich ein Jahr frei hätte, würde ich zuerst sechs Monate in Japan leben. Ich würde dort eine Sprachschule besuchen und in einem kleinen Restaurant arbeiten, damit ich die Kultur wirklich kennenlerne. Danach würde ich mit dem Zug durch Europa reisen und Freunde in Berlin, Wien und Prag besuchen. Ehrlich gesagt hätte ich so etwas schon nach der Schule machen sollen. Damals hatte ich aber Angst, ein Jahr zu verlieren. Heute weiß ich: Ein solches Jahr wäre kein verlorenes Jahr, sondern eine große Chance. Vielleicht wird mein Wunsch ja bald Wirklichkeit.',
+                    modelTranslation: 'Если бы у меня был свободный год, я бы сначала полгода пожил в Японии. Я бы ходил там в языковую школу и работал в маленьком ресторане, чтобы по-настоящему узнать культуру. Потом я бы проехал на поезде по Европе и навестил друзей в Берлине, Вене и Праге. Честно говоря, мне стоило сделать что-то подобное ещё после школы. Но тогда я боялся потерять год. Сегодня я знаю: такой год был бы не потерянным годом, а большим шансом. Может быть, моё желание скоро станет реальностью.',
+                    checklist: ['В условии с wenn глагол стоит в конце (hätte, wäre)', 'Для большинства глаголов — würde + инфинитив, для sein и haben — wäre, hätte', 'Нереальное прошлое: hätte / wäre + Partizip II или hätte … sollen', 'Есть аргументы «почему» и вывод'],
+                  },
+                  'Нереальные желания — würde + инфинитив, wäre, hätte; сожаление о прошлом — hätte … gemacht / hätte … machen sollen.',
+                  { t: 'conditionals', d: 3 },
+                ),
               ],
               test: [
                 fill('Wenn ich Zeit hätte, ___ ich dich besuchen.', ['würde'], 'В главной части нереального условия — würde + инфинитив. werde — будущее время, wurde — прошедшее.', { s: 'grammar', t: 'conditionals', d: 2 }, { translation: 'Если бы у меня было время, я бы тебя навестил.', options: ['würde', 'werde', 'wurde'] }),
@@ -1450,6 +1861,40 @@ export const german: LanguageSpec = {
                   { s: 'grammar', t: 'passive', d: 3 },
                   'Вчера в Берлине открылся новый музей. Открытие транслировалось в прямом эфире. Здание спроектировал известный архитектор. По словам директора, коллекцию ещё нужно расширить: многие произведения доставят только в следующем году.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Neue Brücke eröffnet',
+                    passage: [
+                      'Nach drei Jahren Bauzeit ist am Montag in Neustadt die neue Brücke über den Fluss eröffnet worden. Sie wurde von einem dänischen Architekturbüro geplant und kostete rund 120 Millionen Euro – deutlich mehr als ursprünglich angekündigt. Bei der Eröffnung wurden zahlreiche Reden gehalten, die Feier wurde live im Lokalfernsehen übertragen. Nach Angaben der Polizei wurden schon am ersten Tag über 20 000 Menschen auf der Brücke gezählt.',
+                      'Die Brücke ist nur für Fußgänger, Radfahrer und Busse bestimmt, Autos dürfen sie nicht benutzen. Kritik kommt vor allem von Anwohnern: Sie seien zu spät informiert worden, heißt es in einem offenen Brief. Außerdem muss noch geklärt werden, wer die Kosten für die Beleuchtung trägt. Die Stadt verspricht, dass die fehlenden Radwege bis zum Sommer gebaut werden.',
+                    ],
+                    translation: 'После трёх лет строительства в понедельник в Нойштадте был открыт новый мост через реку. Его спроектировало датское архитектурное бюро, и он обошёлся примерно в 120 миллионов евро — намного больше, чем объявлялось изначально. На открытии прозвучало множество речей, праздник транслировался в прямом эфире местного телевидения. По данным полиции, уже в первый день по мосту прошли более 20 000 человек. Мост предназначен только для пешеходов, велосипедистов и автобусов, автомобилям ездить по нему нельзя. Критикуют прежде всего жители окрестных домов: в открытом письме говорится, что их якобы слишком поздно проинформировали. Кроме того, ещё нужно выяснить, кто будет оплачивать освещение. Город обещает, что недостающие велодорожки построят к лету.',
+                    questions: [
+                      ['Кто может пользоваться мостом?', ['Fußgänger, Radfahrer und Busse', 'Alle Fahrzeuge außer Bussen', 'Nur Fußgänger und Autos'], 0, true],
+                      ['На что жалуются жители?', ['их поздно проинформировали', 'мост обошёлся слишком дорого', 'на мосту нет освещения'], 0],
+                      ['Что ещё предстоит выяснить?', ['кто оплатит освещение', 'кто спроектировал мост', 'сколько людей прошло по мосту'], 0],
+                    ],
+                  },
+                  'Новостной текст почти целиком построен на пассиве: ist eröffnet worden, wurde geplant, muss geklärt werden. Жалобу жителей автор передаёт в Konjunktiv I (seien informiert worden), то есть не подтверждает её.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите короткую новостную заметку для студенческой газеты о событии в вашем университете или городе: что произошло, что было сделано и что ещё предстоит сделать.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['Пассив (werden + Partizip II)', ['wurde', 'wurden', 'wird', 'werden']],
+                      ['Perfekt пассива или пассив с модальным глаголом', ['worden', 'muss', 'müssen', 'soll', 'sollen', 'kann']],
+                    ],
+                    model: 'An unserer Universität ist am Freitag die neue Bibliothek eröffnet worden. Das Gebäude wurde in nur zwei Jahren gebaut und bietet Platz für 600 Studierende. Bei der Eröffnung wurde ein kurzer Film über die Geschichte der Universität gezeigt. Besonders gelobt wurden die hellen Lesesäle und die langen Öffnungszeiten. Allerdings müssen noch einige Probleme gelöst werden: Das WLAN funktioniert noch nicht überall, und die Cafeteria wird erst im Mai geöffnet. Die Leitung verspricht, dass alle Mängel bis zum Semesterende behoben werden.',
+                    modelTranslation: 'В нашем университете в пятницу открылась новая библиотека. Здание построили всего за два года, оно рассчитано на 600 студентов. На открытии показали короткий фильм об истории университета. Особенно хвалили светлые читальные залы и долгие часы работы. Однако ещё нужно решить несколько проблем: Wi-Fi пока работает не везде, а кафетерий откроется только в мае. Руководство обещает, что все недостатки устранят до конца семестра.',
+                    checklist: ['Причастие (Partizip II) стоит в конце предложения', 'В Perfekt пассива — worden, а не geworden', 'Пассив с модальным глаголом: Partizip II + werden в конце', 'Есть ответы на вопросы «что, где, когда»'],
+                  },
+                  'В новостях внимание на событии, а не на исполнителе, поэтому пассив здесь естествен: wurde gebaut, ist eröffnet worden, müssen gelöst werden.',
+                  { t: 'passive', d: 3 },
+                ),
               ],
               test: [
                 fill('Das Museum ___ im Jahr 1900 gebaut.', ['wurde'], 'Действие в прошлом — пассив с wurde + Partizip II.', { s: 'grammar', t: 'passive', d: 2 }, { translation: 'Музей был построен в 1900 году.', options: ['wurde', 'wird', 'hat'] }),
@@ -1527,6 +1972,47 @@ export const german: LanguageSpec = {
                   'В отчёте используется Konjunktiv I: sei, gebe, werde, seien. У kommen во мн. ч. форма Konjunktiv I совпала бы с индикативом, поэтому берут Konjunktiv II — kämen. Косвенный вопрос без вопросительного слова вводится через ob.',
                   { s: 'grammar', t: 'reported_speech', d: 3 },
                   'Министр окружающей среды вчера заявила, что ситуация серьёзная. Простого решения нет, но правительство будет больше инвестировать в возобновляемую энергию. Критики говорят, что меры принимаются слишком поздно. Журналист спросил, реалистичны ли цели до 2030 года.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Das Interview mit der Ministerin',
+                    passage: [
+                      ['A', 'Hast du gestern das Interview mit der Umweltministerin gesehen?'],
+                      ['B', 'Nein, leider nicht. Was hat sie denn gesagt?'],
+                      ['A', 'Sie hat gesagt, die Lage sei ernster als erwartet. Bis 2030 müsse der Verbrauch von Kohle halbiert werden.'],
+                      ['B', 'Und wie will die Regierung das schaffen?'],
+                      ['A', 'Sie meinte, man werde vor allem in Wind- und Solarenergie investieren. Außerdem gebe es ab nächstem Jahr Geld für Familien, die ihre alte Heizung austauschen.'],
+                      ['B', 'Klingt gut. Aber haben die Journalisten nicht nach den Kosten gefragt?'],
+                      ['A', 'Doch. Ein Reporter wollte wissen, ob die Bürger höhere Steuern zahlen müssten. Sie hat geantwortet, darüber sei noch nicht entschieden worden.'],
+                      ['B', 'Typisch. Die Umweltverbände sagen ja schon lange, die Maßnahmen kämen zu spät.'],
+                      ['A', 'Ja, und die Opposition behauptet, der Plan sei viel zu teuer. Mal sehen, wer am Ende recht hat.'],
+                    ],
+                    translation: 'А: Ты видел вчера интервью с министром окружающей среды? — Б: Нет, к сожалению. А что она сказала? — А: Она сказала, что ситуация серьёзнее, чем ожидалось. К 2030 году потребление угля нужно сократить вдвое. — Б: И как правительство собирается этого добиться? — А: Она сказала, что будут инвестировать прежде всего в ветровую и солнечную энергию. Кроме того, со следующего года будут деньги для семей, которые меняют старое отопление. — Б: Звучит хорошо. А журналисты не спрашивали о расходах? — А: Спрашивали. Один репортёр хотел узнать, придётся ли гражданам платить более высокие налоги. Она ответила, что это ещё не решено. — Б: Как обычно. Экологические организации давно говорят, что меры принимаются слишком поздно. — А: Да, а оппозиция утверждает, что план слишком дорогой. Посмотрим, кто в итоге окажется прав.',
+                    questions: [
+                      ['Что, по словам министра, нужно сделать к 2030 году?', ['вдвое сократить потребление угля', 'заменить все старые системы отопления', 'повысить налоги'], 0],
+                      ['Кто получит деньги со следующего года?', ['семьи, которые меняют старое отопление', 'экологические организации', 'производители солнечных батарей'], 0],
+                      ['Что министр ответила на вопрос о налогах?', ['Darüber sei noch nicht entschieden worden.', 'Die Steuern würden erhöht.', 'Die Steuern würden nicht erhöht.'], 0, true],
+                    ],
+                  },
+                  'Слова министра переданы в Konjunktiv I: sei, müsse, werde, gebe. Косвенный вопрос — через ob. Решение о налогах ещё не принято (sei noch nicht entschieden worden).',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Вы прочитали интервью с экспертом по экологии. Перескажите для блога 3–4 его главных тезиса в косвенной речи и добавьте своё мнение.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['Konjunktiv I', ['sei', 'seien', 'habe', 'gebe', 'werde', 'müsse', 'könne']],
+                      ['Глагол речи', ['sagt', 'erklärt', 'betont', 'behauptet', 'meint', 'sagte', 'erklärte', 'betonte']],
+                    ],
+                    model: 'In einem Interview erklärt der Klimaforscher Jonas Berg, die Städte seien auf heiße Sommer schlecht vorbereitet. Es gebe zu wenig Bäume und zu viele Parkplätze. Er betont, man müsse vor allem in grüne Dächer und Parks investieren. Außerdem sagt er, jeder Einzelne könne etwas tun, zum Beispiel weniger Auto fahren. Ich finde seine Argumente überzeugend, weil man die Hitze in meiner Stadt jeden Sommer stärker spürt. Allerdings glaube ich, dass die Politik zuerst handeln muss, denn ohne gute Radwege fahren die Menschen weiter Auto.',
+                    modelTranslation: 'В интервью климатолог Йонас Берг объясняет, что города плохо подготовлены к жаркому лету. По его словам, слишком мало деревьев и слишком много парковок. Он подчёркивает, что вкладываться нужно прежде всего в зелёные крыши и парки. Кроме того, он говорит, что каждый может что-то сделать, например меньше ездить на машине. Я нахожу его аргументы убедительными, потому что в моём городе жара каждое лето чувствуется сильнее. Однако я думаю, что сначала должна действовать политика, ведь без хороших велодорожек люди продолжат ездить на машинах.',
+                    checklist: ['Чужие слова — в Konjunktiv I (sei, gebe, müsse)', 'Где Konjunktiv I совпадает с индикативом — Konjunktiv II (hätten, kämen)', 'Своё мнение — в индикативе и отделено от пересказа', 'Использованы разные глаголы речи (erklärt, betont, behauptet)'],
+                  },
+                  'Konjunktiv I показывает, что вы передаёте чужие слова. Своё мнение пишите в обычном индикативе — так читатель видит границу между пересказом и оценкой.',
+                  { t: 'reported_speech', d: 3 },
                 ),
               ],
               test: [
@@ -1643,6 +2129,43 @@ export const german: LanguageSpec = {
                   'Вы работаете в отделе закупок и переписываетесь с руководителем.',
                 ),
                 choiceRu('Что означает это предложение?', 'Die Studie stellt die bisherigen Ergebnisse infrage.', ['Исследование ставит под сомнение прежние результаты.', 'Исследование задаёт вопросы о прежних результатах.', 'Исследование подтверждает прежние результаты.'], 0, 'etwas infrage stellen — «ставить под сомнение», а не «задавать вопрос». Это функционально-глагольное сочетание, его смысл не складывается из частей.', { s: 'vocabulary', d: 2 }),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Mitteilung der Hausverwaltung',
+                    passage: [
+                      'Sehr geehrte Mieterinnen und Mieter,',
+                      'im Zuge der Modernisierung des Gebäudes wird ab dem 3. März mit der Erneuerung der Heizungsanlage begonnen. Die Durchführung der Arbeiten erfolgt in zwei Phasen und wird voraussichtlich sechs Wochen in Anspruch nehmen. Während der ersten Phase kann es zu kurzfristigen Unterbrechungen der Warmwasserversorgung kommen. Die zweite Phase betrifft ausschließlich den Keller.',
+                      'Wir bitten Sie, in diesem Zeitraum den Zugang zu Ihren Heizkörpern zu gewährleisten. Bei Abwesenheit ist eine Hinterlegung des Wohnungsschlüssels beim Hausmeister möglich. Voraussetzung für einen reibungslosen Ablauf ist Ihre Rückmeldung bis zum 20. Februar.',
+                      'Aufgrund der gestiegenen Energiepreise ist eine Anpassung der monatlichen Nebenkostenvorauszahlung leider unvermeidlich; die neue Regelung tritt am 1. April in Kraft. Nach Abschluss der Arbeiten stehen Ihnen die Unterlagen zur neuen Anlage im Büro der Hausverwaltung zur Verfügung. Für Rückfragen steht Ihnen unser Hausmeister, Herr Becker, montags bis freitags von 8 bis 12 Uhr unter der Telefonnummer 0221 456789 zur Verfügung.',
+                      'Für Ihr Verständnis bedanken wir uns im Voraus. Mit freundlichen Grüßen, Ihre Hausverwaltung',
+                    ],
+                    translation: 'Уважаемые жильцы! В рамках модернизации здания с 3 марта начинается замена системы отопления. Работы будут проводиться в два этапа и предположительно займут шесть недель. Во время первого этапа возможны кратковременные перебои с горячей водой. Второй этап касается только подвала. Просим Вас в этот период обеспечить доступ к батареям. Если Вас не будет дома, ключ от квартиры можно оставить у управляющего домом. Условие для бесперебойного хода работ — Ваш ответ до 20 февраля. В связи с ростом цен на энергию изменение ежемесячного аванса за коммунальные услуги, к сожалению, неизбежно; новое правило вступает в силу 1 апреля. После завершения работ документы по новой системе будут доступны Вам в офисе управляющей компании. С вопросами можно обращаться к управляющему домом, господину Беккеру, с понедельника по пятницу с 8 до 12 часов по телефону 0221 456789. Заранее благодарим за понимание. С уважением, управляющая компания.',
+                    questions: [
+                      ['Что могут сделать жильцы, которых не будет дома?', ['оставить ключ у управляющего домом', 'перенести работы на апрель', 'забрать документы в офисе'], 0],
+                      ['Что изменится с 1 апреля?', ['размер ежемесячного аванса за коммунальные услуги', 'начнётся замена отопления', 'отключат горячую воду'], 0],
+                      ['До какого числа жильцы должны ответить?', ['до 20 февраля', 'до 3 марта', 'до 1 апреля'], 0],
+                    ],
+                  },
+                  'Типичный номинальный стиль: Bei Abwesenheit = wenn Sie nicht da sind, Nach Abschluss der Arbeiten = nachdem die Arbeiten abgeschlossen sind. Функционально-глагольные сочетания: in Anspruch nehmen, in Kraft treten, zur Verfügung stehen.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Вы работаете в администрации студенческого общежития. Напишите официальное объявление о ремонте лифта: сроки, ограничения и что требуется от жильцов. Используйте номинальный стиль.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Предлог + существительное (номинальный стиль)', ['aufgrund', 'wegen', 'während', 'nach', 'bei', 'infolge', 'zwecks']],
+                      ['Функционально-глагольное сочетание', ['Verfügung', 'Kraft', 'Anspruch', 'Betrieb', 'Kenntnis', 'Entscheidung']],
+                    ],
+                    model: 'Liebe Bewohnerinnen und Bewohner, aufgrund einer technischen Störung muss der Aufzug in Haus B dringend repariert werden. Die Durchführung der Reparatur ist vom 10. bis zum 21. November geplant. Während der Bauarbeiten steht der Aufzug leider nicht zur Verfügung. Bei Bedarf, etwa wegen einer Verletzung oder schwerer Einkäufe, wenden Sie sich bitte an den Hausmeister, der Ihnen gern hilft. Wir bitten Sie außerdem um die Freihaltung des Eingangsbereichs, damit die Techniker ungehindert arbeiten können. Nach Abschluss der Arbeiten wird der Aufzug sofort wieder in Betrieb genommen. Für Rückfragen stehen wir Ihnen montags bis freitags von 9 bis 12 Uhr im Büro zur Verfügung. Wir danken Ihnen für Ihr Verständnis. Ihre Wohnheimverwaltung',
+                    modelTranslation: 'Уважаемые жильцы! Из-за технической неисправности лифт в корпусе Б необходимо срочно отремонтировать. Ремонт запланирован с 10 по 21 ноября. Во время работ лифт, к сожалению, будет недоступен. При необходимости, например из-за травмы или тяжёлых покупок, пожалуйста, обращайтесь к коменданту, он охотно поможет. Кроме того, просим Вас не загромождать вход, чтобы техники могли беспрепятственно работать. После завершения работ лифт сразу же снова введут в эксплуатацию. С вопросами обращайтесь к нам в офис с понедельника по пятницу с 9 до 12 часов. Благодарим за понимание. Администрация общежития.',
+                    checklist: ['Придаточные заменены предложными группами (aufgrund, während, nach, bei)', 'Использованы функционально-глагольные сочетания (zur Verfügung stehen, in Betrieb nehmen)', 'Указаны сроки и что требуется от жильцов', 'Есть официальное обращение и подпись'],
+                  },
+                  'Официальные объявления пишут в номинальном стиле: предлог + существительное вместо придаточного. Но не перегружайте текст: одно-два придаточных (damit …) делают его читаемым.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('Während ___ Sitzung wurden keine Fragen gestellt.', ['der'], 'Предлог während требует родительного падежа; Sitzung — женского рода: während der Sitzung. Это номинальный вариант придаточного «während die Sitzung lief».', { s: 'grammar', d: 2 }, { translation: 'Во время заседания вопросов не задавали.', options: ['der', 'die', 'den'] }),
@@ -1748,6 +2271,47 @@ export const german: LanguageSpec = {
                   options: ['Die Ergebnisse der Studie wurden in einer Fachzeitschrift veröffentlicht.', 'Die Ergebnisse der Studie werden in einer Fachzeitschrift veröffentlicht.', 'Die Ergebnisse der Studie wurden in einer Tageszeitung veröffentlicht.'],
                   translation: 'Результаты исследования были опубликованы в научном журнале.',
                 }),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Wissenschaftspodcast: Handy und Schlaf',
+                    passage: [
+                      ['A', 'Herzlich willkommen zu unserem Wissenschaftspodcast. Heute spricht Dr. Lea Krüger über ihre kürzlich veröffentlichte Studie zum Thema Schlaf. Frau Krüger, was haben Sie untersucht?'],
+                      ['B', 'Wir wollten wissen, wie sich Bildschirmzeit am Abend auf den Schlaf von Jugendlichen auswirkt. Die Stichprobe umfasste 800 Schülerinnen und Schüler zwischen 14 und 18 Jahren. Die Teilnehmenden führten zwei Wochen lang ein Schlaftagebuch.'],
+                      ['A', 'Und was kam dabei heraus?'],
+                      ['B', 'Die gewonnenen Daten zeigen eindeutig: Wer nach 22 Uhr noch am Handy ist, schläft im Durchschnitt 40 Minuten weniger. Unsere ursprüngliche Hypothese, dass vor allem das blaue Licht schuld ist, konnten wir allerdings nicht bestätigen.'],
+                      ['A', 'Woran liegt es dann?'],
+                      ['B', 'Entscheidend scheint der Inhalt zu sein. Spannende Videos und Nachrichten halten das Gehirn wach. Die noch zu klärende Frage ist, ob Bücher eine ähnliche Wirkung haben.'],
+                      ['A', 'Was raten Sie Eltern?'],
+                      ['B', 'Klare Regeln statt Verbote. Ein gemeinsam vereinbartes Handyende um 21 Uhr hat sich in unseren Experimenten bewährt.'],
+                      ['A', 'Vielen Dank, Frau Krüger, für diese spannenden Einblicke in Ihre Forschung.'],
+                    ],
+                    translation: 'А: Добро пожаловать в наш научный подкаст. Сегодня доктор Леа Крюгер расскажет о своём недавно опубликованном исследовании сна. Госпожа Крюгер, что Вы изучали? — Б: Мы хотели узнать, как вечернее время у экрана влияет на сон подростков. Выборка охватывала 800 школьников в возрасте от 14 до 18 лет. Участники две недели вели дневник сна. — А: И что получилось? — Б: Полученные данные однозначно показывают: кто после 22 часов ещё сидит в телефоне, спит в среднем на 40 минут меньше. Однако нашу исходную гипотезу, что виноват прежде всего синий свет, подтвердить не удалось. — А: В чём же тогда дело? — Б: Решающим, по-видимому, является содержание. Захватывающие видео и новости не дают мозгу уснуть. Вопрос, который ещё предстоит выяснить, — оказывают ли похожее действие книги. — А: Что Вы советуете родителям? — Б: Чёткие правила вместо запретов. Совместно согласованное время, когда телефон откладывают, — 21 час — хорошо зарекомендовало себя в наших экспериментах. — А: Большое спасибо, госпожа Крюгер, за этот интересный рассказ о Вашем исследовании.',
+                    questions: [
+                      ['Какую гипотезу не удалось подтвердить?', ['что виноват прежде всего синий свет экрана', 'что подростки, сидящие в телефоне после 22 часов, спят меньше', 'что захватывающие видео не дают мозгу уснуть'], 0],
+                      ['Что ещё остаётся невыясненным?', ['действуют ли книги похожим образом', 'насколько меньше спят подростки с телефоном', 'помогают ли чёткие правила'], 0],
+                      ['Что советует исследовательница родителям?', ['Gemeinsam ein Handyende vereinbaren.', 'Handys am Abend ganz verbieten.', 'Das blaue Licht am Bildschirm ausschalten.'], 0, true],
+                    ],
+                  },
+                  'В научной речи много причастных определений: die kürzlich veröffentlichte Studie, die gewonnenen Daten, die noch zu klärende Frage, ein gemeinsam vereinbartes Handyende. Гипотеза о синем свете не подтвердилась, а 40 минут — это результат.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите краткую аннотацию вымышленного исследования для сайта университета: цель, метод, результаты, выводы. Используйте причастные определения.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Причастие как определение', ['durchgeführte', 'durchgeführten', 'veröffentlichte', 'gewonnenen', 'befragten', 'untersuchten', 'steigende', 'steigenden', 'wachsende', 'basierende', 'zu klärende']],
+                      ['Научная лексика', ['Studie', 'Untersuchung', 'Ergebnisse', 'Hypothese', 'Stichprobe', 'Daten']],
+                    ],
+                    model: 'Die im Wintersemester durchgeführte Studie untersucht den Einfluss von Musik auf die Konzentration beim Lernen. An der Untersuchung nahmen 240 Studierende teil, die in drei Gruppen eingeteilt wurden: mit klassischer Musik, mit Popmusik und ohne Musik. Die befragten Personen lösten anschließend standardisierte Aufgaben. Die gewonnenen Daten zeigen, dass ruhige Instrumentalmusik die Leistung leicht verbessert, während Musik mit Text sie deutlich verschlechtert. Die ursprüngliche Hypothese, dass jede Art von Musik ablenkt, konnte damit nur teilweise bestätigt werden. Die noch zu klärende Frage ist nun, ob sich die Ergebnisse auch auf ältere Menschen übertragen lassen. Weitere, auf einer größeren Stichprobe basierende Untersuchungen sind geplant.',
+                    modelTranslation: 'Проведённое в зимнем семестре исследование изучает влияние музыки на концентрацию во время учёбы. В исследовании участвовали 240 студентов, разделённых на три группы: с классической музыкой, с поп-музыкой и без музыки. Затем опрошенные выполняли стандартизированные задания. Полученные данные показывают, что спокойная инструментальная музыка немного улучшает результаты, а музыка со словами заметно их ухудшает. Таким образом, исходная гипотеза о том, что любая музыка отвлекает, подтвердилась лишь частично. Теперь предстоит выяснить, переносятся ли результаты на людей старшего возраста. Запланированы дальнейшие исследования на более широкой выборке.',
+                    checklist: ['Причастное определение стоит между артиклем и существительным', 'Причастие склоняется как прилагательное', 'Есть цель, метод, результаты и вывод', 'Научные глаголы: untersuchen, zeigen, bestätigen'],
+                  },
+                  'Аннотация должна быть плотной: причастные определения (die durchgeführte Studie, die gewonnenen Daten) заменяют целые придаточные.',
+                  { t: 'participles', d: 3 },
+                ),
               ],
               test: [
                 choice('Какой вариант означает «die Probleme, die gelöst werden müssen»?', ['die zu lösenden Probleme', 'die gelösten Probleme', 'die lösenden Probleme'], 0, 'zu + Partizip I выражает необходимость в пассиве. die gelösten Probleme — «решённые проблемы», die lösenden Probleme — бессмыслица («решающие проблемы»).', { s: 'grammar', t: 'participles', d: 3 }),
@@ -1861,6 +2425,41 @@ export const german: LanguageSpec = {
                   0,
                   'zwar … aber — два главных предложения. obwohl не сочетается ни с zwar, ни с aber и требует глагола в конце.',
                   { s: 'grammar', t: 'culture', d: 3 },
+                ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Kommentar: Brauchen wir noch ein Stadttheater?',
+                    passage: [
+                      'Die Stadt will ihre Förderung für das Stadttheater um ein Drittel kürzen. Der Kämmerer argumentiert, die Kassen seien leer, und Kultur sei nun einmal keine Pflichtaufgabe. Zwar ist die finanzielle Lage tatsächlich angespannt, aber dieses Argument greift zu kurz.',
+                      'Obwohl nur ein Teil der Bürger regelmäßig ins Theater geht, profitiert die ganze Stadt davon: Schulen besuchen kostenlose Vorstellungen, und junge Menschen finden in den Jugendgruppen einen Ort, an dem sie sich ausprobieren können. Auch Touristen kommen nicht zuletzt wegen der Kulturangebote in die Stadt. Man könnte einwenden, dass Streamingdienste heute viel günstiger unterhalten. Dennoch ersetzt kein Bildschirm das gemeinsame Erlebnis im Saal und die Diskussion danach.',
+                      'Kritikern zufolge sei das Programm zu elitär. Das mag für einzelne Inszenierungen stimmen. Gerade deshalb sollte man das Theater dazu bringen, sich zu öffnen, statt es kaputtzusparen. Meiner Auffassung nach wäre eine Kürzung um ein Drittel kein Sparen, sondern ein kultureller Rückzug, den die Stadt später teuer bezahlen würde.',
+                    ],
+                    translation: 'Город хочет сократить финансирование городского театра на треть. Казначей утверждает, что касса пуста, а культура — это, мол, не обязательная задача. Финансовое положение действительно напряжённое, но этот довод слишком упрощает дело. Хотя регулярно в театр ходит лишь часть горожан, выигрывает от этого весь город: школы посещают бесплатные спектакли, а молодёжь находит в театральных студиях место, где можно себя попробовать. Да и туристы приезжают в город не в последнюю очередь ради культурной программы. Можно было бы возразить, что стриминговые сервисы сегодня развлекают гораздо дешевле. Тем не менее никакой экран не заменит общего переживания в зале и обсуждения после спектакля. По мнению критиков, программа слишком элитарна. Для отдельных постановок это, возможно, и так. Именно поэтому театр нужно побудить открыться, а не губить его экономией. На мой взгляд, сокращение на треть было бы не экономией, а культурным отступлением, за которое город потом дорого заплатит.',
+                    questions: [
+                      ['Какой довод приводит казначей?', ['касса пуста, а культура — не обязательная задача', 'программа театра слишком элитарна', 'стриминговые сервисы дешевле'], 0],
+                      ['Как автор относится к упрёку в элитарности?', ['отчасти соглашается и предлагает открыть театр для публики', 'полностью отвергает его', 'считает его главным доводом за сокращение'], 0],
+                      ['Каков вывод автора?', ['Die Kürzung wäre ein kultureller Rückzug.', 'Man sollte das Theater ganz schließen.', 'Streamingdienste können das Theater ersetzen.'], 0, true],
+                    ],
+                  },
+                  'Автор признаёт чужие доводы (Zwar …, aber; Man könnte einwenden …; Das mag stimmen) и возражает (Dennoch, Gerade deshalb). Чужие позиции переданы в Konjunktiv I: die Kassen seien leer, das Programm sei zu elitär.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите комментарий для городского сайта: должен ли вход в музеи быть бесплатным? Изложите чужую позицию, сделайте уступку и приведите свои аргументы.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Уступка', ['zwar', 'obwohl', 'obgleich', 'wenngleich', 'dennoch', 'trotzdem']],
+                      ['Чужая позиция в Konjunktiv I', ['sei', 'seien', 'habe', 'gebe', 'werde', 'müsse', 'könne', 'solle', 'koste', 'dürfe']],
+                    ],
+                    model: 'Immer wieder wird gefordert, der Eintritt in städtische Museen solle kostenlos sein. Die Befürworter argumentieren, Kultur sei ein Grundrecht und dürfe nicht vom Geldbeutel abhängen. Gegner wenden ein, der freie Eintritt koste die Stadt Millionen, die dann an anderer Stelle fehlen würden. Zwar ist dieser Einwand berechtigt, aber er übersieht einen wichtigen Punkt: Museen werden ohnehin zum größten Teil aus Steuern finanziert. Obwohl die Einnahmen aus Tickets wegfallen würden, könnten mehr Familien und junge Menschen die Ausstellungen besuchen. Erfahrungen aus anderen Ländern zeigen, dass die Besucherzahlen nach der Abschaffung der Eintrittspreise deutlich gestiegen sind. Dennoch halte ich einen Kompromiss für sinnvoll: freier Eintritt für alle unter 25 Jahren und an einem Abend pro Woche.',
+                    modelTranslation: 'Снова и снова звучит требование сделать вход в городские музеи бесплатным. Сторонники утверждают, что культура — основное право и не должна зависеть от кошелька. Противники возражают, что бесплатный вход обойдётся городу в миллионы, которых потом не хватит в другом месте. Это возражение, конечно, обоснованно, но оно упускает важный момент: музеи и так в основном финансируются из налогов. Хотя доходы от билетов исчезли бы, выставки могли бы посещать больше семей и молодых людей. Опыт других стран показывает, что после отмены платы за вход число посетителей заметно выросло. Тем не менее я считаю разумным компромисс: бесплатный вход для всех младше 25 лет и один вечер в неделю.',
+                    checklist: ['Чужие позиции переданы в Konjunktiv I (sei, koste, dürfe)', 'Есть уступка: zwar … aber, obwohl или dennoch', 'После obwohl глагол в конце, после dennoch — инверсия', 'Есть собственный вывод или компромисс'],
+                  },
+                  'Сильный комментарий честно излагает чужую позицию (Konjunktiv I), признаёт её сильные стороны (zwar, obwohl) и только потом приводит свои аргументы и вывод.',
+                  { d: 3 },
                 ),
               ],
               test: [
@@ -1976,6 +2575,47 @@ export const german: LanguageSpec = {
                   'Совещание на работе.',
                 ),
                 speak('Ich drücke dir die Daumen!', 'Держу за тебя кулаки!', 'В drücke ü произносится губами как «у», а языком как «и»; в Daumen au читается как «ау»: [даумен].', { d: 2 }),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Der erste Arbeitstag',
+                    passage: [
+                      ['A', 'Na, wie war dein erster Tag in der neuen Firma?'],
+                      ['B', 'Frag lieber nicht. Ich bin gleich am Morgen voll ins Fettnäpfchen getreten.'],
+                      ['A', 'Oh nein, was ist denn passiert?'],
+                      ['B', 'In der Kaffeeküche hat mich ein Mann gefragt, wie ich die neue Software finde. Ich habe gesagt, die sei total umständlich, wer die wohl ausgesucht habe. Tja, das war mein neuer Chef.'],
+                      ['A', 'Autsch! Und wie hat er reagiert?'],
+                      ['B', 'Er hat gelacht und gemeint, ich solle nicht um den heißen Brei herumreden, sondern ihm später eine Liste mit den Problemen schicken.'],
+                      ['A', 'Na siehst du, da hast du doch Schwein gehabt! Andere Chefs wären auf die Palme gegangen.'],
+                      ['B', 'Stimmt schon. Aber ehrlich gesagt habe ich jetzt die Nase voll von dieser Software. Ich habe drei Stunden gebraucht, um eine einzige Tabelle zu erstellen.'],
+                      ['A', 'Das ist halt am Anfang so. Ich drück dir die Daumen, dass es morgen besser läuft. Und wenn nicht, gehen wir am Freitag zusammen etwas trinken.'],
+                    ],
+                    translation: 'А: Ну, как прошёл твой первый день в новой фирме? — Б: Лучше не спрашивай. Я прямо с утра попала впросак. — А: Ой, а что случилось? — Б: На кухне какой-то мужчина спросил меня, как мне новая программа. Я сказала, что она ужасно неудобная — интересно, кто её выбрал. Ну и это оказался мой новый начальник. — А: Ой! И как он отреагировал? — Б: Засмеялся и сказал, чтобы я не ходила вокруг да около, а потом прислала ему список проблем. — А: Ну вот видишь, тебе же повезло! Другие начальники взбесились бы. — Б: Это правда. Но, честно говоря, я уже сыта по горло этой программой. Я три часа делала одну-единственную таблицу. — А: Ну, вначале так всегда бывает. Держу за тебя кулаки, чтобы завтра всё пошло лучше. А если нет, в пятницу сходим куда-нибудь выпить.',
+                    questions: [
+                      ['Кем оказался мужчина на кухне?', ['новым начальником', 'коллегой, который выбрал программу', 'новым сотрудником, как и B'], 0],
+                      ['Как отреагировал начальник?', ['засмеялся и попросил прислать список проблем', 'разозлился и ушёл', 'предложил выбрать другую программу'], 0],
+                      ['Почему подруга говорит «da hast du doch Schwein gehabt»?', ['Weil der Chef nicht böse geworden ist.', 'Weil die Software doch einfach ist.', 'Weil B die Tabelle schnell erstellt hat.'], 0, true],
+                    ],
+                  },
+                  'Идиомы в живом разговоре: ins Fettnäpfchen treten — «попасть впросак», auf die Palme gehen — «взбеситься», die Nase voll haben — «быть сытым по горло». Частицы doch, halt, denn передают эмоции говорящих.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Подруга-немка пишет, что у неё неудачная неделя: проблемы на работе и с квартирой. Напишите ей неформальный ответ: посочувствуйте, дайте совет, подбодрите. Используйте модальные частицы и одну-две идиомы.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Модальная частица', ['doch', 'ja', 'halt', 'eben', 'mal']],
+                      ['Идиома', ['Daumen', 'Schwein', 'Nase', 'Fettnäpfchen', 'Brei', 'Tomaten', 'Palme', 'Keks']],
+                    ],
+                    model: 'Liebe Julia, oh je, das klingt ja nach einer richtig anstrengenden Woche! Ich verstehe gut, dass du die Nase voll hast. Erst der Streit mit deiner Chefin und dann noch der Wasserschaden in der Küche – das ist wirklich zu viel auf einmal. Aber weißt du was? Du hast doch schon ganz andere Krisen gemeistert. Sprich mit deiner Chefin offen und red nicht um den heißen Brei herum, sie wird das sicher schätzen. Und der Vermieter muss den Schaden halt bezahlen, dafür ist er ja da. Komm doch am Wochenende einfach zu mir, dann kochen wir zusammen und vergessen den ganzen Stress. Ich drücke dir die Daumen, dass nächste Woche alles besser wird! Ganz liebe Grüße, Dana',
+                    modelTranslation: 'Дорогая Юлия, ох, похоже, у тебя была по-настоящему тяжёлая неделя! Я прекрасно понимаю, что ты сыта всем по горло. Сначала ссора с начальницей, а потом ещё и протечка на кухне — это действительно слишком много сразу. Но знаешь что? Ты же справлялась и не с такими кризисами. Поговори с начальницей открыто и не ходи вокруг да около, она это наверняка оценит. А ущерб должен оплатить арендодатель — на то он и арендодатель. Приезжай ко мне на выходных, приготовим что-нибудь вместе и забудем про весь этот стресс. Держу за тебя кулаки, чтобы следующая неделя была лучше! Обнимаю, Дана.',
+                    checklist: ['Тон неформальный: du, разговорные обороты', 'Модальные частицы стоят после глагола (du hast doch …, muss halt …)', 'Идиомы употреблены в правильной форме и к месту', 'Есть сочувствие, совет и пожелание'],
+                  },
+                  'В дружеском письме частицы doch, ja, halt делают речь живой, а идиомы — естественной. В деловом письме они были бы неуместны.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 choiceRu('Что означает эта фраза?', 'Hör auf, um den heißen Brei herumzureden!', ['Хватит ходить вокруг да около!', 'Хватит торопиться!', 'Хватит жаловаться!'], 0, 'um den heißen Brei herumreden — дословно «ходить вокруг горячей каши», то есть не говорить прямо.', { s: 'vocabulary', d: 2 }),
