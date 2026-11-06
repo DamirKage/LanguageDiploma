@@ -2165,7 +2165,7 @@ a.syllabus__title:hover {
   body,
   #root {
     background: #fff !important;
-    color-scheme: light;
+    color-scheme: light !important;
   }
   .certificate-page {
     padding: 0;
