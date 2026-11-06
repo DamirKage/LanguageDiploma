@@ -66,7 +66,7 @@ docker compose --profile seed run --rm seed
 
 Состав: `mongo` (том `mongo-data`), `server` (Express, том `uploads`), `client` (nginx отдаёт сборку и проксирует `/api` и `/uploads`). При работе по HTTPS установите `COOKIE_SECURE=true`.
 
-> В среде разработки сборка образов не была проверена до конца из-за ограничения частоты запросов Docker Hub (HTTP 429). Производственная сборка сервера (`npm run build --workspace server && node server/dist/index.js`) и клиента (`npm run build --workspace client`) проверены без Docker.
+> Проверено 06.11.2026: `docker compose build`, `up`, заполнение базы (`--profile seed run --rm seed`), вход и раздача аудио через nginx работают с нуля; сервер в контейнере запускает по процессу на ядро (`WEB_CONCURRENCY=auto`).
 
 ### Развёртывание в облаке
 

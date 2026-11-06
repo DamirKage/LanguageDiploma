@@ -38,18 +38,24 @@ let disabled = false;
 function spawn() {
   const worker = new Worker(WORKER_SOURCE, { eval: true });
   const slot = { worker, busy: 0 };
-  worker.unref();
   worker.on('message', ({ id, result, error }: { id: number; result?: unknown; error?: string }) => {
     slot.busy--;
+    // An idle worker must not keep the process alive (scripts such as the seed exit when done).
+    if (slot.busy === 0) worker.unref();
     const p = pending.get(id);
     pending.delete(id);
     if (error) p?.reject(new Error(error));
     else p?.resolve(result);
   });
-  worker.on('error', () => {
-    // A broken pool must not break sign-in: fall back to hashing on the main thread.
+  worker.on('error', (err) => {
+    // A broken pool must not break sign-in for long: later calls hash on the main thread.
     disabled = true;
+    for (const [id, p] of pending) {
+      pending.delete(id);
+      p.reject(err instanceof Error ? err : new Error(String(err)));
+    }
   });
+  worker.unref();
   workers.push(slot);
   return slot;
 }
@@ -61,6 +67,7 @@ function run<T>(job: Job): Promise<T> {
   if (workers.length < POOL_SIZE) spawn();
   const slot = workers.reduce((a, b) => (b.busy < a.busy ? b : a));
   slot.busy++;
+  slot.worker.ref();
   const id = nextId++;
   return new Promise<T>((resolve, reject) => {
     pending.set(id, { resolve: resolve as (v: unknown) => void, reject });
