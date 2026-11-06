@@ -1,4 +1,4 @@
-import { categorize, chat, choice, choiceRu, cloze, dialogue, errorSpot, fill, listen, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
+import { categorize, chat, choice, choiceRu, cloze, dialogue, errorSpot, fill, listen, order, reading, speak, translate, translateBack, writing, type LanguageSpec } from '../builders';
 
 export const turkish: LanguageSpec = {
   code: 'tr',
@@ -361,6 +361,20 @@ export const turkish: LanguageSpec = {
                   { d: 2 },
                   'Турецкий друг расспрашивает вас о семье.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Benim ailem',
+                    passage: ['Merhaba! Benim adım Elif. Ailem büyük. Annem öğretmen, babam mühendis. İki kardeşim var: bir ablam ve bir ağabeyim. Ablam doktor, Ankara’da yaşıyor. Ağabeyim öğrenci. Benim arabam yok ama bir kedim var. Adı Pamuk.'],
+                    translation: 'Привет! Меня зовут Элиф. Моя семья большая. Моя мама — учительница, папа — инженер. У меня двое братьев и сестёр: старшая сестра и старший брат. Моя старшая сестра — врач, она живёт в Анкаре. Мой старший брат — студент. Машины у меня нет, но есть кошка. Её зовут Памук.',
+                    questions: [
+                      ['Кем работает старшая сестра Элиф?', ['врачом', 'учительницей', 'инженером'], 0],
+                      ['Чего у Элиф нет?', ['машины', 'кошки', 'старшего брата'], 0],
+                    ],
+                  },
+                  'abla — «старшая сестра», ablam doktor — «моя старшая сестра — врач». Arabam yok — «у меня нет машины», bir kedim var — «у меня есть кошка».',
+                  { d: 1 },
+                ),
               ],
               test: [
                 fill('Baba___ mühendis.', ['m'], 'baba оканчивается на гласную — притяжательное окончание -m: babam.', { s: 'grammar', t: 'possessive' }, { translation: 'Мой папа — инженер.', options: ['m', 'im', 'ım'] }),
@@ -447,6 +461,29 @@ export const turkish: LanguageSpec = {
                   'После bir — единственное число (bir çay), частица mı/mu — только в вопросе. На afiyet olsun отвечают teşekkürler, а не повторяют пожелание. Об оплате спрашивают …ödeyebilir miyim? — «могу ли я оплатить?»: -yim — «я», после i — mi.',
                   { d: 2 },
                   'Вы в кафе, официант подходит к вашему столику.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Kafede',
+                    passage: [
+                      ['A', 'Merhaba, hoş geldiniz! Ne alırsınız?'],
+                      ['B', 'Bir çay ve bir su lütfen.'],
+                      ['A', 'Çay şekerli mi?'],
+                      ['B', 'Hayır, şekersiz. Tost var mı?'],
+                      ['A', 'Evet, var. Peynirli tost.'],
+                      ['B', 'Tamam, bir tost lütfen. Hesap ne kadar?'],
+                      ['A', 'Çay, su ve tost; toplam yüz lira.'],
+                      ['B', 'Teşekkürler!'],
+                    ],
+                    translation: '— Здравствуйте, добро пожаловать! Что будете заказывать? — Один чай и одну воду, пожалуйста. — Чай с сахаром? — Нет, без сахара. Тосты есть? — Да, есть. Тост с сыром. — Хорошо, один тост, пожалуйста. Сколько с меня? — Чай, вода и тост — всего сто лир. — Спасибо!',
+                    questions: [
+                      ['Что заказывает гость?', ['чай без сахара, воду и тост', 'чай с сахаром, воду и тост', 'кофе, воду и тост'], 0],
+                      ['Сколько стоит весь заказ?', ['сто лир', 'десять лир', 'сто пятьдесят лир'], 0],
+                    ],
+                  },
+                  'şekersiz — «без сахара», peynirli tost — «тост с сыром», yüz lira — «сто лир».',
+                  { d: 1 },
                 ),
               ],
               test: [
@@ -538,6 +575,40 @@ export const turkish: LanguageSpec = {
                   { t: 'past_tense', d: 2 },
                   'Вчера вечером мы с друзьями ходили в кино.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Bir mesaj',
+                    passage: [
+                      'Selam Zeynep! Hafta sonu çok güzeldi. Cumartesi sabah kuzenimle müzeye gittik. Orada eski fotoğraflar gördük ve ben çok fotoğraf çektim. Müze çok ilginçti. Öğleden sonra bir kafede kahve içtik. Kahve çok lezzetliydi. Akşam eve döndüm ve bir kitap okudum.',
+                      'Pazar günü hava çok soğuktu, bu yüzden evde kaldım ve dinlendim. Akşam annemi aradım, uzun uzun konuştuk. Sen hafta sonu ne yaptın? Yazar mısın? Görüşürüz, Ayşe',
+                    ],
+                    translation: 'Привет, Зейнеп! Выходные были отличные. В субботу утром мы с двоюродной сестрой ходили в музей. Там мы смотрели старые фотографии, и я много фотографировала. Музей был очень интересный. Днём мы пили кофе в кафе. Кофе был очень вкусный. Вечером я вернулась домой и прочитала книгу. В воскресенье было очень холодно, поэтому я осталась дома и отдыхала. Вечером позвонила маме, мы долго разговаривали. А ты что делала на выходных? Напишешь? Пока, Айше.',
+                    questions: [
+                      ['С кем Айше ходила в музей?', ['с двоюродной сестрой (братом)', 'с мамой', 'с Зейнеп'], 0],
+                      ['Что Айше делала в воскресенье?', ['осталась дома и отдыхала', 'пила кофе в кафе', 'фотографировала в музее'], 0],
+                      ['Почему она осталась дома?', ['было очень холодно', 'она устала после музея', 'она ждала звонка мамы'], 0],
+                    ],
+                  },
+                  'Все события — в прошедшем времени на -dı: gittik, gördük, içtik, kaldım. bu yüzden — «поэтому» — вводит следствие холодной погоды.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите другу сообщение о своих прошлых выходных: куда вы ходили, что делали и с кем.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Прошедшее время на -dı/-tı', ['-dım', '-dim', '-dum', '-düm', '-tım', '-tim', '-tum', '-tüm', '-dık', '-dik', '-tık', '-tik']],
+                      ['Слово времени: dün, hafta sonu, cumartesi, pazar', ['dün', 'hafta sonu', 'cumartesi*', 'pazar*', 'geçen*']],
+                    ],
+                    model: 'Selam Can! Hafta sonu çok güzeldi. Cumartesi arkadaşlarımla sinemaya gittim, güzel bir film izledik. Pazar günü evde kaldım, kitap okudum ve dinlendim. Sen ne yaptın?',
+                    modelTranslation: 'Привет, Джан! Выходные были отличные. В субботу я ходил с друзьями в кино, мы посмотрели хороший фильм. В воскресенье я остался дома, читал книгу и отдыхал. А ты что делал?',
+                    checklist: ['Есть приветствие и вопрос другу в конце', 'Глаголы в прошедшем времени и стоят в конце предложения', 'После глухих согласных d переходит в t: gittim, içtim', 'Названы хотя бы два занятия или дня'],
+                  },
+                  'Рассказ о прошлом: основа + -dı/-tı + личное окончание; сказуемое — в конце предложения.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('Dün çok kahve iç___.', ['tim'], 'iç- оканчивается на глухой ç, поэтому d переходит в t: içtim.', { s: 'grammar', t: 'past_tense', d: 2 }, { translation: 'Вчера я выпил много кофе.', options: ['tim', 'dim', 'tım', 'dum'] }),
@@ -612,6 +683,47 @@ export const turkish: LanguageSpec = {
                   'Куда? — -(y)a/-(y)e: Ankara’ya, istasyona (после согласной без -y-). Когда и где? — -da/-de: saat dokuzda, merkezinde (şehir merkezi + n + de).',
                   { s: 'grammar', t: 'cases', d: 2 },
                   'Завтра я еду в Анкару. Сначала еду на такси на вокзал. Поезд отправляется в девять. Мой отель в центре города.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Yol sormak',
+                    passage: [
+                      ['A', 'Affedersiniz, ben turistim. Galata Kulesi’ne nasıl gidebilirim?'],
+                      ['B', 'Önce bu caddede düz gidin, sonra ikinci sokaktan sola dönün.'],
+                      ['A', 'Uzak mı? Yürüyerek gidebilir miyim?'],
+                      ['B', 'Hayır, uzak değil. Yaklaşık on dakika. Kule bir meydanda, yanında küçük bir kafe var.'],
+                      ['A', 'Peki, dönüşte metroya binmek istiyorum. Metro istasyonu nerede?'],
+                      ['B', 'İstasyon bu caddede, bankanın karşısında.'],
+                      ['A', 'Çok teşekkür ederim!'],
+                      ['B', 'Rica ederim, iyi geziler! Kulede fotoğraf çekmeyi unutmayın.'],
+                    ],
+                    translation: '— Извините, я турист. Как мне пройти к Галатской башне? — Сначала идите прямо по этой улице, потом на второй улице поверните налево. — Это далеко? Можно дойти пешком? — Нет, недалеко. Минут десять. Башня стоит на площади, рядом с ней маленькое кафе. — А на обратном пути я хочу сесть на метро. Где станция метро? — Станция на этой улице, напротив банка. — Большое спасибо! — Не за что, хорошей прогулки! Не забудьте сфотографироваться на башне.',
+                    questions: [
+                      ['Как пройти к башне?', ['прямо, затем на второй улице налево', 'прямо, затем на второй улице направо', 'налево, затем прямо до банка'], 0],
+                      ['Сколько идти пешком?', ['около десяти минут', 'около двух минут', 'около двадцати минут'], 0],
+                      ['Где находится станция метро?', ['на этой улице, напротив банка', 'на площади рядом с кафе', 'рядом с башней'], 0],
+                    ],
+                  },
+                  'sola — «налево» (дательный падеж: куда?), meydanda — «на площади», bankanın karşısında — «напротив банка» (где?).',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Друг приезжает к вам в гости. Напишите ему, как дойти от остановки до вашего дома.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Направление (куда?): дательный падеж', ['sağa', 'sola', 'eve', 'durağa', 'caddeye', 'sokağa', 'köşeye', 'parka', 'okula', 'markete']],
+                      ['Место (где?): -da/-de', ['durakta', 'durağında', 'köşede', 'karşısında', 'yanında', 'sokakta', 'caddede', 'kapıda', '-ında', '-inde']],
+                      ['Вежливое повелительное: -(y)In', ['dönün', 'gidin', 'yürüyün', 'inin', 'geçin', 'bakın', 'arayın']],
+                    ],
+                    model: 'Merhaba Arman! Otobüsten Çiçek durağında inin. Sonra düz gidin ve ikinci sokaktan sağa dönün. Benim evim bir parkın karşısında, mavi bir bina. Kapıda beni arayın, ben aşağı inerim. Görüşürüz!',
+                    modelTranslation: 'Привет, Арман! Выходи из автобуса на остановке «Чичек». Потом иди прямо и на второй улице поверни направо. Мой дом напротив парка, синее здание. У двери позвони мне, я спущусь. До встречи!',
+                    checklist: ['Есть приветствие и прощание', 'Направление выражено дательным падежом (sağa, sola), место — местным (-da/-de)', 'Указания даны повелительным наклонением', 'Есть ориентир рядом с домом'],
+                  },
+                  'Куда? — -(y)A, где? — -DA. Указания дают повелительным наклонением: gidin, dönün.',
+                  { d: 2 },
                 ),
               ],
               test: [
@@ -727,6 +839,37 @@ export const turkish: LanguageSpec = {
                 translateBack('Her gün Türkçe öğreniyorum.', ['Я каждый день учу турецкий', 'Каждый день я учу турецкий', 'Я учу турецкий каждый день', 'Я занимаюсь турецким каждый день', 'Каждый день я занимаюсь турецким'], '-iyor описывает и регулярное действие: her gün öğreniyorum — «каждый день учу».'),
                 order(['Lütfen', 'burada', 'biraz', 'bekleyin'], 'Пожалуйста, подождите здесь немного.', 'Повелительный глагол, как и любое сказуемое, стоит в конце.', { s: 'grammar', t: 'imperative' }, { alternatives: [['Lütfen', 'biraz', 'burada', 'bekleyin'], ['Burada', 'biraz', 'bekleyin', 'lütfen']] }),
                 listen('Seni anlamıyorum, tekrar eder misin?', 'anla-mı-yor-um: отрицание -mı- перед -yor.', { d: 2 }, { translation: 'Я тебя не понимаю, повтори, пожалуйста.' }),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Not',
+                    passage: ['Merhaba Deniz! Ben şimdi işe gidiyorum, akşam yedide dönüyorum. Annem bugün bize geliyor, o yüzden lütfen evi biraz topla. Mutfakta kirli bardaklar var, onları yıka. Buzdolabında süt yok, marketten bir şişe süt al, olur mu? Annem çok çay içiyor, çay da alalım. Akşam birlikte yemek yapalım: ben makarna yapıyorum, sen salata hazırla. Bir de kediye mama ver, sabah yemedi. Teşekkürler! Selin'],
+                    translation: 'Привет, Дениз! Я сейчас ухожу на работу, вернусь вечером в семь. Сегодня к нам приезжает моя мама, поэтому, пожалуйста, немного прибери в квартире. На кухне грязные стаканы, помой их. В холодильнике нет молока, купи в магазине бутылку молока, ладно? Мама пьёт много чая, давай купим и чай. Вечером давай приготовим ужин вместе: я делаю макароны, а ты приготовь салат. И ещё дай кошке корм, утром она не ела. Спасибо! Селин.',
+                    questions: [
+                      ['Почему Дениз нужно прибраться?', ['сегодня приезжает мама Селин', 'Селин возвращается в семь', 'на кухне грязные стаканы'], 0],
+                      ['Что Дениз должна купить?', ['бутылку молока', 'макароны', 'корм для кошки'], 0],
+                      ['Что будет делать Дениз вечером?', ['готовить салат', 'готовить макароны', 'встречать маму на вокзале'], 0],
+                    ],
+                  },
+                  'Повелительное на «ты» — основа: topla, yıka, al, hazırla, ver. «Давай(те)» — -(y)AlIm: alalım, yapalım. О себе Селин пишет в -iyor: gidiyorum, yapıyorum.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Подруга спрашивает в мессенджере, чем вы сейчас заняты. Опишите, что делаете вы и ваши близкие, и предложите встретиться вечером.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Настоящее время на -iyor', ['-ıyorum', '-iyorum', '-uyorum', '-üyorum', '-yorum', '-yor']],
+                      ['Предложение «давай…»: -(y)AlIm', ['-alım', '-elim', '-yalım', '-yelim']],
+                    ],
+                    model: 'Selam! Şu an evdeyim, ders çalışıyorum. Kardeşim televizyon izliyor, annem yemek yapıyor. Akşam boş musun? Saat yedide sinemaya gidelim mi? Sonra bir kafede oturalım. Yaz bana!',
+                    modelTranslation: 'Привет! Я сейчас дома, занимаюсь. Брат смотрит телевизор, мама готовит. Ты вечером свободна? Давай в семь пойдём в кино? А потом посидим в кафе. Напиши мне!',
+                    checklist: ['Есть хотя бы два действия в форме -iyor с разными лицами', 'Предложение встретиться оформлено через -(y)AlIm', 'Гласная перед -yor выбрана по гармонии', 'Названо время встречи'],
+                  },
+                  'Что происходит сейчас — -iyor; приглашение — -(y)AlIm (mı?).',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('Şimdi ne yap___?', ['ıyorsun'], 'yap- (гласная a) → -ıyor; «ты» — -sun: yapıyorsun.', { s: 'grammar', d: 2 }, { translation: 'Что ты сейчас делаешь?', options: ['ıyorsun', 'iyorsun', 'ıyorum', 'tın'] }),
@@ -818,6 +961,48 @@ export const turkish: LanguageSpec = {
                   { t: 'cases', d: 2 },
                   'Можно посмотреть ту красную сумку?',
                 ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Pazarda',
+                    passage: [
+                      ['A', 'Buyurun, ne istersiniz?'],
+                      ['B', 'Merhaba! Domatesin kilosu ne kadar?'],
+                      ['A', 'Kırk lira. Çok taze, bugün geldi.'],
+                      ['B', 'Biraz pahalı. Şu domatesler kaç lira?'],
+                      ['A', 'Onlar otuz lira, ama o kadar güzel değil.'],
+                      ['B', 'Tamam, bu taze domatesi alıyorum. İki kilo lütfen. Elma da var mı?'],
+                      ['A', 'Var. Bugün elmada indirim var, kilosu yirmi lira.'],
+                      ['B', 'Harika, bir kilo elma da alayım. Toplam ne kadar?'],
+                      ['A', 'Domates seksen, elma yirmi; toplam yüz lira.'],
+                      ['B', 'Buyurun. Teşekkürler!'],
+                    ],
+                    translation: '— Пожалуйста, что желаете? — Здравствуйте! Почём килограмм помидоров? — Сорок лир. Очень свежие, привезли сегодня. — Дороговато. А те помидоры почём? — Те по тридцать, но они не такие хорошие. — Ладно, беру эти свежие помидоры. Два килограмма, пожалуйста. А яблоки есть? — Есть. Сегодня на яблоки скидка, килограмм — двадцать лир. — Отлично, возьму и килограмм яблок. Сколько всего? — Помидоры восемьдесят, яблоки двадцать — всего сто лир. — Держите. Спасибо!',
+                    questions: [
+                      ['Какие помидоры покупает покупательница?', ['свежие, по сорок лир', 'дешёвые, по тридцать лир', 'свежие, по двадцать лир'], 0],
+                      ['Почему она берёт яблоки?', ['на них сегодня скидка', 'их сегодня привезли', 'помидоры слишком дорогие'], 0],
+                      ['Сколько она платит?', ['сто лир', 'восемьдесят лир', 'сто двадцать лир'], 0],
+                    ],
+                  },
+                  'bu taze domatesi alıyorum — определённый объект в винительном падеже; elmada indirim var — «на яблоки скидка»; alayım — «возьму-ка».',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Вы купили в интернет-магазине куртку, но она вам мала. Напишите продавцу короткое сообщение: что вы купили и что хотите сделать.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Определённый объект в винительном падеже', ['ceketi', 'montu', 'bunu', 'onu', 'şunu', 'siparişi', 'ürünü', 'elbiseyi', 'ayakkabıyı', 'pantolonu', 'gömleği', 'parayı']],
+                      ['Вежливая просьба …-abilir miyim?', ['miyim', 'mıyım', 'misiniz', 'mısınız']],
+                    ],
+                    model: 'Merhaba, dün sitenizden mavi bir ceket aldım. Ama ceket bana çok küçük. Bu ceketi değiştirebilir miyim? Daha büyük beden var mı? Yoksa parayı geri alabilir miyim? Teşekkürler, Aliya',
+                    modelTranslation: 'Здравствуйте, вчера я купила на вашем сайте синюю куртку. Но она мне очень мала. Могу я обменять эту куртку? Есть размер побольше? Или могу я вернуть деньги? Спасибо, Алия.',
+                    checklist: ['Есть приветствие и подпись', 'Определённый объект (bu ceketi, parayı) стоит в винительном падеже', 'Просьба сформулирована вежливо: …-abilir miyim?', 'Понятно, что купили и в чём проблема'],
+                  },
+                  'Известный, определённый предмет получает -(y)I; просьба — -(y)Abilir miyim?',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('Şu gömle___ deneyebilir miyim?', ['ği'], 'gömlek + -i: k между гласными переходит в ğ — gömleği.', { s: 'grammar', t: 'cases', d: 3 }, { translation: 'Можно примерить ту рубашку?', options: ['ği', 'ki', 'yi', 'ğı'] }),
@@ -905,6 +1090,40 @@ export const turkish: LanguageSpec = {
                   'gelecek hafta — «на следующей неделе», значит нужно будущее время. Перед -ız k → ğ: kalacağız. Отрицание: gel-me-y-ecek; после e возможен только вариант -ecek.',
                   { s: 'grammar', t: 'future_tense', d: 2 },
                   'На следующей неделе мы поедем в Измир. Мы пробудем там две недели. Старшая сестра с нами не поедет, потому что много работает.',
+                ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Yaz planları',
+                    passage: [
+                      'Bu yaz ailemle Kapadokya’ya gideceğiz. Temmuzun başında yola çıkacağız ve orada bir hafta kalacağız. Babam arabayı kullanacak, yol yaklaşık sekiz saat sürecek. Kapadokya’da küçük bir otelde kalacağız.',
+                      'Bir sabah erken kalkacağız ve balona bineceğiz — ben çok heyecanlıyım! Annem balona binmeyecek, çünkü yükseklikten korkuyor. O, bizi aşağıda bekleyecek ve fotoğraf çekecek. Sonra eski kiliseleri ve yer altı şehirlerini gezeceğiz. Ablam bizimle gelmeyecek, çünkü yaz okulu var. Belki ağustosta bize katılır.',
+                    ],
+                    translation: 'Этим летом мы с семьёй поедем в Каппадокию. Мы отправимся в начале июля и пробудем там неделю. Машину поведёт папа, дорога займёт около восьми часов. В Каппадокии мы остановимся в маленьком отеле. Однажды утром мы встанем рано и полетим на воздушном шаре — я очень волнуюсь! Мама на шаре не полетит, потому что боится высоты. Она будет ждать нас внизу и фотографировать. Потом мы осмотрим старые церкви и подземные города. Старшая сестра с нами не поедет, потому что у неё летняя школа. Может быть, она присоединится к нам в августе.',
+                    questions: [
+                      ['Сколько семья пробудет в Каппадокии?', ['неделю', 'восемь часов', 'весь июль'], 0],
+                      ['Почему мама не полетит на воздушном шаре?', ['боится высоты', 'будет фотографировать', 'у неё летняя школа'], 0],
+                      ['Кто не поедет с семьёй?', ['старшая сестра', 'мама', 'папа'], 0],
+                    ],
+                  },
+                  'Планы — будущее время на -AcAk: gideceğiz, kalacağız; отрицание — binmeyecek, gelmeyecek.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите другу, что вы будете делать в следующие выходные, и пригласите его присоединиться.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Будущее время на -AcAk', ['-acağım', '-eceğim', '-acağız', '-eceğiz', '-acak', '-ecek']],
+                      ['Слово времени: yarın, gelecek hafta, hafta sonu', ['yarın*', 'gelecek', 'hafta sonu', 'cumartesi*', 'pazar*']],
+                    ],
+                    model: 'Selam Murat! Gelecek hafta sonu çok yoğun olacak. Cumartesi sabah yüzmeye gideceğim, öğleden sonra kuzenimle buluşacağız. Pazar günü evde kalmayacağım, Belgrad Ormanı’na gideceğiz. Sen de gelecek misin? Yaz bana!',
+                    modelTranslation: 'Привет, Мурат! Следующие выходные будут очень насыщенными. В субботу утром я пойду плавать, а днём встречусь с двоюродным братом. В воскресенье я не буду сидеть дома, мы поедем в Белградский лес. Ты тоже поедешь? Напиши мне!',
+                    checklist: ['Глаголы стоят в будущем времени на -AcAk', 'Перед гласной k переходит в ğ: gideceğim, buluşacağız', 'Есть хотя бы одно отрицание (-mAyAcAk) или вопрос (-AcAk mısın?)', 'Есть приглашение и прощание'],
+                  },
+                  'Будущее: -(y)AcAk + личное окончание; вопрос — gelecek misin?',
+                  { d: 2 },
                 ),
               ],
               test: [
@@ -1010,6 +1229,47 @@ export const turkish: LanguageSpec = {
                   '— По-твоему, дистанционное обучение полезно? — Да, по-моему, очень полезно, потому что мы экономим время. Но с преподавателем общаться труднее.',
                 ),
                 choice('Как вежливо выразить сомнение?', ['Emin değilim, biraz düşünmem lazım.', 'Emin değilsin, biraz düşünmem lazım.', 'Emin değilim, biraz düşünmen lazım.', 'Eminim, biraz düşünmem lazım.'], 0, 'Сомнение — Emin değilim (-im — «я»); düşünmem lazım — «мне нужно подумать». Emin değilsin — «ты не уверен», eminim — «я уверен» — противоречит второй части.', { s: 'grammar', d: 2 }),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Online dersler',
+                    passage: [
+                      ['A', 'Sence online dersler yüz yüze derslerden daha iyi mi?'],
+                      ['B', 'Bence değil. Evden ders dinlemek rahat, ama öğretmenle konuşmak zor. Ben soru sormayı seviyorum.'],
+                      ['A', 'Katılmıyorum. Bence online dersler çok kullanışlı, çünkü zaman kazanıyoruz. Ben her gün okula bir saat yolda gidiyorum.'],
+                      ['B', 'Haklısın, yol önemli bir sorun. Ama evde dikkatimi toplayamıyorum. Kardeşlerim çok gürültü yapıyor.'],
+                      ['A', 'O zaman kütüphaneden bağlanabilirsin. Orada sessiz.'],
+                      ['B', 'İyi fikir! Ama yine de arkadaşlarımı görmek istiyorum. Okulda birlikte kahve içiyoruz, sohbet ediyoruz.'],
+                      ['A', 'Bence en iyisi karışık bir sistem: haftada iki gün okulda, üç gün evde.'],
+                      ['B', 'Buna katılıyorum. Bu hem rahat hem de sosyal.'],
+                    ],
+                    translation: '— По-твоему, онлайн-уроки лучше очных? — По-моему, нет. Слушать урок из дома удобно, но с преподавателем общаться трудно. Я люблю задавать вопросы. — Не согласен. По-моему, онлайн-уроки очень удобны, потому что мы экономим время. Я каждый день еду до учёбы час. — Ты прав, дорога — серьёзная проблема. Но дома я не могу сосредоточиться. Мои братья и сёстры очень шумят. — Тогда можешь подключаться из библиотеки. Там тихо. — Хорошая идея! Но всё-таки я хочу видеться с друзьями. В университете мы вместе пьём кофе, болтаем. — По-моему, лучше всего смешанная система: два дня в неделю очно, три дня дома. — С этим я согласен. Это и удобно, и даёт общение.',
+                    questions: [
+                      ['Почему второму собеседнику не нравятся онлайн-уроки?', ['трудно общаться с преподавателем и сосредоточиться дома', 'дорога до университета занимает час', 'в библиотеке слишком шумно'], 0],
+                      ['Какой аргумент приводит первый собеседник?', ['онлайн-уроки экономят время на дорогу', 'дома тише, чем в университете', 'на онлайн-уроках легче задавать вопросы'], 0],
+                      ['К чему они приходят в конце?', ['к смешанной системе: два дня очно, три дня дома', 'заниматься только из библиотеки', 'учиться только очно'], 0],
+                    ],
+                  },
+                  'Мнение — bence/sence, согласие и несогласие — katılıyorum/katılmıyorum, обоснование — çünkü, противопоставление — ama.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'На форуме спрашивают: «Нужно ли учить иностранный язык с детства?» Напишите своё мнение с аргументом и примером.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Выражение мнения: bence / bana göre / düşünüyorum', ['bence', 'bana göre', 'bana kalırsa', 'düşünüyorum']],
+                      ['Обоснование: çünkü', ['çünkü']],
+                      ['Противопоставление: ama / fakat / ancak', ['ama', 'fakat', 'ancak']],
+                    ],
+                    model: 'Bence yabancı dil öğrenmek için en iyi zaman çocukluk, çünkü çocuklar yeni kelimeleri çok kolay hatırlıyor. Mesela benim yeğenim altı yaşında, ama İngilizce şarkıları benden daha iyi biliyor. Ama bence oyunlarla öğrenmek daha iyi, sıkıcı dersler çocukları yoruyor. Sonuç olarak erken başlamak büyük bir avantaj. Siz ne düşünüyorsunuz?',
+                    modelTranslation: 'По-моему, лучшее время для изучения иностранного языка — детство, потому что дети очень легко запоминают новые слова. Например, моему племяннику шесть лет, но английские песни он знает лучше меня. Но, по-моему, лучше учиться через игры: скучные уроки детей утомляют. В итоге ранний старт — большое преимущество. А вы что думаете?',
+                    checklist: ['Мнение чётко сформулировано в первом предложении', 'Есть аргумент с çünkü и конкретный пример (mesela …)', 'Есть оговорка или контраргумент с ama', 'Есть вывод в конце'],
+                  },
+                  'Структура мнения: тезис (bence) → аргумент (çünkü) → пример (mesela) → оговорка (ama) → вывод.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('___ bu film nasıl?', ['Sence'], 'Sence — «по-твоему»: так спрашивают мнение собеседника.', { d: 2 }, { translation: 'Как тебе этот фильм?', options: ['Sence', 'Bence', 'Çünkü'] }),
@@ -1126,6 +1386,42 @@ export const turkish: LanguageSpec = {
                   'На предложение в широком времени отвечают той же формой: içerim («с удовольствием выпью»). iç- — односложная основа → -er.',
                   { t: 'present_tense', d: 2 },
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Türkiye’de çay',
+                    passage: [
+                      'Türkiye’de insanlar çok çay içer. Birçok kişi güne bir bardak çayla başlar, akşam da misafirlere mutlaka çay ikram eder. Türkler çayı küçük, ince belli bardaklarda içer. Çaya genellikle süt koymazlar, ama şeker koyabilirler.',
+                      'Çay demlemek kolay değildir. Önce suyu kaynatmalısınız. Sonra çaydanlığın üstündeki küçük demliğe çay koyarsınız ve üzerine kaynar su dökersiniz. Çay yaklaşık on beş dakika demlenir. Acele etmemelisiniz, yoksa çay lezzetli olmaz.',
+                      'Bir kafede garson size “Açık mı, koyu mu?” diye sorabilir. Bu, çayın rengiyle ilgili bir sorudur: açık çay hafiftir, koyu çay ise serttir. Uyku sorunu olan insanlar akşamları koyu çay içmemeli.',
+                    ],
+                    translation: 'В Турции пьют очень много чая. Многие начинают день со стакана чая, а вечером обязательно угощают гостей чаем. Турки пьют чай из маленьких стаканчиков с тонкой «талией». Молоко в чай они обычно не добавляют, но могут положить сахар. Заварить чай непросто. Сначала нужно вскипятить воду. Потом в маленький заварочный чайник, стоящий на большом, кладут чай и заливают кипятком. Чай заваривается около пятнадцати минут. Спешить нельзя, иначе чай будет невкусным. В кафе официант может спросить: «Светлый или тёмный?» Это вопрос о цвете чая: светлый чай слабый, а тёмный — крепкий. Людям, у которых проблемы со сном, не стоит пить крепкий чай по вечерам.',
+                    questions: [
+                      ['Что турки обычно не добавляют в чай?', ['молоко', 'сахар', 'кипяток'], 0],
+                      ['Сколько заваривается чай?', ['около пятнадцати минут', 'около пяти минут', 'около получаса'], 0],
+                      ['Что значит вопрос «Açık mı, koyu mu?» в кафе?', ['вопрос о крепости (цвете) чая', 'вопрос, открыто ли кафе', 'вопрос о размере стакана'], 0],
+                    ],
+                  },
+                  'Привычки и общие истины — широкое время: içer, başlar, koymazlar. Совет — -mAlI (kaynatmalısınız, içmemeli), возможность — -(y)Abil (koyabilirler, sorabilir).',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Иностранный друг едет в Турцию и просит совета. Напишите, какие у турок привычки, что ему нужно и чего не стоит делать и что он сможет там попробовать.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Широкое время (привычки)', ['içer*', 'yer', 'yerler', 'başlar*', 'sever*', 'eder', 'ederler', 'verir*', 'sorar*', 'gider*', '-rlar', '-rler']],
+                      ['Необходимость: -mAlI', ['-malı', '-meli']],
+                      ['Возможность: -(y)Abil', ['-abilir', '-ebilir']],
+                    ],
+                    model: 'Merhaba Tom! Türkiye’de insanlar çok misafirperverdir. Misafire hemen çay ikram ederler ve genellikle yemeğe davet ederler. Türkler sohbet etmeyi çok sever. Evde ayakkabılarını çıkarmalısın. Çayı reddetmemelisin, bu biraz kaba olabilir. İstanbul’da sokakta simit ve balık ekmek yiyebilirsin, çok lezzetli. Akşamları Boğaz’da yürüyüş yapabilirsin. İyi yolculuklar!',
+                    modelTranslation: 'Привет, Том! В Турции люди очень гостеприимны. Гостю сразу предлагают чай и часто приглашают к столу. Турки очень любят поговорить. В доме тебе нужно снимать обувь. От чая лучше не отказываться — это может показаться невежливым. В Стамбуле на улице можно попробовать симит и балык-экмек, это очень вкусно. По вечерам можно гулять у Босфора. Хорошей поездки!',
+                    checklist: ['Привычки описаны широким временем (ederler, sever)', 'Есть хотя бы один совет с -mAlI и один запрет с -mAmAlI', 'Возможности выражены через -(y)Abil', 'Отрицание широкого времени, если есть, — -mAz (koymaz)'],
+                  },
+                  'Привычки — широкое время, советы — -mAlI, возможности — -(y)Abil.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('Kardeşim hiç sebze ye___.', ['mez'], 'Отрицание широкого времени в 3-м лице — -mAz; после e — -mez: yemez.', { s: 'grammar', t: 'present_tense', d: 2 }, { translation: 'Мой брат совсем не ест овощей.', options: ['mez', 'mem', 'maz', 'mezler'] }),
@@ -1215,6 +1511,50 @@ export const turkish: LanguageSpec = {
                   { s: 'grammar', d: 2 },
                   'Стамбул многолюднее Анкары, но в Анкаре жизнь спокойнее. По-моему, Измир — самый красивый город Турции. Зимой там не так холодно, как в Стамбуле.',
                 ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Hangi ev?',
+                    passage: [
+                      ['A', 'Yeni evini buldun mu?'],
+                      ['B', 'İki ev var, karar veremiyorum. Biri Kadıköy’de, biri Beşiktaş’ta.'],
+                      ['A', 'Hangisi daha büyük?'],
+                      ['B', 'Kadıköy’deki ev daha büyük ve daha aydınlık, ama Beşiktaş’takinden daha pahalı.'],
+                      ['A', 'Ne kadar daha pahalı?'],
+                      ['B', 'Ayda üç bin lira. Beşiktaş’taki ev daha küçük, ama işime çok yakın. Oradan işe yürüyerek on dakikada gidiyorum.'],
+                      ['A', 'Kadıköy’den işe nasıl gideceksin?'],
+                      ['B', 'Vapurla. Vapur otobüsten daha yavaş, ama daha rahat. Yaklaşık kırk dakika sürüyor.'],
+                      ['A', 'Bence Kadıköy daha iyi. Orası Beşiktaş kadar kalabalık değil ve semtin en güzel parkı evin yanında.'],
+                      ['B', 'Haklısın, ama her gün kırk dakika yol… Benim için en önemli şey zaman.'],
+                      ['A', 'O zaman Beşiktaş’taki evi tut!'],
+                    ],
+                    translation: '— Нашёл новую квартиру? — Есть две, не могу решить. Одна в Кадыкёе, другая в Бешикташе. — Какая больше? — Квартира в Кадыкёе больше и светлее, но дороже той, что в Бешикташе. — Насколько дороже? — На три тысячи лир в месяц. Квартира в Бешикташе меньше, зато совсем рядом с работой. Оттуда я дохожу до работы пешком за десять минут. — А из Кадыкёя как будешь добираться? — На пароме. Паром медленнее автобуса, зато удобнее. Дорога занимает минут сорок. — По-моему, Кадыкёй лучше. Там не так многолюдно, как в Бешикташе, и самый красивый парк района — рядом с домом. — Ты прав, но каждый день сорок минут в дороге… Для меня самое важное — время. — Тогда снимай квартиру в Бешикташе!',
+                    questions: [
+                      ['Чем квартира в Кадыкёе лучше?', ['она больше и светлее', 'она ближе к работе', 'она дешевле'], 0],
+                      ['Сколько займёт дорога на работу из Кадыкёя?', ['около сорока минут на пароме', 'десять минут пешком', 'около сорока минут на автобусе'], 0],
+                      ['Что важнее всего для второго собеседника?', ['время', 'размер квартиры', 'красивый парк рядом'], 0],
+                    ],
+                  },
+                  'daha büyük, daha pahalı — сравнительная степень; otobüsten daha yavaş — «медленнее автобуса»; Beşiktaş kadar kalabalık değil — «не так многолюдно, как Бешикташ»; en güzel, en önemli — превосходная степень.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Сравните город, в котором вы живёте, с другим городом, где вы бывали: что больше, дороже, спокойнее и где вам больше нравится.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Сравнительная степень: daha', ['daha']],
+                      ['Превосходная степень: en', ['en']],
+                      ['Равенство: kadar', ['kadar']],
+                    ],
+                    model: 'Ben Almatı’da yaşıyorum, ama geçen yıl İstanbul’u gördüm. İstanbul Almatı’dan çok daha büyük ve daha kalabalık. Orada hayat daha pahalı, özellikle kiralar. Ama İstanbul’un en güzel yeri Boğaz, orası gerçekten harika. Almatı İstanbul kadar kalabalık değil ve dağlara çok yakın. Bence yaşamak için Almatı daha rahat, ama tatil için İstanbul daha ilginç.',
+                    modelTranslation: 'Я живу в Алматы, но в прошлом году побывал в Стамбуле. Стамбул намного больше и многолюднее Алматы. Жизнь там дороже, особенно аренда. Но самое красивое место Стамбула — Босфор, там правда чудесно. Алматы не так многолюден, как Стамбул, и совсем рядом с горами. По-моему, для жизни Алматы удобнее, а для отпуска Стамбул интереснее.',
+                    checklist: ['Точка сравнения стоит в исходном падеже -dAn (Almatı’dan)', 'Есть превосходная степень с en', 'Есть сравнение равенства с kadar', 'В конце — ваш вывод: где лучше и почему'],
+                  },
+                  'Сравнение: X Y’den daha …; равенство: X Y kadar …; превосходная: en ….',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('Kahve çay___ daha pahalı.', ['dan'], 'çay: последняя гласная a, конечная y звонкая → -dan.', { s: 'grammar', t: 'cases', d: 2 }, { translation: 'Кофе дороже чая.', options: ['dan', 'tan', 'den', 'a'] }),
@@ -1291,6 +1631,41 @@ export const turkish: LanguageSpec = {
                   'Город и парк — места действия, слова — объект, поэтому -dık + притяжательное окончание: geçirdiğim («я»), oynadığımız («мы»), söylediği («он»). Сосед сам живёт у парка — причастие -an: oturan.',
                   { s: 'grammar', d: 3 },
                   'Прошлым летом я вернулся в город, где прошло моё детство. Парк, в котором мы раньше играли, всё ещё там. Пожилой сосед, который живёт рядом с парком, сразу меня узнал. Первое, что он мне сказал, было: «Как ты вырос!»',
+                ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Eski bir fotoğraf',
+                    passage: [
+                      'Geçen hafta dedemin evinde eski bir fotoğraf buldum. Fotoğrafta deniz kenarında oturan genç bir kadın ve onun yanında gülen küçük bir çocuk vardı. Kadının elinde, rüzgârda uçmak üzere olan beyaz bir şapka vardı. Fotoğrafın arkasında “İzmir, 1968” yazıyordu.',
+                      'Fotoğrafı dedeme gösterdim. Dedem uzun süre baktı ve gülümsedi. “Bu, üniversitede tanıştığım bir kız,” dedi. “Adı Leyla’ydı. Yanındaki çocuk da onun küçük kardeşi.”',
+                      '“Leyla’yla neden evlenmediniz?” diye sordum. Dedem başını salladı: “Onun ailesi başka bir şehre taşındı ve bir daha görüşmedik. Ama bana yazdığı mektupları hâlâ saklıyorum.” Sonra dolaptan, yıllardır kimsenin açmadığı küçük bir kutu çıkardı. Kutunun içinde sararmış mektuplar vardı.',
+                    ],
+                    translation: 'На прошлой неделе в доме дедушки я нашёл старую фотографию. На ней была молодая женщина, сидящая на берегу моря, а рядом с ней — смеющийся маленький мальчик. В руке женщина держала белую шляпу, которую вот-вот унесёт ветер. На обороте было написано: «Измир, 1968». Я показал фотографию дедушке. Он долго смотрел на неё и улыбнулся. «Это девушка, с которой я познакомился в университете, — сказал он. — Её звали Лейла. А мальчик рядом — её младший брат». «Почему вы не поженились с Лейлой?» — спросил я. Дедушка покачал головой: «Её семья переехала в другой город, и мы больше не виделись. Но письма, которые она мне писала, я храню до сих пор». Потом он достал из шкафа маленькую коробку, которую никто не открывал много лет. В ней лежали пожелтевшие письма.',
+                    questions: [
+                      ['Кто изображён на фотографии?', ['молодая женщина и её младший брат', 'дедушка и его сестра', 'бабушка рассказчика с ребёнком'], 0],
+                      ['Где дедушка познакомился с Лейлой?', ['в университете', 'в Измире на море', 'в соседнем доме'], 0],
+                      ['Что дедушка хранит до сих пор?', ['письма, которые ему писала Лейла', 'фотографии из Измира', 'письма, которые он писал Лейле'], 0],
+                    ],
+                  },
+                  'oturan kadın, gülen çocuk — субъект сам выполняет действие (-(y)An); tanıştığım kız, yazdığı mektuplar, kimsenin açmadığı kutu — объект или участник действия (-DIk + принадлежность).',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Опишите человека, который сильно повлиял на вашу жизнь: кто он, чем занимался, что вы о нём помните.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Причастие на -(y)An', ['-yan', '-yen', 'olan', 'yapan', 'çalışan', 'bilen', 'seven', 'gelen', 'yaşayan', 'öğreten', 'veren', 'okuyan']],
+                      ['Причастие на -DIk + принадлежность', ['-dığım', '-diğim', '-duğum', '-düğüm', '-tığım', '-tiğim', '-dığı', '-diği', '-duğu', '-düğü', '-duğumuz', '-dığımız']],
+                    ],
+                    model: 'Hayatımı en çok etkileyen kişi lise öğretmenim Ayşe Hanım’dı. O, edebiyat öğreten, çok sabırlı ve neşeli bir kadındı. Derste okuduğumuz kitapları hep birlikte tartışırdık. Ben yazmayı onun sayesinde sevdim. Bana verdiği ilk kitabı hâlâ saklıyorum. Şimdi gazeteci olarak çalışıyorum ve bunda onun büyük payı var.',
+                    modelTranslation: 'Человек, который сильнее всех повлиял на мою жизнь, — моя школьная учительница Айше-ханым. Она преподавала литературу, была очень терпеливой и жизнерадостной. Книги, которые мы читали на уроках, мы всегда обсуждали вместе. Писать я полюбил благодаря ей. Первую книгу, которую она мне подарила, я храню до сих пор. Сейчас я работаю журналистом, и в этом её большая заслуга.',
+                    checklist: ['Есть причастие -(y)An (человек сам действует)', 'Есть причастие -DIk с окончанием принадлежности (okuduğumuz, verdiği)', 'Причастный оборот стоит перед существительным', 'Объяснено, чем этот человек важен для вас'],
+                  },
+                  'Вместо «который» — причастия перед существительным: -(y)An для субъекта, -DIk + принадлежность для объекта.',
+                  { d: 3 },
                 ),
               ],
               test: [
@@ -1371,6 +1746,49 @@ export const turkish: LanguageSpec = {
                 ),
                 fill('Daha erken gel___ treni kaçırmazdık.', ['seydik'], 'Условие относится к прошлому — -sAydI + личное окончание «мы»: gel-se-y-di-k.', { s: 'grammar', t: 'conditionals', d: 3 }, { translation: 'Если бы мы пришли раньше, мы бы не опоздали на поезд.', options: ['seydik', 'sek', 'irsek', 'dik'] }),
                 translate('Жаль, что я не начал учить турецкий раньше.', ['Keşke Türkçe öğrenmeye daha önce başlasaydım.', 'Keşke daha önce Türkçe öğrenmeye başlasaydım.', 'Keşke Türkçeye daha önce başlasaydım.', 'Keşke Türkçeye daha erken başlasaydım.', 'Keşke Türkçe öğrenmeye daha erken başlasaydım.', 'Keşke daha erken Türkçe öğrenmeye başlasaydım.', 'Keşke Türkçeyi daha önce öğrenmeye başlasaydım.'], 'Сожаление о прошлом — keşke + -sAydI: başla-sa-y-dı-m.', { s: 'grammar', t: 'conditionals', d: 3 }),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Piyango',
+                    passage: [
+                      ['A', 'Duydun mu? Kuzenim piyangodan büyük ikramiyeyi kazanmış.'],
+                      ['B', 'Vay! Ben kazansam ne yapardım, biliyor musun? Hemen işimi bırakır, dünyayı gezerdim.'],
+                      ['A', 'Gerçekten mi? Ben olsam işimi bırakmazdım. Param çok olsa da çalışmak isterdim, yoksa sıkılırdım.'],
+                      ['B', 'Belki haklısın. Ama en azından bir yıl tatil yapardım. Önce Japonya’ya, sonra Arjantin’e giderdim.'],
+                      ['A', 'Ben önce aileme bir ev alırdım. Annemle babam yıllardır kirada oturuyor.'],
+                      ['B', 'Çok güzel bir düşünce. Keşke ben de bilet alsaydım! Geçen hafta almayı düşündüm ama unuttum.'],
+                      ['A', 'Alsaydın da kazanma şansın çok düşük olurdu. Eğer gerçekten seyahat etmek istiyorsan, her ay biraz para biriktir.'],
+                      ['B', 'Haklısın. Eğer bu ay maaşımın bir kısmını biriktirirsem, yazın en azından İtalya’ya gidebilirim.'],
+                      ['A', 'İşte bu gerçekçi bir plan! Ben de seninle gelirdim, ama bu yaz izin alamıyorum. Eğer eylülde gidersen, belki ben de katılırım.'],
+                    ],
+                    translation: '— Слышал? Мой двоюродный брат, говорят, выиграл главный приз в лотерею. — Ого! Знаешь, что бы я сделал, если бы выиграл? Сразу бросил бы работу и поехал бы путешествовать по миру. — Правда? Я на твоём месте работу не бросал бы. Даже будь у меня много денег, я бы хотел работать, иначе мне было бы скучно. — Может, ты и прав. Но хотя бы год я бы отдыхал. Сначала поехал бы в Японию, потом в Аргентину. — А я сначала купил бы семье дом. Мама с папой уже много лет живут в съёмной квартире. — Прекрасная мысль. Жаль, что я тоже не купил билет! На прошлой неделе собирался, но забыл. — Даже если бы купил, шанс выиграть был бы очень мал. Если ты правда хочешь путешествовать, откладывай немного денег каждый месяц. — Ты прав. Если в этом месяце я отложу часть зарплаты, то летом смогу хотя бы съездить в Италию. — Вот это реалистичный план! Я бы поехал с тобой, но этим летом не могу взять отпуск. Если поедешь в сентябре, может быть, и я присоединюсь.',
+                    questions: [
+                      ['Что сделал бы собеседник B, если бы выиграл?', ['бросил бы работу и путешествовал по миру', 'купил бы родителям дом', 'продолжил бы работать'], 0],
+                      ['Почему A не бросил бы работу?', ['ему стало бы скучно', 'его родители живут на съёмной квартире', 'шанс выиграть очень мал'], 0],
+                      ['О чём жалеет B?', ['что не купил лотерейный билет на прошлой неделе', 'что не поехал в Японию', 'что не откладывал деньги раньше'], 0],
+                      ['Какой реальный план появляется в конце?', ['Her ay para biriktirip yazın İtalya’ya gitmek', 'Bir yıl tatil yapıp Japonya’ya gitmek', 'Piyango bileti alıp aileye ev almak'], 0, true],
+                    ],
+                  },
+                  'Нереальное условие — -sA … -(I)rdI (kazansam … gezerdim); о прошлом — -sAydI (alsaydım); реальное условие — -(I)rsA (biriktirirsem … gidebilirim).',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Тема эссе: «Если бы вы могли изменить одну вещь в своём городе, что бы это было?» Опишите, что бы вы изменили, почему и что стало бы лучше.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['Нереальное условие: -sA / -sAydI', ['olsa', 'olsaydı', '-sam', '-sem', '-saydım', '-seydim', '-sak', '-sek']],
+                      ['Главная часть: -(A/I)rdI', ['-ardım', '-erdim', '-ırdım', '-irdim', '-urdum', '-ürdüm', '-ardı', '-erdi', '-ırdı', '-irdi', '-urdu', '-ürdü']],
+                      ['Пожелание: keşke', ['keşke']],
+                    ],
+                    model: 'Eğer belediye başkanı olsam, şehrimde ilk olarak toplu taşımayı değiştirirdim. Şu an otobüsler çok kalabalık ve sık sık gecikiyor. Daha fazla metro hattı yaptırırdım ve bisiklet yolları açardım. Böylece insanlar arabaya daha az binerdi, hava da daha temiz olurdu. Ayrıca şehir merkezindeki eski binaları yıkmak yerine onları restore ederdim, çünkü şehrin tarihi çok değerli. Param olsa, gençler için ücretsiz spor salonları da açardım. Keşke bunlar gerçekten bir gün olsa! Eğer herkes biraz çaba gösterirse, belki şehrimiz daha yaşanabilir bir yer olur.',
+                    modelTranslation: 'Если бы я был мэром, первым делом я изменил бы общественный транспорт. Сейчас автобусы переполнены и часто опаздывают. Я бы построил больше линий метро и проложил велодорожки. Тогда люди меньше ездили бы на машинах, и воздух стал бы чище. Кроме того, вместо того чтобы сносить старые здания в центре, я бы их реставрировал, потому что история города очень ценна. Будь у меня деньги, я бы ещё открыл бесплатные спортзалы для молодёжи. Хоть бы всё это когда-нибудь действительно случилось! Если каждый приложит немного усилий, возможно, наш город станет удобнее для жизни.',
+                    checklist: ['Нереальные условия построены по схеме -sA … -(I)rdI', 'Есть хотя бы одно реальное условие (-(I)rsA) для того, что действительно возможно', 'Каждое изменение обосновано (çünkü, böylece)', 'Есть пожелание с keşke'],
+                  },
+                  'Нереальное: olsam … değiştirirdim; реальное: gösterirse … olur; пожелание: keşke + -sA.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('Vaktim ___ sana yardım ederdim.', ['olsa'], 'Нереальное условие: olsa + сказуемое на -(e)rdi (ederdim).', { s: 'grammar', t: 'conditionals', d: 3 }, { translation: 'Если бы у меня было время, я бы тебе помог.', options: ['olsa', 'olursa', 'var'] }),
@@ -1455,6 +1873,41 @@ export const turkish: LanguageSpec = {
                   { s: 'grammar', t: 'media', d: 3 },
                   'Старейший мост города был построен в 1890 году. В прошлом году его закрыли для движения на ремонт. Работы вела мэрия, и в прошлом месяце они были завершены. Завтра мост снова откроют на торжественной церемонии. Однако парковаться на мосту нельзя.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Tarihî kütüphane yeniden açıldı',
+                    passage: [
+                      'Şehrin en eski kütüphanesi, üç yıl süren restorasyon çalışmalarının ardından dün düzenlenen bir törenle yeniden ziyarete açıldı. 1912 yılında inşa edilen bina, 2021’deki depremde ciddi şekilde hasar görmüş ve kullanıma kapatılmıştı.',
+                      'Belediye tarafından yürütülen çalışmalarda binanın çatısı tamamen yenilendi, duvarlar güçlendirildi ve tarihî pencereler aslına uygun olarak onarıldı. Kütüphanedeki yaklaşık otuz bin kitap restorasyon süresince başka bir binada korundu; nadir el yazmaları ise özel bir laboratuvarda temizlendi. Restorasyon için ayrılan bütçenin büyük bölümü bir vakıf tarafından karşılandı.',
+                      'Törende konuşan belediye başkanı, kütüphanenin artık yalnızca bir okuma salonu olmayacağını, binada sergiler ve çocuklar için atölyeler de düzenleneceğini açıkladı. Ayrıca binanın bahçesi yeniden düzenlendi ve ziyaretçiler için küçük bir kafe açıldı. Kütüphane hafta içi 09.00–20.00 saatleri arasında açık olacak. Girişte ücret alınmayacak, ancak el yazmaları bölümüne yalnızca randevuyla girilebilecek.',
+                    ],
+                    translation: 'Старейшая библиотека города после трёхлетней реставрации вчера вновь открылась для посетителей на торжественной церемонии. Здание, построенное в 1912 году, серьёзно пострадало при землетрясении 2021 года и было закрыто. В ходе работ, которые вела мэрия, полностью обновили крышу, укрепили стены и отреставрировали исторические окна в первоначальном виде. Около тридцати тысяч книг на время реставрации хранились в другом здании, а редкие рукописи очищали в специальной лаборатории. Большую часть средств на реставрацию выделил фонд. Выступая на церемонии, мэр заявил, что библиотека станет не только читальным залом: в здании будут проходить выставки и мастерские для детей. Кроме того, заново благоустроили сад при здании и открыли небольшое кафе для посетителей. Библиотека будет открыта по будням с 9:00 до 20:00. Вход бесплатный, но в отдел рукописей можно будет попасть только по записи.',
+                    questions: [
+                      ['Почему библиотеку закрывали?', ['здание серьёзно пострадало при землетрясении 2021 года', 'здание построили в 1912 году и оно устарело', 'книги нужно было перевезти в лабораторию'], 0],
+                      ['Что делали с редкими рукописями?', ['их очищали в специальной лаборатории', 'их хранили в другом здании вместе с книгами', 'их показывали на выставке'], 0],
+                      ['Какое правило действует для посетителей?', ['вход бесплатный, но в отдел рукописей — только по записи', 'вход платный, отдел рукописей открыт для всех', 'библиотека открыта только по выходным'], 0],
+                    ],
+                  },
+                  'Новостной стиль строится на пассиве: açıldı, inşa edilen, yenilendi, güçlendirildi, onarıldı; деятель — belediye tarafından; безличный пассив — ücret alınmayacak, girilebilecek.',
+                  { t: 'media', d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите короткую новостную заметку для сайта вашего университета о недавнем событии: что открыли, построили или организовали, кто и когда. Используйте страдательный залог.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['Страдательный залог (-Il/-In/-n)', ['-ıldı', '-ildi', '-uldu', '-üldü', '-ındı', '-indi', '-undu', '-ündü', '-ndı', '-ndi', '-ılacak', '-ilecek']],
+                      ['Деятель с tarafından', ['tarafından']],
+                    ],
+                    model: 'Üniversitemizde geçen hafta “Bilim Günleri” adlı bir etkinlik düzenlendi. Etkinlik, öğrenci kulüpleri tarafından hazırlandı ve üç gün sürdü. İlk gün yeni kimya laboratuvarı açıldı; laboratuvarın modern cihazları bir teknoloji şirketi tarafından bağışlandı. İkinci gün ünlü bir fizikçi davet edildi ve iklim değişikliği hakkında bir konferans verildi. Konferansa beş yüzden fazla öğrenci katıldı. Son gün ise en iyi öğrenci projeleri seçildi ve kazananlara ödüller verildi. Etkinlik büyük ilgi gördü. Rektörlük, etkinliğin önümüzdeki yıl da tekrarlanacağını açıkladı.',
+                    modelTranslation: 'На прошлой неделе в нашем университете прошло мероприятие «Дни науки». Его подготовили студенческие клубы, и оно длилось три дня. В первый день открыли новую химическую лабораторию; современное оборудование для неё подарила технологическая компания. На второй день пригласили известного физика, который прочитал лекцию об изменении климата. На лекцию пришли более пятисот студентов. В последний день выбрали лучшие студенческие проекты и наградили победителей. Мероприятие вызвало большой интерес. Ректорат объявил, что оно пройдёт и в следующем году.',
+                    checklist: ['Большинство сказуемых — в страдательном залоге', 'Деятель, если он важен, назван через tarafından', 'Указаны место, время и участники события', 'Нет оценок от первого лица — нейтральный новостной стиль'],
+                  },
+                  'Новость: пассив + tarafından, нейтральный тон, факты в порядке «что — кто — когда».',
+                  { t: 'media', d: 3 },
+                ),
               ],
               test: [
                 fill('Yeni yasa gelecek ay tartış___.', ['ılacak'], 'tartış- оканчивается на согласную ş → -ıl; будущее -acak: tartışılacak.', { s: 'grammar', d: 3 }, { translation: 'Новый закон будут обсуждать в следующем месяце.', options: ['ılacak', 'nacak', 'acak', 'ılıyor'] }),
@@ -1532,6 +1985,49 @@ export const turkish: LanguageSpec = {
                   'Его слова о нём самом — -dığını/-acağını с окончанием 3-го лица; gelecek yıl требует будущего -eceğini. Вопрос обо мне — çalıştığımı. Сведения с чужих слов передаёт -mış: taşınmış.',
                   { s: 'grammar', d: 3 },
                   'Вчера я встретил старого друга. Он сказал, что переехал в Измир и начал работать на новом месте. Ещё рассказал, что в следующем году женится. Потом спросил, где работаю я. По его словам, ещё один наш друг переехал в Анкару.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Yaya bölgesi',
+                    passage: [
+                      ['A', 'Haberleri izledin mi? Belediye, şehir merkezini arabalara kapatacağını açıkladı.'],
+                      ['B', 'Duydum, ama ne zaman başlayacağını söylemediler, değil mi?'],
+                      ['A', 'Söylediler. Başkan, uygulamanın gelecek ay başlayacağını ve önce sadece hafta sonları deneneceğini söyledi. Toplu taşıma seferlerinin de artırılacağını ekledi.'],
+                      ['B', 'Esnaf ne diyor peki? Komşumuz Ahmet Bey, dükkânına artık kimsenin gelmeyeceğini düşünüyor.'],
+                      ['A', 'Televizyonda konuşan bir esnaf da müşterilerinin yarısını kaybetmekten korktuğunu söyledi. Ama uzmanlara göre yaya bölgeleri genellikle ticareti artırıyormuş.'],
+                      ['B', 'Gerçekten mi? Bunu nereden biliyorlar?'],
+                      ['A', 'Habere göre Avrupa’daki birçok şehirde yaya bölgesi açıldıktan sonra dükkânların satışları yüzde yirmi artmış.'],
+                      ['B', 'İlginç. Annem de dün aynı şeyi anlattı. Merkezde daha rahat yürüyebileceğimizi ve havanın temizleneceğini söyledi.'],
+                      ['A', 'Bence de iyi bir fikir. Ama otopark sorununu nasıl çözeceklerini merak ediyorum.'],
+                      ['B', 'Belediye bu konuda yakında bir açıklama yapacağını söylemiş. Yeni bir otopark inşa edileceği konuşuluyor.'],
+                    ],
+                    translation: '— Смотрел новости? Мэрия объявила, что закроет центр города для машин. — Слышал, но когда это начнётся, не сказали, да? — Сказали. Мэр сообщил, что мера вступит в силу в следующем месяце и сначала её опробуют только по выходным. Он добавил, что общественный транспорт будет ходить чаще. — А что говорят торговцы? Наш сосед Ахмет-бей думает, что в его лавку больше никто не придёт. — Один торговец по телевизору тоже сказал, что боится потерять половину клиентов. Но, по словам экспертов, пешеходные зоны обычно, оказывается, оживляют торговлю. — Правда? Откуда они это знают? — Как сообщается, во многих европейских городах после открытия пешеходных зон продажи в магазинах выросли на двадцать процентов. — Интересно. Мама вчера рассказала то же самое. Она сказала, что в центре можно будет гулять спокойнее и воздух станет чище. — По-моему, тоже хорошая идея. Но мне интересно, как они решат проблему с парковкой. — Говорят, мэрия скоро сделает по этому поводу заявление. Ходят слухи, что построят новую парковку.',
+                    questions: [
+                      ['Когда начнётся новая мера?', ['в следующем месяце, сначала по выходным', 'в эти выходные', 'после заявления о парковках'], 0],
+                      ['Чего боится торговец, выступавший по телевизору?', ['потерять половину клиентов', 'что в центре станет грязнее', 'что сосед закроет лавку'], 0],
+                      ['Что, по сообщениям, произошло в европейских городах?', ['Dükkânların satışları yüzde yirmi artmış.', 'Dükkânların yarısı kapanmış.', 'Otopark sorunu çözülmüş.'], 0, true],
+                    ],
+                  },
+                  'Косвенная речь: -AcAğInI / -DIğInI söyledi (kapatacağını açıkladı, korktuğunu söyledi); сведения с чужих слов — -mIş (artırıyormuş, artmış, söylemiş); источник — göre.',
+                  { t: 'media', d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Вчера друг рассказал вам важные новости (о работе, переезде, учёбе). Перескажите этот разговор в письме другому общему знакомому, используя косвенную речь.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['Косвенная речь: -DIğInI / -(y)AcAğInI', ['-dığını', '-diğini', '-duğunu', '-düğünü', '-tığını', '-tiğini', '-tuğunu', '-tüğünü', '-acağını', '-eceğini']],
+                      ['Пересказ с чужих слов: -mIş', ['-mış', '-miş', '-muş', '-müş']],
+                      ['Глагол речи', ['söyle*', 'anlat*', 'sordu*', 'dedi*', 'açıkla*', 'iddia et*', 'belirt*']],
+                    ],
+                    model: 'Selam Elif! Dün Murat’la uzun uzun konuştum, sana anlatmam lazım. Murat, geçen ay Berlin’deki bir şirketten iş teklifi aldığını ve teklifi kabul ettiğini söyledi. Ağustosta Almanya’ya taşınacağını ve orada en az iki yıl kalacağını anlattı. Sevgilisi Deniz de onunla gidecekmiş, çünkü o da Berlin’de yüksek lisans yapmak istiyormuş. Bana Almanca öğrenmenin zor olup olmadığını sordu; ben de bir kursa yazılmasını tavsiye ettim. Murat gitmeden önce büyük bir veda partisi vereceğini söyledi. Çok sevindim ama biraz da üzüldüm. Sen de partiye gelecek misin?',
+                    modelTranslation: 'Привет, Элиф! Вчера я долго говорил с Муратом, должен тебе рассказать. Мурат сказал, что в прошлом месяце получил предложение о работе от компании в Берлине и принял его. Рассказал, что в августе переезжает в Германию и пробудет там минимум два года. Его девушка Дениз, говорят, едет с ним, потому что тоже хочет учиться в магистратуре в Берлине. Он спросил меня, трудно ли учить немецкий, и я посоветовал записаться на курсы. Мурат сказал, что перед отъездом устроит большую прощальную вечеринку. Я очень рад, но и немного грустно. Ты тоже придёшь на вечеринку?',
+                    checklist: ['Слова друга переданы формами -DIğInI / -AcAğInI перед глаголом речи', 'Есть хотя бы один косвенный вопрос (… olup olmadığını sordu)', 'То, что вы знаете только с чужих слов, передано через -mIş', 'Подлежащее придаточного, если оно есть, стоит в родительном падеже'],
+                  },
+                  'Пересказ: -DIğInI/-AcAğInI söyledi; чужие сведения — -mIş; косвенный вопрос — … olup olmadığını sordu.',
+                  { d: 3 },
                 ),
               ],
               test: [
@@ -1650,6 +2146,44 @@ export const turkish: LanguageSpec = {
                 translate('Не подумав, он ответил «да».', ['Düşünmeden evet dedi.', 'Hiç düşünmeden evet dedi.', 'Düşünmeden “evet” dedi.', 'Hiç düşünmeden “evet” dedi.', 'Düşünmeksizin evet dedi.', 'Hiç düşünmeksizin evet dedi.'], '«Не сделав» — düşün-meden; в книжной речи — düşünmeksizin.', { s: 'grammar', d: 2 }),
                 translateBack('Zaman geçtikçe bu şehre alıştım.', ['Со временем я привык к этому городу', 'Со временем я привыкла к этому городу', 'По мере того как шло время, я привык к этому городу', 'Чем больше проходило времени, тем больше я привыкал к этому городу', 'Постепенно я привык к этому городу'], 'zaman geçtikçe — «по мере того как шло время», то есть «со временем»; alışmak + дательный падеж — «привыкать к».', { d: 2 }),
                 order(['Kimseye', 'haber', 'vermeden', 'şehirden', 'ayrıldı'], 'Он уехал из города, никого не предупредив.', 'Деепричастный оборот (kimseye haber vermeden) стоит перед сказуемым, сказуемое ayrıldı — в конце.', { s: 'grammar', d: 3 }, { alternatives: [['Şehirden', 'kimseye', 'haber', 'vermeden', 'ayrıldı']] }),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Ters giden bir sabah',
+                    passage: [
+                      'Sabah alarmı duymayınca her şey ters gitmeye başladı. Gözlerimi açtığımda saat sekizi geçiyordu. Kahvaltı yapmadan, hatta aynaya bakmaksızın evden fırladım ve otobüs durağına koşarak gittim. Otobüs tam önümden kalkınca bir taksi çevirmekten başka çarem kalmadı.',
+                      'Taksi şoförü radyonun sesini sonuna kadar açmış, şarkılara eşlik ederek araba kullanıyordu. Trafikte ilerledikçe benim sabrım azalıyordu. Her kırmızı ışıkta saatime bakarak toplantıya yetişip yetişemeyeceğimi hesaplıyordum. Şoför, sürekli saatime baktığımı görünce gülümseyerek kestirme bir yoldan gitmeyi önerdi; ne yazık ki o yol da kapalı çıktı. Ofise varınca asansörü beklemeden merdivenlerden çıktım.',
+                      'Toplantı odasının kapısını nefes nefese açtığımda içeride kimse yoktu. Masada yalnızca bir not duruyordu: “Müdür hastalandığı için toplantı yarına ertelendi.” Bütün o koşturmanın boşuna olduğunu anlayınca ne yapacağımı bilemedim. Notu okuyunca önce sinirlendim, sonra kahkahalarla gülmeye başladım.',
+                      'Meğer telefonumun şarjı gece bitmiş, alarm da bu yüzden çalmamış. O günden sonra iki alarm kuruyorum ve telefonumu şarj etmeden asla yatmıyorum. Yine de bazen işe yürürken o sabahki koşuyu hatırlayıp kendi kendime gülümsüyorum.',
+                    ],
+                    translation: 'Утром, не услышав будильник, я понял, что всё пошло наперекосяк. Когда я открыл глаза, было уже больше восьми. Не позавтракав и даже не взглянув в зеркало, я выскочил из дома и побежал к остановке. Когда автобус ушёл прямо у меня перед носом, мне ничего не оставалось, кроме как поймать такси. Таксист включил радио на полную громкость и вёл машину, подпевая песням. Чем дальше мы продвигались в пробке, тем меньше у меня оставалось терпения. На каждом красном светофоре я смотрел на часы и прикидывал, успею ли на совещание. Заметив, что я всё время смотрю на часы, водитель с улыбкой предложил поехать короткой дорогой, но, увы, она тоже оказалась перекрыта. Добравшись до офиса, я не стал ждать лифт и побежал по лестнице. Когда я, задыхаясь, открыл дверь переговорной, там никого не было. На столе лежала только записка: «Совещание перенесено на завтра, так как директор заболел». Поняв, что вся эта беготня была напрасной, я не знал, что делать. Прочитав записку, я сначала разозлился, а потом расхохотался. Оказалось, ночью у телефона села батарея, поэтому будильник и не прозвенел. С тех пор я ставлю два будильника и никогда не ложусь спать, не зарядив телефон. И всё же иногда по дороге на работу я вспоминаю ту утреннюю гонку и улыбаюсь сам себе.',
+                    questions: [
+                      ['Почему рассказчик проспал?', ['ночью разрядился телефон, и будильник не прозвенел', 'он поставил будильник не на то время', 'он поздно лёг после совещания'], 0],
+                      ['Что рассказчик сделал, приехав в офис?', ['поднялся по лестнице, не дожидаясь лифта', 'долго ждал лифт', 'сразу позвонил директору'], 0],
+                      ['Что выяснилось в переговорной?', ['совещание перенесли, потому что директор заболел', 'все уже ушли после совещания', 'совещание началось без него'], 0],
+                      ['Какой вывод сделал рассказчик?', ['ставит два будильника и заряжает телефон на ночь', 'теперь всегда ездит на такси', 'стал ходить на работу пешком, чтобы не опаздывать'], 0],
+                    ],
+                  },
+                  'Повествование держится на деепричастиях: duymayınca, varınca, okuyunca (момент); koşarak, eşlik ederek, bakarak (образ действия); ilerledikçe (нарастание); yapmadan, bakmaksızın, beklemeden, şarj etmeden («не сделав»).',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Для литературного конкурса языковой школы напишите рассказ о дне, когда всё пошло не по плану. Свяжите события деепричастиями.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['-(y)IncA («когда, как только»)', ['-ınca', '-ince', '-unca', '-ünce', '-yınca', '-yince', '-yunca', '-yünce']],
+                      ['-(y)ArAk (образ действия)', ['-arak', '-erek', '-yarak', '-yerek']],
+                      ['-mAdAn / -mAksIzIn / -DIkçA', ['-madan', '-meden', '-maksızın', '-meksizin', '-dıkça', '-dikçe', '-dukça', '-dükçe', '-tıkça', '-tikçe', '-tukça', '-tükçe']],
+                    ],
+                    model: 'Geçen yaz arkadaşlarımla kamp yapmaya karar verdik. Hava durumuna bakmadan yola çıktık, çünkü herkes güneşli bir hafta sonu bekliyordu. Kamp alanına varınca çadırları kurmaya başladık, ama tam o sırada gökyüzü karardı ve şiddetli bir yağmur başladı. Islanmamak için çadırın içine koşarak girdik. Yağmur durmadan yağdıkça çadırın köşelerinden su sızmaya başladı. Bir süre gülerek durumu idare etmeye çalıştık, ancak gece yarısına doğru uyku tulumlarımız tamamen ıslanmıştı. Sonunda hiç tartışmaksızın eşyalarımızı toplayıp en yakın köydeki küçük bir pansiyona gittik. Pansiyonun sahibi bizi görünce hemen sıcak çorba ve kuru havlular getirdi. O gece sıcak bir odada uyurken, planladığımız kamp yerine yaşadığımız bu küçük maceranın çok daha unutulmaz olduğunu fark ettik.',
+                    modelTranslation: 'Прошлым летом мы с друзьями решили пойти в поход. Мы отправились в путь, не посмотрев прогноз погоды, потому что все ждали солнечных выходных. Добравшись до кемпинга, мы начали ставить палатки, но именно в этот момент небо потемнело и хлынул ливень. Чтобы не промокнуть, мы бегом забрались в палатку. Дождь лил не переставая, и вода начала просачиваться через углы палатки. Какое-то время мы, посмеиваясь, пытались справиться, но к полуночи спальники промокли насквозь. В конце концов мы без всяких споров собрали вещи и поехали в маленький пансион в ближайшей деревне. Увидев нас, хозяин сразу принёс горячий суп и сухие полотенца. В ту ночь, засыпая в тёплой комнате, мы поняли, что это маленькое приключение запомнится нам гораздо больше, чем запланированный поход.',
+                    checklist: ['События связаны деепричастиями, а не цепочкой «и… и…»', 'Каждое деепричастие выбрано по смыслу: -IncA — момент, -ArAk — способ, -DIkçA — нарастание, -mAdAn — «не сделав»', 'Есть завязка, кульминация и развязка', 'Гармония гласных в суффиксах соблюдена (-maksızın / -meksizin)'],
+                  },
+                  'Хороший рассказ на C1 — это не набор коротких фраз: деепричастия позволяют связать несколько действий в одно сложное предложение.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('Eve gel___ seni ararım.', ['ince'], '«Как только приду» — -(y)IncA; последняя гласная e → -ince: gelince.', { s: 'grammar', d: 2 }, { translation: 'Как приду домой, позвоню тебе.', options: ['ince', 'erek', 'dikçe', 'meden'] }),
@@ -1767,6 +2301,50 @@ export const turkish: LanguageSpec = {
                   { d: 2 },
                 ),
                 translateBack('Gerekli belgeler teslim edilmediği takdirde başvurunuz değerlendirilmeyecektir.', ['В случае непредоставления необходимых документов ваша заявка не будет рассмотрена', 'Если необходимые документы не будут предоставлены, ваша заявка не будет рассмотрена', 'Если необходимые документы не будут сданы, ваша заявка не будет рассмотрена', 'Если необходимые документы не будут сданы, ваше заявление не будет рассмотрено', 'В случае если необходимые документы не будут предоставлены, ваша заявка не будет рассмотрена'], '-DIğI takdirde — «в случае если»; -mAyAcAktIr — официальное будущее с отрицанием.', { t: 'register', d: 3 }),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Yapay zekâ ve ödevler',
+                    passage: [
+                      ['A', 'Bence üniversiteler ödevlerde yapay zekâ kullanımını tamamen yasaklamalı. Öğrenciler düşünmeden metin üretiyor.'],
+                      ['B', 'Endişeni anlıyorum, ama yasaklasalar bile öğrenciler kullanmaya devam eder. Bunu kontrol etmek neredeyse imkânsız.'],
+                      ['A', 'Kontrol zor olsa bile kurallar gerekli. Aksi takdirde dürüst çalışan öğrenciler haksızlığa uğruyor.'],
+                      ['B', 'Haklısın, ama bir yandan da bu araçlar çok faydalı. Örneğin bizim gruptaki yabancı öğrenciler, Türkçeleri zayıf olmasına rağmen yapay zekâ sayesinde makaleleri çok daha hızlı anlıyor.'],
+                      ['A', 'Bu doğru. Oysa ben başka bir şey gördüm: bazı arkadaşlarım konuyu hiç okumadıkları hâlde mükemmel ödevler teslim ediyor.'],
+                      ['B', 'O zaman sorun araçta değil, ödevin türünde. Ödevler sınıfta sözlü olarak tartışıldığı takdirde kopya çekmek de anlamını yitirir.'],
+                      ['A', 'İlginç bir fikir. Yine de öğretmenler bu konuda eğitim almadıkça böyle bir sistem işlemez.'],
+                      ['B', 'Kesinlikle. Sanırım uzlaştık: yasak değil, akıllı kurallar.'],
+                      ['A', 'Peki sınavlar? Evde yapılan online sınavlarda yapay zekâ kullanılmasını nasıl engelleyeceğiz?'],
+                      ['B', 'Bence önemli sınavlar, teknik olarak zor olsa bile, kampüste yapılmalı. Ödevlerde ise yapay zekâ, kaynak olarak belirtildiği takdirde serbest olabilir.'],
+                    ],
+                    translation: '— По-моему, университетам следует полностью запретить использование искусственного интеллекта в домашних заданиях. Студенты генерируют тексты, не думая. — Понимаю твоё беспокойство, но даже если запретят, студенты продолжат им пользоваться. Проконтролировать это практически невозможно. — Даже если контролировать трудно, правила нужны. Иначе честно работающие студенты оказываются в несправедливом положении. — Ты прав, но, с одной стороны, эти инструменты очень полезны. Например, иностранные студенты в нашей группе, несмотря на слабый турецкий, благодаря ИИ гораздо быстрее понимают статьи. — Это правда. Однако я видел другое: некоторые мои знакомые сдают отличные работы, хотя вообще не читали материал. — Тогда проблема не в инструменте, а в типе задания. Если задания обсуждать в аудитории устно, списывание тоже потеряет смысл. — Интересная мысль. И всё же, пока преподаватели не пройдут обучение, такая система работать не будет. — Безусловно. Кажется, мы пришли к согласию: не запрет, а разумные правила. — А экзамены? Как мы помешаем использовать ИИ на онлайн-экзаменах из дома? — По-моему, важные экзамены, даже если это технически сложно, нужно проводить в кампусе. А в домашних заданиях ИИ можно разрешить при условии, что он указан как источник.',
+                    questions: [
+                      ['Какую позицию A занимает в начале?', ['полностью запретить ИИ в домашних заданиях', 'разрешить ИИ только иностранным студентам', 'обучить преподавателей работе с ИИ'], 0],
+                      ['Какой аргумент B приводит в пользу ИИ?', ['иностранные студенты быстрее понимают статьи, несмотря на слабый турецкий', 'ИИ легко контролировать', 'честные студенты получают лучшие оценки'], 0],
+                      ['Что предлагает B, чтобы списывание потеряло смысл?', ['Ödevleri sınıfta sözlü olarak tartışmak', 'Yapay zekâyı tamamen yasaklamak', 'Öğrencilere daha fazla ödev vermek'], 0, true],
+                      ['К какому выводу приходят собеседники?', ['нужны не запреты, а разумные правила', 'ИИ нужно запретить хотя бы для письменных работ', 'преподавателям не нужно специальное обучение'], 0],
+                    ],
+                  },
+                  'Уступка и условие в споре: yasaklasalar bile, zor olsa bile (-sA bile); zayıf olmasına rağmen, okumadıkları hâlde (реальный факт); tartışıldığı takdirde (условие); eğitim almadıkça («пока не»); bir yandan, oysa — связки аргументации.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите аргументированное мнение для студенческого журнала: «Нужно ли запретить смартфоны в школах?» Приведите доводы за и против, признайте позицию оппонентов и сделайте вывод.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Уступка: -mAsInA rağmen / -DIğI hâlde', ['rağmen', 'hâlde', 'halde']],
+                      ['«Даже если»: -sA bile', ['bile']],
+                      ['Связки аргументации', ['bir yandan', 'öte yandan', 'oysa', 'ancak', 'sonuç olarak', 'buna karşın']],
+                    ],
+                    model: 'Okullarda akıllı telefonların yasaklanması son yıllarda en çok tartışılan konulardan biri. Bir yandan telefonlar öğrencilerin dikkatini dağıtıyor ve derslerde verimliliği düşürüyor. Pek çok araştırma, telefonun sadece masada durmasının bile konsantrasyonu azalttığını gösteriyor. Öte yandan telefonlar, doğru kullanıldığı takdirde güçlü bir öğrenme aracı olabilir: sözlükler, eğitim uygulamaları ve bilgiye anında erişim bunun örnekleri. Yasak taraftarlarının endişelerini anlıyorum; ancak telefonları tamamen yasaklasak bile öğrenciler teneffüste ya da evde onları kullanmaya devam edecek. Üstelik yasaklar, öğrencilere teknolojiyi bilinçli kullanmayı öğretmiyor. Telefonların zararlı olabilmesine rağmen, bence çözüm yasak değil, net kurallar: derslerde telefonlar kapalı tutulmalı ve yalnızca öğretmen izin verdiğinde kullanılmalı. Sonuç olarak okulun görevi, öğrencileri teknolojiden korumak değil, onu sorumlu bir şekilde kullanmayı öğretmektir.',
+                    modelTranslation: 'Запрет смартфонов в школах — одна из самых обсуждаемых тем последних лет. С одной стороны, телефоны отвлекают учеников и снижают эффективность уроков. Многие исследования показывают, что даже телефон, просто лежащий на парте, снижает концентрацию. С другой стороны, при правильном использовании телефон может быть мощным инструментом обучения: словари, образовательные приложения и мгновенный доступ к информации — тому примеры. Я понимаю опасения сторонников запрета, однако даже если мы полностью запретим телефоны, ученики продолжат пользоваться ими на переменах или дома. К тому же запреты не учат осознанно пользоваться технологиями. Несмотря на то что телефоны могут вредить, по-моему, решение — не запрет, а чёткие правила: на уроках телефоны должны быть выключены и использоваться только с разрешения учителя. В итоге задача школы — не оградить учеников от технологий, а научить их пользоваться ими ответственно.',
+                    checklist: ['Есть тезис, довод «за», довод «против» и вывод', 'Позиция оппонентов признана (… anlıyorum; ancak …)', 'Уступка выражена через -mAsInA rağmen или -DIğI hâlde, предположение — через -sA bile', 'Абзац связан связками: bir yandan, öte yandan, sonuç olarak'],
+                  },
+                  'Аргументативный текст: тезис → «с одной стороны / с другой стороны» → признание оппонента → уступка → вывод.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('Herkes karşı çık___ bile fikrimi değiştirmeyeceğim.', ['sa'], 'Предположение «даже если» — -sA bile: çıksa bile.', { s: 'grammar', d: 2 }, { translation: 'Даже если все будут против, я не изменю своего мнения.', options: ['sa', 'masına', 'tığı takdirde', 'arak'] }),
@@ -1880,6 +2458,44 @@ export const turkish: LanguageSpec = {
                 translate('Объявлено, что музей будет закрыт на ремонт.', ['Müzenin onarım nedeniyle kapatılacağı açıklandı.', 'Müzenin tadilat nedeniyle kapatılacağı açıklandı.', 'Müzenin onarım için kapatılacağı açıklandı.', 'Müzenin tadilat için kapatılacağı açıklandı.', 'Müzenin restorasyon nedeniyle kapatılacağı açıklandı.', 'Müzenin onarım nedeniyle kapanacağı açıklandı.', 'Müzenin tadilat nedeniyle kapanacağı açıklandı.'], 'Будущее событие — -(y)AcAK; подлежащее оборота — в родительном падеже (müzenin); при пассивном açıklandı оборот стоит без винительного.', { s: 'grammar', t: 'complex_syntax', d: 3 }),
                 translateBack('Başvuruların çevrim içi olarak yapılması gerekmektedir.', ['Заявки необходимо подавать онлайн', 'Заявки нужно подавать онлайн', 'Заявки должны подаваться онлайн', 'Подавать заявки необходимо онлайн', 'Заявки необходимо подавать через интернет', 'Заявки нужно подавать через интернет'], 'yapılması gerekmektedir — «необходимо, чтобы было сделано»; çevrim içi — «онлайн».', { d: 2 }),
                 listen('Konu ile ilgili çalışmalar devam etmektedir.', 'devam etmektedir — официальный вариант devam ediyor («продолжается»).', { d: 2 }, { translation: 'Работа по данному вопросу продолжается.' }),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Duyuru',
+                    passage: [
+                      'Sayın Öğrencilerimiz,',
+                      '2026–2027 akademik yılı bahar dönemi Erasmus+ değişim programı başvuruları 1 Aralık 2026 tarihinde başlayacak ve 15 Ocak 2027 tarihinde sona erecektir. Program kapsamında öğrencilerimiz, anlaşmalı Avrupa üniversitelerinde bir dönem eğitim alma imkânı bulacaktır. Başvuruların, Uluslararası İlişkiler Ofisi’nin internet sayfasında yer alan çevrim içi form aracılığıyla yapılması gerekmektedir. Şahsen veya e-posta yoluyla yapılan başvurular değerlendirmeye alınmayacaktır. Başvuru ücreti alınmayacaktır.',
+                      'Başvuru sırasında not dökümü belgesinin, geçerli bir dil yeterlilik belgesinin ve niyet mektubunun sisteme yüklenmesi zorunludur. Niyet mektubunun Türkçe veya İngilizce olarak hazırlanması ve bir sayfayı geçmemesi beklenmektedir. Not ortalaması 4 üzerinden 2,5’in altında olan öğrencilerin başvuruları kabul edilmeyecektir. Dil belgesi bulunmayan adayların, 10 Ocak tarihinde üniversitemizde yapılacak dil sınavına katılmaları gerekmektedir.',
+                      'Mülakatlar 20–25 Ocak tarihleri arasında yapılacaktır. Sonuçların 1 Şubat 2027 tarihinde açıklanacağı ve seçilen öğrencilerin e-posta yoluyla bilgilendirileceği önemle duyurulur. Seçilen öğrencilerin, mart ayı sonuna kadar öğrenim anlaşmalarını danışmanlarına onaylatmaları gerekmektedir. Engelli öğrencilerimize ek hibe desteği sağlanacaktır. Eksik belgeyle yapılan başvurular dikkate alınmayacaktır. Konuyla ilgili sorularınız için ofisimizle iletişime geçmenizi rica ederiz.',
+                      'Uluslararası İlişkiler Ofisi',
+                    ],
+                    translation: 'Уважаемые студенты! Приём заявок на программу обмена Erasmus+ на весенний семестр 2026–2027 учебного года начнётся 1 декабря 2026 года и завершится 15 января 2027 года. В рамках программы наши студенты получат возможность проучиться один семестр в европейских университетах-партнёрах. Заявки необходимо подавать через онлайн-форму на сайте Отдела международных связей. Заявки, поданные лично или по электронной почте, рассматриваться не будут. Плата за подачу заявки не взимается. При подаче заявки обязательно загрузить в систему выписку оценок, действующий сертификат о знании языка и мотивационное письмо. Мотивационное письмо должно быть составлено на турецком или английском языке и не превышать одной страницы. Заявки студентов со средним баллом ниже 2,5 из 4 приниматься не будут. Кандидатам без языкового сертификата необходимо сдать языковой экзамен, который пройдёт в нашем университете 10 января. Собеседования пройдут с 20 по 25 января. Доводим до вашего сведения, что результаты будут объявлены 1 февраля 2027 года, а отобранные студенты будут уведомлены по электронной почте. Отобранным студентам необходимо до конца марта согласовать учебное соглашение со своим куратором. Студентам с инвалидностью будет предоставлена дополнительная грантовая поддержка. Заявки с неполным пакетом документов рассматриваться не будут. По всем вопросам просим обращаться в наш отдел. Отдел международных связей.',
+                    questions: [
+                      ['Как можно подать заявку?', ['только через онлайн-форму на сайте отдела', 'лично или по электронной почте', 'на языковом экзамене 10 января'], 0],
+                      ['Что должны сделать кандидаты без языкового сертификата?', ['сдать языковой экзамен в университете 10 января', 'написать мотивационное письмо на английском', 'пройти собеседование 20–25 января'], 0],
+                      ['Чьи заявки не примут?', ['студентов со средним баллом ниже 2,5 из 4', 'студентов, написавших письмо на английском', 'студентов, подавших заявку в январе'], 0],
+                    ],
+                  },
+                  'Официальный стиль: -mAktAdIr и -AcAktIr (gerekmektedir, sona erecektir), номинализации (başvuruların yapılması, belgelerin yüklenmesi), пассив и формулы duyurulur, rica ederiz.',
+                  { d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Вы студент. Напишите официальное заявление (dilekçe) на имя деканата с просьбой допустить вас к пересдаче экзамена, который вы пропустили по болезни. Соблюдайте официальный стиль.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Официальное обращение или формула', ['sayın', 'arz ederim', 'saygılarımla', 'rica ederim']],
+                      ['Номинализация на -mA (просьба, необходимость)', ['-masını', '-mesini', '-ması', '-mesi']],
+                      ['Официальные формы -mAktAdIr / -mIştIr', ['-maktadır', '-mektedir', '-mıştır', '-miştir', '-muştur', '-müştür']],
+                    ],
+                    model: 'Sayın Dekanlığa,\n\nFakülteniz Uluslararası İlişkiler Bölümü üçüncü sınıf öğrencisiyim. Dönem boyunca tüm derslere düzenli olarak devam ettim ve ara sınavdan başarılı bir not aldım. Ancak 12 Ocak 2027 tarihinde yapılan Ekonomi Politikası dersinin final sınavına, sınavdan bir gün önce aniden rahatsızlanmam nedeniyle katılamadım. Başvurduğum hastane tarafından tarafıma beş günlük istirahat raporu verilmiştir. Söz konusu rapor dilekçemin ekinde sunulmaktadır. Mazeret sınavının mümkün olan en kısa sürede yapılması benim için büyük önem taşımaktadır.\n\nYönetmeliğin ilgili maddesi uyarınca, sağlık raporu bulunan öğrencilerin mazeret sınavına girme hakkı bulunmaktadır. Bu nedenle adı geçen dersin mazeret sınavına alınmamın sağlanmasını ve sınav tarihi hakkında tarafıma bilgi verilmesini arz ederim.\n\nSaygılarımla,\nAliya Nurlanova\nÖğrenci No: 2023104578\n\nEk: Sağlık raporu (1 sayfa)',
+                    modelTranslation: 'В деканат. Я студентка третьего курса отделения международных отношений вашего факультета. В течение семестра я регулярно посещала все занятия и успешно сдала промежуточный экзамен. Однако на итоговый экзамен по курсу «Экономическая политика», состоявшийся 12 января 2027 года, я не смогла явиться, так как за день до экзамена внезапно заболела. В больнице, куда я обратилась, мне выдали справку об освобождении на пять дней. Указанная справка прилагается к заявлению. Для меня очень важно, чтобы экзамен по уважительной причине прошёл как можно скорее. Согласно соответствующей статье положения, студенты, имеющие медицинскую справку, вправе сдавать экзамен по уважительной причине. В связи с этим прошу допустить меня к пересдаче по указанному курсу и сообщить мне дату экзамена. С уважением, Алия Нурланова. Студенческий билет № 2023104578. Приложение: медицинская справка (1 стр.).',
+                    checklist: ['Есть обращение (Sayın …) и заключительная формула (arz ederim / saygılarımla)', 'Изложены факты: кто вы, что случилось, какие документы прилагаются', 'Просьба оформлена номинализацией: …-mAsInI arz ederim', 'Нет разговорных слов и обращения на «ты»'],
+                  },
+                  'Dilekçe: обращение — представление — факты — основание — просьба (-mAsInI arz ederim) — подпись и приложения.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('Sorunun çözül___ anlaşıldı.', ['düğü'], 'Факт при пассивном глаголе anlaşıldı — -DIK + -I без винительного: çözüldüğü.', { s: 'grammar', t: 'complex_syntax', d: 3 }, { translation: 'Выяснилось, что проблема решена.', options: ['düğü', 'mesi', 'düğünü', 'meksizin'] }),
@@ -1993,6 +2609,50 @@ export const turkish: LanguageSpec = {
                 translate('Легко сказать!', ['Dile kolay!', 'Söylemesi kolay!', 'Demesi kolay!'], 'dile kolay — дословно «языку легко»: так говорят о деле, которое на словах проще, чем на деле.', { d: 2 }),
                 translateBack('Akıllı telefonlar yaygınlaşınca fotoğraf makinelerinin pabucu dama atıldı.', ['Когда смартфоны распространились, фотоаппараты вышли из моды', 'С распространением смартфонов фотоаппараты вышли из моды', 'Когда смартфоны стали популярными, фотоаппараты стали не нужны', 'С распространением смартфонов фотоаппараты стали никому не нужны', 'Когда смартфоны распространились, фотоаппараты стали не нужны', 'Когда смартфоны распространились, фотоаппараты устарели'], 'pabucu dama atılmak — «выйти из моды, стать ненужным»; yaygınlaşınca — «когда распространились».', { t: 'science', d: 3 }),
                 speak('Damlaya damlaya göl olur.', 'Курочка по зёрнышку клюёт (дословно: «Капля за каплей — и озеро»).', 'Пословица делится на две ритмические группы: damlaya damlaya | göl olur; ударение в damlaya — на последний слог.', { d: 2 }),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Sergi',
+                    passage: [
+                      ['A', 'Dün akşam yeni açılan çağdaş sanat sergisine gittim. Dile kolay, iki saat sırada bekledim!'],
+                      ['B', 'Değdi mi bari? Ben eleştirilere şöyle bir göz attım, pek övmüyorlardı.'],
+                      ['A', 'Bence bazı eleştirmenler biraz burnu havada. Sergi beni derinden etkiledi. Özellikle yaşlı bir ressamın eserleri… İnsanın ağzı açık kalıyor.'],
+                      ['B', 'Sen her sergiyi seviyorsun ama! Geçen sefer de “harika” demiştin, ben ise sıkılmıştım.'],
+                      ['A', 'Bu sefer farklı, söz veriyorum. Resimlerin yanında ressamın mektupları ve eski fotoğrafları da sergileniyor; insan onun hayatını adım adım takip ediyor.'],
+                      ['B', 'Hangi ressam? Yıllardır adı duyulmayan biri mi?'],
+                      ['A', 'Evet, Nuri Aksoy. Bir zamanlar pabucu dama atılmıştı, ama şimdi yeniden keşfediliyor. Galeri sahibi, onun eserlerinin önemli bir kültürel miras olduğunu söylüyor.'],
+                      ['B', 'Bunu duyunca benim de içim gitti. Ama biliyorsun, bu hafta işler çok yoğun.'],
+                      ['A', 'Yine mi ipe un seriyorsun? Geçen ay da tiyatroya gelmemiştin!'],
+                      ['B', 'Tamam, tamam, haklısın. Cumartesi gidelim. Biletleri internetten ben alırım, böylece sırada beklemeyiz.'],
+                      ['A', 'Harika! Görürsün, senin de eteklerin zil çalacak. Sergiden sonra da yakındaki kafede bir şeyler içeriz.'],
+                    ],
+                    translation: '— Вчера вечером я сходил на новую выставку современного искусства. Легко сказать — два часа простоял в очереди! — Ну хоть стоило того? Я пробежал глазами рецензии, там особо не хвалили. — По-моему, некоторые критики слишком задирают нос. Выставка меня глубоко тронула. Особенно работы одного пожилого художника… просто дар речи теряешь. — Да тебе любая выставка нравится! В прошлый раз ты тоже говорил «потрясающе», а мне было скучно. — На этот раз всё иначе, обещаю. Рядом с картинами выставлены письма и старые фотографии художника, и ты шаг за шагом следишь за его жизнью. — Какого художника? Того, о котором годами не было слышно? — Да, Нури Аксоя. Когда-то он вышел из моды, а теперь его открывают заново. Владелец галереи говорит, что его работы — важное культурное наследие. — Услышав это, я тоже ужасно захотел пойти. Но ты же знаешь, на этой неделе очень много работы. — Опять отговорки ищешь? В прошлом месяце ты и в театр не пошёл! — Ладно, ладно, ты прав. Пойдём в субботу. Билеты я куплю онлайн, тогда не придётся стоять в очереди. — Отлично! Вот увидишь, ты тоже будешь в восторге. А после выставки посидим в кафе поблизости.',
+                    questions: [
+                      ['Почему A пришлось долго ждать?', ['на выставку была очередь на два часа', 'выставка открылась с опозданием', 'он два часа ждал друга'], 0],
+                      ['Что говорят о художнике?', ['когда-то он вышел из моды, а теперь его открывают заново', 'его всегда хвалили критики', 'он сам владеет галереей'], 0],
+                      ['Что значит упрёк «Yine mi ipe un seriyorsun?»', ['ты опять ищешь отговорки', 'ты опять опаздываешь', 'ты опять задираешь нос'], 0],
+                    ],
+                  },
+                  'dile kolay — «легко сказать», göz atmak — «пробежать глазами», burnu havada — «высокомерный», ağzı açık kalmak — «потерять дар речи», pabucu dama atılmak — «выйти из моды», içi gitmek — «очень захотеть», ipe un sermek — «искать отговорки», etekleri zil çalmak — «ликовать».',
+                  { t: 'culture', d: 3 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите отзыв для культурного блога о фильме, книге или выставке, которая вас впечатлила. Используйте не меньше двух идиом.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Идиома с частью тела', ['göz at*', 'kulak ver*', 'ağzı açık', 'burnu havada', 'eli açık', 'ağzı kulaklarına', 'gözden düş*']],
+                      ['Другая идиома', ['etekleri zil', 'eteklerim zil', 'eteklerin zil', 'pabucu dama', 'ipe un', 'dile kolay', 'içim git*']],
+                      ['Лексика культуры', ['eser*', 'miras*', 'yönetmen*', 'sergi*', 'roman*', 'etkile*']],
+                    ],
+                    model: 'Geçen hafta, uzun zamandır izlemek istediğim “Kış Uykusu” filmini nihayet izledim. Açıkçası başta biraz tereddüt ediyordum, çünkü film üç saatten uzun. Dile kolay, üç saat boyunca neredeyse sadece konuşmalar! Ancak ilk sahnelerden itibaren film beni derinden etkiledi. Yönetmen, Kapadokya’nın soğuk ve ıssız manzarasını karakterlerin iç dünyasıyla ustaca birleştiriyor. Ana karakter Aydın, kendini herkesten üstün gören, burnu havada bir adam; çevresindekilerin eleştirilerine hiç kulak vermiyor. Bazı diyaloglarda insanın ağzı açık kalıyor, o kadar gerçekçi ve sertler. Film bittiğinde etekleri zil çalan bir seyirci değildim belki, ama günlerce düşündüm. Pabucu dama atıldığı sanılan yavaş sinemanın hâlâ ne kadar güçlü olabileceğini gösteren önemli bir eser. Sinemayı seven herkese tavsiye ederim.',
+                    modelTranslation: 'На прошлой неделе я наконец посмотрел фильм «Зимняя спячка», который давно хотел увидеть. Честно говоря, поначалу я колебался, потому что фильм идёт больше трёх часов. Легко сказать: три часа почти одних разговоров! Но с первых же сцен фильм глубоко меня тронул. Режиссёр мастерски соединяет холодный и пустынный пейзаж Каппадокии с внутренним миром героев. Главный герой Айдын — высокомерный человек, считающий себя выше всех; он совершенно не прислушивается к критике окружающих. От некоторых диалогов просто теряешь дар речи — настолько они реалистичны и жёстки. Может быть, после финала я и не ликовал, но думал о фильме несколько дней. Это важная работа, которая показывает, насколько сильным до сих пор может быть «медленное кино», которое считают вышедшим из моды. Рекомендую всем, кто любит кино.',
+                    checklist: ['В тексте не меньше двух идиом, и каждая употреблена к месту', 'Есть краткое описание произведения и ваша оценка', 'Использована лексика культуры: eser, yönetmen, sergi, etkilemek', 'Есть рекомендация читателям в конце'],
+                  },
+                  'Идиомы делают отзыв живым, но они должны подходить по смыслу. Лучше две точные идиомы, чем пять случайных.',
+                  { t: 'culture', d: 3 },
+                ),
               ],
               test: [
                 choiceRu('Что означает это предложение?', 'Bakan bu açıklamadan sonra gözden düştü.', ['После этого заявления министр впал в немилость.', 'После этого заявления министр исчез из виду.', 'После этого заявления министр упал в обморок.'], 0, 'gözden düşmek — «потерять расположение, впасть в немилость», а не «исчезнуть из виду».', { s: 'reading', c: 'comprehension', d: 3 }),
