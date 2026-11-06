@@ -25,6 +25,11 @@ async function answerCurrentTask(page: Page) {
       const values = await gaps.nth(i).locator('option:not([disabled])').allTextContents();
       await gaps.nth(i).selectOption(values[0]!);
     }
+  } else if (await task.locator('.reading__question').count()) {
+    const questions = task.locator('.reading__question');
+    for (let i = 0; i < (await questions.count()); i++) await questions.nth(i).locator('.options__item').first().click();
+  } else if (await task.locator('.writing__input').count()) {
+    await task.locator('.writing__input').fill('Das ist ein kurzer Text zum Test.');
   } else if (await task.getByRole('button', { name: 'Пропустить без штрафа' }).count()) {
     await task.getByRole('button', { name: 'Пропустить без штрафа' }).click();
   } else if (await task.locator('.tiles:not(.tiles--answer) .tile').count()) {
