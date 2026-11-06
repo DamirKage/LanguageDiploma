@@ -1,5 +1,5 @@
 import { Schema, model, type HydratedDocument, type InferSchemaType } from 'mongoose';
-import { CEFR_LEVELS, ERROR_CATEGORIES, EXERCISE_TYPES, SELF_ASSESSMENTS, SKILLS } from '@linguapath/shared';
+import { CEFR_LEVELS, ERROR_CATEGORIES, EXERCISE_TYPES, MILESTONE_KEYS, SELF_ASSESSMENTS, SKILLS } from '@linguapath/shared';
 
 const verdicts = ['correct', 'almost', 'incorrect', 'skipped'];
 
@@ -191,3 +191,43 @@ const dailyPlanSchema = new Schema(
 );
 dailyPlanSchema.index({ user: 1, language: 1, date: 1 }, { unique: true });
 export const DailyPlan = model('DailyPlan', dailyPlanSchema);
+
+/** The moment a learner first reached a milestone; milestones are never taken away. */
+const achievementSchema = new Schema(
+  {
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    language: { type: String, required: true },
+    key: { type: String, enum: MILESTONE_KEYS, required: true },
+    achievedAt: { type: Date, required: true },
+  },
+  { timestamps: false },
+);
+achievementSchema.index({ user: 1, language: 1, key: 1 }, { unique: true });
+export const Achievement = model('Achievement', achievementSchema);
+
+/**
+ * Certificate of completing a course level. The public code lets anyone check it at /certificate/<code>;
+ * the record keeps a snapshot of the results so the certificate does not change afterwards.
+ */
+const certificateSchema = new Schema(
+  {
+    code: { type: String, required: true, unique: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    name: { type: String, required: true },
+    language: { type: String, required: true },
+    languageName: { type: String, required: true },
+    level: { type: String, enum: CEFR_LEVELS, required: true },
+    issuedAt: { type: Date, required: true },
+    stats: {
+      lessons: Number,
+      averagePercent: Number,
+      moduleTests: Number,
+      words: Number,
+      minutes: Number,
+      activeDays: Number,
+    },
+  },
+  { timestamps: false },
+);
+certificateSchema.index({ user: 1, language: 1, level: 1 }, { unique: true });
+export const Certificate = model('Certificate', certificateSchema);

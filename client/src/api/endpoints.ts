@@ -1,4 +1,5 @@
 import type {
+  AchievementsDTO,
   AdminStatsDTO,
   AdminUserDTO,
   AnswerResultDTO,
@@ -7,6 +8,7 @@ import type {
   AttemptSummaryDTO,
   AuthResponse,
   CefrLevel,
+  CertificateDTO,
   EnrollmentDTO,
   ErrorAnalyticsDTO,
   ExerciseAnswer,
@@ -110,6 +112,12 @@ export const analyticsApi = {
   topics: (language: string) => api<TopicAnalyticsDTO[]>({ url: `/me/analytics/${language}/topics` }),
   errors: (language: string) => api<ErrorAnalyticsDTO>({ url: `/me/analytics/${language}/errors` }),
   srs: (language: string) => api<SrsAnalyticsDTO>({ url: `/me/analytics/${language}/srs` }),
+};
+
+export const motivationApi = {
+  achievements: (language: string) => api<AchievementsDTO>({ url: `/me/achievements/${language}` }),
+  issueCertificate: (language: string, level: CefrLevel) => api<CertificateDTO>({ method: 'POST', url: '/me/certificates', data: { language, level } }),
+  certificate: (code: string) => api<CertificateDTO>({ url: `/certificates/${encodeURIComponent(code)}` }),
 };
 
 export const adminApi = {

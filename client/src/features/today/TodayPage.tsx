@@ -9,6 +9,7 @@ import { useI18n } from '../../i18n';
 import { qk, useActiveLanguage, useEnrollments, useTopics } from '../../lib/queries';
 import { reasonText, recommendationTitle } from './recommendationText';
 import { useStartActivity } from './useStartActivity';
+import { NextMilestone, WeekCard, useAchievements } from '../motivation/Motivation';
 
 function greetingKey(hour: number) {
   if (hour < 5) return 'today.greeting.night' as const;
@@ -139,6 +140,7 @@ export default function TodayPage() {
   const plan = useQuery({ queryKey: qk.plan(code ?? ''), queryFn: () => personalApi.plan(code!), enabled: !!code });
   const recs = useQuery({ queryKey: qk.recommendations(code ?? ''), queryFn: () => personalApi.recommendations(code!), enabled: !!code });
   const start = useStartActivity(code ?? '');
+  const achievements = useAchievements(code);
   const rebuild = useMutation({
     mutationFn: () => personalApi.rebuildPlan(code!),
     onSuccess: (data) => {
@@ -211,6 +213,8 @@ export default function TodayPage() {
         </div>
 
         <aside className="stack today__aside" style={{ '--gap': 'var(--s8)' } as React.CSSProperties}>
+          {achievements.data ? <WeekCard data={achievements.data} /> : null}
+          {achievements.data ? <NextMilestone data={achievements.data} /> : null}
           <Diagnosis language={code} recs={recs.data} />
           {plan.data!.upcoming.length > 0 ? (
             <Section title={t('today.upcoming')}>

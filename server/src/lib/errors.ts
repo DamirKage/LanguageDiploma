@@ -15,6 +15,7 @@ export type ErrorCode =
   | 'attempt_not_finished'
   | 'answer_mismatch'
   | 'not_enrolled'
+  | 'certificate_not_earned'
   | 'no_exercises'
   | 'upload_rejected'
   | 'dictionary_unavailable'
@@ -42,6 +43,7 @@ const DEFAULT_MESSAGES: Record<ErrorCode, string> = {
   attempt_not_finished: 'Сначала ответьте на все задания.',
   answer_mismatch: 'Ответ не соответствует текущему заданию.',
   not_enrolled: 'Сначала выберите этот язык для изучения.',
+  certificate_not_earned: 'Сертификат выдаётся, когда все уроки уровня пройдены и все итоговые тесты модулей сданы.',
   no_exercises: 'Для этого занятия пока нет подходящих заданий.',
   upload_rejected: 'Файл не принят: проверьте тип и размер.',
   dictionary_unavailable: 'Словарный сервис временно недоступен.',

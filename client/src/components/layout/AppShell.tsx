@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { BookOpen, CalendarCheck2, ChevronDown, LayoutDashboard, LogOut, Map as MapIcon, Plus, Repeat2, Settings2, TrendingUp, UserRound } from 'lucide-react';
+import { BookOpen, CalendarCheck2, ChevronDown, LayoutDashboard, LogOut, Map as MapIcon, Plus, Repeat2, Settings2, TrendingUp, UserRound, Info } from 'lucide-react';
 import { meApi, reviewApi } from '../../api/endpoints';
 import { useAuth } from '../../auth/AuthContext';
 import { useI18n } from '../../i18n';
@@ -145,6 +145,10 @@ export function AppShell() {
           <NavLink to="/profile" className="nav__link">
             <Settings2 size={18} aria-hidden />
             {t('nav.profile')}
+          </NavLink>
+          <NavLink to="/about" className="nav__link">
+            <Info size={18} aria-hidden />
+            {t('about.link')}
           </NavLink>
           <div className="user-chip">
             <span className="user-chip__avatar" aria-hidden>

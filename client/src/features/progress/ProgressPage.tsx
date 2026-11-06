@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { LevelCertificates, MilestoneGrid, useAchievements } from '../motivation/Motivation';
 import { useQuery } from '@tanstack/react-query';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import { analyticsApi, meApi, personalApi } from '../../api/endpoints';
@@ -311,7 +312,24 @@ export default function ProgressPage() {
         </Section>
       ) : null}
 
+      <Rewards language={code} />
+
       <History language={code} />
     </>
+  );
+}
+
+/** Milestones and level certificates; reached through /progress#certificates from a lesson summary. */
+function Rewards({ language }: { language: string }) {
+  const { data } = useAchievements(language);
+  useEffect(() => {
+    if (data && window.location.hash === '#certificates') document.getElementById('certificates')?.scrollIntoView?.({ block: 'start' });
+  }, [data]);
+  if (!data) return null;
+  return (
+    <div className="rewards">
+      <LevelCertificates language={language} data={data} />
+      <MilestoneGrid data={data} />
+    </div>
   );
 }

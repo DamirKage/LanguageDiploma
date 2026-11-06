@@ -14,7 +14,7 @@ async function audit(page: Page, label: string) {
 }
 
 test('public pages have no serious accessibility violations', async ({ page }) => {
-  for (const path of ['/', '/login', '/register']) {
+  for (const path of ['/', '/login', '/register', '/about']) {
     await page.goto(path);
     await audit(page, path);
   }

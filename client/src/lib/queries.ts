@@ -16,10 +16,12 @@ export const qk = {
   vocabulary: (lang: string, params: object) => ['vocabulary', lang, params] as const,
   analytics: (lang: string, part: string) => ['analytics', lang, part] as const,
   history: (lang: string, page: number) => ['history', lang, page] as const,
+  achievements: (lang: string) => ['achievements', lang] as const,
+  certificate: (code: string) => ['certificate', code] as const,
 };
 
 /** Query keys whose data changes after any learning activity. */
-export const LEARNING_KEYS = [['plan'], ['recommendations'], ['path'], ['analytics'], ['reviews'], ['vocabulary'], ['history'], ['enrollments'], ['lesson']];
+export const LEARNING_KEYS = [['plan'], ['recommendations'], ['path'], ['analytics'], ['reviews'], ['vocabulary'], ['history'], ['enrollments'], ['lesson'], ['achievements']];
 
 export function useLanguages() {
   return useQuery({ queryKey: qk.languages, queryFn: catalogApi.languages, staleTime: 10 * 60_000 });

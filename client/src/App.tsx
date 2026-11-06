@@ -17,6 +17,8 @@ const VocabularyPage = lazy(() => import('./features/vocabulary/VocabularyPage')
 const ProgressPage = lazy(() => import('./features/progress/ProgressPage'));
 const ProfilePage = lazy(() => import('./features/profile/ProfilePage'));
 const AdminApp = lazy(() => import('./features/admin/AdminApp'));
+const AboutPage = lazy(() => import('./features/about/AboutPage'));
+const CertificatePage = lazy(() => import('./features/motivation/CertificatePage'));
 
 function RequireAuth({ children, admin }: { children: ReactNode; admin?: boolean }) {
   const { status, user } = useAuth();
@@ -50,6 +52,8 @@ export function App() {
         <Route path="/register" element={<PublicOnly><RegisterPage /></PublicOnly>} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/certificate/:code" element={<CertificatePage />} />
         <Route path="/onboarding" element={<RequireAuth><OnboardingPage /></RequireAuth>} />
         <Route path="/learn/:attemptId" element={<RequireAuth><PlayerPage /></RequireAuth>} />
         <Route path="/review/session" element={<RequireAuth><ReviewPage session /></RequireAuth>} />

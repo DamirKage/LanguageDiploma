@@ -54,6 +54,9 @@ export function LandingPage() {
         <Brand />
         <div className="row">
           <ThemeSwitch />
+          <Link to="/about" className={buttonClass({ variant: 'ghost' })}>
+            {t('about.link')}
+          </Link>
           <Link to="/login" className={buttonClass({ variant: 'ghost' })}>
             {t('auth.toLogin')}
           </Link>

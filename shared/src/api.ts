@@ -366,3 +366,67 @@ export interface AdminUserDTO {
   languages: string[];
   lessonsCompleted: number;
 }
+
+/* ---------- Motivation: weekly rhythm, milestones, certificates ---------- */
+
+export const MILESTONE_KEYS = [
+  'placement',
+  'first_lesson',
+  'perfect_lesson',
+  'module_test',
+  'words_20',
+  'words_50',
+  'words_100',
+  'days_7',
+  'days_30',
+  'writing_5',
+  'listening_10',
+  'comeback',
+  'level_complete',
+] as const;
+export type MilestoneKey = (typeof MILESTONE_KEYS)[number];
+
+export interface MilestoneDTO {
+  key: MilestoneKey;
+  achieved: boolean;
+  achievedAt: string | null;
+  /** Progress towards the milestone; equals `target` once achieved. */
+  current: number;
+  target: number;
+  /** Reached during the last few minutes: shown as news after a lesson. */
+  isNew: boolean;
+}
+
+/** The current calendar week (Monday–Sunday in the learner's time zone). A missed day costs nothing. */
+export interface WeekDTO {
+  minutes: number;
+  goalMinutes: number;
+  activeDays: number;
+  goalDays: number;
+  days: Array<{ date: string; minutes: number; active: boolean; future: boolean }>;
+}
+
+export interface CertificateDTO {
+  code: string;
+  name: string;
+  language: string;
+  languageName: string;
+  level: CefrLevel;
+  issuedAt: string;
+  stats: { lessons: number; averagePercent: number; moduleTests: number; words: number; minutes: number; activeDays: number };
+}
+
+export interface LevelStatusDTO {
+  level: CefrLevel;
+  lessons: { completed: number; total: number };
+  moduleTests: { passed: number; total: number };
+  eligible: boolean;
+  certificate: CertificateDTO | null;
+}
+
+export interface AchievementsDTO {
+  language: string;
+  week: WeekDTO;
+  milestones: MilestoneDTO[];
+  levels: LevelStatusDTO[];
+}

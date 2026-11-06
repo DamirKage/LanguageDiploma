@@ -11,6 +11,7 @@ import swaggerUi from 'swagger-ui-express';
 import { config } from './config';
 import { AppError, defaultMessage } from './lib/errors';
 import { logger } from './lib/logger';
+import { achievementsRouter } from './modules/achievements/routes';
 import { adminContentRouter } from './modules/admin/content-routes';
 import { adminRouter } from './modules/admin/routes';
 import { analyticsRouter } from './modules/analytics/routes';
@@ -109,6 +110,7 @@ export function createApp() {
   app.use(reviewsRouter);
   app.use(recommendationsRouter);
   app.use(analyticsRouter);
+  app.use(achievementsRouter);
   app.use(adminContentRouter);
   app.use(adminRouter);
 

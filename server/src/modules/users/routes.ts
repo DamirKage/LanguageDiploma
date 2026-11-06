@@ -12,6 +12,8 @@ import {
   RecommendationSnapshot,
   ReviewItem,
   ReviewLog,
+  Achievement,
+  Certificate,
 } from '../../models/learning';
 import { Enrollment, PasswordResetToken, RefreshToken, User } from '../../models/user';
 import { changePassword, clearRefreshCookie, startSession, toUserDTO, verifyPassword } from '../auth/service';
@@ -108,6 +110,9 @@ del(
       ReviewLog.deleteMany(filter),
       RecommendationSnapshot.deleteMany(filter),
       DailyPlan.deleteMany(filter),
+      // Certificates carry the name, so they go with the account; their public links stop working.
+      Achievement.deleteMany(filter),
+      Certificate.deleteMany(filter),
       Enrollment.deleteMany(filter),
       RefreshToken.deleteMany(filter),
       PasswordResetToken.deleteMany(filter),

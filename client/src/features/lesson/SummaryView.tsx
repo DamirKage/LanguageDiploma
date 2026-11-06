@@ -9,6 +9,7 @@ import { useI18n } from '../../i18n';
 import { useCountUp } from '../../lib/motion';
 import { LEARNING_KEYS, useTopics } from '../../lib/queries';
 import { reasonText, recommendationTitle } from '../today/recommendationText';
+import { NewMilestones } from '../motivation/Motivation';
 import { useStartActivity } from '../today/useStartActivity';
 
 function formatDuration(sec: number, locale: string) {
@@ -165,6 +166,8 @@ export function SummaryView({ summary }: { summary: AttemptSummaryDTO }) {
           </div>
         </section>
       )}
+
+      <NewMilestones language={summary.language} />
 
       {!summary.placement && summary.byTopic.length ? (
         <section className="stack" style={{ '--gap': 'var(--s3)' } as React.CSSProperties}>
