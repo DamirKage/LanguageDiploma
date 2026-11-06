@@ -267,7 +267,8 @@ export function reading(
 
 /**
  * Free writing. `required` lists constructions as `[label, forms]`: the requirement is met when any form occurs
- * in the text (a form starting with "-" may stand inside a word). The model answer must satisfy every requirement.
+ * in the text. A plain form matches whole words, "word*" a word beginning, "-suffix" any part of a word and
+ * "/pattern/" a regular expression on the typed text. The model answer must satisfy every requirement.
  */
 export function writing(
   spec: {

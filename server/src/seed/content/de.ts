@@ -586,7 +586,7 @@ export const german: LanguageSpec = {
                     maxWords: 40,
                     required: [
                       ['Perfekt с haben', ['habe', 'hast', 'hat', 'haben', 'habt']],
-                      ['Perfekt с sein', ['bin', 'bist', 'ist', 'sind', 'seid']],
+                      ['Perfekt с sein', ['/(?<!\\p{L})(bin|bist|ist|sind|seid)(?!\\p{L}).*(?<!\\p{L})(ge|an|auf|ab|zurück|los|ein|aus)?(gegangen|gefahren|gekommen|geflogen|geblieben|gelaufen|gestiegen|gereist|gewesen|geworden|geschwommen|gefallen|passiert|gestorben|aufgestanden|eingeschlafen)(?!\\p{L})/']],
                     ],
                     model: 'Hallo Tom! Am Samstag bin ich in die Stadt gefahren und habe eine Jacke gekauft. Am Abend habe ich mit Freunden Pizza gegessen. Am Sonntag bin ich lange im Bett geblieben. Und du? Viele Grüße, Aigerim',
                     modelTranslation: 'Привет, Том! В субботу я ездила в город и купила куртку. Вечером я ела пиццу с друзьями. В воскресенье я долго валялась в постели. А ты? С приветом, Айгерим.',
@@ -840,8 +840,8 @@ export const german: LanguageSpec = {
                     minWords: 15,
                     maxWords: 40,
                     required: [
-                      ['Где? — Dativ', ['im', 'am', 'dem', 'der', 'meiner', 'meinem']],
-                      ['Куда? — Akkusativ', ['ins', 'den', 'die', 'das']],
+                      ['Где? — Dativ', ['/(?<!\\p{L})((in|auf|an|neben|unter|über|vor|hinter|zwischen|bei|mit|aus|von|zu) (dem|der|einem|einer|meinem|meiner|deinem|deiner|unserem|unserer)|im|am|beim|vom|zum|zur)(?!\\p{L})/']],
+                      ['Куда? — Akkusativ', ['/(?<!\\p{L})((in|auf|an|neben|unter|über|vor|hinter|zwischen) (den|die|das|einen|eine|meinen|meine|deinen|deine)|ins|ans|aufs)(?!\\p{L})/']],
                     ],
                     model: 'Hallo Paul! Ich bin am Wochenende bei meiner Schwester. Der Schlüssel liegt auf dem Regal im Flur. Bitte leg die Post auf den Tisch und stell den Müll vor die Tür. Danke! Lena',
                     modelTranslation: 'Привет, Пауль! На выходных я у сестры. Ключ лежит на полке в коридоре. Пожалуйста, положи почту на стол и выстави мусор за дверь. Спасибо! Лена.',
@@ -1111,7 +1111,7 @@ export const german: LanguageSpec = {
                     maxWords: 40,
                     required: [
                       ['Возвратный глагол', ['mich', 'dich', 'sich', 'uns']],
-                      ['Отделяемая приставка', ['auf', 'an', 'ein', 'aus', 'fern', 'um']],
+                      ['Отделяемая приставка', ['/(?<!\\p{L})(auf|an|ein|aus|fern|um|mit|zurück|los|ab|vor|zu)(?=\\s*[.!?,;])/']],
                     ],
                     model: 'Ich stehe um sieben Uhr auf. Dann dusche ich und ziehe mich an. Um acht Uhr frühstücke ich. Ich arbeite von neun bis fünf. Am Abend kaufe ich ein und ruhe mich aus.',
                     modelTranslation: 'Я встаю в семь часов. Потом принимаю душ и одеваюсь. В восемь я завтракаю. Я работаю с девяти до пяти. Вечером я хожу за покупками и отдыхаю.',
@@ -1515,7 +1515,7 @@ export const german: LanguageSpec = {
                     minWords: 40,
                     maxWords: 80,
                     required: [
-                      ['Относительное придаточное', ['der', 'die', 'das', 'den', 'dem', 'denen']],
+                      ['Относительное придаточное', ['/, *(der|die|das|den|dem|denen|deren|dessen|in dem|in der|mit dem|mit der|wo)(?!\\p{L})/']],
                       ['Лексика о работе', ['Erfahrung', 'Stelle', 'Bewerbung', 'Firma', 'Kundenservice']],
                     ],
                     model: 'Sehr geehrte Damen und Herren, mit großem Interesse habe ich Ihre Anzeige gelesen. Ich arbeite seit zwei Jahren in einem Hotel, in dem ich täglich mit Gästen spreche. Ich habe also viel Erfahrung im Kundenservice. Ich suche eine Stelle, die mir neue Möglichkeiten bietet. Ich spreche Deutsch, Englisch und Russisch. Über eine Einladung zum Gespräch freue ich mich sehr. Mit freundlichen Grüßen, Aidana Serikova',
@@ -1639,7 +1639,7 @@ export const german: LanguageSpec = {
                     maxWords: 80,
                     required: [
                       ['Futur I (werden + инфинитив)', ['werde', 'wirst', 'wird', 'werden']],
-                      ['Цель: um … zu или damit', ['um', 'damit']],
+                      ['Цель: um … zu или damit', ['damit', '/(?<!\\p{L})um(?!\\p{L})[^.!?]{1,80}?(?<!\\p{L})zu \\p{L}/']],
                     ],
                     model: 'Liebe Mariam, nächstes Jahr wird für mich sehr spannend! Im Frühling werde ich einen Deutschkurs in Leipzig besuchen, um mein Deutsch zu verbessern. Danach werde ich mich um ein Praktikum bewerben. Ich spare schon jetzt Geld, damit ich nicht so viel arbeiten muss. Im Sommer möchte ich mit meiner Schwester ans Meer fahren. Und was hast du vor? Liebe Grüße, Dana',
                     modelTranslation: 'Дорогая Мариам, следующий год будет для меня очень интересным! Весной я буду ходить на курсы немецкого в Лейпциге, чтобы улучшить свой немецкий. Потом я подам заявку на стажировку. Я уже сейчас коплю деньги, чтобы не приходилось много работать. Летом я хочу поехать с сестрой на море. А что ты планируешь? С приветом, Дана.',

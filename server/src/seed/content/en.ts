@@ -1014,7 +1014,7 @@ export const english: LanguageSpec = {
                     minWords: 20,
                     maxWords: 40,
                     required: [
-                      ['Present Continuous (сейчас)', ['i am', 'am', 'is', 'are']],
+                      ['Present Continuous (сейчас)', ['/\\b(am|is|are|\'m|\'s|\'re) \\w+ing\\b/']],
                       ['Будущее: going to или will', ['going to', 'will', 'i will', 'we will']],
                     ],
                     model: 'Hi! I’m doing my homework at the moment. On Saturday I’m going to clean my flat, and in the evening I’m meeting Aliya at the cinema. On Sunday I will probably stay at home. Do you want to come?',

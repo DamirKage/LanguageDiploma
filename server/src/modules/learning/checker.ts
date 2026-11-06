@@ -64,13 +64,24 @@ export function countWords(text: string): number {
 }
 
 /**
- * Whether a construction occurs in a free text. A form starting with "-" is a suffix and may stand inside a word
- * (agglutinative languages); any other form has to start at a word boundary.
+ * Whether a construction occurs in a free text. A plain form has to occur as whole words ("era" does not match
+ * "eran"); a form ending in "*" is a word beginning ("trabaj*"); a form starting with "-" is a suffix that may stand
+ * inside a word (agglutinative languages: "-ды", "-dı"); a form between slashes is a regular expression.
  */
 export function containsForm(text: string, form: string, language: string): boolean {
+  if (form.length > 2 && form.startsWith('/') && form.endsWith('/')) {
+    // A pattern for constructions that one word cannot prove, e.g. "/(am|is|are) \\w+ing/". It runs on the text as
+    // typed (lower case, punctuation kept), so it can also look at commas and sentence ends.
+    try {
+      return new RegExp(form.slice(1, -1), 'iu').test(text.normalize('NFC').replace(/[’ʼ]/g, "'"));
+    } catch {
+      return false;
+    }
+  }
   const hay = ` ${looseKey(text, language)} `;
   if (form.startsWith('-')) return hay.includes(looseKey(form.slice(1), language));
-  return hay.includes(` ${looseKey(form, language)}`);
+  if (form.endsWith('*')) return hay.includes(` ${looseKey(form.slice(0, -1), language)}`);
+  return hay.includes(` ${looseKey(form, language)} `);
 }
 
 /** Several parts answered at once: all right, all but a small share right, or not. */

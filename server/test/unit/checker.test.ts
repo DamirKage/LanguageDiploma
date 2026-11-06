@@ -193,6 +193,10 @@ describe('checkAnswer', () => {
     expect(short.points).toBe(3);
     expect(containsForm('Мен кітап оқыдым', '-дым', 'kk')).toBe(true);
     expect(containsForm('Ich wohne hier', 'ohne', 'de')).toBe(false);
+    expect(containsForm('Ellos eran felices', 'era', 'es')).toBe(false);
+    expect(containsForm('Ellos eran felices', 'era*', 'es')).toBe(true);
+    expect(containsForm('Right now I am reading a book', '/(am|is|are) \\w+ing/', 'en')).toBe(true);
+    expect(containsForm('I am at home', '/(am|is|are) \\w+ing/', 'en')).toBe(false);
     expect(countWords('Hallo,  wie geht – es?')).toBe(4);
   });
 
