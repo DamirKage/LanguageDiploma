@@ -1,4 +1,4 @@
-import { categorize, chat, choice, choiceRu, cloze, dialogue, errorSpot, fill, listen, order, speak, translate, translateBack, type LanguageSpec } from '../builders';
+import { categorize, chat, choice, choiceRu, cloze, dialogue, errorSpot, fill, listen, order, reading, speak, translate, translateBack, writing, type LanguageSpec } from '../builders';
 
 export const english: LanguageSpec = {
   code: 'en',
@@ -292,6 +292,22 @@ export const english: LanguageSpec = {
                   { s: 'grammar', d: 2 },
                   'Подруга показывает вам семейные фотографии.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'A message from Aigerim',
+                    passage: [
+                      'Hi Tom! This is a photo of my family. My father’s name is Nurlan. He is a doctor. My mother is a teacher. I have two brothers and a sister. My brother Timur has two children, a son and a daughter. My parents live in Almaty.',
+                    ],
+                    translation: 'Привет, Том! Это фото моей семьи. Моего отца зовут Нурлан. Он врач. Моя мама — учитель. У меня два брата и сестра. У моего брата Тимура двое детей — сын и дочь. Мои родители живут в Алматы.',
+                    questions: [
+                      ['Кем работает отец Айгерим?', ['Врачом', 'Учителем', 'Он живёт в Алматы и не работает'], 0],
+                      ['Сколько детей у Тимура?', ['Двое: сын и дочь', 'Трое: два брата и сестра', 'Один сын'], 0],
+                    ],
+                  },
+                  'father’s name — «имя отца»; Timur has two children — «у Тимура двое детей». Два брата и сестра — это семья самой Айгерим.',
+                  { d: 1 },
+                ),
               ],
               test: [
                 fill('Tom ___ a big family.', ['has'], 'С he/she и именем человека — has.', { s: 'grammar', t: 'present_tense' }, { translation: 'У Тома большая семья.', options: ['have', 'has', 'is'] }),
@@ -364,6 +380,28 @@ export const english: LanguageSpec = {
                   'Could I have … please? — вежливый заказ, «Give me» звучит грубо; a glass of water — «стакан воды».',
                   {},
                   'Вы обедаете в кафе.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'In a café',
+                    passage: [
+                      ['A', 'Hello! Are you ready to order?'],
+                      ['B', 'Yes. Could I have a cheese sandwich, please?'],
+                      ['A', 'Of course. Anything to drink?'],
+                      ['B', 'I’d like a cup of tea, please. And some water.'],
+                      ['A', 'Here you are.'],
+                      ['B', 'Thank you. How much is it?'],
+                      ['A', 'That’s six pounds fifty.'],
+                    ],
+                    translation: '— Здравствуйте! Готовы сделать заказ? — Да. Можно мне сэндвич с сыром? — Конечно. Что будете пить? — Я бы хотел чашку чая. И воды. — Пожалуйста. — Спасибо. Сколько с меня? — Шесть фунтов пятьдесят.',
+                    questions: [
+                      ['Что заказывает посетитель из еды?', ['Сэндвич с сыром', 'Суп', 'Торт'], 0],
+                      ['Сколько стоит заказ?', ['6 фунтов 50 пенсов', '5 фунтов 60 пенсов', '16 фунтов 50 пенсов'], 0],
+                    ],
+                  },
+                  'Could I have … — вежливый заказ; I’d like a cup of tea — чай; That’s six pounds fifty — 6,50 фунта.',
+                  { d: 1 },
                 ),
               ],
               test: [
@@ -446,6 +484,40 @@ export const english: LanguageSpec = {
                   { s: 'grammar', t: 'past_tense', d: 2 },
                   'В прошлую субботу я встал поздно. Потом сходил на рынок и купил фруктов. Вечером ко мне пришли друзья, и мы ели пиццу.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'My weekend in the mountains',
+                    passage: [
+                      'Last weekend I went to the mountains with my brother and two friends. We left Almaty early on Saturday morning and drove for two hours. The weather was sunny, so we walked to a beautiful lake. We had a picnic there and took a lot of photos.',
+                      'In the evening we stayed in a small hotel. We didn’t sleep much because we played cards until two o’clock! On Sunday it rained, so we came home after lunch. It was a great weekend.',
+                    ],
+                    translation: 'В прошлые выходные я ездил в горы с братом и двумя друзьями. Мы выехали из Алматы рано утром в субботу и ехали два часа. Погода была солнечная, поэтому мы дошли пешком до красивого озера. Там мы устроили пикник и сделали много фотографий. Вечером мы остановились в маленькой гостинице. Мы почти не спали, потому что до двух часов играли в карты! В воскресенье шёл дождь, поэтому мы вернулись домой после обеда. Это были отличные выходные.',
+                    questions: [
+                      ['Что они делали у озера?', ['Устроили пикник и фотографировались', 'Играли в карты до двух часов', 'Пережидали дождь'], 0],
+                      ['Почему они мало спали?', ['Допоздна играли в карты', 'В гостинице было шумно', 'Рано утром выехали из Алматы'], 0],
+                      ['Когда они вернулись домой?', ['В воскресенье после обеда', 'В субботу вечером', 'В воскресенье рано утром'], 0],
+                    ],
+                  },
+                  'Рассказ о прошлом — в Past Simple: went, drove, had, didn’t sleep, came. Детали ответов есть в тексте: picnic, played cards until two, came home after lunch.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Друг из Лондона спрашивает в сообщении, как прошли ваши выходные. Напишите ему, что вы делали в субботу и воскресенье (используйте Past Simple).',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Неправильные глаголы в Past Simple', ['went', 'saw', 'ate', 'had', 'bought', 'came', 'took', 'made', 'met', 'got', 'was', 'were']],
+                      ['Указание на прошлое', ['last', 'yesterday', 'on saturday', 'on sunday', 'ago', 'at the weekend']],
+                    ],
+                    model: 'Hi Jack! My weekend was great. On Saturday I went to the cinema with my sister and we saw a funny film. On Sunday I visited my grandparents and we had a big lunch. How was your weekend?',
+                    modelTranslation: 'Привет, Джек! Выходные были отличные. В субботу я ходил в кино с сестрой, и мы посмотрели смешной фильм. В воскресенье я навестил бабушку с дедушкой, и мы плотно пообедали. Как прошли твои выходные?',
+                    checklist: ['Все действия в прошлом стоят в Past Simple', 'Неправильные глаголы в правильной форме (go → went, see → saw)', 'После didn’t глагол в начальной форме', 'Есть приветствие и вопрос другу в конце'],
+                  },
+                  'Пишите короткими предложениями в Past Simple и указывайте, когда это было: on Saturday, last weekend.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('Last week we ___ a new car.', ['bought'], 'buy — неправильный глагол: buy → bought.', { s: 'grammar', t: 'past_tense' }, { translation: 'На прошлой неделе мы купили новую машину.', options: ['bought', 'buyed', 'buy'] }),
@@ -522,6 +594,46 @@ export const english: LanguageSpec = {
                   'С you — have to, а не has to: has используется только с he/she/it.',
                   { t: 'modal_verbs', d: 2 },
                   'Вам нужно пересесть на следующей станции.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'At the station',
+                    passage: [
+                      ['A', 'Excuse me, how do I get to Oxford?'],
+                      ['B', 'You can take a train from platform four. But you have to change at Reading.'],
+                      ['A', 'Oh, I see. Can I buy a ticket here?'],
+                      ['B', 'Yes. Single or return?'],
+                      ['A', 'A return ticket, please. How much is it?'],
+                      ['B', 'That’s twenty-four pounds. The next train leaves at ten fifteen.'],
+                      ['A', 'Thank you! And where is the café?'],
+                      ['B', 'Go straight on and turn left. It’s next to the ticket office.'],
+                    ],
+                    translation: '— Извините, как мне добраться до Оксфорда? — Можно сесть на поезд с четвёртой платформы. Но нужно пересесть в Рединге. — Понятно. Здесь можно купить билет? — Да. В одну сторону или туда и обратно? — Туда и обратно, пожалуйста. Сколько стоит? — Двадцать четыре фунта. Следующий поезд отходит в десять пятнадцать. — Спасибо! А где кафе? — Идите прямо и поверните налево. Оно рядом с кассой.',
+                    questions: [
+                      ['Где нужно пересесть?', ['В Рединге', 'В Оксфорде', 'На четвёртой платформе'], 0],
+                      ['Какой билет покупает пассажир?', ['Туда и обратно за 24 фунта', 'В одну сторону за 24 фунта', 'Туда и обратно за 14 фунтов'], 0],
+                      ['Где находится кафе?', ['Рядом с кассой', 'На четвёртой платформе', 'Справа от выхода'], 0],
+                    ],
+                  },
+                  'have to change at Reading — «нужно пересесть в Рединге»; return — билет туда и обратно; next to the ticket office — «рядом с кассой».',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Вы приезжаете к другу в Лондон. Напишите ему сообщение: спросите, как добраться от вокзала до его дома, и скажите, во сколько приходит ваш поезд.',
+                    minWords: 15,
+                    maxWords: 40,
+                    required: [
+                      ['Вопрос о дороге', ['how do i get', 'how can i get', 'where is', 'how do i find']],
+                      ['Модальный глагол can или have to', ['can', 'have to', 'has to', 'need to']],
+                    ],
+                    model: 'Hi Sam! My train arrives at Victoria at six o’clock. How do I get to your house from the station? Can I take a bus, or do I have to take the underground? See you soon!',
+                    modelTranslation: 'Привет, Сэм! Мой поезд прибывает на вокзал Виктория в шесть часов. Как мне добраться от вокзала до твоего дома? Можно доехать на автобусе или нужно ехать на метро? До скорой встречи!',
+                    checklist: ['Есть вопрос How do I get to …?', 'Указано время прибытия с предлогом at', 'После can и have to глагол без окончаний', 'Есть приветствие и прощание'],
+                  },
+                  'Вопрос о дороге: How do I get to …? Варианты транспорта: Can I take a bus? Do I have to change?',
+                  { d: 2 },
                 ),
               ],
               test: [
@@ -620,6 +732,40 @@ export const english: LanguageSpec = {
                   { t: 'present_tense', d: 2 },
                   'Обычно она заканчивает работу в шесть, а потом идёт в спортзал.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'A day in the life of a nurse',
+                    passage: [
+                      'Aliya is a nurse in a big hospital. She works from Monday to Friday. She usually gets up at half past five and has a quick breakfast. She always takes the bus to work because she never drives in the city.',
+                      'Her day at the hospital is long. She sometimes has lunch at three o’clock! In the evening she often goes to the gym or cooks dinner with her husband. She goes to bed at ten. At the weekend she never gets up before nine.',
+                    ],
+                    translation: 'Алия — медсестра в большой больнице. Она работает с понедельника по пятницу. Обычно она встаёт в половине шестого и быстро завтракает. На работу она всегда ездит на автобусе, потому что никогда не водит машину в городе. День в больнице у неё длинный. Иногда она обедает в три часа! Вечером она часто ходит в спортзал или готовит ужин с мужем. Спать она ложится в десять. По выходным она никогда не встаёт раньше девяти.',
+                    questions: [
+                      ['Как Алия добирается до работы?', ['Всегда на автобусе', 'На машине', 'Иногда пешком, иногда на автобусе'], 0],
+                      ['Во сколько она обычно встаёт в будни?', ['В 5:30', 'В 9:00', 'В 3:00'], 0],
+                      ['Что Алия часто делает вечером?', ['Ходит в спортзал или готовит ужин', 'Обедает в три часа', 'Ложится спать в девять'], 0],
+                    ],
+                  },
+                  'Present Simple с наречиями частоты: usually gets up, always takes the bus, often goes to the gym. В три часа она иногда обедает, а не ужинает.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Вы ищете соседа по квартире. Напишите короткое объявление о себе: во сколько вы обычно встаёте и ложитесь, что делаете вечером и по выходным.',
+                    minWords: 20,
+                    maxWords: 40,
+                    required: [
+                      ['Наречия частоты', ['usually', 'always', 'often', 'sometimes', 'never']],
+                      ['Распорядок дня', ['get up', 'go to bed', 'have breakfast', 'have dinner', 'have lunch']],
+                    ],
+                    model: 'Hi! I’m Dana, I’m a student. I usually get up at seven. I always come back at six. In the evening I often read or cook. I never have parties, and I go to bed at eleven.',
+                    modelTranslation: 'Привет! Я Дана, студентка. Обычно я встаю в семь. Я всегда возвращаюсь в шесть. Вечером я часто читаю или готовлю. Вечеринок я никогда не устраиваю, а спать ложусь в одиннадцать.',
+                    checklist: ['Наречия частоты стоят перед смысловым глаголом', 'С he/she глагол получает -s, с I — нет', 'При never нет второго отрицания not', 'Время указано с предлогом at'],
+                  },
+                  'Используйте Present Simple и наречия usually, always, often, sometimes, never.',
+                  { d: 2 },
+                ),
               ],
               test: [
                 fill('My father ___ to work by car.', ['goes'], 'С he/she/it: go → goes (после o добавляется -es).', { s: 'grammar', t: 'present_tense' }, { translation: 'Мой папа ездит на работу на машине.', options: ['go', 'goes', 'gos'] }),
@@ -709,6 +855,46 @@ export const english: LanguageSpec = {
                   'cheap → cheaper than; good → better (much better — «гораздо лучше»); превосходная степень с the: the biggest; comfortable — длинное слово: more comfortable.',
                   { s: 'grammar', d: 2 },
                   'Мой старый телефон был дешевле нового, но новый гораздо лучше. У него самый большой экран в магазине, и им удобнее пользоваться.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Buying a jacket',
+                    passage: [
+                      ['A', 'Can I help you?'],
+                      ['B', 'Yes, please. I’m looking for a warm jacket.'],
+                      ['A', 'This black one is very popular. It’s eighty pounds.'],
+                      ['B', 'Hmm, that’s expensive. Have you got anything cheaper?'],
+                      ['A', 'This blue one is fifty pounds. It’s cheaper, but it isn’t as warm.'],
+                      ['B', 'Can I try on the black one in a bigger size?'],
+                      ['A', 'Of course. And good news: everything is twenty per cent off in the sale today.'],
+                      ['B', 'Great! Then I’ll take the black one. It’s the best jacket in the shop.'],
+                    ],
+                    translation: '— Вам помочь? — Да, пожалуйста. Я ищу тёплую куртку. — Эта чёрная очень популярна. Она стоит восемьдесят фунтов. — Хм, дороговато. У вас есть что-нибудь дешевле? — Эта синяя стоит пятьдесят фунтов. Она дешевле, но не такая тёплая. — Можно примерить чёрную на размер больше? — Конечно. И хорошая новость: сегодня на распродаже всё со скидкой двадцать процентов. — Отлично! Тогда я возьму чёрную. Это лучшая куртка в магазине.',
+                    questions: [
+                      ['Чем синяя куртка хуже чёрной?', ['Она не такая тёплая', 'Она дороже', 'Нет нужного размера'], 0],
+                      ['Сколько стоит синяя куртка?', ['50 фунтов', '80 фунтов', '20 фунтов'], 0],
+                      ['Почему покупатель в итоге берёт чёрную куртку?', ['На неё сегодня скидка, и она лучшая', 'Синюю нельзя примерить', 'Синяя закончилась'], 0],
+                    ],
+                  },
+                  'cheaper — дешевле, isn’t as warm — не такая тёплая, the best — самая лучшая; 20 per cent off in the sale — скидка 20 % на распродаже.',
+                  { d: 2, t: 'shopping' },
+                ),
+                writing(
+                  {
+                    task: 'Подруга выбирает между двумя телефонами и просит совета. Напишите ей сообщение: сравните телефоны (цена, камера, экран) и посоветуйте один.',
+                    minWords: 20,
+                    maxWords: 40,
+                    required: [
+                      ['Сравнительная степень', ['cheaper', 'better', 'bigger', 'more', 'smaller', 'worse', 'faster', 'lighter']],
+                      ['Слово than', ['than']],
+                    ],
+                    model: 'Hi Kate! The Samsung is cheaper than the iPhone, but the iPhone has a better camera. The Samsung’s screen is bigger and more comfortable. I think the Samsung is the best choice for you.',
+                    modelTranslation: 'Привет, Кейт! «Самсунг» дешевле айфона, но у айфона камера лучше. Экран у «Самсунга» больше и удобнее. Думаю, «Самсунг» — лучший выбор для тебя.',
+                    checklist: ['Короткие прилагательные с -er, длинные — с more', 'После сравнительной степени стоит than', 'good → better, bad → worse', 'В превосходной степени есть артикль the'],
+                  },
+                  'Короткие прилагательные: cheaper, bigger; длинные: more comfortable; good → better → the best.',
+                  { d: 2 },
                 ),
               ],
               test: [
@@ -804,6 +990,40 @@ export const english: LanguageSpec = {
                   { s: 'grammar', t: 'future_tense', d: 3 },
                   'Вы с другом в кафе, пора платить.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'A message from Edinburgh',
+                    passage: [
+                      'Hi Mum! I’m writing this in a café in Edinburgh. It’s raining at the moment, but we’re having a great time. Dana is buying postcards and I’m drinking hot chocolate.',
+                      'Tomorrow we’re going to visit the castle — we bought the tickets online yesterday. In the evening we’re meeting Dana’s cousin for dinner. I think the weather will be better on Sunday. I’ll call you when we get back to the hotel. Love, Aliya',
+                    ],
+                    translation: 'Привет, мама! Пишу тебе из кафе в Эдинбурге. Сейчас идёт дождь, но мы отлично проводим время. Дана покупает открытки, а я пью горячий шоколад. Завтра мы собираемся посетить замок — вчера купили билеты онлайн. Вечером мы ужинаем с двоюродной сестрой Даны. Думаю, в воскресенье погода будет лучше. Я позвоню тебе, когда мы вернёмся в отель. Целую, Алия.',
+                    questions: [
+                      ['Что Дана делает прямо сейчас?', ['Покупает открытки', 'Пьёт горячий шоколад', 'Покупает билеты в замок'], 0],
+                      ['Какие планы у девушек на завтрашний вечер?', ['Ужин с двоюродной сестрой Даны', 'Поход в замок', 'Звонок маме из отеля'], 0],
+                      ['Когда Алия позвонит маме?', ['Когда вернётся в отель', 'В воскресенье, когда будет хорошая погода', 'Из кафе прямо сейчас'], 0],
+                    ],
+                  },
+                  'Сейчас — Present Continuous (is buying, I’m drinking); план — are going to visit; договорённость — are meeting; обещание — I’ll call.',
+                  { d: 2, t: 'future_tense' },
+                ),
+                writing(
+                  {
+                    task: 'Друг пишет: «Что делаешь? Какие планы на выходные?» Ответьте: что вы делаете прямо сейчас и что собираетесь делать в субботу и воскресенье.',
+                    minWords: 20,
+                    maxWords: 40,
+                    required: [
+                      ['Present Continuous (сейчас)', ['i am', 'am', 'is', 'are']],
+                      ['Будущее: going to или will', ['going to', 'will', 'i will', 'we will']],
+                    ],
+                    model: 'Hi! I’m doing my homework at the moment. On Saturday I’m going to clean my flat, and in the evening I’m meeting Aliya at the cinema. On Sunday I will probably stay at home. Do you want to come?',
+                    modelTranslation: 'Привет! Сейчас делаю домашнее задание. В субботу собираюсь убраться в квартире, а вечером встречаюсь с Алией в кино. В воскресенье, наверное, останусь дома. Хочешь прийти?',
+                    checklist: ['То, что происходит сейчас, — в Present Continuous', 'Планы — с be going to или Present Continuous', 'Решения и предположения — с will', 'После when и if нет will'],
+                  },
+                  'Сейчас: I’m doing… План: I’m going to… Договорённость: I’m meeting… Предположение: I’ll probably…',
+                  { d: 2, t: 'future_tense' },
+                ),
               ],
               test: [
                 fill('I ___ my friends at six tonight — we’ve already booked a table.', ['am meeting'], 'Договорённость с конкретным временем → Present Continuous: am meeting.', { s: 'grammar', t: 'future_tense', d: 2 }, { translation: 'Сегодня в шесть я встречаюсь с друзьями — мы уже забронировали столик.', options: ['am meeting', 'meet', 'will meeting'] }),
@@ -884,6 +1104,45 @@ export const english: LanguageSpec = {
                   'In my opinion — устойчивое выражение; although вводит уступку внутри предложения, however — новое предложение с запятой; agree — глагол, «I am agree» — ошибка.',
                   { s: 'grammar', t: 'conjunctions', d: 2 },
                   'По-моему, онлайн-курсы — отличная идея. Хотя они не идеальны, они экономят много времени. Некоторые говорят, что они скучные. Однако хороший преподаватель может сделать интересным любой курс. И всё же я согласен, что живые занятия тоже важны.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'Working from home',
+                    passage: [
+                      ['A', 'Our company wants everyone to work from home three days a week. What do you think?'],
+                      ['B', 'In my opinion, it’s a great idea. I spend almost two hours a day on the bus, so I’ll save a lot of time.'],
+                      ['A', 'I see your point, but I think we’ll miss our colleagues. Working together in the office is more fun.'],
+                      ['B', 'That’s true. However, we can still meet on the other two days.'],
+                      ['A', 'Maybe. Although I like the idea, I’m worried about my flat. It’s small and noisy because my neighbours have a baby.'],
+                      ['B', 'Then you could work from a café or the library. The main advantage is that we can choose.'],
+                      ['A', 'OK, I agree with you — let’s try it for a month.'],
+                    ],
+                    translation: '— Наша компания хочет, чтобы все работали из дома три дня в неделю. Что думаешь? — По-моему, это отличная идея. Я провожу в автобусе почти два часа в день, так что сэкономлю много времени. — Понимаю, но, думаю, нам будет не хватать коллег. Работать вместе в офисе веселее. — Это правда. Однако мы всё равно сможем видеться в остальные два дня. — Может быть. Хотя идея мне нравится, я переживаю из-за квартиры. Она маленькая и шумная, потому что у соседей маленький ребёнок. — Тогда можно работать в кафе или библиотеке. Главное преимущество — у нас есть выбор. — Ладно, согласна — давай попробуем месяц.',
+                    questions: [
+                      ['Почему второму собеседнику нравится идея?', ['Он сэкономит время на дорогу', 'Он сможет работать в кафе', 'Он не любит коллег'], 0],
+                      ['Что беспокоит первую собеседницу?', ['Маленькая и шумная квартира', 'Долгая дорога на автобусе', 'Она не сможет видеть коллег по выходным'], 0],
+                      ['Чем заканчивается разговор?', ['Они решают попробовать месяц', 'Они решают остаться в офисе', 'Они решают работать в библиотеке'], 0],
+                    ],
+                  },
+                  'Мнение: In my opinion…; вежливое возражение: I see your point, but…; связки: however, although, because.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'На форуме обсуждают вопрос: «Нужно ли запретить телефоны в школах?» Напишите своё мнение: приведите аргументы за и против и сделайте вывод.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Выражение мнения', ['in my opinion', 'i think', 'as far as i am concerned', 'i believe']],
+                      ['Связки however / although / because', ['however', 'although', 'because']],
+                    ],
+                    model: 'In my opinion, phones should not be completely banned in schools. Of course, students often play games instead of listening, and this is a big disadvantage. However, phones can be useful because students can look up words or check information quickly. Although some teachers don’t agree, I think the best solution is to keep phones in bags during lessons.',
+                    modelTranslation: 'По-моему, телефоны не стоит полностью запрещать в школах. Конечно, ученики часто играют в игры вместо того, чтобы слушать, и это большой недостаток. Однако телефоны могут быть полезны, потому что можно быстро посмотреть слово или проверить информацию. Хотя некоторые учителя не согласны, я думаю, лучшее решение — держать телефоны в сумках во время уроков.',
+                    checklist: ['Мнение введено фразой In my opinion / I think', 'Есть хотя бы один аргумент за и один против', 'However начинает новое предложение и стоит с запятой', 'В конце есть вывод'],
+                  },
+                  'Структура: мнение → аргумент «за» → However, аргумент «против» → вывод.',
+                  { d: 2 },
                 ),
               ],
               test: [
@@ -969,6 +1228,42 @@ export const english: LanguageSpec = {
                 translate('Я только что потерял ключи.', ['I have just lost my keys.', 'I’ve just lost my keys.', 'I have just lost my key.', 'I’ve just lost my key.', 'I just lost my keys.', 'I have just lost the keys.', 'I’ve just lost the keys.'], 'just + результат сейчас → Present Perfect: have just lost (в американском варианте допустимо и I just lost).', { s: 'grammar', t: 'present_tense', d: 2 }),
                 order(['What', 'were', 'you', 'doing', 'at', 'eight', 'last', 'night'], 'Что ты делал вчера в восемь вечера?', 'Вопрос в Past Continuous: вопросительное слово + were + подлежащее + -ing.', { s: 'grammar', t: 'questions', d: 2 }),
                 translateBack('Have you ever witnessed an accident?', ['Ты когда-нибудь был свидетелем аварии?', 'Вы когда-нибудь были свидетелем аварии?', 'Ты когда-нибудь становился свидетелем аварии?', 'Вы когда-нибудь становились свидетелем аварии?', 'Ты когда-нибудь видел аварию?', 'Вы когда-нибудь видели аварию?', 'Вы когда-нибудь были свидетелем несчастного случая?', 'Ты когда-нибудь был свидетелем несчастного случая?'], 'Have you ever…? — вопрос об опыте в Present Perfect; witness — «быть свидетелем».', { d: 2 }),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Local hero helps driver',
+                    passage: [
+                      'A young woman has helped a driver after an accident on the Almaty–Kapchagay road. The accident happened at about eight o’clock yesterday evening.',
+                      'Dana Seitova, a 24-year-old student, was driving home from work when she suddenly saw a car in a field next to the road. “It was raining and it was getting dark,” she said. “The driver was sitting in the car and he wasn’t moving.” While she was calling an ambulance, another driver stopped to help.',
+                      'The man, 56, was taken to hospital but he has already left it. The police haven’t found out the cause of the accident yet. They are looking for other witnesses.',
+                    ],
+                    translation: 'Молодая женщина помогла водителю после аварии на трассе Алматы — Капчагай. Авария произошла вчера около восьми вечера. Дана Сеитова, 24-летняя студентка, ехала домой с работы, когда вдруг увидела машину в поле рядом с дорогой. «Шёл дождь и темнело, — рассказала она. — Водитель сидел в машине и не двигался». Пока она вызывала скорую, остановился ещё один водитель, чтобы помочь. Мужчину, 56 лет, доставили в больницу, но он уже выписался. Полиция пока не выяснила причину аварии. Она ищет других свидетелей.',
+                    questions: [
+                      ['Что делала Дана, когда увидела машину?', ['Ехала домой с работы', 'Вызывала скорую помощь', 'Ехала на работу'], 0],
+                      ['Что сейчас с водителем?', ['Он уже выписался из больницы', 'Он всё ещё в больнице', 'Полиция его ищет'], 0],
+                      ['Что известно о причине аварии?', ['Её пока не выяснили', 'Был дождь, и стемнело', 'Водитель уснул'], 0],
+                    ],
+                  },
+                  'Новость начинается с Present Perfect (has helped), детали — Past Simple и Past Continuous (was driving, was raining). has already left, haven’t found out yet — результат на сейчас. Дождь — это обстановка, а не установленная причина.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Напишите в блог короткую историю о неожиданном случае, который произошёл с вами (опоздание, потерянная вещь, встреча). Опишите обстановку и что случилось.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['Past Continuous (фон)', ['was', 'were']],
+                      ['Связки when / while', ['when', 'while']],
+                      ['Present Perfect (результат сейчас)', ['have', 'has', 'i have', 'never', 'ever', 'just', 'already', 'yet']],
+                    ],
+                    model: 'Last winter I was waiting for a bus when it started to snow heavily. While I was standing at the bus stop, an old man slipped on the ice. I helped him up and we waited together. It turned out that he was my new neighbour! Since then we have become good friends, and I have already visited him twice.',
+                    modelTranslation: 'Прошлой зимой я ждал автобус, когда начался сильный снегопад. Пока я стоял на остановке, пожилой мужчина поскользнулся на льду. Я помог ему встать, и мы ждали вместе. Оказалось, что это мой новый сосед! С тех пор мы подружились, и я уже дважды был у него в гостях.',
+                    checklist: ['Фон истории — в Past Continuous (was waiting)', 'События — в Past Simple (started, helped)', 'Результат на сейчас — в Present Perfect', 'Есть слово when или while'],
+                  },
+                  'Схема: фон в Past Continuous → событие в Past Simple → результат сейчас в Present Perfect.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('Have you finished your essay ___?', ['yet'], 'В вопросах «уже?» с Present Perfect обычно ставят yet в конце.', { s: 'grammar', t: 'present_tense', d: 2 }, { translation: 'Ты уже закончил эссе?', options: ['yet', 'already', 'still'] }),
@@ -1062,6 +1357,47 @@ export const english: LanguageSpec = {
                   { s: 'grammar', d: 3 },
                   'Уважаемая г-жа Браун, я откликаюсь на вакансию менеджера по маркетингу. Я работаю в маркетинге шесть лет, а с 2022 года руковожу командой из пяти человек. В прошлом году я запустил кампанию, которая удвоила наши онлайн-продажи.',
                 ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'A job interview',
+                    passage: [
+                      ['A', 'So, tell me about your experience. How long have you worked in marketing?'],
+                      ['B', 'I’ve worked in marketing for six years. I started at a small agency in Astana in 2018.'],
+                      ['A', 'And where do you work now?'],
+                      ['B', 'I’ve been at a bank since 2021. I’m responsible for a team of four people and our social media.'],
+                      ['A', 'Have you ever managed a big project?'],
+                      ['B', 'Yes, I have. Last year I launched a campaign that doubled our online sales.'],
+                      ['A', 'Impressive. Why have you applied for this job?'],
+                      ['B', 'I’d like to work for an international company, and your salary is better too, to be honest.'],
+                    ],
+                    translation: '— Итак, расскажите о своём опыте. Сколько вы работаете в маркетинге? — Я работаю в маркетинге шесть лет. Я начинала в небольшом агентстве в Астане в 2018 году. — А где вы работаете сейчас? — С 2021 года я в банке. Я отвечаю за команду из четырёх человек и наши соцсети. — Вы когда-нибудь руководили крупным проектом? — Да. В прошлом году я запустила кампанию, которая удвоила наши онлайн-продажи. — Впечатляет. Почему вы откликнулись на эту вакансию? — Я хотела бы работать в международной компании, и, честно говоря, зарплата у вас тоже выше.',
+                    questions: [
+                      ['С какого года кандидат работает в банке?', ['С 2021', 'С 2018', 'Шесть лет'], 0],
+                      ['За что она отвечает на нынешней работе?', ['За команду из четырёх человек и соцсети', 'За онлайн-продажи всего банка', 'За небольшое агентство в Астане'], 0],
+                      ['Почему она откликнулась на вакансию?', ['Хочет работать в международной компании и получать больше', 'Её кампания не удалась', 'Ей не нравится её команда'], 0],
+                    ],
+                  },
+                  'for six years — длительность, since 2021 — точка начала; last year launched — Past Simple с конкретным временем.',
+                  { d: 2 },
+                ),
+                writing(
+                  {
+                    task: 'Вы откликаетесь на вакансию в международной компании. Напишите короткое сопроводительное письмо: какой у вас опыт, сколько лет и с какого времени вы работаете, чем гордитесь.',
+                    minWords: 50,
+                    maxWords: 80,
+                    required: [
+                      ['Present Perfect', ['have worked', 'have been', 'i have', 'has', 'have']],
+                      ['for или since', ['for', 'since']],
+                      ['Лексика о работе', ['experience', 'responsible for', 'apply for', 'colleagues', 'position', 'job']],
+                    ],
+                    model: 'Dear Ms Brown, I am writing to apply for the position of sales manager. I have worked in sales for five years, and since 2022 I have been responsible for a team of three people. Last year my team increased sales by thirty per cent. I enjoy working with clients and colleagues, and I would love to join your company. Yours sincerely, Arman Bekov',
+                    modelTranslation: 'Уважаемая г-жа Браун, я откликаюсь на вакансию менеджера по продажам. Я работаю в продажах пять лет, а с 2022 года руковожу командой из трёх человек. В прошлом году моя команда увеличила продажи на тридцать процентов. Мне нравится работать с клиентами и коллегами, и я был бы рад присоединиться к вашей компании. С уважением, Арман Беков',
+                    checklist: ['Опыт до сих пор — Present Perfect с for/since', 'Событие с конкретной датой — Past Simple', 'Есть официальное обращение и подпись', 'Нет сокращений вроде I’m — письмо формальное'],
+                  },
+                  'Present Perfect + for (период) / since (начало) для опыта; Past Simple для конкретных достижений с датой.',
+                  { d: 3 },
+                ),
               ],
               test: [
                 fill('They have known each other ___ they were children.', ['since'], 'since может вводить целое придаточное — точку начала: since they were children.', { s: 'grammar', t: 'present_tense', d: 3 }, { translation: 'Они знают друг друга с детства.', options: ['since', 'for', 'from'] }),
@@ -1149,6 +1485,42 @@ export const english: LanguageSpec = {
                   { s: 'grammar', d: 2 },
                   'В прошлом году я получил стипендию на учёбу в Эдинбурге. Университет, где я учился, очень старый. Профессор, который преподавал нам историю, был блестящим, а лекции, которые она читала, никогда не были скучными. В июне я наконец получил диплом.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'My year in Edinburgh',
+                    passage: [
+                      'Two years ago I got a scholarship which paid for a year at the University of Edinburgh. The city where I lived was old and beautiful, and the people I met were very friendly.',
+                      'My favourite subject was history. The professor who taught it was brilliant: her lectures were never boring, and she always gave us books that she had found in old libraries. The exam that I was most afraid of was statistics, but I passed it in the end.',
+                      'The flat I shared with two students from Spain was small but cosy. I still write to the friends I made there, and I hope to go back one day.',
+                    ],
+                    translation: 'Два года назад я получил стипендию, которая оплатила год учёбы в Эдинбургском университете. Город, где я жил, был старинным и красивым, а люди, которых я встречал, — очень дружелюбными. Моим любимым предметом была история. Профессор, которая её преподавала, была блестящей: её лекции никогда не были скучными, и она всегда давала нам книги, которые находила в старых библиотеках. Экзамен, которого я боялся больше всего, был по статистике, но в итоге я его сдал. Квартира, которую я снимал вместе с двумя студентами из Испании, была маленькой, но уютной. Я до сих пор переписываюсь с друзьями, которых там завёл, и надеюсь когда-нибудь вернуться.',
+                    questions: [
+                      ['Что оплатила стипендия?', ['Год учёбы в Эдинбурге', 'Квартиру со студентами из Испании', 'Книги из старых библиотек'], 0],
+                      ['Какой экзамен автор боялся больше всего?', ['Статистику', 'Историю', 'Испанский'], 0],
+                      ['С кем автор жил в квартире?', ['С двумя студентами из Испании', 'С профессором истории', 'Один, в маленькой квартире'], 0],
+                    ],
+                  },
+                  'Относительные придаточные уточняют, о чём речь: a scholarship which…, the professor who…, the city where…, the flat I shared (местоимение опущено).',
+                  { d: 2, t: 'education' },
+                ),
+                writing(
+                  {
+                    task: 'Напишите для сайта университета короткий отзыв о месте, где вы учились (школа, университет, курсы): опишите людей и места с помощью who, which, that, where.',
+                    minWords: 40,
+                    maxWords: 80,
+                    required: [
+                      ['who (о людях)', ['who', 'that']],
+                      ['which / that (о предметах)', ['which', 'that']],
+                      ['where (о местах)', ['where']],
+                    ],
+                    model: 'I studied at a language school in Almaty which is famous for its friendly atmosphere. The teacher who taught us grammar was patient and funny. My favourite place was the library where we often did our homework together. The course that I took last year helped me pass my IELTS exam. I recommend this school to everyone who wants to learn English.',
+                    modelTranslation: 'Я учился в языковой школе в Алматы, которая славится дружелюбной атмосферой. Преподаватель, который вёл у нас грамматику, был терпеливым и весёлым. Моим любимым местом была библиотека, где мы часто вместе делали домашние задания. Курс, который я прошёл в прошлом году, помог мне сдать IELTS. Рекомендую эту школу всем, кто хочет выучить английский.',
+                    checklist: ['О людях — who, о предметах — which или that', 'О местах — where', 'Придаточное стоит сразу после слова, к которому относится', 'Нет лишнего местоимения после глагола (the course that I took it — ошибка)'],
+                  },
+                  'who — люди, which/that — предметы, where — места; местоимение-дополнение можно опустить.',
+                  { d: 2, t: 'education' },
+                ),
               ],
               test: [
                 fill('I have a friend ___ speaks five languages.', ['who', 'that'], 'О человеке — who (или that); здесь местоимение — подлежащее придаточного, опустить его нельзя.', { s: 'grammar', d: 2 }, { translation: 'У меня есть друг, который говорит на пяти языках.', options: ['who', 'which', 'where'] }),
@@ -1217,6 +1589,48 @@ export const english: LanguageSpec = {
                   'regret + -ing — «жалеть о»; третий тип: had accepted → would have moved; второй тип: if I were → would take; wish + could — сожаление о настоящем; otherwise — «иначе».',
                   { s: 'grammar', t: 'conditionals', d: 3 },
                   'Оглядываясь назад, я жалею, что не согласился на ту работу в Лондоне. Если бы я принял предложение, я бы переехал за границу пять лет назад. Друзья говорят, что будь я смелее, я бы чаще рисковал. Жаль, что нельзя вернуться в прошлое, но смысла нет — сейчас нужно принимать решения получше, иначе сожалений будет ещё больше.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'A job offer in London',
+                    passage: [
+                      ['A', 'You look upset. What’s wrong?'],
+                      ['B', 'Do you remember that job offer in London five years ago? I’ve just seen the company on the news. They’re doing incredibly well.'],
+                      ['A', 'Do you regret turning it down?'],
+                      ['B', 'Sometimes. If I had accepted it, I would have earned much more. I wish I had been braver.'],
+                      ['A', 'But if you had moved to London, you wouldn’t have met Aliya.'],
+                      ['B', 'That’s true. And if I hadn’t stayed here, I wouldn’t have started my own business.'],
+                      ['A', 'Exactly. If I were you, I would stop thinking about the past.'],
+                      ['B', 'You’re right. Otherwise I’ll make myself miserable.'],
+                      ['A', 'And remember, if the company hadn’t grown so fast, nobody would have written about it. They were simply lucky.'],
+                      ['B', 'Maybe. Anyway, if I had more free time this weekend, I would finally update my own business plan.'],
+                    ],
+                    translation: '— Ты расстроен. Что случилось? — Помнишь то предложение о работе в Лондоне пять лет назад? Я только что видел эту компанию в новостях. У них всё невероятно хорошо. — Жалеешь, что отказался? — Иногда. Если бы я согласился, я бы зарабатывал гораздо больше. Жаль, что я не был смелее. — Но если бы ты переехал в Лондон, ты бы не встретил Алию. — Это правда. И если бы я не остался здесь, я бы не открыл своё дело. — Вот именно. На твоём месте я бы перестал думать о прошлом. — Ты прав. Иначе я сам себя изведу. — И помни: если бы компания не выросла так быстро, о ней бы никто не написал. Им просто повезло. — Может быть. В любом случае, будь у меня на выходных больше свободного времени, я бы наконец обновил свой бизнес-план.',
+                    questions: [
+                      ['Почему собеседник расстроен?', ['Он увидел в новостях компанию, от предложения которой отказался', 'Он потерял работу в Лондоне', 'Его бизнес не приносит денег'], 0],
+                      ['Что, по его словам, было бы, если бы он уехал?', ['Он бы зарабатывал больше', 'Он бы открыл своё дело', 'Он бы встретил Алию в Лондоне'], 0],
+                      ['Какой совет даёт подруга?', ['Перестать думать о прошлом', 'Позвонить в лондонскую компанию', 'Переехать в Лондон сейчас'], 0],
+                    ],
+                  },
+                  'Третий тип: If I had accepted, I would have earned; wish + Past Perfect — сожаление о прошлом; If I were you — совет.',
+                  { d: 3, t: 'conditionals' },
+                ),
+                writing(
+                  {
+                    task: 'Напишите пост для блога «Решение, которое изменило мою жизнь»: что вы выбрали, что было бы, если бы вы поступили иначе, и о чём вы жалеете или не жалеете.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['Третий тип условных (would have)', ['would have', 'wouldn’t have', 'would not have', 'might have', 'could have']],
+                      ['Сожаление с wish', ['i wish', 'wish', 'regret', 'if only']],
+                    ],
+                    model: 'Six years ago I had to choose between studying law and studying design. My parents wanted me to become a lawyer, but I chose design. If I had listened to them, I would have earned more money in my first years. However, I would never have found a job that I really love. Of course, there are things I regret. I wish I had studied harder at university, because I missed some great opportunities. But if I were in the same situation again, I would make exactly the same choice.',
+                    modelTranslation: 'Шесть лет назад мне пришлось выбирать между юриспруденцией и дизайном. Родители хотели, чтобы я стал юристом, но я выбрал дизайн. Если бы я их послушал, в первые годы я бы зарабатывал больше. Однако я бы никогда не нашёл работу, которую по-настоящему люблю. Конечно, кое о чём я жалею. Жаль, что я не учился усерднее в университете: я упустил несколько отличных возможностей. Но если бы я снова оказался в той же ситуации, я бы сделал точно такой же выбор.',
+                    checklist: ['Нереальное прошлое: if + Past Perfect, would have + V3', 'Нереальное настоящее: if + Past Simple / were, would + глагол', 'Сожаление: wish + Past Perfect о прошлом', 'В части с if нет would'],
+                  },
+                  'Чередуйте типы: прошлое (had + V3 → would have + V3) и настоящее (were → would + глагол).',
+                  { d: 3, t: 'conditionals' },
                 ),
               ],
               test: [
@@ -1302,6 +1716,43 @@ export const english: LanguageSpec = {
                   { s: 'grammar', t: 'environment', d: 3 },
                   'На прошлой неделе в городе открыли новый завод по переработке. Ожидается, что он будет перерабатывать 50 000 тонн отходов в год. До сих пор большую часть городского мусора отправляли на свалку. С января запретят пластиковые пакеты, а в общественный транспорт сейчас вкладывают больше денег. Считается, что загрязнение воздуха снизится на 20 процентов.',
                 ),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Plastic-free by 2030?',
+                    passage: [
+                      'A new plan to reduce plastic waste was presented by the city council last week. According to the plan, single-use plastic bags will be banned in all shops from next January, and plastic cups will be replaced with paper ones in cafés.',
+                      'At the moment, most of the city’s rubbish is sent to landfill, and only 12 per cent is recycled. Two new recycling centres are being built in the north of the city, and they are expected to open next year.',
+                      'Not everyone is happy, however. Some shop owners say they have not been consulted and that the costs will be passed on to customers. It is believed that the council will discuss their concerns at a public meeting in March.',
+                    ],
+                    translation: 'На прошлой неделе городской совет представил новый план по сокращению пластиковых отходов. Согласно плану, с января во всех магазинах запретят одноразовые пластиковые пакеты, а в кафе пластиковые стаканчики заменят бумажными. Сейчас большую часть городского мусора отправляют на свалку, и перерабатывается лишь 12 процентов. На севере города строятся два новых центра переработки; ожидается, что они откроются в следующем году. Однако довольны не все. Некоторые владельцы магазинов говорят, что с ними не посоветовались и что расходы переложат на покупателей. Считается, что совет обсудит их опасения на публичном собрании в марте.',
+                    questions: [
+                      ['Что изменится в кафе?', ['Пластиковые стаканчики заменят бумажными', 'Запретят пластиковые пакеты', 'Откроют пункты переработки'], 0],
+                      ['Какая доля мусора сейчас перерабатывается?', ['12 %', 'Большая часть', '30 %'], 0],
+                      ['На что жалуются владельцы магазинов?', ['С ними не посоветовались, а расходы лягут на покупателей', 'Центры переработки строят слишком далеко', 'Пакеты запретят уже в марте'], 0],
+                      ['Which sentence is true according to the article?', ['The new recycling centres are still being built.', 'The recycling centres opened last week.', 'Shop owners presented the plan in March.'], 0, true],
+                    ],
+                  },
+                  'В новостях много пассива: was presented, will be banned, is sent, are being built, have not been consulted, It is believed that…',
+                  { d: 3, t: 'environment' },
+                ),
+                writing(
+                  {
+                    task: 'Напишите короткую заметку для городского сайта о том, что делается в вашем городе для экологии: что уже сделано, что делается сейчас и что планируется. Используйте страдательный залог.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['Пассив в разных временах', ['is being', 'are being', 'has been', 'have been', 'was', 'were', 'will be']],
+                      ['Безличный оборот или модальный пассив', ['it is believed', 'it is said', 'it is expected', 'is expected to', 'must be', 'can be', 'should be']],
+                      ['Экологическая лексика', ['recycled', 'recycling', 'pollution', 'waste', 'renewable', 'banned', 'climate']],
+                    ],
+                    model: 'Over the last few years, a lot has been done to make our city greener. Last year more than five thousand trees were planted along the main roads, and plastic bags have been banned in most supermarkets. At the moment, a new cycle lane is being built in the city centre. Next spring, solar panels will be installed on all school roofs. However, much more must be done: air pollution is still high in winter, and only a small part of our waste is recycled. It is expected that a new recycling centre will be opened in 2027.',
+                    modelTranslation: 'За последние несколько лет многое сделано, чтобы наш город стал зеленее. В прошлом году вдоль главных дорог посадили более пяти тысяч деревьев, а в большинстве супермаркетов запретили пластиковые пакеты. Сейчас в центре строится новая велодорожка. Следующей весной на крышах всех школ установят солнечные панели. Однако нужно сделать гораздо больше: зимой загрязнение воздуха всё ещё высокое, а перерабатывается лишь небольшая часть отходов. Ожидается, что новый центр переработки откроют в 2027 году.',
+                    checklist: ['Пассив = be в нужном времени + V3', 'Есть прошлое (was/were), процесс (is being) и будущее (will be)', 'После модальных глаголов — be + V3', 'Исполнитель с by указан, только если он важен'],
+                  },
+                  'Пассив делает текст похожим на новость: has been banned, is being built, will be installed, It is expected that…',
+                  { d: 3, t: 'environment' },
+                ),
               ],
               test: [
                 fill('The bridge ___ being repaired at the moment.', ['is'], 'Present Continuous Passive: is being + V3; at the moment — «сейчас».', { s: 'grammar', d: 3 }, { translation: 'Мост сейчас ремонтируют.', options: ['is', 'was', 'has'] }),
@@ -1379,6 +1830,50 @@ export const english: LanguageSpec = {
                   'Общий вопрос — whether/if; tell + кому (told her), say — без дополнения; согласование времён: has been → had been, will → would; отрицательная просьба — not to + глагол.',
                   { s: 'grammar', t: 'media', d: 3 },
                   'Вчера журналистка взяла интервью у мэра. Она спросила, построит ли город новую линию метро. Мэр сказал ей, что проект отложили из-за бюджета. Он также сказал, что первая станция откроется в следующем году. В конце он попросил журналистов не распространять слухи.',
+                ),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'What did the mayor say?',
+                    passage: [
+                      ['A', 'Did you watch the mayor’s interview last night?'],
+                      ['B', 'Yes. The journalist asked him whether the new metro line would be finished on time.'],
+                      ['A', 'And what did he say?'],
+                      ['B', 'He said the project had been delayed because of the budget, but that the first station would open next year.'],
+                      ['A', 'Next year? He told us the same thing two years ago!'],
+                      ['B', 'I know. The journalist reminded him of that and asked if he could promise it this time.'],
+                      ['A', 'Let me guess — he refused to answer.'],
+                      ['B', 'Not quite. He said he couldn’t promise anything, and he asked journalists not to spread rumours about the costs.'],
+                      ['A', 'So what did the journalist say at the end?'],
+                      ['B', 'She told viewers that she would ask him the same question again next year.'],
+                      ['A', 'Typical. I bet he’ll give exactly the same answer.'],
+                    ],
+                    translation: '— Ты смотрел вчерашнее интервью мэра? — Да. Журналистка спросила его, закончат ли новую линию метро вовремя. — И что он сказал? — Он сказал, что проект отложили из-за бюджета, но первая станция откроется в следующем году. — В следующем году? Он говорил нам то же самое два года назад! — Знаю. Журналистка напомнила ему об этом и спросила, может ли он пообещать это на этот раз. — Дай угадаю — он отказался отвечать. — Не совсем. Он сказал, что ничего не может обещать, и попросил журналистов не распространять слухи о стоимости. — А что журналистка сказала в конце? — Она сказала зрителям, что задаст ему тот же вопрос через год. — Как всегда. Спорим, он ответит точно так же.',
+                    questions: [
+                      ['Почему, по словам мэра, проект задержался?', ['Из-за бюджета', 'Из-за слухов о стоимости', 'Из-за журналистов'], 0],
+                      ['Что удивило первого собеседника?', ['Мэр обещал то же самое два года назад', 'Мэр отказался отвечать', 'Станция уже открылась'], 0],
+                      ['What did the mayor ask journalists to do?', ['Not to spread rumours about the costs.', 'To promise the line would open next year.', 'To ask him about the budget.'], 0, true],
+                    ],
+                  },
+                  'Косвенная речь: asked whether… would, said the project had been delayed, asked journalists not to spread rumours.',
+                  { d: 3, t: 'media' },
+                ),
+                writing(
+                  {
+                    task: 'Вчера вы были на собрании, а ваша коллега не смогла прийти. Напишите ей письмо: перескажите, что сказал директор, о чём спрашивали сотрудники и о чём он всех попросил.',
+                    minWords: 70,
+                    maxWords: 130,
+                    required: [
+                      ['said / told + согласование времён', ['said', 'told']],
+                      ['Косвенный вопрос', ['asked if', 'asked whether', 'asked him', 'asked her', 'asked what', 'asked when', 'asked why', 'asked how']],
+                      ['Косвенная просьба (to + глагол)', ['asked us to', 'told us to', 'asked everyone to', 'told everyone to', 'not to']],
+                    ],
+                    model: 'Hi Aliya, you missed an interesting meeting yesterday! The director said that the company was going to open a new office in Astana next year. He told us that about twenty people would move there. Daniyar asked whether we would get a pay rise, and the director said he couldn’t promise anything yet. Someone else asked when the decision would be made. Finally, he asked everyone to keep the news confidential and told us not to discuss it with clients. See you tomorrow, Dana',
+                    modelTranslation: 'Привет, Алия, ты пропустила интересное собрание! Директор сказал, что в следующем году компания собирается открыть новый офис в Астане. Он сказал нам, что туда переедут около двадцати человек. Данияр спросил, повысят ли нам зарплату, и директор ответил, что пока ничего не может обещать. Кто-то ещё спросил, когда будет принято решение. В конце он попросил всех держать новость в секрете и велел не обсуждать её с клиентами. До завтра, Дана',
+                    checklist: ['После said/told время сдвинуто назад (will → would, is → was)', 'told + кому, said — без дополнения', 'В косвенных вопросах прямой порядок слов, без do/did', 'Просьбы переданы через asked/told + to'],
+                  },
+                  'Сдвиг времён, told me / said, asked if…, asked us to…, told us not to…',
+                  { d: 3, t: 'media' },
                 ),
               ],
               test: [
@@ -1468,6 +1963,42 @@ export const english: LanguageSpec = {
                 translateBack('No sooner had the film come out than it won critical acclaim.', ['Не успел фильм выйти, как получил признание критиков', 'Не успел фильм выйти, как он получил признание критиков', 'Едва фильм вышел, как получил признание критиков', 'Едва фильм вышел, как он получил признание критиков', 'Едва фильм вышел, он получил признание критиков', 'Не успел фильм выйти, как его высоко оценили критики', 'Едва фильм вышел, как его высоко оценили критики', 'Сразу после выхода фильм получил признание критиков'], 'No sooner … than — «не успел … как», «едва … как»; critical acclaim — «признание критиков».', { t: 'culture', d: 3 }),
                 order(['Under', 'no', 'circumstances', 'should', 'you', 'share', 'your', 'password'], 'Ни при каких обстоятельствах не сообщайте свой пароль.', 'После under no circumstances — инверсия: should you share. Отрицание уже есть в no, поэтому not не нужно.', { s: 'grammar', d: 3 }),
                 choiceRu('Что означает это предложение?', 'Little did they know that the painting was a fake.', ['Они и не подозревали, что картина — подделка.', 'Они немного знали о том, что картина — подделка.', 'Они мало что знали об этой картине.'], 0, 'Little did … know — «и не подозревал(и)»: little здесь означает отрицание, а не «немного».', { s: 'reading', t: 'culture', d: 3 }),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Review: “Light and Silence” at the National Gallery',
+                    passage: [
+                      'Seldom does an exhibition live up to the hype that surrounds it. “Light and Silence”, which opened at the National Gallery last month, is a remarkable exception. Never before have so many of Aisha Nur’s paintings been shown together, and the result is breathtaking.',
+                      'What strikes the visitor first is not the size of the canvases but the light. It is in the early landscapes, painted in a small village in the 1970s, that her unique style is most obvious. Not only did she reject the fashionable abstraction of her time, but she also refused to sell her work to private collectors.',
+                      'Little did anyone suspect, while she was alive, that she would one day be called a master. It was only after her death in 2004 that critics began to give her work the acclaim it deserved. Under no circumstances should you miss this show: what you will remember is not a single masterpiece, but the silence that fills every room.',
+                    ],
+                    translation: 'Редкая выставка оправдывает ажиотаж вокруг себя. «Свет и тишина», открывшаяся в Национальной галерее в прошлом месяце, — замечательное исключение. Никогда ещё столько картин Айши Нур не показывали вместе, и результат захватывает дух. Первое, что поражает посетителя, — не размер полотен, а свет. Именно в ранних пейзажах, написанных в маленькой деревне в 1970-х, её неповторимый стиль виден лучше всего. Она не только отвергла модную в её время абстракцию, но и отказывалась продавать работы частным коллекционерам. При её жизни никто и не подозревал, что однажды её назовут мастером. Лишь после её смерти в 2004 году критики начали воздавать её работам должное. Ни в коем случае не пропустите эту выставку: запомнится не отдельный шедевр, а тишина, которой наполнен каждый зал.',
+                    questions: [
+                      ['Что, по мнению автора, поражает в первую очередь?', ['Свет на картинах', 'Размер полотен', 'Количество картин'], 0],
+                      ['Где её стиль виден лучше всего?', ['В ранних пейзажах 1970-х годов', 'В абстрактных работах', 'В картинах из частных коллекций'], 0],
+                      ['Когда к художнице пришло признание критиков?', ['После её смерти в 2004 году', 'В 1970-х, когда она отвергла абстракцию', 'В прошлом месяце, когда открылась выставка'], 0],
+                      ['Which statement matches the review?', ['She refused to sell her paintings to private collectors.', 'She was famous as a master during her lifetime.', 'The reviewer was disappointed by the hype.'], 0, true],
+                    ],
+                  },
+                  'Инверсия (Seldom does…, Never before have…, Not only did…, Little did anyone suspect…) и расщеплённые предложения (What strikes… is, It was only after… that) расставляют акценты в рецензии.',
+                  { d: 3, t: 'culture' },
+                ),
+                writing(
+                  {
+                    task: 'Напишите рецензию для культурного журнала на фильм, книгу или выставку, которые произвели на вас сильное впечатление. Используйте инверсию и расщеплённые предложения для выразительности.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Инверсия для эмфазы', ['never have', 'never before', 'rarely', 'seldom', 'not only did', 'not only does', 'not only is', 'hardly had', 'no sooner', 'little did', 'under no circumstances', 'only after']],
+                      ['Расщеплённое предложение', ['what i', 'what struck', 'what makes', 'what impressed', 'it is', 'it was', 'it’s']],
+                    ],
+                    model: 'Rarely have I left a cinema in complete silence, but that is exactly what happened after “The Long Winter”. Set in a remote village in the 1990s, the film tells the story of a teacher who refuses to leave when the school is closed. What makes it unforgettable is not the plot, which is simple, but the acting. Not only does the lead actress avoid every cliché, but she also manages to say more with a look than most actors say with a whole speech. It is in the quiet scenes, when nothing seems to happen, that the film is at its most powerful. Admittedly, the second half is a little slow. Nevertheless, under no circumstances should you miss it: it is by far the most moving film of the year.',
+                    modelTranslation: 'Редко я выходил из кинотеатра в полной тишине, но именно так было после фильма «Долгая зима». Действие происходит в отдалённой деревне в 1990-х: это история учительницы, которая отказывается уезжать, когда школу закрывают. Незабываемым его делает не сюжет — он прост, — а игра актёров. Исполнительница главной роли не только избегает всех штампов, но и умеет сказать одним взглядом больше, чем большинство актёров целым монологом. Именно в тихих сценах, когда ничего вроде бы не происходит, фильм сильнее всего. Надо признать, вторая половина немного затянута. Тем не менее ни в коем случае не пропустите его: это, безусловно, самый трогательный фильм года.',
+                    checklist: ['После отрицательного наречия в начале стоит вспомогательный глагол (Rarely have I…)', 'Есть хотя бы одно расщеплённое предложение (What… is, It is… that)', 'Есть оценка: сильные и слабые стороны', 'В конце рекомендация читателю'],
+                  },
+                  'Инверсия и расщеплённые предложения — это приёмы эмфазы: не ставьте их в каждое предложение, иначе текст звучит напыщенно.',
+                  { d: 3, t: 'culture' },
+                ),
               ],
               test: [
                 fill('Seldom ___ he admit that he is wrong.', ['does'], 'Seldom в начале → инверсия; в Present Simple — does + глагол в начальной форме (admit).', { s: 'grammar', d: 2 }, { translation: 'Он редко признаёт, что неправ.', options: ['does', 'is', 'has'] }),
@@ -1552,6 +2083,48 @@ export const english: LanguageSpec = {
                 translateBack('But for the new vaccine, the outcome would have been much worse.', ['Если бы не новая вакцина, исход был бы гораздо хуже', 'Если бы не новая вакцина, результат был бы гораздо хуже', 'Если бы не новая вакцина, последствия были бы гораздо хуже', 'Если бы не новая вакцина, исход был бы намного хуже', 'Если бы не новая вакцина, результат был бы намного хуже', 'Если бы не новая вакцина, всё закончилось бы гораздо хуже', 'Не будь новой вакцины, исход был бы гораздо хуже', 'Без новой вакцины исход был бы гораздо хуже'], 'But for + существительное — «если бы не»; outcome — «исход, результат».', { t: 'science', d: 3 }),
                 order(['Were', 'it', 'not', 'for', 'the', 'rain', 'we', 'would', 'be', 'on', 'the', 'beach', 'now'], 'Если бы не дождь, мы бы сейчас были на пляже.', 'Were it not for … = If it weren’t for … — «если бы не»; результат в настоящем — would be.', { s: 'grammar', t: 'conditionals', d: 3 }),
                 choiceRu('Что означает это предложение?', 'It’s high time we found a feasible solution.', ['Нам давно пора найти осуществимое решение.', 'У нас было много времени, чтобы найти решение.', 'Наконец пришло время, когда мы нашли решение.'], 0, 'It’s high time + Past Simple — «давно пора», хотя речь о настоящем; feasible — «осуществимый».', { s: 'reading', d: 3 }),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'From finance to science',
+                    passage: [
+                      ['A', 'Your career path is quite unusual. You started in finance, didn’t you?'],
+                      ['B', 'That’s right. I spent four years at a bank. In hindsight, the turning point was an online course in data analysis that I took just for fun.'],
+                      ['A', 'And if you hadn’t taken that course?'],
+                      ['B', 'I’d probably still be working at the bank. I’d be earning more, to be honest, but I wouldn’t be nearly as happy.'],
+                      ['A', 'What made the biggest difference?'],
+                      ['B', 'My supervisor. Were it not for her, I would have given up after my first failed experiment. She told me failure was simply part of the process.'],
+                      ['A', 'Do you ever wish you had studied science from the start?'],
+                      ['B', 'Not really. If I hadn’t worked in finance, I wouldn’t know how to manage a research budget, which turns out to be surprisingly useful now.'],
+                      ['A', 'And now your team has made a real breakthrough in early cancer detection.'],
+                      ['B', 'Well, the results are promising. Provided that the next trial confirms them, the test could be available within five years.'],
+                    ],
+                    translation: '— У вас необычный карьерный путь. Вы ведь начинали в финансах? — Верно. Я проработала в банке четыре года. Оглядываясь назад, поворотным моментом стал онлайн-курс по анализу данных, который я прошла просто ради интереса. — А если бы вы его не прошли? — Наверное, я бы до сих пор работала в банке. Честно говоря, зарабатывала бы больше, но и близко не была бы так счастлива. — Что сыграло главную роль? — Моя научная руководительница. Если бы не она, я бы сдалась после первого неудачного эксперимента. Она сказала мне, что неудача — просто часть процесса. — Вы никогда не жалеете, что не занялись наукой с самого начала? — Не особенно. Если бы я не работала в финансах, я бы не умела управлять бюджетом исследования, а это сейчас оказывается удивительно полезным. — А теперь ваша команда совершила настоящий прорыв в ранней диагностике рака. — Ну, результаты обнадёживают. При условии, что следующее испытание их подтвердит, тест может стать доступным в течение пяти лет.',
+                    questions: [
+                      ['Что стало поворотным моментом в её карьере?', ['Онлайн-курс по анализу данных', 'Первый неудачный эксперимент', 'Четыре года работы в банке'], 0],
+                      ['Что, по её словам, было бы, если бы она осталась в банке?', ['Она зарабатывала бы больше, но была бы менее счастлива', 'Она была бы так же счастлива, но зарабатывала бы меньше', 'Она всё равно стала бы учёным'], 0],
+                      ['При каком условии тест может появиться через пять лет?', ['Если следующее испытание подтвердит результаты', 'Если её руководительница не уйдёт', 'Если команда получит деньги банка'], 0],
+                    ],
+                  },
+                  'Смешанный тип: if you hadn’t taken (прошлое) → I’d still be working (сейчас); Were it not for her = If it weren’t for her; Provided that — «при условии что».',
+                  { d: 3, t: 'science' },
+                ),
+                writing(
+                  {
+                    task: 'Для рубрики «Поворотный момент» в университетском журнале напишите эссе о событии или решении в прошлом, которое повлияло на вашу жизнь сейчас. Покажите, как всё было бы иначе (смешанные условные, инверсия вместо if).',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Смешанное условное (would + глагол сейчас)', ['would be', 'wouldn’t be', 'would not be', 'would still', 'might be', 'would have']],
+                      ['Инверсия или but for / provided that', ['had i', 'had it not', 'were it not', 'were i', 'should you', 'but for', 'provided that', 'provided']],
+                    ],
+                    model: 'In hindsight, the most important decision of my life was a very small one. In my second year at university, I agreed to replace a sick friend as a volunteer at a science festival. Had I said no, I would probably be working as an accountant today, which is what I was studying at the time. Instead, I spent three days explaining simple experiments to children, and I realised how much I loved it. If I hadn’t met the festival organiser there, I wouldn’t be doing a PhD in physics now. Of course, the path has not been easy: but for my parents’ support, I would have given up in my first year. Still, were it not for that one weekend, I would not be the person I am today.',
+                    modelTranslation: 'Оглядываясь назад, самым важным решением в моей жизни было очень маленькое. На втором курсе я согласился заменить заболевшего друга в качестве волонтёра на научном фестивале. Откажись я тогда, сегодня я бы, наверное, работал бухгалтером — я как раз учился на эту специальность. Вместо этого я три дня объяснял детям простые опыты и понял, как сильно мне это нравится. Если бы я не познакомился там с организатором фестиваля, я бы сейчас не писал диссертацию по физике. Конечно, путь был непростым: если бы не поддержка родителей, я бы бросил всё на первом курсе. И всё же, если бы не те выходные, я не был бы тем, кем стал.',
+                    checklist: ['Есть смешанное условное: прошлое условие → результат сейчас (had + V3 → would be)', 'Есть инверсия вместо if (Had I…, Were it not for…)', 'Время каждой части соответствует смыслу (now / today vs then)', 'Есть вывод о значении этого события'],
+                  },
+                  'Главное — согласовать время с смыслом: условие в прошлом, результат сейчас (would be doing), и наоборот.',
+                  { d: 3, t: 'conditionals' },
+                ),
               ],
               test: [
                 fill('If I hadn’t missed the train, I ___ at the office now.', ['would be'], 'Прошлое условие (hadn’t missed) → настоящий результат (now): would be.', { s: 'grammar', t: 'conditionals', d: 3 }, { translation: 'Если бы я не опоздал на поезд, я бы сейчас был в офисе.', options: ['would be', 'would have been', 'will be'] }),
@@ -1633,6 +2206,43 @@ export const english: LanguageSpec = {
                 order(['I', 'had', 'my', 'article', 'checked', 'by', 'a', 'native', 'speaker'], 'Мою статью проверил носитель языка (по моей просьбе).', 'Каузатив: have + объект + V3 (+ by + исполнитель). Сам я статью не проверял.', { s: 'grammar', t: 'passive', d: 3 }),
                 translateBack('There is little evidence to support this hypothesis.', ['Существует мало доказательств в пользу этой гипотезы', 'Существует мало данных в пользу этой гипотезы', 'Мало доказательств в пользу этой гипотезы', 'Мало данных в пользу этой гипотезы', 'Существует мало данных, подтверждающих эту гипотезу', 'Существует мало доказательств, подтверждающих эту гипотезу', 'Почти нет доказательств в пользу этой гипотезы', 'Почти нет данных, подтверждающих эту гипотезу', 'Эту гипотезу подтверждает мало данных', 'Мало что подтверждает эту гипотезу'], 'little evidence — «мало (почти нет) доказательств»; evidence — неисчисляемое существительное.', { t: 'science', d: 3 }),
                 choiceRu('Что означает слово tentative в этом предложении?', 'These are tentative conclusions.', ['предварительные, неокончательные', 'окончательные, доказанные', 'ошибочные'], 0, 'tentative — «предварительный, осторожный»: автор не настаивает на выводах.', { t: 'science', d: 2 }),
+                reading(
+                  {
+                    mode: 'read',
+                    title: 'Does fiction make us kinder?',
+                    passage: [
+                      'It has long been claimed that reading novels makes people more empathetic. A study conducted at a British university last year appears to support this idea, but the findings should be treated with some caution.',
+                      'Researchers asked 300 volunteers to read either a short story or a newspaper article and then measured how well they could recognise emotions in photographs of faces. Those who had read fiction performed significantly better. The authors suggest that literature may train us to imagine other people’s thoughts and feelings.',
+                      'However, the effect was small and lasted only a few hours. Moreover, all the participants were students, and it is likely that people who enjoy reading are already more sensitive to others. Arguably, the study shows a correlation rather than a cause. Before any firm conclusions can be drawn, the results will need to be replicated with a larger and more varied sample and undergo rigorous peer review.',
+                    ],
+                    translation: 'Давно утверждается, что чтение романов делает людей более эмпатичными. Исследование, проведённое в прошлом году в британском университете, по-видимому, подтверждает эту идею, но к результатам следует относиться с некоторой осторожностью. Исследователи попросили 300 добровольцев прочитать либо рассказ, либо газетную статью, а затем измерили, насколько хорошо они распознают эмоции на фотографиях лиц. Те, кто читал художественный текст, справились значительно лучше. Авторы предполагают, что литература может тренировать способность представлять мысли и чувства других людей. Однако эффект был небольшим и длился лишь несколько часов. Более того, все участники были студентами, и вполне вероятно, что люди, любящие читать, и так более чутки к другим. Пожалуй, исследование показывает корреляцию, а не причинно-следственную связь. Прежде чем делать твёрдые выводы, результаты нужно воспроизвести на более крупной и разнообразной выборке и подвергнуть строгому рецензированию.',
+                    questions: [
+                      ['Что именно измеряли исследователи?', ['Умение распознавать эмоции на фотографиях лиц', 'Скорость чтения рассказа', 'Сколько книг читают студенты'], 0],
+                      ['Какое ограничение исследования называет автор?', ['Все участники были студентами', 'Участников было слишком много', 'Эффект длился несколько лет'], 0],
+                      ['Как автор в целом оценивает выводы?', ['Как предварительные: нужна повторная проверка', 'Как окончательно доказанные', 'Как полностью ошибочные'], 0],
+                      ['Which phrase is an example of hedging in the text?', ['The authors suggest that literature may train us…', 'Researchers asked 300 volunteers…', 'Those who had read fiction performed better.'], 0, true],
+                    ],
+                  },
+                  'Hedging (appears to, suggest, may, it is likely that, arguably) и пассив (was conducted, should be treated, will need to be replicated) делают выводы осторожными.',
+                  { d: 3, t: 'science' },
+                ),
+                writing(
+                  {
+                    task: 'Напишите аннотацию (abstract) к небольшому исследованию на тему по вашему выбору (например, сон и успеваемость студентов). Опишите, как проводилось исследование, что показали результаты и каковы ограничения. Пишите осторожно и формально.',
+                    minWords: 100,
+                    maxWords: 180,
+                    required: [
+                      ['Hedging', ['may', 'might', 'suggest', 'appear', 'it is likely', 'tend to', 'arguably', 'to some extent', 'could']],
+                      ['Пассив (was conducted, is thought to…)', ['was conducted', 'were asked', 'was carried out', 'were collected', 'is thought', 'is believed', 'were analysed', 'was found', 'is needed', 'are needed']],
+                      ['Научная лексика', ['findings', 'evidence', 'hypothesis', 'significant', 'tentative', 'participants', 'sample']],
+                    ],
+                    model: 'This study investigated the relationship between sleep and academic performance among first-year university students. The research was conducted over one semester at a university in Almaty, and 120 participants were asked to record their sleeping hours in an online diary. Their exam results were then analysed. The findings suggest that students who slept at least seven hours a night tended to achieve significantly higher grades. It is likely that regular sleep improves concentration and memory. However, the sample was relatively small, and other factors, such as part-time work, may also have influenced the results. Therefore, these conclusions should be regarded as tentative, and further research with a larger sample is needed to confirm the hypothesis.',
+                    modelTranslation: 'В исследовании изучалась связь между сном и успеваемостью студентов первого курса. Исследование проводилось в течение одного семестра в одном из университетов Алматы; 120 участников попросили записывать продолжительность сна в онлайн-дневник. Затем были проанализированы их экзаменационные оценки. Результаты позволяют предположить, что студенты, спавшие не менее семи часов в сутки, как правило, получали значительно более высокие оценки. Вероятно, регулярный сон улучшает концентрацию и память. Однако выборка была относительно небольшой, и на результаты могли повлиять другие факторы, например подработка. Поэтому выводы следует считать предварительными; для подтверждения гипотезы необходимы дальнейшие исследования на более крупной выборке.',
+                    checklist: ['Выводы смягчены (suggest, may, it is likely)', 'Методика описана в пассиве (was conducted, were asked)', 'Названы ограничения исследования', 'Нет разговорных слов и сокращений'],
+                  },
+                  'Структура абстракта: цель → методика (пассив) → результаты (hedging) → ограничения → вывод.',
+                  { d: 3, t: 'science' },
+                ),
               ],
               test: [
                 fill('She is said ___ three books on the subject.', ['to have written'], 'Действие предшествует моменту речи → перфектный инфинитив: to have written.', { s: 'grammar', t: 'passive', d: 3 }, { translation: 'Говорят, она написала на эту тему три книги.', options: ['to have written', 'to write', 'writing'] }),
@@ -1724,6 +2334,49 @@ export const english: LanguageSpec = {
                   'Дискуссия о городском бюджете.',
                 ),
                 choice('Как сказать о концертном зале «яблоку негде было упасть»?', ['The hall was packed to the rafters.', 'There was no place for an apple to fall.', 'The hall was packed to the ceilings.'], 0, 'Русские идиомы не переводят дословно: «яблоку негде упасть» — packed to the rafters (или packed out).', { t: 'idioms', d: 2 }),
+                reading(
+                  {
+                    mode: 'listen',
+                    title: 'A radio debate: should museums be free?',
+                    passage: [
+                      ['A', 'Ms Karimova, you believe national museums should be free for everyone. Why?'],
+                      ['B', 'Culture should be accessible to all, whereas high ticket prices exclude poorer families. Moreover, studies show that free entry attracts far more young visitors.'],
+                      ['A', 'Can you back up that claim?'],
+                      ['B', 'Certainly. When British museums scrapped their fees in 2001, visitor numbers rose by more than half within a few years.'],
+                      ['A', 'Admittedly, free museums sound attractive. Nevertheless, someone has to pay, and it will be taxpayers. Many museums would have to cut staff or close galleries.'],
+                      ['B', 'That’s a fair point, but the cost is tiny compared with the overall culture budget.'],
+                      ['A', 'But wouldn’t it be fairer to make museums free only for students and pensioners?'],
+                      ['B', 'That’s one option. However, every exception creates more bureaucracy, and consequently the savings would be even smaller.'],
+                      ['A', 'So, on balance, you think it’s worth it?'],
+                      ['B', 'On balance, the benefits clearly outweigh the drawbacks. Free entry is a double-edged sword, but it’s worth it.'],
+                    ],
+                    translation: '— Г-жа Каримова, вы считаете, что национальные музеи должны быть бесплатными для всех. Почему? — Культура должна быть доступна всем, тогда как высокие цены на билеты отсекают малообеспеченные семьи. Более того, исследования показывают, что бесплатный вход привлекает гораздо больше молодёжи. — Можете подтвердить это? — Конечно. Когда британские музеи отменили плату в 2001 году, число посетителей за несколько лет выросло более чем наполовину. — Надо признать, бесплатные музеи звучат привлекательно. Тем не менее кто-то должен платить, и это будут налогоплательщики. Многим музеям пришлось бы сокращать персонал или закрывать залы. — Справедливое замечание, но эти расходы ничтожны по сравнению с общим бюджетом на культуру. — Но не справедливее ли сделать музеи бесплатными только для студентов и пенсионеров? — Это вариант. Однако каждое исключение порождает больше бюрократии, и в итоге экономия будет ещё меньше. — Итак, если взвесить всё, вы считаете, что оно того стоит? — В целом преимущества явно перевешивают недостатки. Бесплатный вход — палка о двух концах, но оно того стоит.',
+                    questions: [
+                      ['Каким фактом г-жа Каримова подкрепляет свою позицию?', ['После отмены платы в британских музеях число посетителей выросло более чем наполовину', 'Бесплатные музеи стоят налогоплательщикам совсем немного', 'В 2001 году британские музеи закрыли часть залов'], 0],
+                      ['Какой главный аргумент собеседника против бесплатного входа?', ['Платить придётся налогоплательщикам', 'Молодёжь не ходит в музеи', 'Бесплатные музеи переполнены'], 0],
+                      ['Как г-жа Каримова отвечает на этот аргумент?', ['Расходы малы по сравнению с бюджетом на культуру', 'Музеям не придётся сокращать персонал', 'Налогоплательщики согласны платить'], 0],
+                    ],
+                  },
+                  'Связки дискуссии: whereas, moreover, admittedly, nevertheless, on balance; back up a claim — подкрепить утверждение.',
+                  { d: 3, t: 'culture' },
+                ),
+                writing(
+                  {
+                    task: 'Напишите эссе-рассуждение для конкурса студенческих работ на тему «Нужно ли запретить автомобили в историческом центре города?». Приведите аргументы обеих сторон, подкрепите их примерами и сделайте вывод.',
+                    minWords: 120,
+                    maxWords: 180,
+                    required: [
+                      ['Связки противопоставления и уступки', ['nevertheless', 'nonetheless', 'whereas', 'admittedly', 'on the other hand', 'however', 'despite', 'although']],
+                      ['Связки добавления или следствия', ['moreover', 'furthermore', 'in addition', 'consequently', 'therefore', 'as a result']],
+                      ['Вывод', ['on balance', 'all things considered', 'to conclude', 'in conclusion', 'overall']],
+                    ],
+                    model: 'Many European cities have already closed their historic centres to cars, and the idea is now being discussed in our city too. Supporters argue that a car-free centre would be cleaner, quieter and safer. Moreover, evidence from cities such as Oslo suggests that pedestrian zones attract more visitors and, consequently, more customers for local shops. Admittedly, a ban would create problems. Elderly and disabled people may find it harder to reach the centre, whereas delivery companies would face higher costs. Some shop owners also fear that customers will simply go to out-of-town shopping centres instead. Nevertheless, these difficulties could be reduced by better public transport and special permits for residents. On balance, I believe the benefits for health and the environment outweigh the drawbacks, provided that the change is introduced gradually.',
+                    modelTranslation: 'Многие европейские города уже закрыли исторические центры для автомобилей, и теперь эту идею обсуждают и в нашем городе. Сторонники утверждают, что центр без машин будет чище, тише и безопаснее. Более того, опыт таких городов, как Осло, показывает, что пешеходные зоны привлекают больше посетителей, а следовательно, и покупателей для местных магазинов. Надо признать, запрет создал бы проблемы. Пожилым людям и людям с инвалидностью может быть труднее добираться до центра, а у служб доставки вырастут расходы. Некоторые владельцы магазинов также опасаются, что покупатели просто уйдут в загородные торговые центры. Тем не менее эти трудности можно смягчить за счёт лучшего общественного транспорта и специальных пропусков для жителей. В целом я считаю, что польза для здоровья и окружающей среды перевешивает недостатки — при условии, что изменения будут вводиться постепенно.',
+                    checklist: ['Есть аргументы обеих сторон', 'Каждый аргумент подкреплён примером или фактом', 'Связки использованы по функции (moreover — добавление, nevertheless — возражение)', 'Вывод начинается с On balance / All things considered'],
+                  },
+                  'Структура: тезис → аргументы «за» с примерами → Admittedly, контраргументы → Nevertheless, ответ на них → On balance, вывод.',
+                  { d: 3, t: 'argumentation' },
+                ),
               ],
               test: [
                 choice('The first study found a strong link; the second, ___, found no effect at all.', ['on the other hand', 'moreover', 'therefore'], 0, 'Сравниваются две стороны: on the other hand — «с другой стороны». Moreover добавляет, therefore выражает следствие.', { s: 'grammar', t: 'conjunctions', d: 2 }),
