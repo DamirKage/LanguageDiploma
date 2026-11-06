@@ -1,12 +1,22 @@
 import { z } from 'zod';
 import { CEFR_LEVELS, TEST_PASS_PERCENT } from '@linguapath/shared';
 import { AppError, errors } from '../../lib/errors';
+import { invalidateCatalog } from '../catalog/catalog';
 import { createApiRouter, idParams, languageCode, objectId, pagination } from '../../lib/http';
 import { Course, CourseModule, Language, Lesson, Test, Topic, Word } from '../../models/content';
 import { LessonProgress, ReviewItem } from '../../models/learning';
 import { assertUniqueKeys, exerciseSchema, localizedText, optionalLocalizedText, theoryBlockSchema } from '../content/schemas';
 
 const { router, get, post, put, patch, delete: del } = createApiRouter('/api/admin');
+
+// Any change to content clears the cached catalogue, so learners see it on their next request.
+router.use((req, res, next) => {
+  if (req.method !== 'GET') {
+    invalidateCatalog();
+    res.on('finish', invalidateCatalog);
+  }
+  next();
+});
 const tags = ['Администрирование: контент'];
 
 /** Serialises a lean document for the admin UI: `_id` becomes `id`, internals are dropped. */

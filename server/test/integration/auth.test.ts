@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { config } from '../../src/config';
 import { describe, expect, it } from 'vitest';
 import { RefreshToken, User } from '../../src/models/user';
 import { app, registerUser, useTestDatabase } from '../helpers';
@@ -135,4 +136,26 @@ describe('password recovery and change', () => {
     expect((await request(app).delete('/api/me').set(u.auth).send({ password: u.password })).status).toBe(204);
     expect(await User.exists({ email: u.email })).toBeNull();
   });
+});
+
+describe('rate limiting', () => {
+  it('lets a whole class sign in from one address but stops guessing one account', async () => {
+    config.rateLimitEnabled = true;
+    try {
+      // 40 different learners behind one school address: nobody is blocked.
+      for (let i = 0; i < 40; i++) {
+        const res = await request(app).post('/api/auth/login').send({ email: `class${i}@example.com`, password: 'Wrong1234' });
+        expect(res.status).toBe(401);
+      }
+      // Guessing one account is cut off after 30 attempts.
+      const statuses: number[] = [];
+      for (let i = 0; i < 31; i++) {
+        statuses.push((await request(app).post('/api/auth/login').send({ email: 'victim@example.com', password: `Guess${i}xx` })).status);
+      }
+      expect(statuses.slice(0, 30).every((s) => s === 401)).toBe(true);
+      expect(statuses[30]).toBe(429);
+    } finally {
+      config.rateLimitEnabled = false;
+    }
+  }, 60_000);
 });

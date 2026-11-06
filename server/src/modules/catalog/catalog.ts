@@ -1,5 +1,5 @@
 import { CEFR_LEVELS, type CefrLevel, type Exercise, type LocalizedText } from '@linguapath/shared';
-import { Course, CourseModule, Lesson, Test } from '../../models/content';
+import { Course, CourseModule, Lesson, Test, Topic } from '../../models/content';
 
 export interface CatalogData {
   courses: Array<{ id: string; level: CefrLevel; title: LocalizedText; description: LocalizedText }>;
@@ -24,8 +24,42 @@ export interface CatalogData {
   tests: Array<{ id: string; kind: 'module' | 'lesson'; moduleId: string | null; lessonId: string | null; title: LocalizedText; exerciseCount: number; passPercent: number }>;
 }
 
+/**
+ * The catalogue is read on almost every learner request (plan, path, recommendations) but changes only when an
+ * administrator edits content. It is kept in memory for a short time; content changes clear it at once in this
+ * process, and other processes of a scaled deployment pick them up within the TTL.
+ */
+const CATALOG_TTL_MS = 60_000;
+const catalogCache = new Map<string, { at: number; data: Promise<CatalogData> }>();
+
+let topicsCache: { at: number; data: Promise<Array<{ key: string; kind: string }>> } | null = null;
+
+export function invalidateCatalog() {
+  catalogCache.clear();
+  topicsCache = null;
+}
+
+/** Topic reference list (key and kind), cached like the catalogue. */
+export function loadTopics() {
+  if (!topicsCache || Date.now() - topicsCache.at > CATALOG_TTL_MS) {
+    const data = Topic.find().select('key kind').lean().exec() as Promise<Array<{ key: string; kind: string }>>;
+    topicsCache = { at: Date.now(), data };
+    data.catch(() => (topicsCache = null));
+  }
+  return topicsCache.data;
+}
+
 /** Published structure of one language, ordered as the recommended learning path. */
-export async function loadCatalog(language: string): Promise<CatalogData> {
+export function loadCatalog(language: string): Promise<CatalogData> {
+  const hit = catalogCache.get(language);
+  if (hit && Date.now() - hit.at < CATALOG_TTL_MS) return hit.data;
+  const data = readCatalog(language);
+  catalogCache.set(language, { at: Date.now(), data });
+  data.catch(() => catalogCache.delete(language));
+  return data;
+}
+
+async function readCatalog(language: string): Promise<CatalogData> {
   const [courses, modules, lessons, tests] = await Promise.all([
     Course.find({ language, isPublished: true }).lean(),
     CourseModule.find({ language, isPublished: true }).sort({ order: 1 }).lean(),

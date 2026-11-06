@@ -12,10 +12,9 @@ import {
 } from '@linguapath/shared';
 import { errors } from '../../lib/errors';
 import { endOfLocalDay, localDateKey, localDaysBetween, startOfLocalDay } from '../../lib/time';
-import { Topic } from '../../models/content';
 import { AnswerEvent, Attempt, DailyPlan, LessonProgress, RecommendationSnapshot, ReviewItem, ReviewLog } from '../../models/learning';
 import { Enrollment, User } from '../../models/user';
-import { loadCatalog } from '../catalog/catalog';
+import { loadCatalog, loadTopics } from '../catalog/catalog';
 import { DEFAULT_ENGINE_CONFIG } from './config';
 import { ENGINE_VERSION, nextPathLessons, recommend, type LearnerSnapshot, type TopicEvidence } from './engine';
 import { composePlan } from './plan';
@@ -32,47 +31,59 @@ export async function buildSnapshot(userId: string, language: string, now = new 
   const tz = user.timezone;
   const uid = new Types.ObjectId(userId);
 
-  const [catalog, progress, inProgress, testAttempts, topicDocs, topicAgg, sessionAgg, recentAgg, categoryAgg, recent, reviewItems, reviewLogs, snapshots] =
+  const [catalog, progress, inProgress, testAttempts, topicDocs, answers, reviewItems, reviewLogs, snapshots] =
     await Promise.all([
       loadCatalog(language),
       LessonProgress.find({ user: userId, language }).lean(),
       Attempt.find({ user: userId, language, status: 'in_progress' }).select('kind lesson test title items.verdict practiceTopic startedAt').lean(),
       Attempt.find({ user: userId, language, kind: 'test', status: 'completed' }).select('test result').lean(),
-      Topic.find().lean(),
-      AnswerEvent.aggregate<{ _id: string; answers: number; correct: number; last: Date }>([
+      loadTopics(),
+      // One pass over the learner's answers instead of five separate scans.
+      AnswerEvent.aggregate<{
+        topics: Array<{ _id: string; answers: number; correct: number; last: Date }>;
+        sessions: Array<{ _id: { topic: string; attempt: Types.ObjectId }; answers: number; correct: number; at: Date }>;
+        recentByTopic: Array<{ _id: string; verdicts: string[] }>;
+        categories: Array<{ _id: { topic: string; category: ErrorCategory }; count: number }>;
+        recent: Array<{ verdict: string }>;
+      }>([
         { $match: { user: uid, language, verdict: { $ne: 'skipped' } } },
+        { $project: { topic: 1, attempt: 1, verdict: 1, category: 1, at: 1 } },
         {
-          $group: {
-            _id: '$topic',
-            answers: { $sum: 1 },
-            correct: { $sum: { $switch: { branches: [{ case: { $eq: ['$verdict', 'correct'] }, then: 1 }, { case: { $eq: ['$verdict', 'almost'] }, then: 0.7 }], default: 0 } } },
-            last: { $max: '$at' },
+          $facet: {
+            topics: [
+              {
+                $group: {
+                  _id: '$topic',
+                  answers: { $sum: 1 },
+                  correct: { $sum: { $switch: { branches: [{ case: { $eq: ['$verdict', 'correct'] }, then: 1 }, { case: { $eq: ['$verdict', 'almost'] }, then: 0.7 }], default: 0 } } },
+                  last: { $max: '$at' },
+                },
+              },
+            ],
+            sessions: [
+              {
+                $group: {
+                  _id: { topic: '$topic', attempt: '$attempt' },
+                  answers: { $sum: 1 },
+                  correct: { $sum: { $cond: [{ $eq: ['$verdict', 'correct'] }, 1, 0] } },
+                  at: { $min: '$at' },
+                },
+              },
+              { $sort: { at: 1 } },
+            ],
+            recentByTopic: [
+              { $sort: { at: -1 } },
+              { $group: { _id: '$topic', verdicts: { $push: '$verdict' } } },
+              { $project: { verdicts: { $slice: ['$verdicts', DEFAULT_ENGINE_CONFIG.thresholds.recentWindow] } } },
+            ],
+            categories: [
+              { $match: { verdict: { $in: ['incorrect', 'almost'] }, at: { $gte: new Date(+now - 30 * 86400_000) } } },
+              { $group: { _id: { topic: '$topic', category: '$category' }, count: { $sum: 1 } } },
+            ],
+            recent: [{ $sort: { at: -1 } }, { $limit: 30 }, { $project: { _id: 0, verdict: 1 } }],
           },
         },
-      ]),
-      AnswerEvent.aggregate<{ _id: { topic: string; attempt: Types.ObjectId }; answers: number; correct: number; at: Date }>([
-        { $match: { user: uid, language, verdict: { $ne: 'skipped' } } },
-        {
-          $group: {
-            _id: { topic: '$topic', attempt: '$attempt' },
-            answers: { $sum: 1 },
-            correct: { $sum: { $cond: [{ $eq: ['$verdict', 'correct'] }, 1, 0] } },
-            at: { $min: '$at' },
-          },
-        },
-        { $sort: { at: 1 } },
-      ]),
-      AnswerEvent.aggregate<{ _id: string; verdicts: string[] }>([
-        { $match: { user: uid, language, verdict: { $ne: 'skipped' } } },
-        { $sort: { at: -1 } },
-        { $group: { _id: '$topic', verdicts: { $push: '$verdict' } } },
-        { $project: { verdicts: { $slice: ['$verdicts', DEFAULT_ENGINE_CONFIG.thresholds.recentWindow] } } },
-      ]),
-      AnswerEvent.aggregate<{ _id: { topic: string; category: ErrorCategory }; count: number }>([
-        { $match: { user: uid, language, verdict: { $in: ['incorrect', 'almost'] }, at: { $gte: new Date(+now - 30 * 86400_000) } } },
-        { $group: { _id: { topic: '$topic', category: '$category' }, count: { $sum: 1 } } },
-      ]),
-      AnswerEvent.find({ user: userId, language, verdict: { $ne: 'skipped' } }).sort({ at: -1 }).limit(30).select('verdict').lean(),
+      ]).then((r) => r[0]!),
       ReviewItem.find({ user: userId, language, dueAt: { $lte: endOfLocalDay(now, tz) } }).select('dueAt lastReviewedAt').lean(),
       ReviewLog.find({ user: userId, language, at: { $gte: new Date(+now - 30 * 86400_000) } }).select('quality').lean(),
       RecommendationSnapshot.find({ user: userId, language, generatedAt: { $gte: new Date(+now - 7 * 86400_000) } })
@@ -80,6 +91,7 @@ export async function buildSnapshot(userId: string, language: string, now = new 
         .lean(),
     ]);
 
+  const { topics: topicAgg, sessions: sessionAgg, recentByTopic: recentAgg, categories: categoryAgg, recent } = answers;
   const topicKind = new Map(topicDocs.map((t) => [t.key, t.kind as TopicEvidence['kind']]));
   const recentByTopic = new Map(
     recentAgg.map((r) => [r._id, { answers: r.verdicts.length, correct: r.verdicts.reduce((s, v) => s + (v === 'correct' ? 1 : v === 'almost' ? 0.7 : 0), 0) }]),
@@ -201,6 +213,11 @@ export async function buildSnapshot(userId: string, language: string, now = new 
 }
 
 export async function getRecommendations(userId: string, language: string, locale = 'ru'): Promise<RecommendationResult> {
+  return (await computeRecommendations(userId, language, locale)).result;
+}
+
+/** Recommendations together with the snapshot they were computed from, so callers need not rebuild it. */
+async function computeRecommendations(userId: string, language: string, locale = 'ru') {
   const now = new Date();
   const snapshot = await buildSnapshot(userId, language, now, locale);
   const result = recommend(snapshot);
@@ -219,7 +236,7 @@ export async function getRecommendations(userId: string, language: string, local
       items: result.items,
     });
   }
-  return result;
+  return { result, snapshot };
 }
 
 export async function markRecommendationFollowed(userId: string, language: string, key: string) {
@@ -265,10 +282,12 @@ export async function getTodayPlan(userId: string, language: string, options: { 
   if (!user) throw errors.notFound();
   const now = new Date();
   const date = localDateKey(now, user.timezone);
+  let snapshot: Awaited<ReturnType<typeof buildSnapshot>> | null = null;
   let plan = await DailyPlan.findOne({ user: userId, language, date }).lean();
   if (!plan) {
-    const result = await getRecommendations(userId, language, locale);
-    const items = composePlan(result, user.dailyMinutes);
+    const computed = await computeRecommendations(userId, language, locale);
+    snapshot = computed.snapshot;
+    const items = composePlan(computed.result, user.dailyMinutes);
     try {
       plan = (
         await DailyPlan.create({ user: userId, language, date, budgetMinutes: user.dailyMinutes, items, engineVersion: ENGINE_VERSION })
@@ -292,7 +311,9 @@ export async function getTodayPlan(userId: string, language: string, options: { 
   if (activitySince) {
     const kept = items.filter((_, i) => done[i]);
     const usedMinutes = kept.reduce((sum, i) => sum + i.estimatedMinutes, 0);
-    const result = await getRecommendations(userId, language, locale);
+    const computed = await computeRecommendations(userId, language, locale);
+    const result = computed.result;
+    snapshot = computed.snapshot;
     const remaining = Math.max(0, plan!.budgetMinutes - usedMinutes);
     const fresh = remaining > 0 ? composePlan({ ...result, items: result.items.filter((r) => !kept.some((k) => k.key === r.key)) }, remaining) : [];
     items = [...kept, ...fresh];
@@ -300,7 +321,7 @@ export async function getTodayPlan(userId: string, language: string, options: { 
     await DailyPlan.updateOne({ _id: plan!._id }, { $set: { items, engineVersion: ENGINE_VERSION } });
   }
 
-  const snapshot = await buildSnapshot(userId, language, now, locale);
+  snapshot ??= await buildSnapshot(userId, language, now, locale);
   const catalog = await loadCatalog(language);
   const moduleTitle = new Map(catalog.modules.map((m) => [m.id, localize(m.title, locale)]));
 

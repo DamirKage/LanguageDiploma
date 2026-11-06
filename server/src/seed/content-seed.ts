@@ -3,6 +3,7 @@ import type { Exercise } from '@linguapath/shared';
 import { Course, CourseModule, Language, Lesson, Test, Topic, Word } from '../models/content';
 import { exerciseSchema } from '../modules/content/schemas';
 import { checkAnswer, countWords } from '../modules/learning/checker';
+import { invalidateCatalog } from '../modules/catalog/catalog';
 import { finalizeExercise, ru, type LanguageSpec, type LessonSpec } from './builders';
 import { english } from './content/en';
 import { german } from './content/de';
@@ -202,6 +203,7 @@ export async function seedLanguage(spec: LanguageSpec) {
 }
 
 export async function seedContent() {
+  invalidateCatalog();
   await seedTopics();
   for (const spec of LANGUAGES) await seedLanguage(spec);
 }

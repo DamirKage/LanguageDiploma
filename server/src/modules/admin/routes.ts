@@ -6,12 +6,22 @@ import { z } from 'zod';
 import { localize, type AdminStatsDTO, type AdminUserDTO, type LocalizedText, type Paginated } from '@linguapath/shared';
 import { config } from '../../config';
 import { AppError, errors } from '../../lib/errors';
+import { invalidateCatalog } from '../catalog/catalog';
 import { createApiRouter, pagination } from '../../lib/http';
 import { Course, Language, Lesson, Test, Word } from '../../models/content';
 import { AnswerEvent, Attempt, LessonProgress, ReviewLog } from '../../models/learning';
 import { Enrollment, User } from '../../models/user';
 
 const { router, get, post, delete: del } = createApiRouter('/api/admin');
+
+// Any change to content clears the cached catalogue, so learners see it on their next request.
+router.use((req, res, next) => {
+  if (req.method !== 'GET') {
+    invalidateCatalog();
+    res.on('finish', invalidateCatalog);
+  }
+  next();
+});
 
 /* ---------- Users ---------- */
 

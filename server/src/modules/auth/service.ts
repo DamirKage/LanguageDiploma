@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import bcrypt from 'bcryptjs';
+import { hashPassword as hashInPool, verifyPassword as matchesHash } from '../../lib/password';
 import type { Response } from 'express';
 import type { UserDTO } from '@linguapath/shared';
 import { config } from '../../config';
@@ -39,11 +39,15 @@ export function validatePasswordStrength(password: string, email?: string) {
 }
 
 export async function hashPassword(password: string) {
-  return bcrypt.hash(password, config.bcryptRounds);
+  return hashInPool(password, config.bcryptRounds);
 }
 
-/** Constant-work comparison target so unknown emails take as long as wrong passwords. */
-const DUMMY_HASH = bcrypt.hashSync('dummy-password-0', 4);
+/**
+ * Comparison target for unknown emails, built with the same cost as real hashes: otherwise an unknown address
+ * would answer faster than a wrong password and reveal which emails are registered.
+ */
+let dummyHash: Promise<string> | null = null;
+const dummy = () => (dummyHash ??= hashInPool('dummy-password-0', config.bcryptRounds));
 
 async function issueRefreshToken(userId: string, family: string, userAgent?: string) {
   const token = randomToken();
@@ -100,7 +104,7 @@ export async function register(input: { email: string; password: string; name: s
 
 export async function login(email: string, password: string): Promise<UserDoc> {
   const user = await User.findOne({ email }).select('+passwordHash');
-  const ok = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
+  const ok = await matchesHash(password, user?.passwordHash ?? (await dummy()));
   if (!user || !ok) throw new AppError(401, 'invalid_credentials');
   return user;
 }
@@ -182,7 +186,7 @@ export async function resetPassword(token: string, password: string) {
 export async function changePassword(userId: string, current: string, next: string) {
   const user = await User.findById(userId).select('+passwordHash');
   if (!user) throw errors.notFound();
-  if (!(await bcrypt.compare(current, user.passwordHash))) throw new AppError(400, 'wrong_password');
+  if (!(await matchesHash(current, user.passwordHash))) throw new AppError(400, 'wrong_password');
   validatePasswordStrength(next, user.email);
   user.passwordHash = await hashPassword(next);
   await user.save();
@@ -192,6 +196,6 @@ export async function changePassword(userId: string, current: string, next: stri
 
 export async function verifyPassword(userId: string, password: string) {
   const user = await User.findById(userId).select('+passwordHash');
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) throw new AppError(400, 'wrong_password');
+  if (!user || !(await matchesHash(password, user.passwordHash))) throw new AppError(400, 'wrong_password');
   return user;
 }

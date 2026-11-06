@@ -2,7 +2,8 @@ import path from 'node:path';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { type NextFunction, type Request, type Response } from 'express';
-import { rateLimit } from 'express-rate-limit';
+import { ipKeyGenerator, rateLimit } from 'express-rate-limit';
+import { accessSubject } from './modules/auth/middleware';
 import helmet from 'helmet';
 import mongoose from 'mongoose';
 import { pinoHttp } from 'pino-http';
@@ -68,6 +69,12 @@ export function createApp() {
       standardHeaders: 'draft-8',
       legacyHeaders: false,
       skip: () => !config.rateLimitEnabled,
+      // Counted per signed-in learner, not per IP address: a school or a university often reaches the internet
+      // through one address, and a per-address limit would block a whole class. Anonymous requests count per address.
+      keyGenerator: (req) => {
+        const subject = accessSubject(req);
+        return subject ? `user:${subject}` : `ip:${ipKeyGenerator(req.ip ?? '')}`;
+      },
       handler: () => {
         throw new AppError(429, 'rate_limited');
       },

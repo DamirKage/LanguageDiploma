@@ -1,4 +1,4 @@
-import { rateLimit } from 'express-rate-limit';
+import { ipKeyGenerator, rateLimit } from 'express-rate-limit';
 import { z } from 'zod';
 import { config } from '../../config';
 import { AppError } from '../../lib/errors';
@@ -17,16 +17,27 @@ import {
   startSession,
 } from './service';
 
-const authLimiter = rateLimit({
+/**
+ * Sign-in protection that still works for a classroom behind one IP address: guessing is limited per account
+ * (30 attempts in 15 minutes for one email from one address), and a far higher cap per address stops mass attacks
+ * without blocking a whole school that signs in at the start of a lesson.
+ */
+const limiterBase = {
   windowMs: 15 * 60 * 1000,
-  limit: 30,
-  standardHeaders: 'draft-8',
+  standardHeaders: 'draft-8' as const,
   legacyHeaders: false,
   skip: () => !config.rateLimitEnabled,
   handler: () => {
     throw new AppError(429, 'rate_limited');
   },
+};
+const perAccount = rateLimit({
+  ...limiterBase,
+  limit: 30,
+  keyGenerator: (req) => `${ipKeyGenerator(req.ip ?? '')}|${String((req.body as { email?: unknown } | undefined)?.email ?? '').trim().toLowerCase()}`,
 });
+const perAddress = rateLimit({ ...limiterBase, limit: 600, keyGenerator: (req) => ipKeyGenerator(req.ip ?? '') });
+const authLimiter = [perAddress, perAccount];
 
 const email = z.string().trim().toLowerCase().pipe(z.email('Некорректный адрес электронной почты').max(254));
 const password = z.string().min(1).max(128);
@@ -41,7 +52,7 @@ post(
     access: 'public',
     status: 201,
     returns: 'AuthResponse',
-    middleware: [authLimiter],
+    middleware: authLimiter,
     body: z.object({
       email,
       password,
@@ -62,7 +73,7 @@ post(
     tags: ['Аутентификация'],
     access: 'public',
     returns: 'AuthResponse',
-    middleware: [authLimiter],
+    middleware: authLimiter,
     body: z.object({ email, password }),
   },
   async ({ body, req, res }) => {
@@ -106,7 +117,7 @@ post(
     tags: ['Аутентификация'],
     access: 'public',
     status: 202,
-    middleware: [authLimiter],
+    middleware: authLimiter,
     body: z.object({ email }),
   },
   async ({ body }) => ({ ok: true, ...(await requestPasswordReset(body.email)) }),
@@ -118,7 +129,7 @@ post(
     summary: 'Установка нового пароля по токену из письма',
     tags: ['Аутентификация'],
     access: 'public',
-    middleware: [authLimiter],
+    middleware: authLimiter,
     body: z.object({ token: z.string().min(10).max(200), password }),
   },
   async ({ body }) => {

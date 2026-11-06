@@ -33,6 +33,17 @@ function readBearer(req: Request): string | null {
   return header.slice(7).trim() || null;
 }
 
+/** The user id of a valid access token, or null; used to count requests per learner rather than per address. */
+export function accessSubject(req: Request): string | null {
+  const token = readBearer(req);
+  if (!token) return null;
+  try {
+    return (jwt.verify(token, config.jwtSecret, { algorithms: ['HS256'], issuer: 'linguapath' }) as AccessPayload).sub;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Verifies the access token and reloads the user, so blocking an account or
  * changing a role takes effect without waiting for the token to expire.
