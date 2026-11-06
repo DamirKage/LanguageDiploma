@@ -15,7 +15,7 @@ export default defineConfig({
     launchOptions: process.env.PW_CHROMIUM_PATH ? { executablePath: process.env.PW_CHROMIUM_PATH } : {},
   },
   projects: [
-    { name: 'desktop', use: { viewport: { width: 1280, height: 860 } }, testMatch: /learning-flow/ },
+    { name: 'desktop', use: { viewport: { width: 1280, height: 860 } }, testMatch: /learning-flow|accessibility/ },
     { name: 'mobile', use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }, testMatch: /responsive/ },
   ],
   webServer: {

@@ -56,11 +56,19 @@ function baseOptions(tokens: ReturnType<typeof readTokens>, yMax?: number, ySuff
   };
 }
 
+/** Text alternative for a chart: what it shows and the values of the last points, read by screen readers. */
+function describe(label: string, labels: string[], values: Array<number | null>, suffix = '') {
+  const points = labels.map((l, i) => `${l} — ${values[i] === null || values[i] === undefined ? '—' : `${values[i]}${suffix}`}`).slice(-14);
+  return `${label}. ${points.join('; ')}`;
+}
+
 export function LineChart({ labels, values, label, max, suffix }: { labels: string[]; values: Array<number | null>; label: string; max?: number; suffix?: string }) {
   const tokens = useTokens();
   return (
-    <div className="chart" role="img" aria-label={label}>
+    <div className="chart">
       <Line
+        role="img"
+        aria-label={describe(label, labels, values, suffix)}
         options={baseOptions(tokens, max, suffix)}
         data={{
           labels,
@@ -89,8 +97,10 @@ export function LineChart({ labels, values, label, max, suffix }: { labels: stri
 export function BarChart({ labels, values, label, suffix }: { labels: string[]; values: number[]; label: string; suffix?: string }) {
   const tokens = useTokens();
   return (
-    <div className="chart" role="img" aria-label={label}>
+    <div className="chart">
       <Bar
+        role="img"
+        aria-label={describe(label, labels, values, suffix)}
         options={baseOptions(tokens, undefined, suffix)}
         data={{
           labels,

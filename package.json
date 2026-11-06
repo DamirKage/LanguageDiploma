@@ -17,12 +17,14 @@
     "evaluate": "npm run evaluate --workspace server",
     "demo": "npm run build --workspace client && npm run demo --workspace server",
     "e2e": "playwright test -c e2e",
-    "audio:phrases": "npm exec --workspace server -- tsx ../tools/audio/collect.ts ../tools/audio/.work/phrases.json"
+    "audio:phrases": "npm exec --workspace server -- tsx ../tools/audio/collect.ts ../tools/audio/.work/phrases.json",
+    "coverage": "npm run coverage --workspace server && npm run coverage --workspace client"
   },
   "engines": {
     "node": ">=22.12"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@playwright/test": "1.56.1"
   }
 }

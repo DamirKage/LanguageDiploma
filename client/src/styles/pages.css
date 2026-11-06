@@ -1041,8 +1041,9 @@ a.syllabus__title:hover {
   flex-direction: column;
   gap: 6px;
 }
-.bars__row[data-faint] {
-  opacity: 0.6;
+.bars__row[data-faint] .small:first-child {
+  /* Too little data: the row is marked by colour of the name only, so the text keeps AA contrast. */
+  color: var(--ink-3);
 }
 .mistakes {
   list-style: none;
