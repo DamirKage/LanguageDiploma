@@ -1879,3 +1879,7 @@ a.syllabus__title:hover {
   color: var(--ink-3);
   text-decoration: line-through;
 }
+.writing__meta > .caption {
+  display: inline-flex;
+  align-items: center;
+}
