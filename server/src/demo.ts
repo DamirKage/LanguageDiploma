@@ -48,7 +48,11 @@ async function main() {
 
   console.log('Запуск базы данных (при первом запуске MongoDB скачивается, это может занять несколько минут)…');
   const { MongoMemoryServer } = await import('mongodb-memory-server');
-  const mongo = await MongoMemoryServer.create({ instance: { dbPath: dbDir, storageEngine: 'wiredTiger' } });
+  // A fixed port lets you open the database in MongoDB Compass; if it is busy, any free port is used.
+  const dbPort = Number(process.env.DEMO_DB_PORT ?? 27018);
+  const mongo = await MongoMemoryServer.create({ instance: { dbPath: dbDir, storageEngine: 'wiredTiger', port: dbPort } }).catch(() =>
+    MongoMemoryServer.create({ instance: { dbPath: dbDir, storageEngine: 'wiredTiger' } }),
+  );
 
   Object.assign(process.env, {
     NODE_ENV: 'development',
@@ -96,6 +100,7 @@ async function main() {
     console.log(`LinguaPath запущен: ${url}`);
     console.log('Учащийся: demo@linguapath.local / LinguaDemo2026');
     console.log('Администратор: admin@linguapath.local / LinguaAdmin2026');
+    console.log(`База данных (для MongoDB Compass): ${mongo.getUri()}  — база linguapath`);
     console.log('Чтобы остановить, закройте это окно или нажмите Ctrl+C.');
     openBrowser();
   });
